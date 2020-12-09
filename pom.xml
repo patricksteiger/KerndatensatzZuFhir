@@ -19,6 +19,12 @@
             <artifactId>opencsv</artifactId>
             <version>5.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/org.hl7.fhir.r4 -->
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>org.hl7.fhir.r4</artifactId>
+            <version>5.2.9</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
         <dependency>
             <groupId>org.slf4j</groupId>
