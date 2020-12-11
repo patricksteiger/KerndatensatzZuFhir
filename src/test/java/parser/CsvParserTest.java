@@ -20,6 +20,7 @@ public class CsvParserTest {
     private static final String DOUBLE_COLUMN_NAME_FILE_PATH = RESOURCES_PATH + "doubleName.csv";
     private static final String SWITCHED_COLUMN_NAMES_FILE_PATH = RESOURCES_PATH + "switchedNames.csv";
     private static final String EMPTY_CELL_FILE_PATH = RESOURCES_PATH + "emptyCell.csv";
+    private static final String IGNORE_EMPTY_LINES_FILE_PATH = RESOURCES_PATH + "ignoreEmptyLines.csv";
 
     private static final String COLUMN_1_NAME = "col1";
     private static final String COLUMN_2_NAME = "col2";
@@ -125,6 +126,20 @@ public class CsvParserTest {
         List<DatablockMock> result = CsvParser.parseDatablocks(EMPTY_CELL_FILE_PATH, DatablockMock.class);
         assertEquals(1, result.size());
         assertEquals("", result.get(0).getCol1());
+        assertEquals("2", result.get(0).getCol2());
+    }
+
+    @Test
+    public void ignoreEmptyLines() throws IOException {
+        FileWriter fileWriter = new FileWriter(IGNORE_EMPTY_LINES_FILE_PATH);
+        fileWriter.write(COLUMN_1_NAME + CsvParser.COLUMN_SEPARATOR + COLUMN_2_NAME + "\n");
+        fileWriter.write("\n");
+        fileWriter.write("1" + CsvParser.COLUMN_SEPARATOR + "2\n");
+        fileWriter.write("\n");
+        fileWriter.close();
+        List<DatablockMock> result = CsvParser.parseDatablocks(IGNORE_EMPTY_LINES_FILE_PATH, DatablockMock.class);
+        assertEquals(1, result.size());
+        assertEquals("1", result.get(0).getCol1());
         assertEquals("2", result.get(0).getCol2());
     }
 }
