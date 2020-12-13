@@ -1,6 +1,9 @@
 package model;
 
 import com.opencsv.bean.CsvBindByName;
+import helper.Constants;
+import helper.FhirHelper;
+import helper.UrlHelper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -38,23 +41,16 @@ public class Prozedur implements Datablock {
 
     public Procedure getProcedure() {
         Procedure procedure = new Procedure();
-        // ID
-        procedure.setId("id");
+        // TODO: ID
+        //procedure.setId("id");
         // Meta
-        Meta meta = new Meta();
-        procedure.setMeta(meta);
+        procedure.setMeta(this.getMeta());
         // Status
         procedure.setStatus(Procedure.ProcedureStatus.COMPLETED);
         // Category
-        CodeableConcept category = new CodeableConcept();
-        procedure.setCategory(category);
+        procedure.setCategory(this.getCategory());
         // Code
-        CodeableConcept code = new CodeableConcept();
-        Coding ops = new Coding(); // For OPS: Code, System, Version, Seitenlokalisation
-        Coding snomed = new Coding(); // For SNOMED: Code, System
-        code.addCoding(ops);
-        code.addCoding(snomed);
-        procedure.setCode(code);
+        procedure.setCode(this.getCode());
         // Performed
         DateTimeType performed = new DateTimeType();
         procedure.setPerformed(performed);
@@ -75,6 +71,46 @@ public class Prozedur implements Datablock {
         Reference subject = new Reference();
         procedure.setSubject(subject);
         return procedure;
+    }
+
+    public Meta getMeta() {
+        Meta meta = FhirHelper.generateMeta(UrlHelper.PROCEDURE_PROFILE_URL);
+        return meta;
+    }
+
+    public CodeableConcept getCategory() {
+        Coding categoryCode = FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), UrlHelper.SNOMED_CLINICAL_TERMS);
+        return new CodeableConcept().addCoding(categoryCode);
+    }
+
+    public CodeableConcept getCode() {
+        CodeableConcept code = new CodeableConcept();
+        String snomed = this.getSNOMED_Vollst_Prozedurenkode();
+        if (snomed != null && !snomed.isEmpty())
+            code.addCoding(this.getCodingSnomed());
+        String ops = this.getOPS_Vollst_Prozedurenkode();
+        if (ops != null && !ops.isEmpty())
+            code.addCoding(this.getCodingOps());
+        return code;
+    }
+
+    public Coding getCodingOps() {
+        Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), UrlHelper.OPS_DIMDI_SYSTEM, Constants.EMPTY_DISPLAY, Constants.VERSION_2020); // For OPS: Code, System, Version, Seitenlokalisation
+        String seite = this.getOPS_Seitenlokalisation();
+        if (seite != null && !seite.isEmpty()) {
+            Extension extension = new Extension();
+            extension.setUrl(UrlHelper.OPS_SEITENLOKALISATION);
+            // TODO: Korrekte Url für system?
+            Type value = FhirHelper.generateCoding(seite, UrlHelper.OPS_SEITENLOKALISATION, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
+            extension.setValue(value);
+            ops.addExtension(extension);
+        }
+        return ops;
+    }
+
+    public Coding getCodingSnomed() {
+        Coding snomed = FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), UrlHelper.SNOMED_CLINICAL_TERMS);
+        return snomed;
     }
 
     public String getPatNr() {
