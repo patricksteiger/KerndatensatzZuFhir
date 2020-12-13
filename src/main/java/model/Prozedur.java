@@ -1,14 +1,18 @@
 package model;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import com.opencsv.bean.CsvBindByName;
 import helper.Constants;
 import helper.FhirHelper;
+import helper.Helper;
 import helper.UrlHelper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class Prozedur implements Datablock {
     @CsvBindByName
@@ -52,21 +56,19 @@ public class Prozedur implements Datablock {
         // Code
         procedure.setCode(this.getCode());
         // Performed
-        DateTimeType performed = new DateTimeType();
-        procedure.setPerformed(performed);
-        // BodySite
-        List<CodeableConcept> bodySites = new ArrayList<>();
-        procedure.setBodySite(bodySites);
-        // Note
-        List<Annotation> notes = new ArrayList<>();
-        procedure.setNote(notes);
-        // Extension: RecordedDate, Durchfuehrungsabsicht
-        List<Extension> extensions = new ArrayList<>();
-        Extension recordedDate = new Extension();
-        Extension durchfuehrungsabsicht = new Extension();
-        extensions.add(recordedDate);
-        extensions.add(durchfuehrungsabsicht);
-        procedure.setExtension(extensions);
+        procedure.setPerformed(this.getPerformed());
+        // BodySite (optional)
+        if (Helper.checkNonEmptyString(this.getKoerperstelle()))
+            procedure.setBodySite(this.getBodySites());
+        // Note (optional)
+        if (Helper.checkNonEmptyString(this.getFreitextbeschreibung()))
+            procedure.setNote(this.getNotes());
+        // Extension: RecordedDate (optional)
+        if (Helper.checkNonEmptyString(this.getDokumentationsdatum()))
+            procedure.addExtension(this.getRecordedDate());
+        // Extension: Durchführungsabsicht (optional)
+        if (Helper.checkNonEmptyString(this.getDurchfuehrungsabsicht()))
+            procedure.addExtension(this.getDurchführungsabsicht());
         // Subject
         Reference subject = new Reference();
         procedure.setSubject(subject);
@@ -85,11 +87,9 @@ public class Prozedur implements Datablock {
 
     public CodeableConcept getCode() {
         CodeableConcept code = new CodeableConcept();
-        String snomed = this.getSNOMED_Vollst_Prozedurenkode();
-        if (snomed != null && !snomed.isEmpty())
+        if (Helper.checkNonEmptyString(this.getSNOMED_Vollst_Prozedurenkode()))
             code.addCoding(this.getCodingSnomed());
-        String ops = this.getOPS_Vollst_Prozedurenkode();
-        if (ops != null && !ops.isEmpty())
+        if (Helper.checkNonEmptyString(this.getOPS_Vollst_Prozedurenkode()))
             code.addCoding(this.getCodingOps());
         return code;
     }
@@ -97,7 +97,7 @@ public class Prozedur implements Datablock {
     public Coding getCodingOps() {
         Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), UrlHelper.OPS_DIMDI_SYSTEM, Constants.EMPTY_DISPLAY, Constants.VERSION_2020); // For OPS: Code, System, Version, Seitenlokalisation
         String seite = this.getOPS_Seitenlokalisation();
-        if (seite != null && !seite.isEmpty()) {
+        if (Helper.checkNonEmptyString(seite)) {
             Extension extension = new Extension();
             extension.setUrl(UrlHelper.OPS_SEITENLOKALISATION);
             // TODO: Korrekte Url für system?
@@ -111,6 +111,45 @@ public class Prozedur implements Datablock {
     public Coding getCodingSnomed() {
         Coding snomed = FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), UrlHelper.SNOMED_CLINICAL_TERMS);
         return snomed;
+    }
+
+    public DateTimeType getPerformed() {
+        Date date = Helper.getDateFromGermanTime(this.getDurchfuehrungsdatum());
+        return new DateTimeType(date, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
+    }
+
+    public List<CodeableConcept> getBodySites() {
+        List<CodeableConcept> bodySites = new ArrayList<>();
+        CodeableConcept bodySite = new CodeableConcept();
+        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), UrlHelper.BODYSITE_URL);
+        bodySite.addCoding(coding);
+        bodySites.add(bodySite);
+        return bodySites;
+    }
+
+    public List<Annotation> getNotes() {
+        List<Annotation> notes = new ArrayList<>();
+        Annotation note = new Annotation();
+        note.setText(this.getFreitextbeschreibung());
+        notes.add(note);
+        return notes;
+    }
+
+    public Extension getRecordedDate() {
+        Extension recordedDate = new Extension();
+        recordedDate.setUrl(UrlHelper.RECORDED_DATE_URL);
+        Date recorded = Helper.getDateFromGermanTime(this.getDokumentationsdatum());
+        DateTimeType date = new DateTimeType(recorded, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
+        recordedDate.setValue(date);
+        return recordedDate;
+    }
+
+    public Extension getDurchführungsabsicht() {
+       Extension absicht = new Extension();
+       absicht.setUrl(UrlHelper.DURCHFUEHRUNGSABSICHT_URL);
+       Coding code = FhirHelper.generateCoding(this.getDurchfuehrungsabsicht(), UrlHelper.DURCHFUEHRUNGSABSICHT_URL);
+       absicht.setValue(code);
+       return absicht;
     }
 
     public String getPatNr() {
