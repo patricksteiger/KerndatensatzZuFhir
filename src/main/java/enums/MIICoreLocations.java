@@ -1,4 +1,4 @@
-package helper;
+package enums;
 
 /**
  * @see "https://simplifier.net/medizininformatikinitiative-kerndatensatz/core-location-identifier"
@@ -44,8 +44,7 @@ public enum MIICoreLocations {
 
     private final String displayName;
 
-    MIICoreLocations(String displayName)
-    {
+    MIICoreLocations(String displayName) {
         this.displayName = displayName;
     }
 

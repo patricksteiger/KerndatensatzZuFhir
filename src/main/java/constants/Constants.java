@@ -1,4 +1,4 @@
-package helper;
+package constants;
 
 public class Constants {
     public static final String EMPTY_DISPLAY = "";

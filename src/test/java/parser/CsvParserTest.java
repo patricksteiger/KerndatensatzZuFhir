@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CsvParserTest {
-    private static final String RESOURCES_PATH = "src/test/resources/";
+    private static final String RESOURCES_PATH = "src/test/resources/parser/";
     private static final String EMPTY_FILE_PATH = RESOURCES_PATH + "emptyFile.csv";
     private static final String MISSING_HEADER_FILE_PATH = RESOURCES_PATH + "missingHeader.csv";
     private static final String WRONG_SEPARATOR_FILE_PATH = RESOURCES_PATH + "wrongSeparator.csv";
@@ -34,6 +34,8 @@ public class CsvParserTest {
 
     @Test
     public void emptyListOnEmptyFile() throws IOException {
+        FileWriter fileWriter = new FileWriter(EMPTY_FILE_PATH);
+        fileWriter.close();
         List<DatablockMock> result = CsvParser.parseDatablocks(EMPTY_FILE_PATH, DatablockMock.class);
         assertEquals(0, result.size());
     }

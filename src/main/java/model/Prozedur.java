@@ -2,8 +2,9 @@ package model;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import com.opencsv.bean.CsvBindByName;
+import constants.URLs;
 import helper.*;
-import helper.Constants;
+import constants.Constants;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -74,20 +75,17 @@ public class Prozedur implements Datablock {
 
     public Reference getSubject() {
         Reference subject = new Reference();
-        Reference assigner = new Reference();
-        assigner.setDisplay(MIICoreLocations.UKU.toString());
-        Identifier assignerId = FhirHelper.generateIdentifier(UrlHelper.NS_DIZ, MIICoreLocations.UKU.name(), null);
-        assigner.setIdentifier(assignerId);
-        subject.setIdentifier(FhirHelper.generateIdentifier(UrlHelper.LOCAL_PID, this.getPatNr(), assigner));
+        Reference assignerRef = FhirHelper.generateSubjectAssignerReference();
+        subject.setIdentifier(FhirHelper.generateIdentifier(URLs.LOCAL_PID, this.getPatNr(), assignerRef));
         return subject;
     }
 
     public Meta getMeta() {
-        return FhirHelper.generateMeta(UrlHelper.PROCEDURE_PROFILE_URL);
+        return FhirHelper.generateMeta(URLs.PROCEDURE_PROFILE_URL);
     }
 
     public CodeableConcept getCategory() {
-        Coding categoryCode = FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), UrlHelper.SNOMED_CLINICAL_TERMS);
+        Coding categoryCode = FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), URLs.SNOMED_CLINICAL_TERMS);
         return new CodeableConcept().addCoding(categoryCode);
     }
 
@@ -101,21 +99,23 @@ public class Prozedur implements Datablock {
     }
 
     public Coding getCodingOps() {
-        Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), UrlHelper.OPS_DIMDI_SYSTEM, Constants.EMPTY_DISPLAY, Constants.VERSION_2020); // For OPS: Code, System, Version, Seitenlokalisation
-        String seite = this.getOPS_Seitenlokalisation();
-        if (Helper.checkNonEmptyString(seite)) {
-            Extension extension = new Extension();
-            extension.setUrl(UrlHelper.OPS_SEITENLOKALISATION);
-            // TODO: Korrekte Url für system?
-            Type value = FhirHelper.generateCoding(seite, UrlHelper.OPS_SEITENLOKALISATION, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
-            extension.setValue(value);
-            ops.addExtension(extension);
-        }
+        Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), URLs.OPS_DIMDI_SYSTEM, Constants.EMPTY_DISPLAY, Constants.VERSION_2020); // For OPS: Code, System, Version, Seitenlokalisation
+        if (Helper.checkNonEmptyString(this.getOPS_Seitenlokalisation()))
+            ops.addExtension(this.getSeitenlokalisation());
         return ops;
     }
 
+    public Extension getSeitenlokalisation() {
+        Extension extension = new Extension();
+        extension.setUrl(URLs.OPS_SEITENLOKALISATION);
+        // TODO: Korrekte Url für system?
+        Type value = FhirHelper.generateCoding(this.getOPS_Seitenlokalisation(), URLs.OPS_SEITENLOKALISATION, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
+        extension.setValue(value);
+        return extension;
+    }
+
     public Coding getCodingSnomed() {
-        return FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), UrlHelper.SNOMED_CLINICAL_TERMS);
+        return FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), URLs.SNOMED_CLINICAL_TERMS);
     }
 
     public DateTimeType getPerformed() {
@@ -126,7 +126,7 @@ public class Prozedur implements Datablock {
     public List<CodeableConcept> getBodySites() {
         List<CodeableConcept> bodySites = new ArrayList<>();
         CodeableConcept bodySite = new CodeableConcept();
-        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), UrlHelper.BODYSITE_URL);
+        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), URLs.BODYSITE_URL);
         bodySite.addCoding(coding);
         bodySites.add(bodySite);
         return bodySites;
@@ -142,7 +142,7 @@ public class Prozedur implements Datablock {
 
     public Extension getRecordedDate() {
         Extension recordedDate = new Extension();
-        recordedDate.setUrl(UrlHelper.RECORDED_DATE_URL);
+        recordedDate.setUrl(URLs.RECORDED_DATE_URL);
         Date recorded = Helper.getDateFromGermanTime(this.getDokumentationsdatum());
         DateTimeType date = new DateTimeType(recorded, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
         recordedDate.setValue(date);
@@ -151,8 +151,8 @@ public class Prozedur implements Datablock {
 
     public Extension getDurchführungsabsicht() {
        Extension absicht = new Extension();
-       absicht.setUrl(UrlHelper.DURCHFUEHRUNGSABSICHT_URL);
-       Coding code = FhirHelper.generateCoding(this.getDurchfuehrungsabsicht(), UrlHelper.DURCHFUEHRUNGSABSICHT_URL);
+       absicht.setUrl(URLs.DURCHFUEHRUNGSABSICHT_URL);
+       Coding code = FhirHelper.generateCoding(this.getDurchfuehrungsabsicht(), URLs.DURCHFUEHRUNGSABSICHT_URL);
        absicht.setValue(code);
        return absicht;
     }

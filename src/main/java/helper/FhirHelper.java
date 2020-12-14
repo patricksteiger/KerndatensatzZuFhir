@@ -1,5 +1,7 @@
 package helper;
 
+import constants.URLs;
+import enums.MIICoreLocations;
 import org.hl7.fhir.r4.model.*;
 
 public class FhirHelper {
@@ -41,5 +43,13 @@ public class FhirHelper {
         if (assignerRef != null)
             identifier.setAssigner(assignerRef);
         return identifier;
+    }
+
+    public static Reference generateSubjectAssignerReference() {
+        Reference assigner = new Reference();
+        assigner.setDisplay(MIICoreLocations.UKU.toString());
+        Identifier assignerId = FhirHelper.generateIdentifier(URLs.NS_DIZ, MIICoreLocations.UKU.name(), null);
+        assigner.setIdentifier(assignerId);
+        return assigner;
     }
 }

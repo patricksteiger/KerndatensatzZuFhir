@@ -1,6 +1,6 @@
-package helper;
+package constants;
 
-public class UrlHelper {
+public class URLs {
     public static final String PROCEDURE_PROFILE_URL = "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure";
 
     public static final String SNOMED_CLINICAL_TERMS = "http://snomed.info/sct";
