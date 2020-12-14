@@ -21,9 +21,9 @@ public class FhirHelper {
         Coding coding = new Coding();
         coding.setCode(code);
         coding.setSystem(system);
-        if (display != null && !display.isEmpty())
+        if (Helper.checkNonEmptyString(display))
             coding.setDisplay(display);
-        if (version != null && !version.isEmpty())
+        if (Helper.checkNonEmptyString(version))
             coding.setVersion(version);
         return coding;
     }

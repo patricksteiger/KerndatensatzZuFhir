@@ -81,7 +81,7 @@ public class Prozedur implements Datablock {
     }
 
     public Meta getMeta() {
-        return FhirHelper.generateMeta(URLs.PROCEDURE_PROFILE_URL);
+        return FhirHelper.generateMeta(URLs.PROCEDURE_PROFILE_URL, Constants.SOURCE_UKU_SAP_PROZEDUR);
     }
 
     public CodeableConcept getCategory() {
