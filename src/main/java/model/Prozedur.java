@@ -2,10 +2,8 @@ package model;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import com.opencsv.bean.CsvBindByName;
+import helper.*;
 import helper.Constants;
-import helper.FhirHelper;
-import helper.Helper;
-import helper.UrlHelper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -70,14 +68,22 @@ public class Prozedur implements Datablock {
         if (Helper.checkNonEmptyString(this.getDurchfuehrungsabsicht()))
             procedure.addExtension(this.getDurchführungsabsicht());
         // Subject
-        Reference subject = new Reference();
-        procedure.setSubject(subject);
+        procedure.setSubject(this.getSubject());
         return procedure;
     }
 
+    public Reference getSubject() {
+        Reference subject = new Reference();
+        Reference assigner = new Reference();
+        assigner.setDisplay(MIICoreLocations.UKU.toString());
+        Identifier assignerId = FhirHelper.generateIdentifier(UrlHelper.NS_DIZ, MIICoreLocations.UKU.name(), null);
+        assigner.setIdentifier(assignerId);
+        subject.setIdentifier(FhirHelper.generateIdentifier(UrlHelper.LOCAL_PID, this.getPatNr(), assigner));
+        return subject;
+    }
+
     public Meta getMeta() {
-        Meta meta = FhirHelper.generateMeta(UrlHelper.PROCEDURE_PROFILE_URL);
-        return meta;
+        return FhirHelper.generateMeta(UrlHelper.PROCEDURE_PROFILE_URL);
     }
 
     public CodeableConcept getCategory() {
@@ -109,8 +115,7 @@ public class Prozedur implements Datablock {
     }
 
     public Coding getCodingSnomed() {
-        Coding snomed = FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), UrlHelper.SNOMED_CLINICAL_TERMS);
-        return snomed;
+        return FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), UrlHelper.SNOMED_CLINICAL_TERMS);
     }
 
     public DateTimeType getPerformed() {

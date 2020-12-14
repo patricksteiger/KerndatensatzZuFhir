@@ -1,8 +1,6 @@
 package helper;
 
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.*;
 
 public class FhirHelper {
     public static Meta generateMeta(String profile) {
@@ -36,4 +34,12 @@ public class FhirHelper {
         return generateCoding(code, system, "");
     }
 
+    public static Identifier generateIdentifier(String value, String system, Reference assignerRef) {
+        Identifier identifier = new Identifier();
+        identifier.setSystem(system);
+        identifier.setValue(value);
+        if (assignerRef != null)
+            identifier.setAssigner(assignerRef);
+        return identifier;
+    }
 }

@@ -11,4 +11,7 @@ public class UrlHelper {
 
     public static final String RECORDED_DATE_URL = "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/procedure-recordedDate";
     public static final String DURCHFUEHRUNGSABSICHT_URL = "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht";
+
+    public static final String LOCAL_PID = "http://uniklinik-ulm.de/fhir/NamingSystem/pid";
+    public static final String NS_DIZ ="https://www.medizininformatik-initiative.de/fhir/core/NamingSystem/DIZ";
 }
