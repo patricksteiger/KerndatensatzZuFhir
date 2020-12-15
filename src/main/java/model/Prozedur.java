@@ -68,8 +68,8 @@ public class Prozedur implements Datablock {
         if (Helper.checkNonEmptyString(this.getDokumentationsdatum()))
             procedure.addExtension(this.getRecordedDate());
         // Extension: Durchführungsabsicht (optional)
-        if (Helper.checkNonEmptyString(this.getDurchfuehrungsabsicht()))
-            procedure.addExtension(this.getDurchführungsabsicht());
+        if (Helper.checkNonEmptyString(this.getKernDurchfuehrungsabsicht()))
+            procedure.addExtension(this.getDurchfuehrungsabsicht());
         // Subject
         procedure.setSubject(this.getSubject());
         return procedure;
@@ -152,10 +152,10 @@ public class Prozedur implements Datablock {
         return recordedDate;
     }
 
-    public Extension getDurchführungsabsicht() {
+    public Extension getDurchfuehrungsabsicht() {
        Extension absicht = new Extension();
        absicht.setUrl(URLs.DURCHFUEHRUNGSABSICHT_URL);
-       Coding code = FhirHelper.generateCoding(this.getDurchfuehrungsabsicht(), URLs.SNOMED_CLINICAL_TERMS);
+       Coding code = FhirHelper.generateCoding(this.getKernDurchfuehrungsabsicht(), URLs.SNOMED_CLINICAL_TERMS);
        absicht.setValue(code);
        return absicht;
     }
@@ -192,7 +192,7 @@ public class Prozedur implements Datablock {
         this.SNOMED_Vollst_Prozedurenkode = SNOMED_Vollst_Prozedurenkode;
     }
 
-    public String getDurchfuehrungsabsicht() {
+    public String getKernDurchfuehrungsabsicht() {
         return durchfuehrungsabsicht;
     }
 
