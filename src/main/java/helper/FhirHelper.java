@@ -2,6 +2,7 @@ package helper;
 
 import constants.URLs;
 import enums.MIICoreLocations;
+import enums.ProcedureCategorySnomedMapping;
 import org.hl7.fhir.r4.model.*;
 
 public class FhirHelper {
@@ -51,5 +52,25 @@ public class FhirHelper {
         Identifier assignerId = FhirHelper.generateIdentifier(URLs.NS_DIZ, MIICoreLocations.UKU.name(), null);
         assigner.setIdentifier(assignerId);
         return assigner;
+    }
+
+    /**
+     * Returns Snomed-mapping needed for category in procedure.
+     * @param ops OPS-Code. Example: "5-470"
+     * @return Snomed-Mapping
+     * @throws IllegalArgumentException if first character of Ops-Code is not 1,3,5,6,8,9.
+     * @see "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
+     */
+    public static ProcedureCategorySnomedMapping getSnomedMappingFromOps(String ops) {
+        final char opsCode = ops.charAt(0);
+        switch (opsCode) {
+            case '1': return ProcedureCategorySnomedMapping.DIAGNOSTIC;
+            case '3': return ProcedureCategorySnomedMapping.IMAGING;
+            case '5': return ProcedureCategorySnomedMapping.SURGICAL;
+            case '6': return ProcedureCategorySnomedMapping.ADMINISTRATION_OF_MEDICINE;
+            case '8': return ProcedureCategorySnomedMapping.THERAPEUTIC;
+            case '9': return ProcedureCategorySnomedMapping.OTHER;
+            default: throw new IllegalArgumentException("Code '" + ops + "' is not valid OPS-Code.");
+        }
     }
 }

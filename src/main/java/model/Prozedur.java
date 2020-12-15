@@ -3,6 +3,7 @@ package model;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import com.opencsv.bean.CsvBindByName;
 import constants.URLs;
+import enums.ProcedureCategorySnomedMapping;
 import helper.*;
 import constants.Constants;
 import interfaces.Datablock;
@@ -50,8 +51,9 @@ public class Prozedur implements Datablock {
         procedure.setMeta(this.getMeta());
         // Status
         procedure.setStatus(Procedure.ProcedureStatus.COMPLETED);
-        // Category
-        procedure.setCategory(this.getCategory());
+        // Category, can only be set if OPS is used.
+        if (Helper.checkNonEmptyString(this.getOPS_Vollst_Prozedurenkode()))
+            procedure.setCategory(this.getCategory());
         // Code
         procedure.setCode(this.getCode());
         // Performed
@@ -85,7 +87,8 @@ public class Prozedur implements Datablock {
     }
 
     public CodeableConcept getCategory() {
-        Coding categoryCode = FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), URLs.SNOMED_CLINICAL_TERMS);
+        ProcedureCategorySnomedMapping mapping = FhirHelper.getSnomedMappingFromOps(this.getOPS_Vollst_Prozedurenkode());
+        Coding categoryCode = FhirHelper.generateCoding(mapping.getCode(), URLs.SNOMED_CLINICAL_TERMS, mapping.getDisplay());
         return new CodeableConcept().addCoding(categoryCode);
     }
 
