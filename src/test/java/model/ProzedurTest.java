@@ -3,6 +3,7 @@ package model;
 import constants.Constants;
 import constants.URLs;
 import org.hl7.fhir.r4.model.CanonicalType;
+import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Meta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProzedurTest {
     private Prozedur prozedur = null;
@@ -28,5 +30,13 @@ public class ProzedurTest {
         assertEquals(URLs.PROCEDURE_PROFILE_URL, profiles.get(0).asStringValue());
     }
 
-
+    @Test
+    public void testGetPerformed() {
+        String durchfuehrung = "7.1.2020";
+        prozedur.setDurchfuehrungsdatum(durchfuehrung);
+        DateTimeType date = prozedur.getPerformed();
+        // Check for correct date and timezone
+        String pattern = "2020-01-07T[012][0-9]:[0-5][0-9]:[0-5][0-9]\\+01:00";
+        assertTrue(date.getValueAsString().matches(pattern));
+    }
 }
