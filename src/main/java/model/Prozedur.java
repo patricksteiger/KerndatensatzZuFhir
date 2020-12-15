@@ -87,6 +87,10 @@ public class Prozedur implements Datablock {
         return FhirHelper.generateMeta(URLs.PROCEDURE_PROFILE_URL, Constants.SOURCE_UKU_SAP_PROZEDUR);
     }
 
+    /**
+     *
+     * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/81934/"
+     */
     public CodeableConcept getCategory() {
         ProcedureCategorySnomedMapping mapping = FhirHelper.getSnomedMappingFromOps(this.getOPS_Vollst_Prozedurenkode());
         Coding categoryCode = FhirHelper.generateCoding(mapping.getCode(), URLs.SNOMED_CLINICAL_TERMS, mapping.getDisplay());
@@ -109,6 +113,10 @@ public class Prozedur implements Datablock {
         return ops;
     }
 
+    /**
+     *
+     * @see "https://simplifier.net/basisprofil-de-r4/extension-seitenlokalisation"
+     */
     public Extension getSeitenlokalisation() {
         Extension extension = new Extension();
         extension.setUrl(URLs.OPS_SEITENLOKALISATION);
@@ -127,6 +135,10 @@ public class Prozedur implements Datablock {
         return new DateTimeType(date, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
     }
 
+    /**
+     *
+     * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80349/"
+     */
     public List<CodeableConcept> getBodySites() {
         List<CodeableConcept> bodySites = new ArrayList<>();
         CodeableConcept bodySite = new CodeableConcept();
@@ -153,6 +165,10 @@ public class Prozedur implements Datablock {
         return recordedDate;
     }
 
+    /**
+     *
+     * @see "https://simplifier.net/medizininformatikinitiative-modulprozeduren/durchfuehrungsabsicht"
+     */
     public Extension getDurchfuehrungsabsicht() {
        Extension absicht = new Extension();
        absicht.setUrl(URLs.DURCHFUEHRUNGSABSICHT_URL);
