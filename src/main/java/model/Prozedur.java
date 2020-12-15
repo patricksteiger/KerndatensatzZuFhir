@@ -71,7 +71,8 @@ public class Prozedur implements Datablock {
         if (Helper.checkNonEmptyString(this.getKernDurchfuehrungsabsicht()))
             procedure.addExtension(this.getDurchfuehrungsabsicht());
         // Subject
-        procedure.setSubject(this.getSubject());
+        if (Helper.checkNonEmptyString(this.getPatNr()))
+            procedure.setSubject(this.getSubject());
         return procedure;
     }
 
