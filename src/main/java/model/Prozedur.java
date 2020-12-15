@@ -112,7 +112,7 @@ public class Prozedur implements Datablock {
         Extension extension = new Extension();
         extension.setUrl(URLs.OPS_SEITENLOKALISATION);
         // TODO: Korrekte Url für system?
-        Type value = FhirHelper.generateCoding(this.getOPS_Seitenlokalisation(), URLs.OPS_SEITENLOKALISATION, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
+        Type value = FhirHelper.generateCoding(this.getOPS_Seitenlokalisation(), URLs.OPS_SEITENLOKALISATION_OID, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
         extension.setValue(value);
         return extension;
     }
@@ -129,7 +129,7 @@ public class Prozedur implements Datablock {
     public List<CodeableConcept> getBodySites() {
         List<CodeableConcept> bodySites = new ArrayList<>();
         CodeableConcept bodySite = new CodeableConcept();
-        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), URLs.BODYSITE_URL);
+        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), URLs.SNOMED_CLINICAL_TERMS);
         bodySite.addCoding(coding);
         bodySites.add(bodySite);
         return bodySites;
@@ -155,7 +155,7 @@ public class Prozedur implements Datablock {
     public Extension getDurchführungsabsicht() {
        Extension absicht = new Extension();
        absicht.setUrl(URLs.DURCHFUEHRUNGSABSICHT_URL);
-       Coding code = FhirHelper.generateCoding(this.getDurchfuehrungsabsicht(), URLs.DURCHFUEHRUNGSABSICHT_URL);
+       Coding code = FhirHelper.generateCoding(this.getDurchfuehrungsabsicht(), URLs.SNOMED_CLINICAL_TERMS);
        absicht.setValue(code);
        return absicht;
     }
