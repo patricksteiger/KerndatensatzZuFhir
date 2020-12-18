@@ -1,18 +1,17 @@
 package model;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import com.opencsv.bean.CsvBindByName;
+import constants.Constants;
 import constants.URLs;
 import enums.ProcedureCategorySnomedMapping;
-import helper.*;
-import constants.Constants;
+import helper.FhirHelper;
+import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class Prozedur implements Datablock {
     @CsvBindByName
@@ -64,8 +63,9 @@ public class Prozedur implements Datablock {
         // Note (optional)
         if (Helper.checkNonEmptyString(this.getFreitextbeschreibung()))
             procedure.setNote(this.getNotes());
-        // Extension: RecordedDate (optional)
-        if (Helper.checkNonEmptyString(this.getDokumentationsdatum()))
+        // Extension: RecordedDate (optional), only needed if Dokumentationsdatum != Durchfuehrungsdatum
+        if (Helper.checkNonEmptyString(this.getDokumentationsdatum())
+                && !this.getDokumentationsdatum().equals(this.getDurchfuehrungsdatum()))
             procedure.addExtension(this.getRecordedDate());
         // Extension: Durchfuehrungsabsicht (optional)
         if (Helper.checkNonEmptyString(this.getKernDurchfuehrungsabsicht()))
@@ -88,7 +88,6 @@ public class Prozedur implements Datablock {
     }
 
     /**
-     *
      * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/81934/"
      */
     public CodeableConcept getCategory() {
@@ -114,7 +113,6 @@ public class Prozedur implements Datablock {
     }
 
     /**
-     *
      * @see "https://simplifier.net/basisprofil-de-r4/extension-seitenlokalisation"
      */
     public Extension getSeitenlokalisation() {
@@ -133,7 +131,6 @@ public class Prozedur implements Datablock {
     }
 
     /**
-     *
      * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80349/"
      */
     public List<CodeableConcept> getBodySites() {
@@ -160,12 +157,15 @@ public class Prozedur implements Datablock {
     }
 
     /**
-     *
      * @see "https://simplifier.net/medizininformatikinitiative-modulprozeduren/durchfuehrungsabsicht"
      */
     public Extension getDurchfuehrungsabsicht() {
-       Coding code = FhirHelper.generateCoding(this.getKernDurchfuehrungsabsicht(), URLs.SNOMED_CLINICAL_TERMS);
-       return FhirHelper.generateExtension(URLs.DURCHFUEHRUNGSABSICHT_URL, code);
+        Coding code = FhirHelper.generateCoding(this.getKernDurchfuehrungsabsicht(), URLs.SNOMED_CLINICAL_TERMS);
+        return FhirHelper.generateExtension(URLs.DURCHFUEHRUNGSABSICHT_URL, code);
+    }
+
+    public void setDurchfuehrungsabsicht(String durchfuehrungsabsicht) {
+        this.durchfuehrungsabsicht = durchfuehrungsabsicht;
     }
 
     public String getPatNr() {
@@ -202,10 +202,6 @@ public class Prozedur implements Datablock {
 
     public String getKernDurchfuehrungsabsicht() {
         return durchfuehrungsabsicht;
-    }
-
-    public void setDurchfuehrungsabsicht(String durchfuehrungsabsicht) {
-        this.durchfuehrungsabsicht = durchfuehrungsabsicht;
     }
 
     public String getDurchfuehrungsdatum() {
