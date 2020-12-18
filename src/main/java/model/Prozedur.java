@@ -45,8 +45,8 @@ public class Prozedur implements Datablock {
 
     public Procedure getProcedure() {
         Procedure procedure = new Procedure();
-        // TODO: ID
-        //procedure.setId("id");
+        // ID
+        procedure.setId(Constants.UKU_FHIR_PROCEDURE);
         // Meta
         procedure.setMeta(this.getMeta());
         // Status
@@ -67,7 +67,7 @@ public class Prozedur implements Datablock {
         // Extension: RecordedDate (optional)
         if (Helper.checkNonEmptyString(this.getDokumentationsdatum()))
             procedure.addExtension(this.getRecordedDate());
-        // Extension: Durchführungsabsicht (optional)
+        // Extension: Durchfuehrungsabsicht (optional)
         if (Helper.checkNonEmptyString(this.getKernDurchfuehrungsabsicht()))
             procedure.addExtension(this.getDurchfuehrungsabsicht());
         // Subject
@@ -118,12 +118,9 @@ public class Prozedur implements Datablock {
      * @see "https://simplifier.net/basisprofil-de-r4/extension-seitenlokalisation"
      */
     public Extension getSeitenlokalisation() {
-        Extension extension = new Extension();
-        extension.setUrl(URLs.OPS_SEITENLOKALISATION);
         // TODO: Korrekte Url für system?
-        Type value = FhirHelper.generateCoding(this.getOPS_Seitenlokalisation(), URLs.OPS_SEITENLOKALISATION_OID, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
-        extension.setValue(value);
-        return extension;
+        Coding value = FhirHelper.generateCoding(this.getOPS_Seitenlokalisation(), URLs.OPS_SEITENLOKALISATION_OID, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
+        return FhirHelper.generateExtension(URLs.OPS_SEITENLOKALISATION, value);
     }
 
     public Coding getCodingSnomed() {
@@ -132,7 +129,7 @@ public class Prozedur implements Datablock {
 
     public DateTimeType getPerformed() {
         Date date = Helper.getDateFromGermanTime(this.getDurchfuehrungsdatum());
-        return new DateTimeType(date, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
+        return FhirHelper.generateDate(date);
     }
 
     /**
@@ -157,12 +154,9 @@ public class Prozedur implements Datablock {
     }
 
     public Extension getRecordedDate() {
-        Extension recordedDate = new Extension();
-        recordedDate.setUrl(URLs.RECORDED_DATE_URL);
         Date recorded = Helper.getDateFromGermanTime(this.getDokumentationsdatum());
-        DateTimeType date = new DateTimeType(recorded, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
-        recordedDate.setValue(date);
-        return recordedDate;
+        DateTimeType date = FhirHelper.generateDate(recorded);
+        return FhirHelper.generateExtension(URLs.RECORDED_DATE_URL, date);
     }
 
     /**
@@ -170,11 +164,8 @@ public class Prozedur implements Datablock {
      * @see "https://simplifier.net/medizininformatikinitiative-modulprozeduren/durchfuehrungsabsicht"
      */
     public Extension getDurchfuehrungsabsicht() {
-       Extension absicht = new Extension();
-       absicht.setUrl(URLs.DURCHFUEHRUNGSABSICHT_URL);
        Coding code = FhirHelper.generateCoding(this.getKernDurchfuehrungsabsicht(), URLs.SNOMED_CLINICAL_TERMS);
-       absicht.setValue(code);
-       return absicht;
+       return FhirHelper.generateExtension(URLs.DURCHFUEHRUNGSABSICHT_URL, code);
     }
 
     public String getPatNr() {
