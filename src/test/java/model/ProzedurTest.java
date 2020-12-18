@@ -36,7 +36,8 @@ public class ProzedurTest {
         prozedur.setDurchfuehrungsdatum(durchfuehrung);
         DateTimeType date = prozedur.getPerformed();
         // Check for correct date and timezone
-        String pattern = "2020-01-07T[012][0-9]:[0-5][0-9]:[0-5][0-9]\\+01:00";
-        assertTrue(date.getValueAsString().matches(pattern));
+        //String pattern = "2020-01-07T[012][0-9]:[0-5][0-9]:[0-5][0-9]\\+01:00";
+        //assertTrue(date.getValueAsString().matches(pattern));
+        assertEquals("2020-01-07", date.getValueAsString());
     }
 }
