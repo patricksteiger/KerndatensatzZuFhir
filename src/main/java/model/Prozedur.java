@@ -3,7 +3,9 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.URLs;
+import enums.DurchfuehrungsabsichtCode;
 import enums.ProcedureCategorySnomedMapping;
+import enums.SeitenlokalisationCode;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -116,8 +118,8 @@ public class Prozedur implements Datablock {
      * @see "https://simplifier.net/basisprofil-de-r4/extension-seitenlokalisation"
      */
     public Extension getSeitenlokalisation() {
-        // TODO: Korrekte Url für system?
-        Coding value = FhirHelper.generateCoding(this.getOPS_Seitenlokalisation(), URLs.OPS_SEITENLOKALISATION_OID, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
+        SeitenlokalisationCode seitenCode = SeitenlokalisationCode.getSeitenlokalisationByCode(this.getOPS_Seitenlokalisation());
+        Coding value = FhirHelper.generateCoding(seitenCode.getCode(), seitenCode.getCodeSystem(), seitenCode.getDisplay());
         return FhirHelper.generateExtension(URLs.OPS_SEITENLOKALISATION, value);
     }
 
@@ -160,7 +162,8 @@ public class Prozedur implements Datablock {
      * @see "https://simplifier.net/medizininformatikinitiative-modulprozeduren/durchfuehrungsabsicht"
      */
     public Extension getDurchfuehrungsabsicht() {
-        Coding code = FhirHelper.generateCoding(this.getKernDurchfuehrungsabsicht(), URLs.SNOMED_CLINICAL_TERMS);
+        DurchfuehrungsabsichtCode durchfuehrungsabsichtCode = DurchfuehrungsabsichtCode.getDurchfuehrungsabsichtByCode(this.getKernDurchfuehrungsabsicht());
+        Coding code = FhirHelper.generateCoding(durchfuehrungsabsichtCode.getCode(), URLs.SNOMED_CLINICAL_TERMS, durchfuehrungsabsichtCode.getDisplay());
         return FhirHelper.generateExtension(URLs.DURCHFUEHRUNGSABSICHT_URL, code);
     }
 
