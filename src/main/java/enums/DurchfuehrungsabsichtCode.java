@@ -22,12 +22,20 @@ public enum DurchfuehrungsabsichtCode {
         this.display = display;
     }
 
+    /**
+     * Returns Durchfuehrungsabsicht-Code corresponding to SNOMED-Code.
+     *
+     * @param code SNOMED-Code
+     * @return Durchfuehrungs-Code
+     * @throws IllegalArgumentException if code is not part of the value set of Durchfuehrungsabsicht
+     * @see "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
+     */
     public static DurchfuehrungsabsichtCode getDurchfuehrungsabsichtByCode(String code) {
         return Arrays.stream(DurchfuehrungsabsichtCode.values())
                 .filter(durchEnum -> durchEnum.getCode().equals(code))
                 .findFirst()
                 .orElseThrow(
-                        () -> new IllegalArgumentException("Code '" + code + "' is not a valid Durchfuehrungsabsichtcode")
+                        () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid Durchfuehrungsabsichtcode")
                 );
     }
 

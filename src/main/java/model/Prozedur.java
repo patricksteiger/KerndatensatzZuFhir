@@ -93,7 +93,7 @@ public class Prozedur implements Datablock {
      * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/81934/"
      */
     public CodeableConcept getCategory() {
-        ProcedureCategorySnomedMapping mapping = FhirHelper.getSnomedMappingFromOps(this.getOPS_Vollst_Prozedurenkode());
+        ProcedureCategorySnomedMapping mapping = ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode(this.getOPS_Vollst_Prozedurenkode());
         Coding categoryCode = FhirHelper.generateCoding(mapping.getCode(), URLs.SNOMED_CLINICAL_TERMS, mapping.getDisplay());
         return new CodeableConcept().addCoding(categoryCode);
     }

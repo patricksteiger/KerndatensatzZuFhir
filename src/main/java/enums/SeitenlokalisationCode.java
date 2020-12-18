@@ -29,13 +29,14 @@ public enum SeitenlokalisationCode {
      * @param code Valid codes: R, L, B, M, NA, UNK.
      * @return SeitenlokalisationsCode
      * @throws IllegalArgumentException If invalid code is given.
+     * @see "https://art-decor.org/art-decor/decor-valuesets--mide-?id=1.2.40.0.34.10.176&effectiveDate="
      */
     public static SeitenlokalisationCode getSeitenlokalisationByCode(String code) {
         return Arrays.stream(SeitenlokalisationCode.values())
                 .filter(seitenEnum -> seitenEnum.getCode().equals(code))
                 .findFirst()
                 .orElseThrow(
-                        () -> new IllegalArgumentException("Code '" + code + "' is not a valid Seitenlokalisationscode")
+                        () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid Seitenlokalisationscode")
                 );
 
     }
