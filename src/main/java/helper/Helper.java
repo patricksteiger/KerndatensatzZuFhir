@@ -5,8 +5,10 @@ import java.util.Date;
 
 public class Helper {
     public static Date getDateFromGermanTime(String germanDate) {
-        Calendar calendar = Calendar.getInstance();
         String[] dates = germanDate.split("\\.");
+        if (dates.length != 3)
+            throw new IllegalArgumentException("Date '" + germanDate + "' doesn't conform with format 'DD.MM.YYYY'.");
+        Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dates[0]));
         // Months are 0-indexed.
         calendar.set(Calendar.MONTH, Integer.parseInt(dates[1]) - 1);

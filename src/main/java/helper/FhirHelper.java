@@ -1,9 +1,13 @@
 package helper;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import constants.URLs;
 import enums.MIICoreLocations;
 import enums.ProcedureCategorySnomedMapping;
 import org.hl7.fhir.r4.model.*;
+
+import java.util.Date;
+import java.util.TimeZone;
 
 public class FhirHelper {
     public static Meta generateMeta(String profile) {
@@ -54,15 +58,30 @@ public class FhirHelper {
         return assigner;
     }
 
+    public static Extension generateExtension(String url, Type value) {
+        Extension extension = new Extension();
+        extension.setUrl(url);
+        extension.setValue(value);
+        return extension;
+    }
+
+    public static DateTimeType generateDate(Date date) {
+        return new DateTimeType(date, TemporalPrecisionEnum.DAY, TimeZone.getDefault());
+    }
+
     /**
      * Returns Snomed-mapping needed for category in procedure.
+     *
      * @param ops OPS-Code. Example: "5-470"
      * @return Snomed-Mapping
-     * @throws IllegalArgumentException if first character of Ops-Code is not 1,3,5,6,8,9.
+     * @throws IllegalArgumentException if first character of OPS-Code is not 1,3,5,6,8,9.
      * @see "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
      */
     public static ProcedureCategorySnomedMapping getSnomedMappingFromOps(String ops) {
-        final char opsCode = ops.charAt(0);
+        String code = ops;
+        if (!Helper.checkNonEmptyString(code))
+            code = "f";
+        final char opsCode = code.charAt(0);
         switch (opsCode) {
             case '1': return ProcedureCategorySnomedMapping.DIAGNOSTIC;
             case '3': return ProcedureCategorySnomedMapping.IMAGING;
