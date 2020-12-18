@@ -1,5 +1,7 @@
 package enums;
 
+import java.util.Arrays;
+
 public enum ProcedureCategorySnomedMapping {
 
     DIAGNOSTIC("103693007", "Diagnostic procedure"),
@@ -17,27 +19,20 @@ public enum ProcedureCategorySnomedMapping {
         this.display = display;
     }
 
+    public ProcedureCategorySnomedMapping getMappingByCode(String code) {
+        return Arrays.stream(ProcedureCategorySnomedMapping.values())
+                .filter(snomedEnum -> snomedEnum.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Code '" + code + "' is not a valid SNOMED Mapping code")
+                );
+    }
+
     public String getCode() {
         return this.code;
     }
 
     public String getDisplay() {
         return this.display;
-    }
-
-    public ProcedureCategorySnomedMapping getMappingByCode(String code) {
-       if (DIAGNOSTIC.getCode().equals(code))
-           return DIAGNOSTIC;
-       if (IMAGING.getCode().equals(code))
-           return IMAGING;
-       if (SURGICAL.getCode().equals(code))
-           return SURGICAL;
-       if (ADMINISTRATION_OF_MEDICINE.getCode().equals(code))
-           return ADMINISTRATION_OF_MEDICINE;
-       if (THERAPEUTIC.getCode().equals(code))
-           return THERAPEUTIC;
-       if (OTHER.getCode().equals(code))
-           return OTHER;
-       throw new IllegalArgumentException("Code '" + code + "' is not valid.");
     }
 }
