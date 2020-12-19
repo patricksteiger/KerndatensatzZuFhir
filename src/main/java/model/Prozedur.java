@@ -39,9 +39,7 @@ public class Prozedur implements Datablock {
 
     @Override
     public List<Resource> toFhirResources() {
-        List<Resource> resources = new ArrayList<>();
-        resources.add(this.getProcedure());
-        return resources;
+        return Helper.listOf(this.getProcedure());
     }
 
     public Procedure getProcedure() {
@@ -59,12 +57,10 @@ public class Prozedur implements Datablock {
         procedure.setCode(this.getCode());
         // Performed
         procedure.setPerformed(this.getPerformed());
-        // BodySite (optional)
-        if (Helper.checkNonEmptyString(this.getKoerperstelle()))
-            procedure.setBodySite(this.getBodySites());
-        // Note (optional)
-        if (Helper.checkNonEmptyString(this.getFreitextbeschreibung()))
-            procedure.setNote(this.getNotes());
+        // BodySites (optional), currently includes Koerperstelle
+        this.getBodySites().forEach(procedure::addBodySite);
+        // Note (optional), currently includes Freitextbeschreibung
+        this.getNotes().forEach(procedure::addNote);
         // Extension: RecordedDate (optional), only needed if Dokumentationsdatum != Durchfuehrungsdatum
         if (Helper.checkNonEmptyString(this.getDokumentationsdatum())
                 && !this.getDokumentationsdatum().equals(this.getDurchfuehrungsdatum()))
@@ -137,19 +133,25 @@ public class Prozedur implements Datablock {
      */
     public List<CodeableConcept> getBodySites() {
         List<CodeableConcept> bodySites = new ArrayList<>();
-        CodeableConcept bodySite = new CodeableConcept();
-        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), URLs.SNOMED_CLINICAL_TERMS);
-        bodySite.addCoding(coding);
-        bodySites.add(bodySite);
+        if (Helper.checkNonEmptyString(this.getKoerperstelle()))
+            bodySites.add(this.getBodySiteKoerper());
         return bodySites;
+    }
+
+    public CodeableConcept getBodySiteKoerper() {
+        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), URLs.SNOMED_CLINICAL_TERMS);
+        return new CodeableConcept().addCoding(coding);
     }
 
     public List<Annotation> getNotes() {
         List<Annotation> notes = new ArrayList<>();
-        Annotation note = new Annotation();
-        note.setText(this.getFreitextbeschreibung());
-        notes.add(note);
+        if (Helper.checkNonEmptyString(this.getFreitextbeschreibung()))
+            notes.add(this.getNoteFreitext());
         return notes;
+    }
+
+    public Annotation getNoteFreitext() {
+        return new Annotation().setText(this.getFreitextbeschreibung());
     }
 
     public Extension getRecordedDate() {
