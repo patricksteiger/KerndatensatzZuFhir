@@ -3,23 +3,31 @@ package helper;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import constants.URLs;
 import enums.MIICoreLocations;
-import enums.ProcedureCategorySnomedMapping;
 import org.hl7.fhir.r4.model.*;
 
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 public class FhirHelper {
-    public static Meta generateMeta(String profile) {
+
+    public static Meta generateMeta(List<String> profiles, String source, String versionId, List<Coding> securities, List<Coding> tags) {
         Meta meta = new Meta();
-        meta.addProfile(profile);
+        if (Helper.checkNonEmptyString(source))
+            meta.setSource(source);
+        if (Helper.checkNonEmptyString(versionId))
+            meta.setVersionId(versionId);
+        profiles.stream().filter(Helper::checkNonEmptyString).forEach(meta::addProfile);
+        securities.stream().filter(Objects::nonNull).forEach(meta::addSecurity);
+        tags.stream().filter(Objects::nonNull).forEach(meta::addTag);
+        meta.setLastUpdated(new Date());
         return meta;
     }
 
+    public static Meta generateMeta(String profile, String source, String versionId) {
+        return generateMeta(Helper.listOf(profile), source, versionId, Helper.listOf(), Helper.listOf());
+    }
+
     public static Meta generateMeta(String profile, String source) {
-        Meta meta = generateMeta(profile);
-        meta.setSource(source);
-        return meta;
+        return generateMeta(profile, source, "");
     }
 
     public static Coding generateCoding(String code, String system, String display, String version) {

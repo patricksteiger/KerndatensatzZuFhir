@@ -47,7 +47,7 @@ public class Prozedur implements Datablock {
     public Procedure getProcedure() {
         Procedure procedure = new Procedure();
         // ID
-        procedure.setId(Constants.UKU_FHIR_PROCEDURE);
+        //procedure.setId(Constants.UKU_FHIR_PROCEDURE);
         // Meta
         procedure.setMeta(this.getMeta());
         // Status
@@ -86,7 +86,7 @@ public class Prozedur implements Datablock {
     }
 
     public Meta getMeta() {
-        return FhirHelper.generateMeta(URLs.PROCEDURE_PROFILE_URL, Constants.SOURCE_UKU_SAP_PROZEDUR);
+        return FhirHelper.generateMeta(URLs.PROCEDURE_PROFILE_URL, Constants.SOURCE_UKU_SAP_PROZEDUR, Constants.UKU_FHIR_PROCEDURE);
     }
 
     /**

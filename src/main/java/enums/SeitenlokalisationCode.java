@@ -38,7 +38,6 @@ public enum SeitenlokalisationCode {
                 .orElseThrow(
                         () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid Seitenlokalisationscode")
                 );
-
     }
 
     public String getCode() {
