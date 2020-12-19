@@ -5,7 +5,10 @@ import constants.URLs;
 import enums.MIICoreLocations;
 import org.hl7.fhir.r4.model.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.TimeZone;
 
 public class FhirHelper {
 
@@ -61,7 +64,7 @@ public class FhirHelper {
     public static Reference generateSubjectAssignerReference() {
         Reference assigner = new Reference();
         assigner.setDisplay(MIICoreLocations.UKU.toString());
-        Identifier assignerId = FhirHelper.generateIdentifier(URLs.NS_DIZ, MIICoreLocations.UKU.name(), null);
+        Identifier assignerId = FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), URLs.NS_DIZ, null);
         assigner.setIdentifier(assignerId);
         return assigner;
     }

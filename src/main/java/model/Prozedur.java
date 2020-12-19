@@ -77,7 +77,7 @@ public class Prozedur implements Datablock {
     public Reference getSubject() {
         Reference subject = new Reference();
         Reference assignerRef = FhirHelper.generateSubjectAssignerReference();
-        subject.setIdentifier(FhirHelper.generateIdentifier(URLs.LOCAL_PID, this.getPatNr(), assignerRef));
+        subject.setIdentifier(FhirHelper.generateIdentifier(this.getPatNr(), URLs.LOCAL_PID, assignerRef));
         return subject;
     }
 
@@ -104,7 +104,7 @@ public class Prozedur implements Datablock {
     }
 
     public Coding getCodingOps() {
-        Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), URLs.OPS_DIMDI_SYSTEM, Constants.EMPTY_DISPLAY, Constants.VERSION_2020); // For OPS: Code, System, Version, Seitenlokalisation
+        Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), URLs.OPS_DIMDI_SYSTEM, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
         if (Helper.checkNonEmptyString(this.getOPS_Seitenlokalisation()))
             ops.addExtension(this.getSeitenlokalisation());
         return ops;
