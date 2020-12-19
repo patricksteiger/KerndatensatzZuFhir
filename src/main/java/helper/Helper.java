@@ -1,7 +1,6 @@
 package helper;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 public class Helper {
     public static Date getDateFromGermanTime(String germanDate) {
@@ -14,6 +13,11 @@ public class Helper {
         calendar.set(Calendar.MONTH, Integer.parseInt(dates[1]) - 1);
         calendar.set(Calendar.YEAR, Integer.parseInt(dates[2]));
         return calendar.getTime();
+    }
+
+    @SafeVarargs
+    public static <T> List<T> listOf(T... values) {
+        return Arrays.asList(values);
     }
 
     public static boolean checkNonEmptyString(String s) {
