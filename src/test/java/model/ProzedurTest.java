@@ -1,7 +1,7 @@
 package model;
 
-import constants.Constants;
-import constants.URLs;
+import constants.MetaProfile;
+import constants.MetaSource;
 import org.hl7.fhir.r4.model.CanonicalType;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Meta;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProzedurTest {
     private Prozedur prozedur = null;
@@ -24,10 +23,10 @@ public class ProzedurTest {
     @Test
     public void testGetMeta() {
         Meta received = prozedur.getMeta();
-        assertEquals(Constants.SOURCE_UKU_SAP_PROZEDUR, received.getSource());
+        assertEquals(MetaSource.PROCEDURE, received.getSource());
         List<CanonicalType> profiles = received.getProfile();
         assertEquals(1, profiles.size());
-        assertEquals(URLs.PROCEDURE_PROFILE_URL, profiles.get(0).asStringValue());
+        assertEquals(MetaProfile.PROCEDURE, profiles.get(0).asStringValue());
     }
 
     @Test

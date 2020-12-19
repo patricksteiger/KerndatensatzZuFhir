@@ -2,7 +2,7 @@ package model;
 
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
-import constants.URLs;
+import constants.*;
 import enums.DurchfuehrungsabsichtCode;
 import enums.ProcedureCategorySnomedMapping;
 import enums.SeitenlokalisationCode;
@@ -77,12 +77,12 @@ public class Prozedur implements Datablock {
     public Reference getSubject() {
         Reference subject = new Reference();
         Reference assignerRef = FhirHelper.generateSubjectAssignerReference();
-        subject.setIdentifier(FhirHelper.generateIdentifier(this.getPatNr(), URLs.LOCAL_PID, assignerRef));
+        subject.setIdentifier(FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef));
         return subject;
     }
 
     public Meta getMeta() {
-        return FhirHelper.generateMeta(URLs.PROCEDURE_PROFILE_URL, Constants.SOURCE_UKU_SAP_PROZEDUR, Constants.UKU_FHIR_PROCEDURE);
+        return FhirHelper.generateMeta(MetaProfile.PROCEDURE, MetaSource.PROCEDURE, MetaVersionId.PROCEDURE);
     }
 
     /**
@@ -90,7 +90,7 @@ public class Prozedur implements Datablock {
      */
     public CodeableConcept getCategory() {
         ProcedureCategorySnomedMapping mapping = ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode(this.getOPS_Vollst_Prozedurenkode());
-        Coding categoryCode = FhirHelper.generateCoding(mapping.getCode(), URLs.SNOMED_CLINICAL_TERMS, mapping.getDisplay());
+        Coding categoryCode = FhirHelper.generateCoding(mapping.getCode(), CodingSystem.SNOMED_CLINICAL_TERMS, mapping.getDisplay());
         return new CodeableConcept().addCoding(categoryCode);
     }
 
@@ -104,7 +104,7 @@ public class Prozedur implements Datablock {
     }
 
     public Coding getCodingOps() {
-        Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), URLs.OPS_DIMDI_SYSTEM, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
+        Coding ops = FhirHelper.generateCoding(this.getOPS_Vollst_Prozedurenkode(), CodingSystem.OPS_DIMDI, Constants.EMPTY_DISPLAY, Constants.VERSION_2020);
         if (Helper.checkNonEmptyString(this.getOPS_Seitenlokalisation()))
             ops.addExtension(this.getSeitenlokalisation());
         return ops;
@@ -116,11 +116,11 @@ public class Prozedur implements Datablock {
     public Extension getSeitenlokalisation() {
         SeitenlokalisationCode seitenCode = SeitenlokalisationCode.getSeitenlokalisationByCode(this.getOPS_Seitenlokalisation());
         Coding value = FhirHelper.generateCoding(seitenCode.getCode(), seitenCode.getCodeSystem(), seitenCode.getDisplay());
-        return FhirHelper.generateExtension(URLs.OPS_SEITENLOKALISATION, value);
+        return FhirHelper.generateExtension(ExtensionUrl.OPS_SEITENLOKALISATION, value);
     }
 
     public Coding getCodingSnomed() {
-        return FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), URLs.SNOMED_CLINICAL_TERMS);
+        return FhirHelper.generateCoding(this.getSNOMED_Vollst_Prozedurenkode(), CodingSystem.SNOMED_CLINICAL_TERMS);
     }
 
     public DateTimeType getPerformed() {
@@ -139,7 +139,7 @@ public class Prozedur implements Datablock {
     }
 
     public CodeableConcept getBodySiteKoerper() {
-        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), URLs.SNOMED_CLINICAL_TERMS);
+        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), CodingSystem.SNOMED_CLINICAL_TERMS);
         return new CodeableConcept().addCoding(coding);
     }
 
@@ -157,7 +157,7 @@ public class Prozedur implements Datablock {
     public Extension getRecordedDate() {
         Date recorded = Helper.getDateFromGermanTime(this.getDokumentationsdatum());
         DateTimeType date = FhirHelper.generateDate(recorded);
-        return FhirHelper.generateExtension(URLs.RECORDED_DATE_URL, date);
+        return FhirHelper.generateExtension(ExtensionUrl.RECORDED_DATE, date);
     }
 
     /**
@@ -165,8 +165,8 @@ public class Prozedur implements Datablock {
      */
     public Extension getDurchfuehrungsabsicht() {
         DurchfuehrungsabsichtCode durchfuehrungsabsichtCode = DurchfuehrungsabsichtCode.getDurchfuehrungsabsichtByCode(this.getKernDurchfuehrungsabsicht());
-        Coding code = FhirHelper.generateCoding(durchfuehrungsabsichtCode.getCode(), URLs.SNOMED_CLINICAL_TERMS, durchfuehrungsabsichtCode.getDisplay());
-        return FhirHelper.generateExtension(URLs.DURCHFUEHRUNGSABSICHT_URL, code);
+        Coding code = FhirHelper.generateCoding(durchfuehrungsabsichtCode.getCode(), CodingSystem.SNOMED_CLINICAL_TERMS, durchfuehrungsabsichtCode.getDisplay());
+        return FhirHelper.generateExtension(ExtensionUrl.DURCHFUEHRUNGSABSICHT, code);
     }
 
     public void setDurchfuehrungsabsicht(String durchfuehrungsabsicht) {

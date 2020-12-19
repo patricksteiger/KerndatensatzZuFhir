@@ -1,7 +1,7 @@
 package helper;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import constants.URLs;
+import constants.IdentifierSystem;
 import enums.MIICoreLocations;
 import org.hl7.fhir.r4.model.*;
 
@@ -64,7 +64,7 @@ public class FhirHelper {
     public static Reference generateSubjectAssignerReference() {
         Reference assigner = new Reference();
         assigner.setDisplay(MIICoreLocations.UKU.toString());
-        Identifier assignerId = FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), URLs.NS_DIZ, null);
+        Identifier assignerId = FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), IdentifierSystem.NS_DIZ, null);
         assigner.setIdentifier(assignerId);
         return assigner;
     }

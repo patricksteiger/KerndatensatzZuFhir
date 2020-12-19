@@ -1,17 +1,17 @@
 package enums;
 
-import constants.URLs;
+import constants.CodingSystem;
 
 import java.util.Arrays;
 
 public enum SeitenlokalisationCode {
 
-    RECHTS("R", "rechts", URLs.OPS_SEITENLOKALISATION_OID),
-    LINKS("L", "links", URLs.OPS_SEITENLOKALISATION_OID),
-    BEIDSEITS("B", "beidseits", URLs.OPS_SEITENLOKALISATION_OID),
-    MITTELLINIENZONE("M", "Mittellinienzone", URLs.OPS_SEITENLOKALISATION_OID),
-    NICHT_ZUTREFFEND("NA", "nicht zutreffend", URLs.OPS_SEITENLOKALISATION_OID_ERROR),
-    UNBEKANNT("UNK", "unbekannt", URLs.OPS_SEITENLOKALISATION_OID_ERROR);
+    RECHTS("R", "rechts", CodingSystem.OPS_SEITENLOKALISATION),
+    LINKS("L", "links", CodingSystem.OPS_SEITENLOKALISATION),
+    BEIDSEITS("B", "beidseits", CodingSystem.OPS_SEITENLOKALISATION),
+    MITTELLINIENZONE("M", "Mittellinienzone", CodingSystem.OPS_SEITENLOKALISATION),
+    NICHT_ZUTREFFEND("NA", "nicht zutreffend", CodingSystem.OPS_SEITENLOKALISATION_ERROR),
+    UNBEKANNT("UNK", "unbekannt", CodingSystem.OPS_SEITENLOKALISATION_ERROR);
 
     private final String code;
     private final String display;
