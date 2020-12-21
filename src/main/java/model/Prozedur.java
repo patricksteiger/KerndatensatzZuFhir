@@ -140,7 +140,12 @@ public class Prozedur implements Datablock {
     }
 
     public CodeableConcept getBodySiteKoerper() {
-        Coding coding = FhirHelper.generateCoding(this.getKoerperstelle(), CodingSystem.SNOMED_CLINICAL_TERMS);
+        // Körperstelle example: 8205009 Wrist
+        String[] codeAndDisplay = this.getKoerperstelle().split(" ");
+        String code = codeAndDisplay[0];
+        // Check in case display is not given
+        String display = (codeAndDisplay.length > 1) ? codeAndDisplay[1] : "";
+        Coding coding = FhirHelper.generateCoding(code, CodingSystem.SNOMED_CLINICAL_TERMS, display);
         return new CodeableConcept().addCoding(coding);
     }
 
