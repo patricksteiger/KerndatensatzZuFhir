@@ -61,12 +61,34 @@ public class FhirHelper {
         return identifier;
     }
 
-    public static Reference generateSubjectAssignerReference() {
-        Reference assigner = new Reference();
-        assigner.setDisplay(MIICoreLocations.UKU.toString());
-        Identifier assignerId = FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), IdentifierSystem.NS_DIZ, null);
-        assigner.setIdentifier(assignerId);
-        return assigner;
+    public static Identifier generateIdentifier(String value, String system) {
+        return generateIdentifier(value, system, null);
+    }
+
+    public static Reference getSubjectAssignerReference() {
+        Identifier assignerId = FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), IdentifierSystem.NS_DIZ);
+        return FhirHelper.generateReference(assignerId, MIICoreLocations.UKU.toString());
+    }
+
+    public static Reference generateReference(String ref, String type, Identifier identifier, String display) {
+        Reference reference = new Reference();
+        if (Helper.checkNonEmptyString(ref))
+            reference.setReference(ref);
+        if (Helper.checkNonEmptyString(type))
+            reference.setType(type);
+        if (identifier != null)
+            reference.setIdentifier(identifier);
+        if (Helper.checkNonEmptyString(display))
+            reference.setDisplay(display);
+        return reference;
+    }
+
+    public static Reference generateReference(Identifier identifier, String display) {
+        return generateReference("", "", identifier, display);
+    }
+
+    public static Reference generateReference(Identifier identifier) {
+        return generateReference(identifier, "");
     }
 
     public static Extension generateExtension(String url, Type value) {

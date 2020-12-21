@@ -44,12 +44,10 @@ public class Prozedur implements Datablock {
 
     public Procedure getProcedure() {
         Procedure procedure = new Procedure();
-        // ID
-        //procedure.setId(Constants.UKU_FHIR_PROCEDURE);
         // Meta
         procedure.setMeta(this.getMeta());
         // Status
-        procedure.setStatus(Procedure.ProcedureStatus.COMPLETED);
+        procedure.setStatus(this.getStatus());
         // Category, can only be set if OPS is used.
         if (Helper.checkNonEmptyString(this.getOPS_Vollst_Prozedurenkode()))
             procedure.setCategory(this.getCategory());
@@ -74,11 +72,14 @@ public class Prozedur implements Datablock {
         return procedure;
     }
 
+    public Procedure.ProcedureStatus getStatus() {
+        return Procedure.ProcedureStatus.COMPLETED;
+    }
+
     public Reference getSubject() {
-        Reference subject = new Reference();
-        Reference assignerRef = FhirHelper.generateSubjectAssignerReference();
-        subject.setIdentifier(FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef));
-        return subject;
+        Reference assignerRef = FhirHelper.getSubjectAssignerReference();
+        Identifier subjectId = FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+        return FhirHelper.generateReference(subjectId);
     }
 
     public Meta getMeta() {
