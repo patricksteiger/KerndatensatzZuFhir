@@ -1,8 +1,36 @@
 package helper;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class Helper {
+
+    /**
+     * Parses ISO-8601 formatted date to Date-object.
+     *
+     * @param date formatted according to ISO-8601
+     * @return Date object at given date
+     * @throws DateTimeParseException if date is not ISO-8601 formatted
+     * @throws NullPointerException   if date is null
+     */
+    public static Date getDateFromISO(String date) {
+        String isoDate = date;
+        // Example: 2020-07-21
+        final int simpleDateLength = 10;
+        // Add timestamp if needed to avoid parsing exception
+        if (isoDate.length() <= simpleDateLength)
+            isoDate += "T00:00:00";
+        // Use LocalDateTime to properly parse ISO 8601-Date
+        LocalDateTime localDateTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
     public static Date getDateFromGermanTime(String germanDate) {
         String[] dates = germanDate.split("\\.");
         if (dates.length != 3)

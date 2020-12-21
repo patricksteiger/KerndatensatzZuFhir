@@ -59,7 +59,7 @@ public class Prozedur implements Datablock {
         procedure.setPerformed(this.getPerformed());
         // BodySites (optional), currently includes Koerperstelle
         this.getBodySites().forEach(procedure::addBodySite);
-        // Note (optional), currently includes Freitextbeschreibung
+        // Notes (optional), currently includes Freitextbeschreibung
         this.getNotes().forEach(procedure::addNote);
         // Extension: RecordedDate (optional), only needed if Dokumentationsdatum != Durchfuehrungsdatum
         if (Helper.checkNonEmptyString(this.getDokumentationsdatum())
@@ -124,7 +124,7 @@ public class Prozedur implements Datablock {
     }
 
     public DateTimeType getPerformed() {
-        Date date = Helper.getDateFromGermanTime(this.getDurchfuehrungsdatum());
+        Date date = Helper.getDateFromISO(this.getDurchfuehrungsdatum());
         return FhirHelper.generateDate(date);
     }
 
@@ -155,7 +155,7 @@ public class Prozedur implements Datablock {
     }
 
     public Extension getRecordedDate() {
-        Date recorded = Helper.getDateFromGermanTime(this.getDokumentationsdatum());
+        Date recorded = Helper.getDateFromISO(this.getDokumentationsdatum());
         DateTimeType date = FhirHelper.generateDate(recorded);
         return FhirHelper.generateExtension(ExtensionUrl.RECORDED_DATE, date);
     }
