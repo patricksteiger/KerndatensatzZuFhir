@@ -52,17 +52,35 @@ public class FhirHelper {
         return generateCoding(code, system, "");
     }
 
-    public static Identifier generateIdentifier(String value, String system, Reference assignerRef) {
+    public static Identifier generateIdentifier(String value, String system, CodeableConcept type, Reference assignerRef, Identifier.IdentifierUse use) {
         Identifier identifier = new Identifier();
-        identifier.setSystem(system);
-        identifier.setValue(value);
+        if (Helper.checkNonEmptyString(value))
+            identifier.setValue(value);
+        if (Helper.checkNonEmptyString(system))
+            identifier.setSystem(system);
+        if (type != null)
+            identifier.setType(type);
         if (assignerRef != null)
             identifier.setAssigner(assignerRef);
+        if (use != null)
+            identifier.setUse(use);
         return identifier;
     }
 
+    public static Identifier generateIdentifier(String value, String system, CodeableConcept type, Reference assignerRef) {
+        return generateIdentifier(value, system, type, assignerRef, null);
+    }
+
+    public static Identifier generateIdentifier(String value, String system, CodeableConcept type) {
+        return generateIdentifier(value, system, type, null);
+    }
+
+    public static Identifier generateIdentifier(String value, String system, Reference assignerRef) {
+        return generateIdentifier(value, system, null, assignerRef);
+    }
+
     public static Identifier generateIdentifier(String value, String system) {
-        return generateIdentifier(value, system, null);
+        return generateIdentifier(value, system, null, null);
     }
 
     public static Reference getSubjectAssignerReference() {
