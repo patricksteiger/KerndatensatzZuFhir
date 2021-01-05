@@ -83,7 +83,7 @@ public class FhirHelper {
         return generateIdentifier(value, system, null, null);
     }
 
-    public static Reference getSubjectAssignerReference() {
+    public static Reference getUKUAssignerReference() {
         Identifier assignerId = FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), IdentifierSystem.NS_DIZ);
         return FhirHelper.generateReference(assignerId, MIICoreLocations.UKU.toString());
     }

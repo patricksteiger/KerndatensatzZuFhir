@@ -77,7 +77,7 @@ public class Prozedur implements Datablock {
     }
 
     public Reference getSubject() {
-        Reference assignerRef = FhirHelper.getSubjectAssignerReference();
+        Reference assignerRef = FhirHelper.getUKUAssignerReference();
         Identifier subjectId = FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
         return FhirHelper.generateReference(subjectId);
     }

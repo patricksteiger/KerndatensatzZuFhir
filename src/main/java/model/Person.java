@@ -6,7 +6,6 @@ import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
-import org.hl7.fhir.r4.model.codesystems.IdentifierUse;
 
 import java.util.List;
 
@@ -78,6 +77,7 @@ public class Person implements Datablock {
         VersichertenCode gkv = VersichertenCode.GKV;
         Coding gkvCoding = FhirHelper.generateCoding(gkv.getCode(), CodingSystem.VERSICHERTEN_ID_GKV, gkv.getDisplay());
         CodeableConcept type = new CodeableConcept().addCoding(gkvCoding);
+        // Still needs VersicherungsReference
         return FhirHelper.generateIdentifier(this.getVersichertenId_gkv(), IdentifierSystem.VERSICHERTEN_ID_GKV, type);
     }
 
@@ -86,7 +86,7 @@ public class Person implements Datablock {
         String system = IdentifierSystem.PID;
         String value = this.getPatient_pid();
         Coding pidCoding = FhirHelper.generateCoding("MR", CodingSystem.PID);
-        return FhirHelper.generateIdentifier(value, system, new CodeableConcept().addCoding(pidCoding), FhirHelper.getSubjectAssignerReference(), use);
+        return FhirHelper.generateIdentifier(value, system, new CodeableConcept().addCoding(pidCoding), FhirHelper.getUKUAssignerReference(), use);
     }
 
     public ResearchSubject getResearchSubject() {
