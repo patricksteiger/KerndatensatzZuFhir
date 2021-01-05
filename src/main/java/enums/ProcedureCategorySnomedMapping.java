@@ -4,6 +4,8 @@ import helper.Helper;
 
 import java.util.Arrays;
 
+import static helper.Helper.illegalArgument;
+
 public enum ProcedureCategorySnomedMapping {
 
     DIAGNOSTIC("103693007", "Diagnostic procedure", '1'),
@@ -38,9 +40,7 @@ public enum ProcedureCategorySnomedMapping {
         return Arrays.stream(ProcedureCategorySnomedMapping.values())
                 .filter(mappingEnum -> mappingEnum.getOpsMapping() == opsMapping)
                 .findFirst()
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Code \"" + opsCode + "\" is not a valid OPS-Code")
-                );
+                .orElseThrow(illegalArgument(opsCode, "OPS-Code"));
     }
 
     public String getCode() {

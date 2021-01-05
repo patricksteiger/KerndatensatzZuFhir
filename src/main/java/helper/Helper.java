@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class Helper {
 
@@ -41,6 +42,10 @@ public class Helper {
         calendar.set(Calendar.MONTH, Integer.parseInt(dates[1]) - 1);
         calendar.set(Calendar.YEAR, Integer.parseInt(dates[2]));
         return calendar.getTime();
+    }
+
+    public static Supplier<IllegalArgumentException> illegalArgument(String code, String codeName) {
+        return () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid " + codeName);
     }
 
     @SafeVarargs

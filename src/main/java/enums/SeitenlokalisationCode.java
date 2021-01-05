@@ -4,6 +4,8 @@ import constants.CodingSystem;
 
 import java.util.Arrays;
 
+import static helper.Helper.illegalArgument;
+
 public enum SeitenlokalisationCode {
 
     RECHTS("R", "rechts", CodingSystem.OPS_SEITENLOKALISATION),
@@ -35,9 +37,7 @@ public enum SeitenlokalisationCode {
         return Arrays.stream(SeitenlokalisationCode.values())
                 .filter(seitenEnum -> seitenEnum.getCode().equals(code))
                 .findFirst()
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid Seitenlokalisationscode")
-                );
+                .orElseThrow(illegalArgument(code, SeitenlokalisationCode.class.getSimpleName()));
     }
 
     public String getCode() {

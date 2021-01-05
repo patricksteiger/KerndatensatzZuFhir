@@ -2,6 +2,8 @@ package enums;
 
 import java.util.Arrays;
 
+import static helper.Helper.illegalArgument;
+
 public enum DurchfuehrungsabsichtCode {
 
     THERAPEUTIC("262202000", "Therapeutic"),
@@ -34,9 +36,7 @@ public enum DurchfuehrungsabsichtCode {
         return Arrays.stream(DurchfuehrungsabsichtCode.values())
                 .filter(durchEnum -> durchEnum.getCode().equals(code))
                 .findFirst()
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid Durchfuehrungsabsichtcode")
-                );
+                .orElseThrow(illegalArgument(code, DurchfuehrungsabsichtCode.class.getSimpleName()));
     }
 
     public String getCode() {
