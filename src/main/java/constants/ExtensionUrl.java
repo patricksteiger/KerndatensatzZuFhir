@@ -9,4 +9,5 @@ public class ExtensionUrl {
     public static final String VORSATZWORT = "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix";
     public static final String PREFIX = "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier";
     public static final String GENDER = "http://fhir.de/StructureDefinition/gender-amtlich-de";
+    public static final String BIRTH_DATE = "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
 }

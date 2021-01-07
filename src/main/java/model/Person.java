@@ -12,6 +12,7 @@ import org.hl7.fhir.r4.model.codesystems.GenderIdentity;
 import org.hl7.fhir.r4.model.codesystems.GenderIdentityEnumFactory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Person implements Datablock {
@@ -83,11 +84,19 @@ public class Person implements Datablock {
             patient.addName(this.getGeburtsName());
         // Administratives Geschlecht, returns UNKNOWN if gender isn't set
         patient.addExtension(this.getGender());
+        // Geburtsdatum
+        patient.addExtension(this.getBirthDate());
         return patient;
     }
 
     public Meta getMeta() {
         return FhirHelper.generateMeta(MetaProfile.PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
+    }
+
+    public Extension getBirthDate() {
+        Date birthDate = Helper.getDateFromISO(this.getGeburtsdatum());
+        DateTimeType type = FhirHelper.generateDate(birthDate);
+        return FhirHelper.generateExtension(ExtensionUrl.BIRTH_DATE, type);
     }
 
     public Extension getGender() {
