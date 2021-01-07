@@ -168,6 +168,32 @@ public class FhirHelper {
         return extension;
     }
 
+    public static Address generateAddress(Address.AddressUse use, Address.AddressType type, String text, List<String> line, String city, String district, String state, String postalCode, String country) {
+        Address address = new Address();
+        if (use != null)
+            address.setUse(use);
+        if (type != null)
+            address.setType(type);
+        if (Helper.checkNonEmptyString(text))
+            address.setText(text);
+        line.stream().filter(Helper::checkNonEmptyString).forEach(address::addLine);
+        if (Helper.checkNonEmptyString(city))
+            address.setCity(city);
+        if (Helper.checkNonEmptyString(district))
+            address.setDistrict(district);
+        if (Helper.checkNonEmptyString(state))
+            address.setState(state);
+        if (Helper.checkNonEmptyString(postalCode))
+            address.setPostalCode(postalCode);
+        if (Helper.checkNonEmptyString(country))
+            address.setCountry(country);
+        return address;
+    }
+
+    public static Address generateAddress(Address.AddressType type, String line, String city, String postalCode, String country) {
+        return generateAddress(null, type, "", Helper.listOf(line), city, "", "", postalCode, country);
+    }
+
     public static DateTimeType generateDate(Date date) {
         return new DateTimeType(date, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
     }

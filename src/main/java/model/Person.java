@@ -86,11 +86,35 @@ public class Person implements Datablock {
         patient.addExtension(this.getBirthDate());
         // Deceased
         patient.setDeceased(this.getDeceased());
+        // Address
+        this.getAddresses().forEach(patient::addAddress);
         return patient;
     }
 
     public Meta getPatientMeta() {
         return FhirHelper.generateMeta(MetaProfile.PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
+    }
+
+    public List<Address> getAddresses() {
+        return Helper.listOf(this.getStrassenanschrift(), this.getPostfach());
+    }
+
+    public Address getStrassenanschrift() {
+        Address.AddressType type = Address.AddressType.BOTH;
+        String line = this.getStrasse();
+        String city = this.getStrassenanschrift_wohnort();
+        String postalCode = this.getStrassenanschrift_plz();
+        String country = this.getStrassenanschrift_land();
+        return FhirHelper.generateAddress(type, line, city, postalCode, country);
+    }
+
+    public Address getPostfach() {
+        Address.AddressType type = Address.AddressType.POSTAL;
+        String line = this.getPostfachnummer();
+        String city = this.getPostfach_wohnort();
+        String postalCode = this.getPostfach_plz();
+        String country = this.getPostfach_land();
+        return FhirHelper.generateAddress(type, line, city, postalCode, country);
     }
 
     public Type getDeceased() {
