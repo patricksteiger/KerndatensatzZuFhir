@@ -1,6 +1,7 @@
 package model;
 
 import constants.*;
+import enums.IdentifierTypeCode;
 import enums.VersichertenCode;
 import helper.FhirHelper;
 import helper.Helper;
@@ -78,7 +79,8 @@ public class Person implements Datablock {
     public Identifier getPID() {
         String value = this.getPatient_pid();
         String system = IdentifierSystem.PID;
-        Coding pidCoding = FhirHelper.generateCoding("MR", CodingSystem.PID);
+        IdentifierTypeCode code = IdentifierTypeCode.MR;
+        Coding pidCoding = FhirHelper.generateCoding(code.getCode(), CodingSystem.PID, code.getDisplay());
         CodeableConcept type = new CodeableConcept().addCoding(pidCoding);
         Reference assignerRef = FhirHelper.getUKUAssignerReference();
         Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
@@ -93,13 +95,18 @@ public class Person implements Datablock {
         CodeableConcept type = new CodeableConcept().addCoding(gkvCoding);
         Reference assignerRef = FhirHelper.getOrganizationAssignerReference();
         Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
-        // Still needs VersicherungsReference
         return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
     }
 
     public Identifier getPKV() {
-        Identifier id = new Identifier();
-        return id;
+        String value = this.getVersichertennummer_pkv();
+        String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
+        VersichertenCode pkv = VersichertenCode.PKV;
+        Coding pkvCoding = FhirHelper.generateCoding(pkv.getCode(), CodingSystem.VERSICHERTEN_ID_GKV, pkv.getDisplay());
+        CodeableConcept type = new CodeableConcept().addCoding(pkvCoding);
+        Reference assignerRef = FhirHelper.getOrganizationAssignerReference();
+        Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
+        return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
     }
 
     public ResearchSubject getResearchSubject() {

@@ -1,6 +1,7 @@
 package helper;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import constants.CodingSystem;
 import constants.IdentifierSystem;
 import constants.ReferenceType;
 import enums.IdentifierTypeCode;
@@ -96,7 +97,7 @@ public class FhirHelper {
         Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
         String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
         IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
-        String identifierSystem = IdentifierSystem.TYPE_CODE;
+        String identifierSystem = CodingSystem.PID;
         Coding coding = FhirHelper.generateCoding(identifierTypeCode.getCode(), identifierSystem, identifierTypeCode.getDisplay());
         CodeableConcept identifierType = new CodeableConcept().addCoding(coding);
         // FIXME: What is the value of the identifier?
