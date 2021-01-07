@@ -7,6 +7,9 @@ import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.codesystems.AdministrativeGender;
+import org.hl7.fhir.r4.model.codesystems.GenderIdentity;
+import org.hl7.fhir.r4.model.codesystems.GenderIdentityEnumFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +81,19 @@ public class Person implements Datablock {
         // Geburtsname
         if (Helper.checkNonEmptyString(this.getGeburtsname()))
             patient.addName(this.getGeburtsName());
+        // Administratives Geschlecht, returns UNKNOWN if gender isn't set
+        patient.addExtension(this.getGender());
         return patient;
     }
 
     public Meta getMeta() {
         return FhirHelper.generateMeta(MetaProfile.PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
+    }
+
+    public Extension getGender() {
+        AdministrativeGender gender = FhirHelper.getGenderMapping(this.getAdmininistratives_geschlecht());
+        Coding coding = FhirHelper.generateCoding(gender.name(), gender.getSystem(), gender.getDisplay());
+        return FhirHelper.generateExtension(ExtensionUrl.GENDER, coding);
     }
 
     public HumanName getGeburtsName() {

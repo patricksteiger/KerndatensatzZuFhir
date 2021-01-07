@@ -7,6 +7,8 @@ import constants.ReferenceType;
 import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
 import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.codesystems.AdministrativeGender;
+import org.hl7.fhir.r4.model.codesystems.AdministrativeGenderEnumFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -106,6 +108,16 @@ public class FhirHelper {
 
     public static HumanName generateHumanName(HumanName.NameUse use, List<Extension> family) {
         return generateHumanName(use, family, Helper.listOf(), Helper.listOf(), "");
+    }
+
+    public static AdministrativeGender getGenderMapping(String gender) {
+        if ("f".equalsIgnoreCase(gender))
+            return AdministrativeGender.FEMALE;
+        if ("m".equalsIgnoreCase(gender))
+            return AdministrativeGender.MALE;
+        if ("un".equalsIgnoreCase(gender))
+            return AdministrativeGender.OTHER;
+        return AdministrativeGender.UNKNOWN;
     }
 
     public static Reference getUKUAssignerReference() {
