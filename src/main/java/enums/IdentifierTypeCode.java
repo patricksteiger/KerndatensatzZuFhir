@@ -1,5 +1,8 @@
 package enums;
 
+/**
+ * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80925"
+ */
 public enum IdentifierTypeCode {
 
     MR("MR", "Krankenaktennummer"),
