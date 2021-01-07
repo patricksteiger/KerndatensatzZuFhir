@@ -8,8 +8,6 @@ import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.codesystems.AdministrativeGender;
-import org.hl7.fhir.r4.model.codesystems.GenderIdentity;
-import org.hl7.fhir.r4.model.codesystems.GenderIdentityEnumFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,7 +65,7 @@ public class Person implements Datablock {
     public Patient getPatient() {
         Patient patient = new Patient();
         // Meta
-        patient.setMeta(this.getMeta());
+        patient.setMeta(this.getPatientMeta());
         // Identifier - PID
         if (Helper.checkNonEmptyString(this.getPatient_pid()))
             patient.addIdentifier(this.getPID());
@@ -86,11 +84,23 @@ public class Person implements Datablock {
         patient.addExtension(this.getGender());
         // Geburtsdatum
         patient.addExtension(this.getBirthDate());
+        // Deceased
+        patient.setDeceased(this.getDeceased());
         return patient;
     }
 
-    public Meta getMeta() {
+    public Meta getPatientMeta() {
         return FhirHelper.generateMeta(MetaProfile.PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
+    }
+
+    public Type getDeceased() {
+        if (Helper.checkNonEmptyString(this.getTodeszeitpunkt())) {
+            Date deceasedTime = Helper.getDateFromISO(this.getTodeszeitpunkt());
+            return FhirHelper.generateDate(deceasedTime);
+        } else {
+            boolean deceased = Helper.booleanFromString(this.getPatient_verstorben());
+            return new BooleanType(deceased);
+        }
     }
 
     public Extension getBirthDate() {
@@ -204,6 +214,7 @@ public class Person implements Datablock {
         Observation observation = new Observation();
         return observation;
     }
+
     public String getPatNr() {
         return patNr;
     }

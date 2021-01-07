@@ -48,6 +48,22 @@ public class Helper {
         return () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid " + codeName);
     }
 
+    /**
+     * Parses boolean from String. s must be 0, false, 1 or true.
+     * false and true are checked case-insensitively.
+     *
+     * @param s String which should be parsed
+     * @return boolean parsed from String s
+     * @throws IllegalArgumentException if s is not 0, false, 1 or true.
+     */
+    public static boolean booleanFromString(String s) {
+        if ("1".equals(s) || "true".equalsIgnoreCase(s))
+            return true;
+        if ("0".equals(s) || "false".equalsIgnoreCase(s))
+            return false;
+        throw new IllegalArgumentException("Couldn't read boolean from String: \"" + s + "\"");
+    }
+
     @SafeVarargs
     public static <T> List<T> listOf(T... values) {
         return Arrays.asList(values);
