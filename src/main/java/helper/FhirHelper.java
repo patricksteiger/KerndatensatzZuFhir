@@ -169,6 +169,6 @@ public class FhirHelper {
     }
 
     public static DateTimeType generateDate(Date date) {
-        return new DateTimeType(date, TemporalPrecisionEnum.DAY, TimeZone.getDefault());
+        return new DateTimeType(date, TemporalPrecisionEnum.SECOND, TimeZone.getDefault());
     }
 }
