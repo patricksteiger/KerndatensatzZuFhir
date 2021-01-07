@@ -86,6 +86,28 @@ public class FhirHelper {
         return generateIdentifier(value, system, null, null);
     }
 
+    public static HumanName generateHumanName(HumanName.NameUse use, String text, List<Extension> family, List<String> given, List<Extension> artDesPrefix, List<String> prefix, List<String> suffix) {
+        HumanName name = new HumanName();
+        if (use != null)
+            name.setUse(use);
+        if (Helper.checkNonEmptyString(text))
+            name.setText(text);
+        family.stream().filter(Objects::nonNull).forEach(name::addExtension);
+        given.stream().filter(Helper::checkNonEmptyString).forEach(name::addGiven);
+        artDesPrefix.stream().filter(Objects::nonNull).forEach(name::addExtension);
+        prefix.stream().filter(Helper::checkNonEmptyString).forEach(name::addPrefix);
+        suffix.stream().filter(Helper::checkNonEmptyString).forEach(name::addSuffix);
+        return name;
+    }
+
+    public static HumanName generateHumanName(HumanName.NameUse use, List<Extension> family, List<String> given, List<Extension> artDesPrefix, String prefix) {
+        return generateHumanName(use, "", family, given, artDesPrefix, Helper.listOf(prefix), Helper.listOf());
+    }
+
+    public static HumanName generateHumanName(HumanName.NameUse use, List<Extension> family) {
+        return generateHumanName(use, family, Helper.listOf(), Helper.listOf(), "");
+    }
+
     public static Reference getUKUAssignerReference() {
         Identifier assignerId = FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), IdentifierSystem.NS_DIZ);
         return FhirHelper.generateReference(assignerId, MIICoreLocations.UKU.toString());

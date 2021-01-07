@@ -8,6 +8,7 @@ import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Person implements Datablock {
@@ -17,6 +18,7 @@ public class Person implements Datablock {
     private String nachname;
     private String familienname;
     private String vorsatzwort;
+    private String namenszusatz;
     private String praefix;
     private String art_des_praefix;
     private String geburtsname;
@@ -62,18 +64,82 @@ public class Person implements Datablock {
         Patient patient = new Patient();
         // Meta
         patient.setMeta(this.getMeta());
+        // Identifier - PID
         if (Helper.checkNonEmptyString(this.getPatient_pid()))
             patient.addIdentifier(this.getPID());
         // Identifier - GKV
         if (Helper.checkNonEmptyString(this.getVersichertenId_gkv()))
             patient.addIdentifier(this.getGKV());
+        // Identifier - PKV
         if (Helper.checkNonEmptyString(this.getVersichertennummer_pkv()))
             patient.addIdentifier(this.getPKV());
+        // Name
+        patient.addName(this.getName());
+        // Geburtsname
+        if (Helper.checkNonEmptyString(this.getGeburtsname()))
+            patient.addName(this.getGeburtsName());
         return patient;
     }
 
     public Meta getMeta() {
         return FhirHelper.generateMeta(MetaProfile.PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
+    }
+
+    public HumanName getGeburtsName() {
+        HumanName.NameUse use = HumanName.NameUse.MAIDEN;
+        List<Extension> family = this.getMaidenFamily();
+        return FhirHelper.generateHumanName(use, family);
+    }
+
+    public List<Extension> getMaidenFamily() {
+        List<Extension> family = new ArrayList<>();
+        if (Helper.checkNonEmptyString(this.getGeburtsname())) {
+            StringType nachname = new StringType(this.getGeburtsname());
+            family.add(FhirHelper.generateExtension(ExtensionUrl.NACHNAME, nachname));
+        }
+        return family;
+    }
+
+    public HumanName getName() {
+        HumanName.NameUse use = HumanName.NameUse.OFFICIAL;
+        List<Extension> family = this.getFamily();
+        List<String> given = this.getGiven();
+        List<Extension> artDesPrefix = this.getPrefix();
+        String prefix = this.getPraefix();
+        return FhirHelper.generateHumanName(use, family, given, artDesPrefix, prefix);
+    }
+
+    public List<Extension> getFamily() {
+        List<Extension> family = new ArrayList<>();
+        if (Helper.checkNonEmptyString(this.getNamenszusatz())) {
+            StringType zusatz = new StringType(this.getNamenszusatz());
+            family.add(FhirHelper.generateExtension(ExtensionUrl.NAMENSZUSATZ, zusatz));
+        }
+        if (Helper.checkNonEmptyString(this.getNachname())) {
+            StringType nachname = new StringType(this.getNachname());
+            family.add(FhirHelper.generateExtension(ExtensionUrl.NACHNAME, nachname));
+        }
+        if (Helper.checkNonEmptyString(this.getVorsatzwort())) {
+            StringType vorsatzwort = new StringType(this.getVorsatzwort());
+            family.add(FhirHelper.generateExtension(ExtensionUrl.VORSATZWORT, vorsatzwort));
+        }
+        return family;
+    }
+
+    public List<String> getGiven() {
+        List<String> given = new ArrayList<>();
+        if (Helper.checkNonEmptyString(this.getVorname()))
+            given.add(this.getVorname());
+        return given;
+    }
+
+    public List<Extension> getPrefix() {
+        List<Extension> prefix = new ArrayList<>();
+        if (Helper.checkNonEmptyString(this.getArt_des_praefix())) {
+            StringType artDesPrefix = new StringType(this.getArt_des_praefix());
+            prefix.add(FhirHelper.generateExtension(ExtensionUrl.PREFIX, artDesPrefix));
+        }
+        return prefix;
     }
 
     public Identifier getPID() {
@@ -157,6 +223,10 @@ public class Person implements Datablock {
     public void setVorsatzwort(String vorsatzwort) {
         this.vorsatzwort = vorsatzwort;
     }
+
+    public String getNamenszusatz() { return namenszusatz; }
+
+    public void setNamenszusatz(String namenszusatz) { this.namenszusatz = namenszusatz; }
 
     public String getPraefix() {
         return praefix;
