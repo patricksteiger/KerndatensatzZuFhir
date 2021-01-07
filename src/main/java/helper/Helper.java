@@ -44,7 +44,7 @@ public class Helper {
         return calendar.getTime();
     }
 
-    public static Supplier<IllegalArgumentException> illegalArgument(String code, String codeName) {
+    public static Supplier<IllegalArgumentException> illegalCode(String code, String codeName) {
         return () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid " + codeName);
     }
 

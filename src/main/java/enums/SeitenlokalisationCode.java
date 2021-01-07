@@ -4,7 +4,7 @@ import constants.CodingSystem;
 
 import java.util.Arrays;
 
-import static helper.Helper.illegalArgument;
+import static helper.Helper.illegalCode;
 
 public enum SeitenlokalisationCode {
 
@@ -37,7 +37,7 @@ public enum SeitenlokalisationCode {
         return Arrays.stream(SeitenlokalisationCode.values())
                 .filter(seitenEnum -> seitenEnum.getCode().equals(code))
                 .findFirst()
-                .orElseThrow(illegalArgument(code, SeitenlokalisationCode.class.getSimpleName()));
+                .orElseThrow(illegalCode(code, SeitenlokalisationCode.class.getSimpleName()));
     }
 
     public String getCode() {

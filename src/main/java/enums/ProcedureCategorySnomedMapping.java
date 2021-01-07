@@ -4,7 +4,7 @@ import helper.Helper;
 
 import java.util.Arrays;
 
-import static helper.Helper.illegalArgument;
+import static helper.Helper.illegalCode;
 
 public enum ProcedureCategorySnomedMapping {
 
@@ -40,7 +40,7 @@ public enum ProcedureCategorySnomedMapping {
         return Arrays.stream(ProcedureCategorySnomedMapping.values())
                 .filter(mappingEnum -> mappingEnum.getOpsMapping() == opsMapping)
                 .findFirst()
-                .orElseThrow(illegalArgument(opsCode, "OPS-Code"));
+                .orElseThrow(illegalCode(opsCode, "OPS-Code"));
     }
 
     public String getCode() {

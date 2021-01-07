@@ -2,7 +2,7 @@ package enums;
 
 import java.util.Arrays;
 
-import static helper.Helper.illegalArgument;
+import static helper.Helper.illegalCode;
 
 public enum DurchfuehrungsabsichtCode {
 
@@ -36,7 +36,7 @@ public enum DurchfuehrungsabsichtCode {
         return Arrays.stream(DurchfuehrungsabsichtCode.values())
                 .filter(durchEnum -> durchEnum.getCode().equals(code))
                 .findFirst()
-                .orElseThrow(illegalArgument(code, DurchfuehrungsabsichtCode.class.getSimpleName()));
+                .orElseThrow(illegalCode(code, DurchfuehrungsabsichtCode.class.getSimpleName()));
     }
 
     public String getCode() {
