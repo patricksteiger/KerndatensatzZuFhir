@@ -61,11 +61,13 @@ public class Person implements Datablock {
         Patient patient = new Patient();
         // Meta
         patient.setMeta(this.getMeta());
+        if (Helper.checkNonEmptyString(this.getPatient_pid()))
+            patient.addIdentifier(this.getPID());
         // Identifier - GKV
         if (Helper.checkNonEmptyString(this.getVersichertenId_gkv()))
             patient.addIdentifier(this.getGKV());
-        if (Helper.checkNonEmptyString(this.getPatient_pid()))
-            patient.addIdentifier(this.getPID());
+        if (Helper.checkNonEmptyString(this.getVersichertennummer_pkv()))
+            patient.addIdentifier(this.getPKV());
         return patient;
     }
 
@@ -73,20 +75,31 @@ public class Person implements Datablock {
         return FhirHelper.generateMeta(MetaProfile.PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
     }
 
+    public Identifier getPID() {
+        String value = this.getPatient_pid();
+        String system = IdentifierSystem.PID;
+        Coding pidCoding = FhirHelper.generateCoding("MR", CodingSystem.PID);
+        CodeableConcept type = new CodeableConcept().addCoding(pidCoding);
+        Reference assignerRef = FhirHelper.getUKUAssignerReference();
+        Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
+        return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
+    }
+
     public Identifier getGKV() {
+        String value = this.getVersichertenId_gkv();
+        String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
         VersichertenCode gkv = VersichertenCode.GKV;
         Coding gkvCoding = FhirHelper.generateCoding(gkv.getCode(), CodingSystem.VERSICHERTEN_ID_GKV, gkv.getDisplay());
         CodeableConcept type = new CodeableConcept().addCoding(gkvCoding);
+        Reference assignerRef = FhirHelper.getOrganizationAssignerReference();
+        Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
         // Still needs VersicherungsReference
-        return FhirHelper.generateIdentifier(this.getVersichertenId_gkv(), IdentifierSystem.VERSICHERTEN_ID_GKV, type);
+        return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
     }
 
-    public Identifier getPID() {
-        Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
-        String system = IdentifierSystem.PID;
-        String value = this.getPatient_pid();
-        Coding pidCoding = FhirHelper.generateCoding("MR", CodingSystem.PID);
-        return FhirHelper.generateIdentifier(value, system, new CodeableConcept().addCoding(pidCoding), FhirHelper.getUKUAssignerReference(), use);
+    public Identifier getPKV() {
+        Identifier id = new Identifier();
+        return id;
     }
 
     public ResearchSubject getResearchSubject() {
