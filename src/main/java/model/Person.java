@@ -2,12 +2,12 @@ package model;
 
 import constants.*;
 import enums.IdentifierTypeCode;
+import enums.MIICoreLocations;
 import enums.VersichertenCode;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
-import org.hl7.fhir.r4.model.codesystems.AdministrativeGender;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,18 +81,26 @@ public class Person implements Datablock {
         if (Helper.checkNonEmptyString(this.getGeburtsname()))
             patient.addName(this.getGeburtsName());
         // Administratives Geschlecht, returns UNKNOWN if gender isn't set
-        patient.addExtension(this.getGender());
+        patient.setGender(FhirHelper.getGenderMapping(this.getAdmininistratives_geschlecht()));
+        //patient.addExtension(this.getGender());
         // Geburtsdatum
-        patient.addExtension(this.getBirthDate());
+        patient.setBirthDate(Helper.getDateFromISO(this.getGeburtsdatum()));
+        //patient.addExtension(this.getBirthDate());
         // Deceased
         patient.setDeceased(this.getDeceased());
         // Address
         this.getAddresses().forEach(patient::addAddress);
+        // Managing organization
+        patient.setManagingOrganization(this.getManagingOrganization());
         return patient;
     }
 
     public Meta getPatientMeta() {
         return FhirHelper.generateMeta(MetaProfile.PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
+    }
+
+    public Reference getManagingOrganization() {
+        return new Reference().setReference("Organization/" + MIICoreLocations.UKU.toString());
     }
 
     public List<Address> getAddresses() {
@@ -134,7 +142,7 @@ public class Person implements Datablock {
     }
 
     public Extension getGender() {
-        AdministrativeGender gender = FhirHelper.getGenderMapping(this.getAdmininistratives_geschlecht());
+        Enumerations.AdministrativeGender gender = FhirHelper.getGenderMapping(this.getAdmininistratives_geschlecht());
         Coding coding = FhirHelper.generateCoding(gender.name(), gender.getSystem(), gender.getDisplay());
         return FhirHelper.generateExtension(ExtensionUrl.GENDER, coding);
     }
@@ -279,9 +287,13 @@ public class Person implements Datablock {
         this.vorsatzwort = vorsatzwort;
     }
 
-    public String getNamenszusatz() { return namenszusatz; }
+    public String getNamenszusatz() {
+        return namenszusatz;
+    }
 
-    public void setNamenszusatz(String namenszusatz) { this.namenszusatz = namenszusatz; }
+    public void setNamenszusatz(String namenszusatz) {
+        this.namenszusatz = namenszusatz;
+    }
 
     public String getPraefix() {
         return praefix;
