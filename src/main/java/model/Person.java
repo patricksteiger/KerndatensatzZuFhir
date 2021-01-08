@@ -242,11 +242,23 @@ public class Person implements Datablock {
         researchSubject.setMeta(this.getResearchSubjectMeta());
         researchSubject.addIdentifier(this.getSubjectIdentificationCode());
         researchSubject.setStatus(this.getStatus());
+        researchSubject.setPeriod(this.getResearchSubjectPeriod());
+        // TODO: study-Reference
+        // TODO: individual-Reference
         return researchSubject;
     }
 
     public Meta getResearchSubjectMeta() {
         return FhirHelper.generateMeta(MetaProfile.RESEARCH_SUBJECT, MetaSource.RESEARCH_SUBJECT, MetaVersionId.RESEARCH_SUBJECT);
+    }
+
+    public Period getResearchSubjectPeriod() {
+        Date start = Helper.getDateFromISO(this.getTeilnahme_beginn());
+        if (Helper.checkNonEmptyString(this.getTeilnahme_ende())) {
+            Date end = Helper.getDateFromISO(this.getTeilnahme_ende());
+            return FhirHelper.generatePeriod(start, end);
+        }
+        return FhirHelper.generatePeriod(start);
     }
 
     public ResearchSubject.ResearchSubjectStatus getStatus() {

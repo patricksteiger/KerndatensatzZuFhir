@@ -55,6 +55,19 @@ public class FhirHelper {
         return generateCoding(code, system, "");
     }
 
+    public static Period generatePeriod(Date start, Date end) {
+        Period period = new Period();
+        if (start != null)
+            period.setStart(start);
+        if (end != null)
+            period.setEnd(end);
+        return period;
+    }
+
+    public static Period generatePeriod(Date start) {
+        return generatePeriod(start, null);
+    }
+
     public static Identifier generateIdentifier(String value, String system, CodeableConcept type, Reference assignerRef, Identifier.IdentifierUse use) {
         Identifier identifier = new Identifier();
         if (Helper.checkNonEmptyString(value))
