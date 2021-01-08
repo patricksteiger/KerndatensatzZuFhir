@@ -13,6 +13,7 @@ target/
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/scala_settings.xml
 
 # Generated files
 .idea/**/contentModel.xml

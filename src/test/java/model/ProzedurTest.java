@@ -13,30 +13,30 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProzedurTest {
-    private Prozedur prozedur = null;
+  private Prozedur prozedur = null;
 
-    @BeforeEach
-    public void setUp() {
-        prozedur = new Prozedur();
-    }
+  @BeforeEach
+  public void setUp() {
+    prozedur = new Prozedur();
+  }
 
-    @Test
-    public void testGetMeta() {
-        Meta received = prozedur.getMeta();
-        assertEquals(MetaSource.PROCEDURE, received.getSource());
-        List<CanonicalType> profiles = received.getProfile();
-        assertEquals(1, profiles.size());
-        assertEquals(MetaProfile.PROCEDURE, profiles.get(0).asStringValue());
-    }
+  @Test
+  public void testGetMeta() {
+    Meta received = prozedur.getMeta();
+    assertEquals(MetaSource.PROCEDURE, received.getSource());
+    List<CanonicalType> profiles = received.getProfile();
+    assertEquals(1, profiles.size());
+    assertEquals(MetaProfile.PROCEDURE, profiles.get(0).asStringValue());
+  }
 
-    @Test
-    public void testGetPerformed() {
-        String durchfuehrung = "7.1.2020";
-        prozedur.setDurchfuehrungsdatum(durchfuehrung);
-        DateTimeType date = prozedur.getPerformed();
-        // Check for correct date and timezone
-        //String pattern = "2020-01-07T[012][0-9]:[0-5][0-9]:[0-5][0-9]\\+01:00";
-        //assertTrue(date.getValueAsString().matches(pattern));
-        assertEquals("2020-01-07", date.getValueAsString());
-    }
+  @Test
+  public void testGetPerformed() {
+    String durchfuehrung = "7.1.2020";
+    prozedur.setDurchfuehrungsdatum(durchfuehrung);
+    DateTimeType date = prozedur.getPerformed();
+    // Check for correct date and timezone
+    // String pattern = "2020-01-07T[012][0-9]:[0-5][0-9]:[0-5][0-9]\\+01:00";
+    // assertTrue(date.getValueAsString().matches(pattern));
+    assertEquals("2020-01-07", date.getValueAsString());
+  }
 }
