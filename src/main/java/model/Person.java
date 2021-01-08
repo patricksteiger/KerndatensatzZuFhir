@@ -240,12 +240,18 @@ public class Person implements Datablock {
 
     public ResearchSubject getResearchSubject() {
         ResearchSubject researchSubject = new ResearchSubject();
+        // Meta
         researchSubject.setMeta(this.getResearchSubjectMeta());
+        // Subject identification code
         researchSubject.addIdentifier(this.getSubjectIdentificationCode());
+        // Status
         researchSubject.setStatus(this.getStatus());
+        // Period
         researchSubject.setPeriod(this.getResearchSubjectPeriod());
+        // Individual
         if (Helper.checkNonEmptyString(this.getPatNr()))
             researchSubject.setIndividual(this.getResearchSubjectIndividual());
+        // Consent
         if (Helper.checkNonEmptyString(this.getRechtsgrundlage()))
             researchSubject.setConsent(this.getResearchSubjectConsent());
         return researchSubject;
@@ -295,13 +301,20 @@ public class Person implements Datablock {
 
     public Observation getObservation() {
         Observation observation = new Observation();
+        // Meta
         observation.setMeta(this.getObservationMeta());
+        // Status
         observation.setStatus(this.getObservationStatus());
+        // Category
         observation.addCategory(this.getObservationCategory());
+        // Code
         observation.setCode(this.getObservationCode());
+        // Subject
         if (Helper.checkNonEmptyString(this.getPatNr()))
             observation.setSubject(this.getObservationSubject());
+        // Effective
         observation.setEffective(this.getObservationEffective());
+        // Value
         observation.setValue(this.getObservationValue());
         return observation;
     }
