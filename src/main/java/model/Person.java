@@ -344,7 +344,7 @@ public class Person implements Datablock {
 
     public DateTimeType getObservationEffective() {
         Date effective = Helper.getDateFromISO(this.getLetzter_lebendzeitpunkt());
-        return new DateTimeType(effective);
+        return FhirHelper.generateDate(effective);
     }
 
     public CodeableConcept getObservationCode() {
