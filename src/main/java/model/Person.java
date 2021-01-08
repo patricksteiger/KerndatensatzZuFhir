@@ -4,6 +4,7 @@ import constants.*;
 import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
 import enums.VersichertenCode;
+import enums.VitalStatus;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -283,11 +284,31 @@ public class Person implements Datablock {
         observation.setStatus(this.getObservationStatus());
         observation.addCategory(this.getObservationCategory());
         observation.setCode(this.getObservationCode());
+        observation.setEffective(this.getObservationEffective());
+        observation.setValue(this.getObservationValue());
         return observation;
     }
 
     public Meta getObservationMeta() {
         return FhirHelper.generateMeta(MetaProfile.OBSERVATION, MetaSource.OBSERVATION, MetaVersionId.OBSERVATION);
+    }
+
+    public Coding getObservationValue() {
+        VitalStatus code = VitalStatus.UNBEKANNT;
+        if (Helper.checkNonEmptyString(this.getPatient_verstorben())) {
+            try {
+                boolean verstorben = Helper.booleanFromString(this.getPatient_verstorben());
+                if (verstorben)
+                    code = VitalStatus.VERSTORBEN;
+            } catch (IllegalArgumentException e) {}
+        }
+        String system = CodingSystem.VITALSTATUS;
+        return FhirHelper.generateCoding(code.getCode(), system, code.getDisplay());
+    }
+
+    public DateTimeType getObservationEffective() {
+        Date effective = Helper.getDateFromISO(this.getLetzter_lebendzeitpunkt());
+        return new DateTimeType(effective);
     }
 
     public CodeableConcept getObservationCode() {
