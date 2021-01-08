@@ -245,6 +245,7 @@ public class Person implements Datablock {
         researchSubject.setPeriod(this.getResearchSubjectPeriod());
         // TODO: study-Reference
         // TODO: individual-Reference
+        // TODO: consent-reference
         return researchSubject;
     }
 
