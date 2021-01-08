@@ -1,6 +1,8 @@
 package constants;
 
 public class MetaProfile {
-    public static final String PROCEDURE = "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure";
-    public static final String PATIENT = "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Patient";
+    private static final String MEDIZIN_INFORMATIK_STRUCTURE = "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/";
+    public static final String PROCEDURE = MEDIZIN_INFORMATIK_STRUCTURE + "Procedure";
+    public static final String PATIENT = MEDIZIN_INFORMATIK_STRUCTURE + "Patient";
+    public static final String RESEARCH_SUBJECT = MEDIZIN_INFORMATIK_STRUCTURE + "ResearchSubject";
 }
