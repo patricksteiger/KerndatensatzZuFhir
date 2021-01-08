@@ -6,4 +6,5 @@ public class MetaSource {
     public static final String PROCEDURE = UKU_SAP + "Prozedur-Procedure";
     public static final String PATIENT = UKU_SAP + "Patient";
     public static final String RESEARCH_SUBJECT = UKU_SAP + "ResearchSubject";
+    public static final String OBSERVATION = UKU_SAP + "Observation";
 }

@@ -279,7 +279,25 @@ public class Person implements Datablock {
 
     public Observation getObservation() {
         Observation observation = new Observation();
+        observation.setMeta(this.getObservationMeta());
+        observation.setStatus(this.getObservationStatus());
+        observation.addCategory(this.getObservationCategory());
         return observation;
+    }
+
+    public Meta getObservationMeta() {
+        return FhirHelper.generateMeta(MetaProfile.OBSERVATION, MetaSource.OBSERVATION, MetaVersionId.OBSERVATION);
+    }
+
+    public CodeableConcept getObservationCategory() {
+        String code = "survey";
+        Coding survey = FhirHelper.generateCoding(code, CodingSystem.OBSERVATION_CATEGORY);
+        CodeableConcept category = new CodeableConcept().addCoding(survey);
+        return category;
+    }
+
+    public Observation.ObservationStatus getObservationStatus() {
+        return Observation.ObservationStatus.FINAL;
     }
 
     public String getPatNr() {
