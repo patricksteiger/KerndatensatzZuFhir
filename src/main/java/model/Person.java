@@ -241,11 +241,16 @@ public class Person implements Datablock {
         ResearchSubject researchSubject = new ResearchSubject();
         researchSubject.setMeta(this.getResearchSubjectMeta());
         researchSubject.addIdentifier(this.getSubjectIdentificationCode());
+        researchSubject.setStatus(this.getStatus());
         return researchSubject;
     }
 
     public Meta getResearchSubjectMeta() {
         return FhirHelper.generateMeta(MetaProfile.RESEARCH_SUBJECT, MetaSource.RESEARCH_SUBJECT, MetaVersionId.RESEARCH_SUBJECT);
+    }
+
+    public ResearchSubject.ResearchSubjectStatus getStatus() {
+        return ResearchSubject.ResearchSubjectStatus.CANDIDATE;
     }
 
     public Identifier getSubjectIdentificationCode() {
