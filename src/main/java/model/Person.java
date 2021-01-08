@@ -245,13 +245,21 @@ public class Person implements Datablock {
         researchSubject.setStatus(this.getStatus());
         researchSubject.setPeriod(this.getResearchSubjectPeriod());
         // TODO: study-Reference
-        // TODO: individual-Reference
+        if (Helper.checkNonEmptyString(this.getPatNr()))
+            researchSubject.setIndividual(this.getResearchSubjectIndividual());
         // TODO: consent-reference
         return researchSubject;
     }
 
     public Meta getResearchSubjectMeta() {
         return FhirHelper.generateMeta(MetaProfile.RESEARCH_SUBJECT, MetaSource.RESEARCH_SUBJECT, MetaVersionId.RESEARCH_SUBJECT);
+    }
+
+    public Reference getResearchSubjectIndividual() {
+        String type = ReferenceType.PATIENT;
+        Reference assignerRef = FhirHelper.getUKUAssignerReference();
+        Identifier subjectId = FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+        return FhirHelper.generateReference(type, subjectId);
     }
 
     public Period getResearchSubjectPeriod() {
@@ -284,6 +292,8 @@ public class Person implements Datablock {
         observation.setStatus(this.getObservationStatus());
         observation.addCategory(this.getObservationCategory());
         observation.setCode(this.getObservationCode());
+        if (Helper.checkNonEmptyString(this.getPatNr()))
+            observation.setSubject(this.getObservationSubject());
         observation.setEffective(this.getObservationEffective());
         observation.setValue(this.getObservationValue());
         return observation;
@@ -291,6 +301,12 @@ public class Person implements Datablock {
 
     public Meta getObservationMeta() {
         return FhirHelper.generateMeta(MetaProfile.OBSERVATION, MetaSource.OBSERVATION, MetaVersionId.OBSERVATION);
+    }
+
+    public Reference getObservationSubject() {
+        Reference assignerRef = FhirHelper.getUKUAssignerReference();
+        Identifier subjectId = FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+        return FhirHelper.generateReference(subjectId);
     }
 
     public Coding getObservationValue() {
@@ -320,7 +336,7 @@ public class Person implements Datablock {
     }
 
     public CodeableConcept getObservationCategory() {
-        String code = "survey";
+        String code = CodingCode.SURVEY;
         Coding survey = FhirHelper.generateCoding(code, CodingSystem.OBSERVATION_CATEGORY);
         CodeableConcept category = new CodeableConcept().addCoding(survey);
         return category;

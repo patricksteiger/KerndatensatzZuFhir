@@ -32,10 +32,6 @@ public class FhirHelper {
         return generateMeta(Helper.listOf(profile), source, versionId, Helper.listOf(), Helper.listOf());
     }
 
-    public static Meta generateMeta(String profile, String source) {
-        return generateMeta(profile, source, "");
-    }
-
     public static Coding generateCoding(String code, String system, String display, String version) {
         Coding coding = new Coding();
         coding.setCode(code);
@@ -85,10 +81,6 @@ public class FhirHelper {
 
     public static Identifier generateIdentifier(String value, String system, CodeableConcept type, Reference assignerRef) {
         return generateIdentifier(value, system, type, assignerRef, null);
-    }
-
-    public static Identifier generateIdentifier(String value, String system, CodeableConcept type) {
-        return generateIdentifier(value, system, type, null);
     }
 
     public static Identifier generateIdentifier(String value, String system, Reference assignerRef) {
@@ -162,6 +154,10 @@ public class FhirHelper {
         if (Helper.checkNonEmptyString(display))
             reference.setDisplay(display);
         return reference;
+    }
+
+    public static Reference generateReference(String type, Identifier identifier) {
+        return generateReference("", type, identifier, "");
     }
 
     public static Reference generateReference(Identifier identifier, String display) {
