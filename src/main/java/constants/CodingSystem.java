@@ -8,4 +8,5 @@ public class CodingSystem {
     public static final String IDENTIFIER_TYPE_DE = "http://fhir.de/CodeSystem/identifier-type-de-basis";
     public static final String PID = "http://terminology.hl7.org/CodeSystem/v2-0203";
     public static final String OBSERVATION_CATEGORY = "http://hl7.org/fhir/CodeSystem/observation-category";
+    public static final String LOINC = "http://loinc.org";
 }

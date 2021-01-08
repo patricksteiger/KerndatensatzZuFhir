@@ -282,11 +282,20 @@ public class Person implements Datablock {
         observation.setMeta(this.getObservationMeta());
         observation.setStatus(this.getObservationStatus());
         observation.addCategory(this.getObservationCategory());
+        observation.setCode(this.getObservationCode());
         return observation;
     }
 
     public Meta getObservationMeta() {
         return FhirHelper.generateMeta(MetaProfile.OBSERVATION, MetaSource.OBSERVATION, MetaVersionId.OBSERVATION);
+    }
+
+    public CodeableConcept getObservationCode() {
+        String code = CodingCode.LOINC_OBSERVATION;
+        String system = CodingSystem.LOINC;
+        Coding loinc = FhirHelper.generateCoding(code, system);
+        CodeableConcept observationCode = new CodeableConcept().addCoding(loinc);
+        return observationCode;
     }
 
     public CodeableConcept getObservationCategory() {
