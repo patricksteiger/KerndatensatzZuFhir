@@ -6,6 +6,7 @@ package enums;
 public enum IdentifierTypeCode {
 
     MR("MR", "Krankenaktennummer"),
+    RI("RI", "Resource identifier"),
     XX("XX", "Organisations-ID");
 
     private final String code;

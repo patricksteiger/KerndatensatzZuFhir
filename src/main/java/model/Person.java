@@ -219,7 +219,7 @@ public class Person implements Datablock {
         String value = this.getVersichertenId_gkv();
         String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
         VersichertenCode gkv = VersichertenCode.GKV;
-        Coding gkvCoding = FhirHelper.generateCoding(gkv.getCode(), CodingSystem.VERSICHERTEN_ID_GKV, gkv.getDisplay());
+        Coding gkvCoding = FhirHelper.generateCoding(gkv.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, gkv.getDisplay());
         CodeableConcept type = new CodeableConcept().addCoding(gkvCoding);
         Reference assignerRef = FhirHelper.getOrganizationAssignerReference();
         Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
@@ -230,7 +230,7 @@ public class Person implements Datablock {
         String value = this.getVersichertennummer_pkv();
         String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
         VersichertenCode pkv = VersichertenCode.PKV;
-        Coding pkvCoding = FhirHelper.generateCoding(pkv.getCode(), CodingSystem.VERSICHERTEN_ID_GKV, pkv.getDisplay());
+        Coding pkvCoding = FhirHelper.generateCoding(pkv.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, pkv.getDisplay());
         CodeableConcept type = new CodeableConcept().addCoding(pkvCoding);
         Reference assignerRef = FhirHelper.getOrganizationAssignerReference();
         Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
@@ -240,12 +240,23 @@ public class Person implements Datablock {
     public ResearchSubject getResearchSubject() {
         ResearchSubject researchSubject = new ResearchSubject();
         researchSubject.setMeta(this.getResearchSubjectMeta());
-
+        researchSubject.addIdentifier(this.getSubjectIdentificationCode());
         return researchSubject;
     }
 
     public Meta getResearchSubjectMeta() {
         return FhirHelper.generateMeta(MetaProfile.RESEARCH_SUBJECT, MetaSource.RESEARCH_SUBJECT, MetaVersionId.RESEARCH_SUBJECT);
+    }
+
+    public Identifier getSubjectIdentificationCode() {
+        String value = this.getSubjekt_identifizierungscode();
+        String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
+        IdentifierTypeCode code = IdentifierTypeCode.RI;
+        Coding coding = FhirHelper.generateCoding(code.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, code.getDisplay());
+        CodeableConcept type = new CodeableConcept().addCoding(coding);
+        Reference assignerRef = FhirHelper.getUKUAssignerReference();
+        Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
+        return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
     }
 
     public Observation getObservation() {
