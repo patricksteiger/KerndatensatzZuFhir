@@ -244,15 +244,22 @@ public class Person implements Datablock {
         researchSubject.addIdentifier(this.getSubjectIdentificationCode());
         researchSubject.setStatus(this.getStatus());
         researchSubject.setPeriod(this.getResearchSubjectPeriod());
-        // TODO: study-Reference
         if (Helper.checkNonEmptyString(this.getPatNr()))
             researchSubject.setIndividual(this.getResearchSubjectIndividual());
-        // TODO: consent-reference
+        if (Helper.checkNonEmptyString(this.getRechtsgrundlage()))
+            researchSubject.setConsent(this.getResearchSubjectConsent());
         return researchSubject;
     }
 
     public Meta getResearchSubjectMeta() {
         return FhirHelper.generateMeta(MetaProfile.RESEARCH_SUBJECT, MetaSource.RESEARCH_SUBJECT, MetaVersionId.RESEARCH_SUBJECT);
+    }
+
+    public Reference getResearchSubjectConsent() {
+        String type = ReferenceType.CONSENT;
+        // FIXME: System is still missing!
+        Identifier identifier = FhirHelper.generateIdentifier(this.getRechtsgrundlage(), "");
+        return FhirHelper.generateReference(type, identifier);
     }
 
     public Reference getResearchSubjectIndividual() {
