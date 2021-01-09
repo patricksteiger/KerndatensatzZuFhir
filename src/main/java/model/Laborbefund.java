@@ -1,8 +1,6 @@
 package model;
 
-import constants.MetaProfile;
-import constants.MetaSource;
-import constants.MetaVersionId;
+import constants.*;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -80,8 +78,23 @@ public class Laborbefund implements Datablock {
 
   public DiagnosticReport getDiagnosticReport() {
     DiagnosticReport diagnosticReport = new DiagnosticReport();
+    // Meta
     diagnosticReport.setMeta(this.getDiagnosticReportMeta());
+    // Identifier Befund
+    diagnosticReport.addIdentifier(this.getDiagnosticReportBefund());
+    // TODO: Was ist die initiale ServiceRequest für basedOn?
     return diagnosticReport;
+  }
+
+  public Identifier getDiagnosticReportBefund() {
+    String value = this.getIdentifikation();
+    // FIXME: what is sytsem?
+    String system = IdentifierSystem.LOCAL_PID;
+    Coding coding =
+        FhirHelper.generateCoding(CodingCode.BEFUND_DIAGNOSTIC_REPORT, CodingSystem.PID);
+    CodeableConcept type = new CodeableConcept().addCoding(coding);
+    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    return FhirHelper.generateIdentifier(value, system, type, assignerRef);
   }
 
   public Meta getDiagnosticReportMeta() {
