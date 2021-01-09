@@ -14,11 +14,11 @@ public class Labor implements Datablock {
   private String geraet;
   // Probenmaterial
   private String probenmaterial_identifikation;
-  private String abnahmezeitpunkt;
-  private String laboreingangszeitpunkt;
-  private String probenart;
-  private String koerperstelle;
-  private String kommentar;
+  private String probenmaterial_abnahmezeitpunkt;
+  private String probenmaterial_laboreingangszeitpunkt;
+  private String probenmaterial_probenart;
+  private String probenmaterial_koerperstelle;
+  private String probenmaterial_kommentar;
   // Laboruntersuchung (Laboranalyse)
   private String laboruntersuchung_code;
   private String laboruntersuchung_identifikation;
@@ -142,44 +142,45 @@ public class Labor implements Datablock {
     this.probenmaterial_identifikation = probenmaterial_identifikation;
   }
 
-  public String getAbnahmezeitpunkt() {
-    return abnahmezeitpunkt;
+  public String getProbenmaterial_abnahmezeitpunkt() {
+    return probenmaterial_abnahmezeitpunkt;
   }
 
-  public void setAbnahmezeitpunkt(String abnahmezeitpunkt) {
-    this.abnahmezeitpunkt = abnahmezeitpunkt;
+  public void setProbenmaterial_abnahmezeitpunkt(String probenmaterial_abnahmezeitpunkt) {
+    this.probenmaterial_abnahmezeitpunkt = probenmaterial_abnahmezeitpunkt;
   }
 
-  public String getLaboreingangszeitpunkt() {
-    return laboreingangszeitpunkt;
+  public String getProbenmaterial_laboreingangszeitpunkt() {
+    return probenmaterial_laboreingangszeitpunkt;
   }
 
-  public void setLaboreingangszeitpunkt(String laboreingangszeitpunkt) {
-    this.laboreingangszeitpunkt = laboreingangszeitpunkt;
+  public void setProbenmaterial_laboreingangszeitpunkt(
+      String probenmaterial_laboreingangszeitpunkt) {
+    this.probenmaterial_laboreingangszeitpunkt = probenmaterial_laboreingangszeitpunkt;
   }
 
-  public String getProbenart() {
-    return probenart;
+  public String getProbenmaterial_probenart() {
+    return probenmaterial_probenart;
   }
 
-  public void setProbenart(String probenart) {
-    this.probenart = probenart;
+  public void setProbenmaterial_probenart(String probenmaterial_probenart) {
+    this.probenmaterial_probenart = probenmaterial_probenart;
   }
 
-  public String getKoerperstelle() {
-    return koerperstelle;
+  public String getProbenmaterial_koerperstelle() {
+    return probenmaterial_koerperstelle;
   }
 
-  public void setKoerperstelle(String koerperstelle) {
-    this.koerperstelle = koerperstelle;
+  public void setProbenmaterial_koerperstelle(String probenmaterial_koerperstelle) {
+    this.probenmaterial_koerperstelle = probenmaterial_koerperstelle;
   }
 
-  public String getKommentar() {
-    return kommentar;
+  public String getProbenmaterial_kommentar() {
+    return probenmaterial_kommentar;
   }
 
-  public void setKommentar(String kommentar) {
-    this.kommentar = kommentar;
+  public void setProbenmaterial_kommentar(String probenmaterial_kommentar) {
+    this.probenmaterial_kommentar = probenmaterial_kommentar;
   }
 
   public String getLaboruntersuchung_code() {
