@@ -7,4 +7,5 @@ public class MetaVersionId {
   public static final String PATIENT = UKU + "Patient_1.0.0.0";
   public static final String RESEARCH_SUBJECT = UKU + "ResearchSubject_1.0.0.0";
   public static final String OBSERVATION = UKU + "Observation_1.0.0.0";
+  public static final String DIAGNOSTIC_REPORT = UKU + "DiagnosticReport_1.0.0.0";
 }

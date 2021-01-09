@@ -1,5 +1,9 @@
 package model;
 
+import constants.MetaProfile;
+import constants.MetaSource;
+import constants.MetaVersionId;
+import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
@@ -76,7 +80,15 @@ public class Labor implements Datablock {
 
   public DiagnosticReport getDiagnosticReport() {
     DiagnosticReport diagnosticReport = new DiagnosticReport();
+    diagnosticReport.setMeta(this.getDiagnosticReportMeta());
     return diagnosticReport;
+  }
+
+  public Meta getDiagnosticReportMeta() {
+    return FhirHelper.generateMeta(
+        MetaProfile.DIAGNOSTIC_REPORT,
+        MetaSource.DIAGNOSTIC_REPORT,
+        MetaVersionId.DIAGNOSTIC_REPORT);
   }
 
   public Observation getObservation() {
