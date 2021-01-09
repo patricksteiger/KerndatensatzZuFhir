@@ -83,7 +83,13 @@ public class Laborbefund implements Datablock {
     // Identifier Befund
     diagnosticReport.addIdentifier(this.getDiagnosticReportBefund());
     // TODO: Was ist die initiale ServiceRequest für basedOn?
+    // Status
+    diagnosticReport.setStatus(this.getDiagnosticReportStatus());
     return diagnosticReport;
+  }
+
+  public DiagnosticReport.DiagnosticReportStatus getDiagnosticReportStatus() {
+    return FhirHelper.getDiagnosticReportStatusFromString(this.getStatus());
   }
 
   public Identifier getDiagnosticReportBefund() {

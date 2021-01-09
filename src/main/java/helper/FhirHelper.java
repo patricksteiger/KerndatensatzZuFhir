@@ -8,10 +8,7 @@ import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
 import org.hl7.fhir.r4.model.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.TimeZone;
+import java.util.*;
 
 public class FhirHelper {
 
@@ -211,6 +208,21 @@ public class FhirHelper {
   public static Address generateAddress(
       Address.AddressType type, String line, String city, String postalCode, String country) {
     return generateAddress(null, type, "", Helper.listOf(line), city, "", "", postalCode, country);
+  }
+
+  /**
+   * Returns diagnostic report status from case-insensitive string.
+   *
+   * @param diagnosticReportStatus
+   * @return diagnostic report status enum
+   * @throws IllegalArgumentException if diagnosticReportStatus is not valid.
+   */
+  public static DiagnosticReport.DiagnosticReportStatus getDiagnosticReportStatusFromString(
+      String diagnosticReportStatus) {
+    return Arrays.stream(DiagnosticReport.DiagnosticReportStatus.values())
+        .filter(status -> status.name().equalsIgnoreCase(diagnosticReportStatus))
+        .findFirst()
+        .orElseThrow(Helper.illegalCode(diagnosticReportStatus, "DiagnosticReportStatus"));
   }
 
   public static DateTimeType generateDate(Date date) {
