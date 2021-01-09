@@ -1,5 +1,6 @@
 package model;
 
+import com.opencsv.bean.CsvBindByName;
 import constants.*;
 import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
@@ -15,47 +16,47 @@ import java.util.Date;
 import java.util.List;
 
 public class Person implements Datablock {
-  private String patNr;
+  @CsvBindByName private String patNr;
   // Name
-  private String vorname;
-  private String nachname;
-  private String familienname;
-  private String vorsatzwort;
-  private String namenszusatz;
-  private String praefix;
-  private String art_des_praefix;
-  private String geburtsname;
+  @CsvBindByName private String vorname;
+  @CsvBindByName private String nachname;
+  @CsvBindByName private String familienname;
+  @CsvBindByName private String vorsatzwort;
+  @CsvBindByName private String namenszusatz;
+  @CsvBindByName private String praefix;
+  @CsvBindByName private String art_des_praefix;
+  @CsvBindByName private String geburtsname;
   // Demographie
-  private String admininistratives_geschlecht;
-  private String geburtsdatum;
+  @CsvBindByName private String admininistratives_geschlecht;
+  @CsvBindByName private String geburtsdatum;
   // Demographie - Adresse
-  private String postfachnummer;
-  private String postfach_wohnort;
-  private String postfach_plz;
-  private String postfach_land;
-  private String strassenanschrift_land;
-  private String strassenanschrift_plz;
-  private String strassenanschrift_wohnort;
-  private String strasse;
+  @CsvBindByName private String postfachnummer;
+  @CsvBindByName private String postfach_wohnort;
+  @CsvBindByName private String postfach_plz;
+  @CsvBindByName private String postfach_land;
+  @CsvBindByName private String strassenanschrift_land;
+  @CsvBindByName private String strassenanschrift_plz;
+  @CsvBindByName private String strassenanschrift_wohnort;
+  @CsvBindByName private String strasse;
   // Demographie - Vitalstatus
-  private String patient_verstorben;
-  private String todeszeitpunkt;
-  private String informationsquelle;
-  private String letzter_lebendzeitpunkt;
+  @CsvBindByName private String patient_verstorben;
+  @CsvBindByName private String todeszeitpunkt;
+  @CsvBindByName private String informationsquelle;
+  @CsvBindByName private String letzter_lebendzeitpunkt;
   // PatientIn
-  private String patient_pid;
-  private String patient_pid_kontext;
-  private String versichertenId_gkv;
-  private String versichertennummer_pkv;
-  private String institutionskennzeichen_krankenkasse;
-  private String versicherungstyp;
+  @CsvBindByName private String patient_pid;
+  @CsvBindByName private String patient_pid_kontext;
+  @CsvBindByName private String versichertenId_gkv;
+  @CsvBindByName private String versichertennummer_pkv;
+  @CsvBindByName private String institutionskennzeichen_krankenkasse;
+  @CsvBindByName private String versicherungstyp;
   // ProbandIn
-  private String bezeichnung_studie;
-  private String subjekt_identifizierungscode;
-  private String rechtsgrundlage;
-  private String teilnahme_beginn;
-  private String teilnahme_ende;
-  private String teilnahme_status;
+  @CsvBindByName private String bezeichnung_studie;
+  @CsvBindByName private String subjekt_identifizierungscode;
+  @CsvBindByName private String rechtsgrundlage;
+  @CsvBindByName private String teilnahme_beginn;
+  @CsvBindByName private String teilnahme_ende;
+  @CsvBindByName private String teilnahme_status;
 
   @Override
   public List<Resource> toFhirResources() {
