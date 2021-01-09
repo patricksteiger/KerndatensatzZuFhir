@@ -10,7 +10,7 @@ import org.hl7.fhir.r4.model.*;
 
 import java.util.List;
 
-public class Labor implements Datablock {
+public class Laborbefund implements Datablock {
   private String identifikation;
   private String status;
   private String klinisches_bezugsdatum;
