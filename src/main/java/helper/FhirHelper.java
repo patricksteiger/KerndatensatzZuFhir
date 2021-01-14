@@ -76,6 +76,11 @@ public class FhirHelper {
     return identifier;
   }
 
+  public static Identifier generateIdentifier(String value, String system, Coding coding) {
+    CodeableConcept codeableConcept = new CodeableConcept().addCoding(coding);
+    return generateIdentifier(value, system, codeableConcept, null);
+  }
+
   public static Identifier generateIdentifier(
       String value, String system, CodeableConcept type, Reference assignerRef) {
     return generateIdentifier(value, system, type, assignerRef, null);

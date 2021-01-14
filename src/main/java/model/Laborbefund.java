@@ -111,6 +111,8 @@ public class Laborbefund implements Datablock {
     ServiceRequest serviceRequest = new ServiceRequest();
     // Meta
     serviceRequest.setMeta(this.getServiceRequestMeta());
+    // Identifier
+    serviceRequest.addIdentifier(this.getServiceRequestIdentifier());
     // Status
     serviceRequest.setStatus(this.getServiceRequestStatus());
     // Intent
@@ -123,7 +125,29 @@ public class Laborbefund implements Datablock {
     serviceRequest.setSubject(this.getServiceRequestSubject());
     // AuthoredOn
     serviceRequest.setAuthoredOn(this.getServiceRequestAuthoredOn());
+    // Specimen (optional)
+    if (Helper.checkNonEmptyString(this.getLaboranforderung_probenmaterial_identifikation()))
+      serviceRequest.addSpecimen(this.getServiceRequestSpecimen());
     return serviceRequest;
+  }
+
+  public Identifier getServiceRequestIdentifier() {
+    String codingCode = CodingCode.PLAC;
+    String codingSystem = CodingSystem.PID;
+    Coding placerv2 = FhirHelper.generateCoding(codingCode, codingSystem);
+    String value = this.getIdentifikation();
+    String system = "";
+    return FhirHelper.generateIdentifier(value, system, placerv2);
+  }
+
+  public Reference getServiceRequestSpecimen() {
+    String type = ReferenceType.SPECIMEN;
+    // FIXME: What is system?
+    String system = "";
+    Identifier identifier =
+        FhirHelper.generateIdentifier(
+            this.getLaboranforderung_probenmaterial_identifikation(), system);
+    return FhirHelper.generateReference(type, identifier);
   }
 
   public Date getServiceRequestAuthoredOn() {
