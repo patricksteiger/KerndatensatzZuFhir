@@ -75,7 +75,7 @@ public class Prozedur implements Datablock {
 
   public Meta getMeta() {
     return FhirHelper.generateMeta(
-        MetaProfile.PROCEDURE, MetaSource.PROCEDURE, MetaVersionId.PROCEDURE);
+        MetaProfile.PROZEDUR_PROCEDURE, MetaSource.PROCEDURE, MetaVersionId.PROCEDURE);
   }
 
   /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/81934/" */

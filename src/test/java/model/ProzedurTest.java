@@ -26,7 +26,7 @@ public class ProzedurTest {
     assertEquals(MetaSource.PROCEDURE, received.getSource());
     List<CanonicalType> profiles = received.getProfile();
     assertEquals(1, profiles.size());
-    assertEquals(MetaProfile.PROCEDURE, profiles.get(0).asStringValue());
+    assertEquals(MetaProfile.PROZEDUR_PROCEDURE, profiles.get(0).asStringValue());
   }
 
   @Test

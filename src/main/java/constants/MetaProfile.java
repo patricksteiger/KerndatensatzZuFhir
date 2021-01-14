@@ -1,12 +1,19 @@
 package constants;
 
 public class MetaProfile {
-  private static final String MEDIZIN_INFORMATIK_STRUCTURE =
+  // Prozedur
+  private static final String STRUCTURE_PROZEDUR =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/";
-  public static final String PROCEDURE = MEDIZIN_INFORMATIK_STRUCTURE + "Procedure";
-  public static final String PATIENT = MEDIZIN_INFORMATIK_STRUCTURE + "Patient";
-  public static final String RESEARCH_SUBJECT = MEDIZIN_INFORMATIK_STRUCTURE + "ResearchSubject";
-  public static final String OBSERVATION = MEDIZIN_INFORMATIK_STRUCTURE + "Observation";
-  public static final String DIAGNOSTIC_REPORT = MEDIZIN_INFORMATIK_STRUCTURE + "DiagnosticReport";
-  public static final String SERVICE_REQUEST = MEDIZIN_INFORMATIK_STRUCTURE + "ServiceRequest";
+  public static final String PROZEDUR_PROCEDURE = STRUCTURE_PROZEDUR + "Procedure";
+  // Person
+  private static final String STRUCTURE_PERSON =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/";
+  public static final String PERSON_PATIENT = STRUCTURE_PERSON + "Patient";
+  public static final String PERSON_RESEARCH_SUBJECT = STRUCTURE_PERSON + "ResearchSubject";
+  public static final String PERSON_OBSERVATION = STRUCTURE_PERSON + "Vitalstatus";
+  // Laborbefund
+  private static final String STRUCTURE_LABOR =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/";
+  public static final String LABOR_DIAGNOSTIC_REPORT = STRUCTURE_LABOR + "DiagnosticReportLab";
+  public static final String LABOR_SERVICE_REQUEST = STRUCTURE_LABOR + "ServiceRequestLab";
 }

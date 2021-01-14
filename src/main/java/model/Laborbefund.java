@@ -185,7 +185,7 @@ public class Laborbefund implements Datablock {
   }
 
   public Meta getServiceRequestMeta() {
-    String profile = MetaProfile.SERVICE_REQUEST;
+    String profile = MetaProfile.LABOR_SERVICE_REQUEST;
     String source = MetaSource.SERVICE_REQUEST;
     String versionId = MetaVersionId.SERVICE_REQUEST;
     return FhirHelper.generateMeta(profile, source, versionId);
@@ -266,7 +266,7 @@ public class Laborbefund implements Datablock {
 
   public Meta getDiagnosticReportMeta() {
     return FhirHelper.generateMeta(
-        MetaProfile.DIAGNOSTIC_REPORT,
+        MetaProfile.LABOR_DIAGNOSTIC_REPORT,
         MetaSource.DIAGNOSTIC_REPORT,
         MetaVersionId.DIAGNOSTIC_REPORT);
   }
