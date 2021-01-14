@@ -101,6 +101,7 @@ public class Laborbefund implements Datablock {
     // Specimen (optional)
     if (Helper.checkNonEmptyString(this.getProbenmaterial_identifikation()))
       diagnosticReport.addSpecimen(this.getDiagnosticReportSpecimen());
+    // Conclusion (optional)
     if (Helper.checkNonEmptyString(this.getLaboruntersuchung_kommentar()))
       diagnosticReport.setConclusion(this.getLaboruntersuchung_kommentar());
     return diagnosticReport;
@@ -108,8 +109,30 @@ public class Laborbefund implements Datablock {
 
   public ServiceRequest getServiceRequest() {
     ServiceRequest serviceRequest = new ServiceRequest();
+    // Meta
     serviceRequest.setMeta(this.getServiceRequestMeta());
+    // Status
+    serviceRequest.setStatus(this.getServiceRequestStatus());
+    // Intent
+    serviceRequest.setIntent(this.getServiceRequestIntent());
+    // Category
+    serviceRequest.addCategory(this.getServiceRequestCategory());
     return serviceRequest;
+  }
+
+  public CodeableConcept getServiceRequestCategory() {
+    String code = CodingCode.LABORATORY;
+    String system = CodingSystem.TERMINOLOGY_OBSERVATION_VATEGORY;
+    Coding laboratory = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(laboratory);
+  }
+
+  public ServiceRequest.ServiceRequestIntent getServiceRequestIntent() {
+    return ServiceRequest.ServiceRequestIntent.ORDER;
+  }
+
+  public ServiceRequest.ServiceRequestStatus getServiceRequestStatus() {
+    return ServiceRequest.ServiceRequestStatus.COMPLETED;
   }
 
   public Meta getServiceRequestMeta() {

@@ -16,4 +16,6 @@ public class CodingSystem {
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/ValueSet/Vitalstatus";
   public static final String DIAGNOSTIC_SERVICE_SECTION =
       "http://terminology.hl7.org/CodeSystem/v2-0074";
+  public static final String TERMINOLOGY_OBSERVATION_VATEGORY =
+      "http://terminology.hl7.org/CodeSystem/observation-category";
 }
