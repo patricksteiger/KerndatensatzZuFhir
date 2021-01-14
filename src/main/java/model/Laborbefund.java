@@ -117,7 +117,32 @@ public class Laborbefund implements Datablock {
     serviceRequest.setIntent(this.getServiceRequestIntent());
     // Category
     serviceRequest.addCategory(this.getServiceRequestCategory());
+    // Code
+    serviceRequest.setCode(this.getServiceRequestCode());
+    // Subject
+    serviceRequest.setSubject(this.getServiceRequestSubject());
+    // AuthoredOn
+    serviceRequest.setAuthoredOn(this.getServiceRequestAuthoredOn());
     return serviceRequest;
+  }
+
+  public Date getServiceRequestAuthoredOn() {
+    return Helper.getDateFromISO(this.getLaboranforderung_anforderungsdatum());
+  }
+
+  public Reference getServiceRequestSubject() {
+    return this.getDiagnosticReportSubject();
+  }
+
+  public CodeableConcept getServiceRequestCode() {
+    String code = this.getLaboranforderung_laborparameter_code();
+    String system = CodingSystem.LOINC;
+    Coding coding = FhirHelper.generateCoding(code, system);
+    CodeableConcept serviceCode = new CodeableConcept();
+    serviceCode.addCoding(coding);
+    if (Helper.checkNonEmptyString(this.getLaboranforderung_laborparameter_bezeichnung()))
+      serviceCode.setText(this.getLaboranforderung_laborparameter_bezeichnung());
+    return serviceCode;
   }
 
   public CodeableConcept getServiceRequestCategory() {
