@@ -14,4 +14,6 @@ public class CodingSystem {
   public static final String LOINC = "http://loinc.org";
   public static final String VITALSTATUS =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/ValueSet/Vitalstatus";
+  public static final String DIAGNOSTIC_SERVICE_SECTION =
+      "http://terminology.hl7.org/CodeSystem/v2-0074";
 }

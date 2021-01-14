@@ -6,9 +6,11 @@ import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
+import java.util.Date;
 import java.util.List;
 
 public class Laborbefund implements Datablock {
+  private String patNr;
   private String identifikation;
   private String status;
   private String klinisches_bezugsdatum;
@@ -85,11 +87,85 @@ public class Laborbefund implements Datablock {
     // TODO: Was ist die initiale ServiceRequest für basedOn?
     // Status
     diagnosticReport.setStatus(this.getDiagnosticReportStatus());
+    // Category
+    diagnosticReport.addCategory(this.getDiagnosticReportCategory());
+    // Code
+    diagnosticReport.setCode(this.getDiagnosticReportCode());
+    // Subject
+    if (Helper.checkNonEmptyString(this.getPatNr()))
+      diagnosticReport.setSubject(this.getDiagnosticReportSubject());
+    // Effective
+    diagnosticReport.setEffective(this.getDiagnosticReportEffective());
+    // Issued
+    diagnosticReport.setIssued(this.getDiagnosticReportIssued());
+    // Specimen (optional)
+    if (Helper.checkNonEmptyString(this.getProbenmaterial_identifikation()))
+      diagnosticReport.addSpecimen(this.getDiagnosticReportSpecimen());
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_kommentar()))
+      diagnosticReport.setConclusion(this.getLaboruntersuchung_kommentar());
     return diagnosticReport;
+  }
+
+  public Reference getDiagnosticReportSpecimen() {
+    String type = ReferenceType.SPECIMEN;
+    // FIXME: What is system?
+    String system = "";
+    Identifier identifier =
+        FhirHelper.generateIdentifier(this.getProbenmaterial_identifikation(), system);
+    return FhirHelper.generateReference(type, identifier);
+  }
+
+  public Date getDiagnosticReportIssued() {
+    return Helper.getDateFromISO(this.getDokumentationsdatum());
+  }
+
+  public DateTimeType getDiagnosticReportEffective() {
+    Date date = null;
+    if (Helper.checkNonEmptyString(this.getProbenmaterial_abnahmezeitpunkt()))
+      date = Helper.getDateFromISO(this.getProbenmaterial_abnahmezeitpunkt());
+    else date = Helper.getDateFromISO(this.getProbenmaterial_laboreingangszeitpunkt());
+    return FhirHelper.generateDate(date);
+  }
+
+  public Reference getDiagnosticReportSubject() {
+    String type = ReferenceType.PATIENT;
+    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    Identifier subjectId =
+        FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirHelper.generateReference(type, subjectId);
+  }
+
+  public CodeableConcept getDiagnosticReportCode() {
+    return new CodeableConcept().addCoding(this.getDiagnosticReportLabReport());
+  }
+
+  public Coding getDiagnosticReportLabReport() {
+    String code = CodingCode.LOINC_LAB_REPORT;
+    String system = CodingSystem.LOINC;
+    return FhirHelper.generateCoding(code, system);
   }
 
   public DiagnosticReport.DiagnosticReportStatus getDiagnosticReportStatus() {
     return FhirHelper.getDiagnosticReportStatusFromString(this.getStatus());
+  }
+
+  public CodeableConcept getDiagnosticReportCategory() {
+    CodeableConcept category = new CodeableConcept();
+    category.addCoding(this.getDiagnosticReportLoincLab());
+    category.addCoding(this.getDiagnosticReportServiceSection());
+    return category;
+  }
+
+  public Coding getDiagnosticReportLoincLab() {
+    String code = CodingCode.LOINC_LAB;
+    String system = CodingSystem.LOINC;
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Coding getDiagnosticReportServiceSection() {
+    String code = CodingCode.LAB_DIAGNOSTIC_REPORT;
+    String system = CodingSystem.DIAGNOSTIC_SERVICE_SECTION;
+    return FhirHelper.generateCoding(code, system);
   }
 
   public Identifier getDiagnosticReportBefund() {
@@ -531,5 +607,13 @@ public class Laborbefund implements Datablock {
   public void setLaboranforderung_probenmaterial_kommentar(
       String laboranforderung_probenmaterial_kommentar) {
     this.laboranforderung_probenmaterial_kommentar = laboranforderung_probenmaterial_kommentar;
+  }
+
+  public String getPatNr() {
+    return patNr;
+  }
+
+  public void setPatNr(String patNr) {
+    this.patNr = patNr;
   }
 }
