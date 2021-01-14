@@ -8,4 +8,5 @@ public class MetaProfile {
   public static final String RESEARCH_SUBJECT = MEDIZIN_INFORMATIK_STRUCTURE + "ResearchSubject";
   public static final String OBSERVATION = MEDIZIN_INFORMATIK_STRUCTURE + "Observation";
   public static final String DIAGNOSTIC_REPORT = MEDIZIN_INFORMATIK_STRUCTURE + "DiagnosticReport";
+  public static final String SERVICE_REQUEST = MEDIZIN_INFORMATIK_STRUCTURE + "ServiceRequest";
 }

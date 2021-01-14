@@ -106,6 +106,19 @@ public class Laborbefund implements Datablock {
     return diagnosticReport;
   }
 
+  public ServiceRequest getServiceRequest() {
+    ServiceRequest serviceRequest = new ServiceRequest();
+    serviceRequest.setMeta(this.getServiceRequestMeta());
+    return serviceRequest;
+  }
+
+  public Meta getServiceRequestMeta() {
+    String profile = MetaProfile.SERVICE_REQUEST;
+    String source = MetaSource.SERVICE_REQUEST;
+    String versionId = MetaVersionId.SERVICE_REQUEST;
+    return FhirHelper.generateMeta(profile, source, versionId);
+  }
+
   public Reference getDiagnosticReportSpecimen() {
     String type = ReferenceType.SPECIMEN;
     // FIXME: What is system?
@@ -189,11 +202,6 @@ public class Laborbefund implements Datablock {
   public Observation getObservation() {
     Observation observation = new Observation();
     return observation;
-  }
-
-  public ServiceRequest getServiceRequest() {
-    ServiceRequest serviceRequest = new ServiceRequest();
-    return serviceRequest;
   }
 
   public Specimen getSpecimen() {

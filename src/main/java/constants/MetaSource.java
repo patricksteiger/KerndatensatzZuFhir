@@ -8,4 +8,5 @@ public class MetaSource {
   public static final String RESEARCH_SUBJECT = UKU_SAP + "ResearchSubject";
   public static final String OBSERVATION = UKU_SAP + "Observation";
   public static final String DIAGNOSTIC_REPORT = UKU_SAP + "DiagnosticReport";
+  public static final String SERVICE_REQUEST = UKU_SAP + "ServiceRequest";
 }
