@@ -289,7 +289,12 @@ public class Person implements Datablock {
   }
 
   public ResearchSubject.ResearchSubjectStatus getStatus() {
-    return ResearchSubject.ResearchSubjectStatus.CANDIDATE;
+    try {
+      return ResearchSubject.ResearchSubjectStatus.fromCode(this.getTeilnahme_status());
+    } catch (Exception e) {
+      throw new IllegalArgumentException(
+          "Status \"" + this.getTeilnahme_status() + "\" is not a valid Teilnahmestatus");
+    }
   }
 
   public Identifier getSubjectIdentificationCode() {
