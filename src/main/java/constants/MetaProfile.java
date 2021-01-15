@@ -16,4 +16,5 @@ public class MetaProfile {
       "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/";
   public static final String LABOR_DIAGNOSTIC_REPORT = STRUCTURE_LABOR + "DiagnosticReportLab";
   public static final String LABOR_SERVICE_REQUEST = STRUCTURE_LABOR + "ServiceRequestLab";
+  public static final String LABOR_OBSERVATION = STRUCTURE_LABOR + "ObservationLab";
 }

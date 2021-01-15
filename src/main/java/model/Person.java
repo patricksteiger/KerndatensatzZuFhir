@@ -96,7 +96,7 @@ public class Person implements Datablock {
 
   public Meta getPatientMeta() {
     return FhirHelper.generateMeta(
-        MetaProfile.PERSON_PATIENT, MetaSource.PATIENT, MetaVersionId.PATIENT);
+        MetaProfile.PERSON_PATIENT, MetaSource.PERSON_PATIENT, MetaVersionId.PERSON_PATIENT);
   }
 
   public Reference getManagingOrganization() {
@@ -280,8 +280,8 @@ public class Person implements Datablock {
   public Meta getResearchSubjectMeta() {
     return FhirHelper.generateMeta(
         MetaProfile.PERSON_RESEARCH_SUBJECT,
-        MetaSource.RESEARCH_SUBJECT,
-        MetaVersionId.RESEARCH_SUBJECT);
+        MetaSource.PERSON_RESEARCH_SUBJECT,
+        MetaVersionId.PERSON_RESEARCH_SUBJECT);
   }
 
   public Reference getResearchSubjectConsent() {
@@ -352,7 +352,9 @@ public class Person implements Datablock {
 
   public Meta getObservationMeta() {
     return FhirHelper.generateMeta(
-        MetaProfile.PERSON_OBSERVATION, MetaSource.OBSERVATION, MetaVersionId.OBSERVATION);
+        MetaProfile.PERSON_OBSERVATION,
+        MetaSource.PERSON_OBSERVATION,
+        MetaVersionId.PERSON_OBSERVATION);
   }
 
   public Reference getObservationSubject() {

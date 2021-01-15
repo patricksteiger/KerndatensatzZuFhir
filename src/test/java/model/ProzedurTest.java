@@ -23,7 +23,7 @@ public class ProzedurTest {
   @Test
   public void testGetMeta() {
     Meta received = prozedur.getMeta();
-    assertEquals(MetaSource.PROCEDURE, received.getSource());
+    assertEquals(MetaSource.PROZEDUR_PROCEDURE, received.getSource());
     List<CanonicalType> profiles = received.getProfile();
     assertEquals(1, profiles.size());
     assertEquals(MetaProfile.PROZEDUR_PROCEDURE, profiles.get(0).asStringValue());

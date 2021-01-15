@@ -186,8 +186,8 @@ public class Laborbefund implements Datablock {
 
   public Meta getServiceRequestMeta() {
     String profile = MetaProfile.LABOR_SERVICE_REQUEST;
-    String source = MetaSource.SERVICE_REQUEST;
-    String versionId = MetaVersionId.SERVICE_REQUEST;
+    String source = MetaSource.LABOR_SERVICE_REQUEST;
+    String versionId = MetaVersionId.LABOR_SERVICE_REQUEST;
     return FhirHelper.generateMeta(profile, source, versionId);
   }
 
@@ -267,13 +267,22 @@ public class Laborbefund implements Datablock {
   public Meta getDiagnosticReportMeta() {
     return FhirHelper.generateMeta(
         MetaProfile.LABOR_DIAGNOSTIC_REPORT,
-        MetaSource.DIAGNOSTIC_REPORT,
-        MetaVersionId.DIAGNOSTIC_REPORT);
+        MetaSource.LABOR_DIAGNOSTIC_REPORT,
+        MetaVersionId.LABOR_DIAGNOSTIC_REPORT);
   }
 
   public Observation getObservation() {
     Observation observation = new Observation();
+    // Meta
+    observation.setMeta(this.getObservationMeta());
     return observation;
+  }
+
+  public Meta getObservationMeta() {
+    String profile = MetaProfile.LABOR_OBSERVATION;
+    String source = MetaSource.LABOR_OBSERVATION;
+    String versionId = MetaVersionId.LABOR_OBSERVATION;
+    return FhirHelper.generateMeta(profile, source, versionId);
   }
 
   public Specimen getSpecimen() {
