@@ -2,6 +2,7 @@ package model;
 
 import constants.*;
 import enums.IdentifierTypeCode;
+import enums.Laborbereich;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -287,14 +288,28 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationCategory() {
+    CodeableConcept category = new CodeableConcept();
+    // LOINC
     Coding loincCoding = FhirHelper.generateCoding(CodingCode.LOINC_LAB, CodingSystem.LOINC);
+    category.addCoding(loincCoding);
+    // Observation-Category
     Coding categoryCoding =
         FhirHelper.generateCoding(
             CodingCode.LABORATORY, CodingSystem.OBSERVATION_CATEGORY_TERMINOLOGY);
-    // TODO: Laborbereich/gruppe
-    CodeableConcept category = new CodeableConcept();
-    category.addCoding(loincCoding);
     category.addCoding(categoryCoding);
+    // Laborbereichcode
+    if (Helper.checkNonEmptyString(this.getLaborbereich_code())) {
+      Laborbereich bereich = Laborbereich.fromCode(this.getLaborbereich_code());
+      Coding bereichCoding =
+          FhirHelper.generateCoding(bereich.getCode(), bereich.getSystem(), bereich.getDisplay());
+      category.addCoding(bereichCoding);
+    }
+    // Laborgruppencode
+    if (Helper.checkNonEmptyString(this.getLaborgruppe_code())) {
+      Coding gruppenCoding =
+          FhirHelper.generateCoding(this.getLaborgruppe_code(), CodingSystem.LABORGRUPPEN_CODE);
+      category.addCoding(gruppenCoding);
+    }
     return category;
   }
 

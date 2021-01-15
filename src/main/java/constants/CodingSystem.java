@@ -20,4 +20,5 @@ public class CodingSystem {
       "http://terminology.hl7.org/CodeSystem/observation-category";
   public static final String OBSERVATION_CATEGORY_TERMINOLOGY =
       "http://terminology.hl7.org/CodeSystem/observation-category";
+  public static final String LABORGRUPPEN_CODE = "urn:oid:1.2.40.0.34.5.11";
 }
