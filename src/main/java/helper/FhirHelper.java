@@ -1,10 +1,7 @@
 package helper;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import constants.CodingSystem;
 import constants.IdentifierSystem;
-import constants.ReferenceType;
-import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
 import org.hl7.fhir.r4.model.*;
 
@@ -138,24 +135,6 @@ public class FhirHelper {
     Identifier assignerId =
         FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), IdentifierSystem.NS_DIZ);
     return FhirHelper.generateReference(assignerId, MIICoreLocations.UKU.toString());
-  }
-
-  public static Reference getOrganizationAssignerReference() {
-    String type = ReferenceType.ORGANIZATION;
-    // Identifier
-    Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
-    String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
-    IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
-    String identifierSystem = CodingSystem.PID;
-    Coding coding =
-        FhirHelper.generateCoding(
-            identifierTypeCode.getCode(), identifierSystem, identifierTypeCode.getDisplay());
-    CodeableConcept identifierType = new CodeableConcept().addCoding(coding);
-    // FIXME: What is the value of the identifier?
-    String identifierValue = "";
-    Identifier identifier =
-        FhirHelper.generateIdentifier(identifierValue, system, identifierType, null, use);
-    return FhirHelper.generateReference("", type, identifier, "");
   }
 
   public static Reference generateReference(

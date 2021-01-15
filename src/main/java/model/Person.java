@@ -212,7 +212,7 @@ public class Person implements Datablock {
     Coding pidCoding =
         FhirHelper.generateCoding(code.getCode(), CodingSystem.PID, code.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(pidCoding);
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
     return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
   }
@@ -224,7 +224,7 @@ public class Person implements Datablock {
     Coding gkvCoding =
         FhirHelper.generateCoding(gkv.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, gkv.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(gkvCoding);
-    Reference assignerRef = FhirHelper.getOrganizationAssignerReference();
+    Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
     return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
   }
@@ -236,9 +236,26 @@ public class Person implements Datablock {
     Coding pkvCoding =
         FhirHelper.generateCoding(pkv.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, pkv.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(pkvCoding);
-    Reference assignerRef = FhirHelper.getOrganizationAssignerReference();
+    Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
     return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
+  }
+
+  public Reference getPatientOrganizationReference() {
+    String type = ReferenceType.ORGANIZATION;
+    // Identifier
+    Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
+    String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
+    IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
+    String identifierSystem = CodingSystem.PID;
+    Coding coding =
+        FhirHelper.generateCoding(
+            identifierTypeCode.getCode(), identifierSystem, identifierTypeCode.getDisplay());
+    CodeableConcept identifierType = new CodeableConcept().addCoding(coding);
+    String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
+    Identifier identifier =
+        FhirHelper.generateIdentifier(identifierValue, system, identifierType, null, use);
+    return FhirHelper.generateReference("", type, identifier, "");
   }
 
   public ResearchSubject getResearchSubject() {
