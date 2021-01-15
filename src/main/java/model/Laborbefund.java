@@ -1,6 +1,7 @@
 package model;
 
 import constants.*;
+import enums.IdentifierTypeCode;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -133,7 +134,7 @@ public class Laborbefund implements Datablock {
 
   public Identifier getServiceRequestIdentifier() {
     String codingCode = CodingCode.PLAC;
-    String codingSystem = CodingSystem.PID;
+    String codingSystem = CodingSystem.IDENTIFIER_TYPE;
     Coding placerv2 = FhirHelper.generateCoding(codingCode, codingSystem);
     String value = this.getIdentifikation();
     String system = "";
@@ -258,7 +259,8 @@ public class Laborbefund implements Datablock {
     // FIXME: what is sytsem?
     String system = IdentifierSystem.LOCAL_PID;
     Coding coding =
-        FhirHelper.generateCoding(CodingCode.BEFUND_DIAGNOSTIC_REPORT, CodingSystem.PID);
+        FhirHelper.generateCoding(
+            CodingCode.BEFUND_DIAGNOSTIC_REPORT, CodingSystem.IDENTIFIER_TYPE);
     CodeableConcept type = new CodeableConcept().addCoding(coding);
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     return FhirHelper.generateIdentifier(value, system, type, assignerRef);
@@ -275,7 +277,45 @@ public class Laborbefund implements Datablock {
     Observation observation = new Observation();
     // Meta
     observation.setMeta(this.getObservationMeta());
+    // Identifier
+    observation.addIdentifier(this.getObservationIdentifier());
+    // Status
+    observation.setStatus(this.getObservationStatus());
+    // Category
+    observation.addCategory(this.getObservationCategory());
     return observation;
+  }
+
+  public CodeableConcept getObservationCategory() {
+    Coding loincCoding = FhirHelper.generateCoding(CodingCode.LOINC_LAB, CodingSystem.LOINC);
+    Coding categoryCoding =
+        FhirHelper.generateCoding(
+            CodingCode.LABORATORY, CodingSystem.OBSERVATION_CATEGORY_TERMINOLOGY);
+    // TODO: Laborbereich/gruppe
+    CodeableConcept category = new CodeableConcept();
+    category.addCoding(loincCoding);
+    category.addCoding(categoryCoding);
+    return category;
+  }
+
+  public Observation.ObservationStatus getObservationStatus() {
+    try {
+      return Observation.ObservationStatus.fromCode(this.getLaboruntersuchung_status());
+    } catch (Exception e) {
+      throw Helper.illegalCode(this.getLaboruntersuchung_status(), "ObservationStatus").get();
+    }
+  }
+
+  public Identifier getObservationIdentifier() {
+    String codingSystem = CodingSystem.IDENTIFIER_TYPE;
+    IdentifierTypeCode codingCode = IdentifierTypeCode.OBI;
+    Coding observationInstanceV2 =
+        FhirHelper.generateCoding(codingCode.getCode(), codingSystem, codingCode.getDisplay());
+    CodeableConcept type = new CodeableConcept().addCoding(observationInstanceV2);
+    String value = this.getLaboruntersuchung_identifikation();
+    String system = "";
+    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    return FhirHelper.generateIdentifier(value, system, type, assignerRef);
   }
 
   public Meta getObservationMeta() {

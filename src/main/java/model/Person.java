@@ -210,7 +210,7 @@ public class Person implements Datablock {
     String system = IdentifierSystem.PID;
     IdentifierTypeCode code = IdentifierTypeCode.MR;
     Coding pidCoding =
-        FhirHelper.generateCoding(code.getCode(), CodingSystem.PID, code.getDisplay());
+        FhirHelper.generateCoding(code.getCode(), CodingSystem.IDENTIFIER_TYPE, code.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(pidCoding);
     Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
@@ -247,7 +247,7 @@ public class Person implements Datablock {
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
     String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
     IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
-    String identifierSystem = CodingSystem.PID;
+    String identifierSystem = CodingSystem.IDENTIFIER_TYPE;
     Coding coding =
         FhirHelper.generateCoding(
             identifierTypeCode.getCode(), identifierSystem, identifierTypeCode.getDisplay());
