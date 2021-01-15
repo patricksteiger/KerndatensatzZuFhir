@@ -105,9 +105,6 @@ public class Laborbefund implements Datablock {
     // Specimen (optional)
     if (Helper.checkNonEmptyString(this.getProbenmaterial_identifikation()))
       diagnosticReport.addSpecimen(this.getDiagnosticReportSpecimen());
-    // Conclusion (optional)
-    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_kommentar()))
-      diagnosticReport.setConclusion(this.getLaboruntersuchung_kommentar());
     return diagnosticReport;
   }
 
@@ -295,13 +292,39 @@ public class Laborbefund implements Datablock {
     // Issued (optional)
     if (Helper.checkNonEmptyString(this.getLaboruntersuchung_dokumentationsdatum()))
       observation.setIssued(this.getObservationIssued());
-    // Value - Quantity
-    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_ergebnis()))
-      observation.setValue(this.getObservationValueQuantity());
+    // Value
+    observation.setValue(this.getObservationValue());
+    // Note (optional)
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_kommentar()))
+      observation.addNote(this.getObservationNote());
+    // Method (optional)
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_untersuchungsmethode()))
+      observation.setMethod(this.getObservationMethod());
+    observation.addReferenceRange(this.getObservationReferenceRange());
     return observation;
   }
 
-  public Quantity getObservationValueQuantity() {
+  public Observation.ObservationReferenceRangeComponent getObservationReferenceRange() {
+    Observation.ObservationReferenceRangeComponent range = new Observation.ObservationReferenceRangeComponent();
+    return range;
+  }
+
+  public CodeableConcept getObservationMethod() {
+    String code = this.getLaboruntersuchung_untersuchungsmethode();
+    // FIXME: What is system?
+    String system = "";
+    Coding method = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(method);
+  }
+
+  public Annotation getObservationNote() {
+    Annotation note = new Annotation();
+    note.setText(this.getLaboruntersuchung_kommentar());
+    return note;
+  }
+
+  // TODO: Is there semi quantitive result? (0, +, ++, ...)
+  public Quantity getObservationValue() {
     Quantity quantity = new Quantity();
     // TODO: How does the ergebnis really look?
     String[] valueQuantity = this.getLaboruntersuchung_ergebnis().split(" ");
