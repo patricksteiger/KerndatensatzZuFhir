@@ -284,7 +284,29 @@ public class Laborbefund implements Datablock {
     observation.setStatus(this.getObservationStatus());
     // Category
     observation.addCategory(this.getObservationCategory());
+    // Code
+    observation.setCode(this.getObservationCode());
+    // Subject
+    observation.setSubject(this.getObservationSubject());
+    // Effective
+    observation.setEffective(this.getObservationEffective());
     return observation;
+  }
+
+  public DateTimeType getObservationEffective() {
+    Date effective = Helper.getDateFromISO(this.getLaboruntersuchung_untersuchungszeitpunkt());
+    return FhirHelper.generateDate(effective);
+  }
+
+  public Reference getObservationSubject() {
+    return this.getDiagnosticReportSubject();
+  }
+
+  public CodeableConcept getObservationCode() {
+    String codingCode = this.getLaborparameter_bezeichnung();
+    String system = CodingSystem.LOINC;
+    Coding code = FhirHelper.generateCoding(codingCode, system);
+    return new CodeableConcept().addCoding(code);
   }
 
   public CodeableConcept getObservationCategory() {
