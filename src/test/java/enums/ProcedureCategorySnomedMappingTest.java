@@ -10,33 +10,33 @@ public class ProcedureCategorySnomedMappingTest {
   public void testGetSnomedMappingByOpsCode() {
     assertThrows(
         IllegalArgumentException.class,
-        () -> ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode(null));
+        () -> ProcedureCategorySnomedMapping.fromOpsCode(null));
     assertThrows(
         IllegalArgumentException.class,
-        () -> ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode(""));
+        () -> ProcedureCategorySnomedMapping.fromOpsCode(""));
     assertThrows(
         IllegalArgumentException.class,
-        () -> ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("test"));
+        () -> ProcedureCategorySnomedMapping.fromOpsCode("test"));
     assertThrows(
         IllegalArgumentException.class,
-        () -> ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("0"));
+        () -> ProcedureCategorySnomedMapping.fromOpsCode("0"));
     assertEquals(
         ProcedureCategorySnomedMapping.DIAGNOSTIC,
-        ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("1"));
+        ProcedureCategorySnomedMapping.fromOpsCode("1"));
     assertEquals(
         ProcedureCategorySnomedMapping.IMAGING,
-        ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("3"));
+        ProcedureCategorySnomedMapping.fromOpsCode("3"));
     assertEquals(
         ProcedureCategorySnomedMapping.SURGICAL,
-        ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("5"));
+        ProcedureCategorySnomedMapping.fromOpsCode("5"));
     assertEquals(
         ProcedureCategorySnomedMapping.ADMINISTRATION_OF_MEDICINE,
-        ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("6"));
+        ProcedureCategorySnomedMapping.fromOpsCode("6"));
     assertEquals(
         ProcedureCategorySnomedMapping.THERAPEUTIC,
-        ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("8"));
+        ProcedureCategorySnomedMapping.fromOpsCode("8"));
     assertEquals(
         ProcedureCategorySnomedMapping.OTHER,
-        ProcedureCategorySnomedMapping.getSnomedMappingByOpsCode("9"));
+        ProcedureCategorySnomedMapping.fromOpsCode("9"));
   }
 }

@@ -42,7 +42,7 @@ public enum Laborbereich {
    * @return Laborbereich enum corresponding to code
    * @see "https://simplifier.net/medizininformatikinitiative-modullabor/laborbereich"
    */
-  public Laborbereich fromCode(String code) {
+  public static Laborbereich fromCode(String code) {
     return Arrays.stream(Laborbereich.values())
         .filter(laborbereich -> laborbereich.getCode().equals(code))
         .findFirst()
@@ -50,11 +50,9 @@ public enum Laborbereich {
   }
 
   public String getSystem() {
-    if (GENETICS.getCode().equals(this.getCode())) {
-      return "http://terminology.hl7.org/CodeSystem/v2-0074";
-    } else {
-      return "http://loinc.org";
-    }
+    return this.getCode().equals(GENETICS.getCode())
+        ? "http://terminology.hl7.org/CodeSystem/v2-0074"
+        : "http://loinc.org";
   }
 
   public String getCode() {

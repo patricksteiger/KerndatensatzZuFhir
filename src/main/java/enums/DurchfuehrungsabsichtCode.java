@@ -32,7 +32,7 @@ public enum DurchfuehrungsabsichtCode {
    * @see
    *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
    */
-  public static DurchfuehrungsabsichtCode getDurchfuehrungsabsichtByCode(String code) {
+  public static DurchfuehrungsabsichtCode fromCode(String code) {
     return Arrays.stream(DurchfuehrungsabsichtCode.values())
         .filter(durchEnum -> durchEnum.getCode().equals(code))
         .findFirst()

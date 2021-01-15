@@ -33,7 +33,7 @@ public enum ProcedureCategorySnomedMapping {
    * @see
    *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
    */
-  public static ProcedureCategorySnomedMapping getSnomedMappingByOpsCode(String opsCode) {
+  public static ProcedureCategorySnomedMapping fromOpsCode(String opsCode) {
     if (!Helper.checkNonEmptyString(opsCode))
       throw new IllegalArgumentException("OPS-Code can't be null or empty");
     final char opsMapping = opsCode.charAt(0);

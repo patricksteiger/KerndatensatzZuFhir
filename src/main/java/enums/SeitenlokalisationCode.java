@@ -33,7 +33,7 @@ public enum SeitenlokalisationCode {
    * @see
    *     "https://art-decor.org/art-decor/decor-valuesets--mide-?id=1.2.40.0.34.10.176&effectiveDate="
    */
-  public static SeitenlokalisationCode getSeitenlokalisationByCode(String code) {
+  public static SeitenlokalisationCode fromCode(String code) {
     return Arrays.stream(SeitenlokalisationCode.values())
         .filter(seitenEnum -> seitenEnum.getCode().equals(code))
         .findFirst()
