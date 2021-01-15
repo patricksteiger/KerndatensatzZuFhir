@@ -1,5 +1,6 @@
 package model;
 
+import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
 import enums.Laborbereich;
@@ -8,6 +9,7 @@ import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -290,7 +292,30 @@ public class Laborbefund implements Datablock {
     observation.setSubject(this.getObservationSubject());
     // Effective
     observation.setEffective(this.getObservationEffective());
+    // Issued (optional)
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_dokumentationsdatum()))
+      observation.setIssued(this.getObservationIssued());
+    // Value - Quantity
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_ergebnis()))
+      observation.setValue(this.getObservationValueQuantity());
     return observation;
+  }
+
+  public Quantity getObservationValueQuantity() {
+    Quantity quantity = new Quantity();
+    // TODO: How does the ergebnis really look?
+    String[] valueQuantity = this.getLaboruntersuchung_ergebnis().split(" ");
+    BigDecimal value = new BigDecimal(valueQuantity[0]);
+    quantity.setValue(value);
+    String unit = valueQuantity[1];
+    quantity.setUnit(unit);
+    quantity.setSystem(Constants.QUANTITY_SYSTEM);
+    quantity.setCode(Constants.QUANTITY_CODE);
+    return quantity;
+  }
+
+  public Date getObservationIssued() {
+    return Helper.getDateFromISO(this.getLaboruntersuchung_dokumentationsdatum());
   }
 
   public DateTimeType getObservationEffective() {
