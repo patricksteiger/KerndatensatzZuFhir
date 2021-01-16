@@ -1,5 +1,7 @@
 package enums;
 
+import constants.CodingSystem;
+
 import java.util.Arrays;
 
 import static helper.Helper.illegalCode;
@@ -45,5 +47,9 @@ public enum DurchfuehrungsabsichtCode {
 
   public String getDisplay() {
     return this.display;
+  }
+
+  public String getSystem() {
+    return CodingSystem.SNOMED_CLINICAL_TERMS;
   }
 }

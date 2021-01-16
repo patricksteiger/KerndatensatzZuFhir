@@ -1,5 +1,7 @@
 package enums;
 
+import constants.CodingSystem;
+
 /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80925" */
 public enum IdentifierTypeCode {
   MR("MR", "Krankenaktennummer"),
@@ -21,5 +23,9 @@ public enum IdentifierTypeCode {
 
   public String getDisplay() {
     return this.display;
+  }
+
+  public String getSystem() {
+    return CodingSystem.IDENTIFIER_TYPE;
   }
 }

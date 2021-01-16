@@ -210,7 +210,7 @@ public class Person implements Datablock {
     String system = IdentifierSystem.PID;
     IdentifierTypeCode code = IdentifierTypeCode.MR;
     Coding pidCoding =
-        FhirHelper.generateCoding(code.getCode(), CodingSystem.IDENTIFIER_TYPE, code.getDisplay());
+        FhirHelper.generateCoding(code.getCode(), code.getSystem(), code.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(pidCoding);
     Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
@@ -221,8 +221,7 @@ public class Person implements Datablock {
     String value = this.getVersichertenId_gkv();
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     VersichertenCode gkv = VersichertenCode.GKV;
-    Coding gkvCoding =
-        FhirHelper.generateCoding(gkv.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, gkv.getDisplay());
+    Coding gkvCoding = FhirHelper.generateCoding(gkv.getCode(), gkv.getSystem(), gkv.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(gkvCoding);
     Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
@@ -233,8 +232,7 @@ public class Person implements Datablock {
     String value = this.getVersichertennummer_pkv();
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     VersichertenCode pkv = VersichertenCode.PKV;
-    Coding pkvCoding =
-        FhirHelper.generateCoding(pkv.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, pkv.getDisplay());
+    Coding pkvCoding = FhirHelper.generateCoding(pkv.getCode(), pkv.getSystem(), pkv.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(pkvCoding);
     Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
@@ -247,10 +245,11 @@ public class Person implements Datablock {
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
     String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
     IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
-    String identifierSystem = CodingSystem.IDENTIFIER_TYPE;
     Coding coding =
         FhirHelper.generateCoding(
-            identifierTypeCode.getCode(), identifierSystem, identifierTypeCode.getDisplay());
+            identifierTypeCode.getCode(),
+            identifierTypeCode.getSystem(),
+            identifierTypeCode.getDisplay());
     CodeableConcept identifierType = new CodeableConcept().addCoding(coding);
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
     Identifier identifier =
@@ -321,9 +320,7 @@ public class Person implements Datablock {
     String value = this.getSubjekt_identifizierungscode();
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
     IdentifierTypeCode code = IdentifierTypeCode.RI;
-    Coding coding =
-        FhirHelper.generateCoding(
-            code.getCode(), CodingSystem.IDENTIFIER_TYPE_DE, code.getDisplay());
+    Coding coding = FhirHelper.generateCoding(code.getCode(), code.getSystem(), code.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(coding);
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
@@ -373,8 +370,7 @@ public class Person implements Datablock {
       } catch (IllegalArgumentException e) {
       }
     }
-    String system = CodingSystem.VITALSTATUS;
-    return FhirHelper.generateCoding(code.getCode(), system, code.getDisplay());
+    return FhirHelper.generateCoding(code.getCode(), code.getSystem(), code.getDisplay());
   }
 
   public DateTimeType getObservationEffective() {

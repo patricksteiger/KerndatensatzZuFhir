@@ -1,5 +1,6 @@
 package enums;
 
+import constants.CodingSystem;
 import helper.Helper;
 
 import java.util.Arrays;
@@ -53,5 +54,9 @@ public enum ProcedureCategorySnomedMapping {
 
   public char getOpsMapping() {
     return this.opsMapping;
+  }
+
+  public String getSystem() {
+    return CodingSystem.SNOMED_CLINICAL_TERMS;
   }
 }

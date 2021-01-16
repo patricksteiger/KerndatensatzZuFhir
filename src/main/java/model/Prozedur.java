@@ -85,8 +85,7 @@ public class Prozedur implements Datablock {
     ProcedureCategorySnomedMapping mapping =
         ProcedureCategorySnomedMapping.fromOpsCode(this.getOPS_Vollst_Prozedurenkode());
     Coding categoryCode =
-        FhirHelper.generateCoding(
-            mapping.getCode(), CodingSystem.SNOMED_CLINICAL_TERMS, mapping.getDisplay());
+        FhirHelper.generateCoding(mapping.getCode(), mapping.getSystem(), mapping.getDisplay());
     return new CodeableConcept().addCoding(categoryCode);
   }
 
@@ -117,7 +116,7 @@ public class Prozedur implements Datablock {
         SeitenlokalisationCode.fromCode(this.getOPS_Seitenlokalisation());
     Coding value =
         FhirHelper.generateCoding(
-            seitenCode.getCode(), seitenCode.getCodeSystem(), seitenCode.getDisplay());
+            seitenCode.getCode(), seitenCode.getSystem(), seitenCode.getDisplay());
     return FhirHelper.generateExtension(ExtensionUrl.OPS_SEITENLOKALISATION, value);
   }
 
@@ -175,7 +174,7 @@ public class Prozedur implements Datablock {
     Coding code =
         FhirHelper.generateCoding(
             durchfuehrungsabsichtCode.getCode(),
-            CodingSystem.SNOMED_CLINICAL_TERMS,
+            durchfuehrungsabsichtCode.getSystem(),
             durchfuehrungsabsichtCode.getDisplay());
     return FhirHelper.generateExtension(ExtensionUrl.DURCHFUEHRUNGSABSICHT, code);
   }

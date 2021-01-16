@@ -1,5 +1,7 @@
 package enums;
 
+import constants.CodingSystem;
+
 public enum VitalStatus {
   LEBENDIG("L", "Patient lebt"),
   VERSTORBEN("T", "Patient verstorben"),
@@ -23,5 +25,9 @@ public enum VitalStatus {
 
   public String getDisplay() {
     return display;
+  }
+
+  public String getSystem() {
+    return CodingSystem.VITALSTATUS;
   }
 }

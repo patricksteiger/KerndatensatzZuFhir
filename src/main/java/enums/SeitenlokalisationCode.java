@@ -48,7 +48,7 @@ public enum SeitenlokalisationCode {
     return this.display;
   }
 
-  public String getCodeSystem() {
+  public String getSystem() {
     return this.codeSystem;
   }
 }

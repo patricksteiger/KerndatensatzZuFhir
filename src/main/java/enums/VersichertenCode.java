@@ -1,5 +1,7 @@
 package enums;
 
+import constants.CodingSystem;
+
 public enum VersichertenCode {
   GKV("GKV", "Gesetzliche Krankenversicherung"),
   PKV("PKV", "Private Krankenversicherung"),
@@ -21,5 +23,9 @@ public enum VersichertenCode {
 
   public String getDisplay() {
     return this.display;
+  }
+
+  public String getSystem() {
+    return CodingSystem.IDENTIFIER_TYPE_DE;
   }
 }

@@ -425,10 +425,10 @@ public class Laborbefund implements Datablock {
   }
 
   public Identifier getObservationIdentifier() {
-    String codingSystem = CodingSystem.IDENTIFIER_TYPE;
     IdentifierTypeCode codingCode = IdentifierTypeCode.OBI;
     Coding observationInstanceV2 =
-        FhirHelper.generateCoding(codingCode.getCode(), codingSystem, codingCode.getDisplay());
+        FhirHelper.generateCoding(
+            codingCode.getCode(), codingCode.getSystem(), codingCode.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(observationInstanceV2);
     String value = this.getLaboruntersuchung_identifikation();
     String system = "";
