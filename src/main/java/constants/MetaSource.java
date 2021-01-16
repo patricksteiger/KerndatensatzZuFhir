@@ -13,4 +13,6 @@ public class MetaSource {
   public static final String LABOR_DIAGNOSTIC_REPORT = UKU_SAP + "Laborbefund-DiagnosticReport";
   public static final String LABOR_SERVICE_REQUEST = UKU_SAP + "Laborbefund-ServiceRequest";
   public static final String LABOR_OBSERVATION = UKU_SAP + "Laborbefund-Observation";
+  // Fall
+  public static final String FALL_ENCOUNTER = UKU_SAP + "Fall-Encounter";
 }

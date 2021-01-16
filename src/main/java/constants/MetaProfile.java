@@ -1,6 +1,9 @@
 package constants;
 
 public class MetaProfile {
+  // Fall
+  public static final String FALL_ENCOUNTER =
+      "https://www.medizininformatik-initiative.de/fhir/core/StructureDefinition/Encounter/KontaktGesundheitseinrichtung";
   // Prozedur
   private static final String STRUCTURE_PROZEDUR =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/";
