@@ -5,6 +5,7 @@ import constants.IdentifierSystem;
 import enums.MIICoreLocations;
 import org.hl7.fhir.r4.model.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class FhirHelper {
@@ -129,6 +130,26 @@ public class FhirHelper {
     if ("m".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.MALE;
     if ("un".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.OTHER;
     return Enumerations.AdministrativeGender.UNKNOWN;
+  }
+
+  public static Quantity generateQuantity(
+      BigDecimal value,
+      Quantity.QuantityComparator comparator,
+      String unit,
+      String system,
+      String code) {
+    Quantity quantity = new Quantity();
+    if (value != null) quantity.setValue(value);
+    if (comparator != null) quantity.setComparator(comparator);
+    if (Helper.checkNonEmptyString(unit)) quantity.setUnit(unit);
+    if (Helper.checkNonEmptyString(system)) quantity.setSystem(system);
+    if (Helper.checkNonEmptyString(code)) quantity.setCode(code);
+    return quantity;
+  }
+
+  public static Quantity generateQuantity(
+      BigDecimal value, String unit, String system, String code) {
+    return generateQuantity(value, null, unit, system, code);
   }
 
   public static Reference getUKUAssignerReference() {

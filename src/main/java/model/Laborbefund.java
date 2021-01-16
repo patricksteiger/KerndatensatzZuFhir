@@ -6,6 +6,7 @@ import enums.IdentifierTypeCode;
 import enums.Laborbereich;
 import helper.FhirHelper;
 import helper.Helper;
+import helper.ValueAndUnitParsed;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -75,11 +76,9 @@ public class Laborbefund implements Datablock {
 
   @Override
   public List<Resource> toFhirResources() {
+    // TODO: Specimen needs to be defined
     return Helper.listOf(
-        this.getDiagnosticReport(),
-        this.getObservation(),
-        this.getServiceRequest(),
-        this.getSpecimen());
+        this.getDiagnosticReport(), this.getObservation(), this.getServiceRequest());
   }
 
   public DiagnosticReport getDiagnosticReport() {
@@ -108,6 +107,41 @@ public class Laborbefund implements Datablock {
     return diagnosticReport;
   }
 
+  public Observation getObservation() {
+    Observation observation = new Observation();
+    // Meta
+    observation.setMeta(this.getObservationMeta());
+    // Identifier
+    observation.addIdentifier(this.getObservationIdentifier());
+    // Status
+    observation.setStatus(this.getObservationStatus());
+    // Category
+    observation.addCategory(this.getObservationCategory());
+    // Code
+    observation.setCode(this.getObservationCode());
+    // Subject
+    observation.setSubject(this.getObservationSubject());
+    // Effective
+    observation.setEffective(this.getObservationEffective());
+    // Issued (optional)
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_dokumentationsdatum()))
+      observation.setIssued(this.getObservationIssued());
+    // Value
+    observation.setValue(this.getObservationValue());
+    // Note (optional)
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_kommentar()))
+      observation.addNote(this.getObservationNote());
+    // Method (optional)
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_untersuchungsmethode()))
+      observation.setMethod(this.getObservationMethod());
+    // reference Range (optional)
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_referenzbereich_untergrenze())
+        || Helper.checkNonEmptyString(this.getLaboruntersuchung_referenzbereich_obergrenze())
+        || Helper.checkNonEmptyString(this.getLaboruntersuchung_referenzbereich_typ()))
+      observation.addReferenceRange(this.getObservationReferenceRange());
+    return observation;
+  }
+
   public ServiceRequest getServiceRequest() {
     ServiceRequest serviceRequest = new ServiceRequest();
     // Meta
@@ -130,6 +164,11 @@ public class Laborbefund implements Datablock {
     if (Helper.checkNonEmptyString(this.getLaboranforderung_probenmaterial_identifikation()))
       serviceRequest.addSpecimen(this.getServiceRequestSpecimen());
     return serviceRequest;
+  }
+
+  public Specimen getSpecimen() {
+    Specimen specimen = new Specimen();
+    return specimen;
   }
 
   public Identifier getServiceRequestIdentifier() {
@@ -273,40 +312,37 @@ public class Laborbefund implements Datablock {
         MetaVersionId.LABOR_DIAGNOSTIC_REPORT);
   }
 
-  public Observation getObservation() {
-    Observation observation = new Observation();
-    // Meta
-    observation.setMeta(this.getObservationMeta());
-    // Identifier
-    observation.addIdentifier(this.getObservationIdentifier());
-    // Status
-    observation.setStatus(this.getObservationStatus());
-    // Category
-    observation.addCategory(this.getObservationCategory());
-    // Code
-    observation.setCode(this.getObservationCode());
-    // Subject
-    observation.setSubject(this.getObservationSubject());
-    // Effective
-    observation.setEffective(this.getObservationEffective());
-    // Issued (optional)
-    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_dokumentationsdatum()))
-      observation.setIssued(this.getObservationIssued());
-    // Value
-    observation.setValue(this.getObservationValue());
-    // Note (optional)
-    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_kommentar()))
-      observation.addNote(this.getObservationNote());
-    // Method (optional)
-    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_untersuchungsmethode()))
-      observation.setMethod(this.getObservationMethod());
-    observation.addReferenceRange(this.getObservationReferenceRange());
-    return observation;
+  public Observation.ObservationReferenceRangeComponent getObservationReferenceRange() {
+    Observation.ObservationReferenceRangeComponent range =
+        new Observation.ObservationReferenceRangeComponent();
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_referenzbereich_untergrenze()))
+      range.setLow(this.getObservationReferenceRangeLow());
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_referenzbereich_obergrenze()))
+      range.setHigh(this.getObservationReferenceRangeHigh());
+    if (Helper.checkNonEmptyString(this.getLaboruntersuchung_referenzbereich_typ()))
+      range.setType(this.getObservationReferenceRangeType());
+    return range;
   }
 
-  public Observation.ObservationReferenceRangeComponent getObservationReferenceRange() {
-    Observation.ObservationReferenceRangeComponent range = new Observation.ObservationReferenceRangeComponent();
-    return range;
+  public CodeableConcept getObservationReferenceRangeType() {
+    String code = this.getLaboruntersuchung_referenzbereich_typ();
+    String system = CodingSystem.REFERENCE_RANGE_MEANING;
+    Coding coding = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(coding);
+  }
+
+  public Quantity getObservationReferenceRangeLow() {
+    String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
+    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(lower);
+    return FhirHelper.generateQuantity(
+        parsed.getValue(), parsed.getUnit(), Constants.QUANTITY_SYSTEM, Constants.QUANTITY_CODE);
+  }
+
+  public Quantity getObservationReferenceRangeHigh() {
+    String higher = this.getLaboruntersuchung_referenzbereich_obergrenze();
+    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(higher);
+    return FhirHelper.generateQuantity(
+        parsed.getValue(), parsed.getUnit(), Constants.QUANTITY_SYSTEM, Constants.QUANTITY_CODE);
   }
 
   public CodeableConcept getObservationMethod() {
@@ -325,16 +361,13 @@ public class Laborbefund implements Datablock {
 
   // TODO: Is there semi quantitive result? (0, +, ++, ...)
   public Quantity getObservationValue() {
-    Quantity quantity = new Quantity();
     // TODO: How does the ergebnis really look?
     String[] valueQuantity = this.getLaboruntersuchung_ergebnis().split(" ");
     BigDecimal value = new BigDecimal(valueQuantity[0]);
-    quantity.setValue(value);
     String unit = valueQuantity[1];
-    quantity.setUnit(unit);
-    quantity.setSystem(Constants.QUANTITY_SYSTEM);
-    quantity.setCode(Constants.QUANTITY_CODE);
-    return quantity;
+    String system = Constants.QUANTITY_SYSTEM;
+    String code = Constants.QUANTITY_CODE;
+    return FhirHelper.generateQuantity(value, unit, system, code);
   }
 
   public Date getObservationIssued() {
@@ -408,11 +441,6 @@ public class Laborbefund implements Datablock {
     String source = MetaSource.LABOR_OBSERVATION;
     String versionId = MetaVersionId.LABOR_OBSERVATION;
     return FhirHelper.generateMeta(profile, source, versionId);
-  }
-
-  public Specimen getSpecimen() {
-    Specimen specimen = new Specimen();
-    return specimen;
   }
 
   public String getIdentifikation() {

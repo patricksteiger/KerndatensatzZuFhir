@@ -21,4 +21,6 @@ public class CodingSystem {
   public static final String OBSERVATION_CATEGORY_TERMINOLOGY =
       "http://terminology.hl7.org/CodeSystem/observation-category";
   public static final String LABORGRUPPEN_CODE = "urn:oid:1.2.40.0.34.5.11";
+  public static final String REFERENCE_RANGE_MEANING =
+      "http://hl7.org/fhir/ValueSet/referencerange-meaning";
 }
