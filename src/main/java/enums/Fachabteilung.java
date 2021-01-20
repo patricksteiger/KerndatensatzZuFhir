@@ -8,8 +8,7 @@ import java.util.Optional;
 /**
  * Subset of Fachabteilungsschlüssel for Modul Fall
  *
- * @see
- *     "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Fachabteilungsschluessel"
+ * @see "https://simplifier.net/medizininformatikinitiative-modulfall/fachabteilungsschluessel"
  */
 public enum Fachabteilung {
   INNERE_MEDIZIN("0100", "Innere Medizin"),
