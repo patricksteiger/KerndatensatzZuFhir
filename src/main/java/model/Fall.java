@@ -1,6 +1,7 @@
 package model;
 
 import constants.*;
+import enums.Fachabteilung;
 import enums.IdentifierTypeCode;
 import helper.FhirHelper;
 import helper.Helper;
@@ -9,6 +10,7 @@ import org.hl7.fhir.r4.model.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Fall implements Datablock {
   private String patNr;
@@ -73,6 +75,8 @@ public class Fall implements Datablock {
     // Type (optional)
     if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_ebene()))
       encounter.addType(this.getEinrichtungsEncounterType());
+    // ServiceType, always Innere Medizin
+    encounter.setServiceType(this.getEinrichtungsEncounterServiceType());
     // Subject
     encounter.setSubject(this.getEinrichtungsEncounterSubject());
     // Period
@@ -225,6 +229,14 @@ public class Fall implements Datablock {
     return FhirHelper.generateReference(type, subjectId);
   }
 
+  public CodeableConcept getEinrichtungsEncounterServiceType() {
+    Fachabteilung abteilung = Fachabteilung.INNERE_MEDIZIN;
+    Coding fachabteilungsschluessel =
+        FhirHelper.generateCoding(
+            abteilung.getCode(), abteilung.getSystem(), abteilung.getDisplay());
+    return new CodeableConcept().addCoding(fachabteilungsschluessel);
+  }
+
   public CodeableConcept getEinrichtungsEncounterType() {
     String code = this.getEinrichtungskontakt_ebene();
     String system = CodingSystem.FALL_KONTAKTEBENE;
@@ -285,9 +297,19 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getAbteilungsEncounterServiceType() {
-    String code = this.getAbteilungskontakt_fachabteilungsschluessel();
-    String system = CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL;
-    Coding fachabteilungsschluessel = FhirHelper.generateCoding(code, system);
+    String schluessel = this.getAbteilungskontakt_fachabteilungsschluessel();
+    Optional<Fachabteilung> abteilungFromCode = Fachabteilung.fromCode(schluessel);
+    Coding fachabteilungsschluessel = null;
+    if (abteilungFromCode.isPresent()) {
+      Fachabteilung abteilung = abteilungFromCode.get();
+      fachabteilungsschluessel =
+          FhirHelper.generateCoding(
+              abteilung.getCode(), abteilung.getSystem(), abteilung.getDisplay());
+    } else {
+      String code = this.getAbteilungskontakt_fachabteilungsschluessel();
+      String system = CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL;
+      fachabteilungsschluessel = FhirHelper.generateCoding(code, system);
+    }
     return new CodeableConcept().addCoding(fachabteilungsschluessel);
   }
 
