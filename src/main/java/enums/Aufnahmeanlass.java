@@ -5,6 +5,10 @@ import helper.Helper;
 
 import java.util.Arrays;
 
+/**
+ * @see
+ *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulFall-ImplementationGuide/Terminologien"
+ */
 public enum Aufnahmeanlass {
   EINWEISUNG_DURCH_ARZT("E", "Einweisung durch einen Arzt"),
   EINWEISUNG_DURCH_ZAHNARZT("Z", "Einweisung durch einen Zahnarzt"),
