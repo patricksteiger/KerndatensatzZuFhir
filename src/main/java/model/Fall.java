@@ -18,7 +18,7 @@ public class Fall implements Datablock {
   private String einrichtungskontakt_patienten_identifikator;
   private String einrichtungskontakt_aufnahmenummer;
   private String einrichtungskontakt_aufnahmeanlass;
-  private String einrichtungskontakt_augnahmegrund;
+  private String einrichtungskontakt_aufnahmegrund;
   private String einrichtungskontakt_beginndatum;
   private String einrichtungskontakt_enddatum;
   private String einrichtungskontakt_entlassungsgrund;
@@ -26,7 +26,7 @@ public class Fall implements Datablock {
   private String abteilungskontakt_ebene;
   private String abteilungskontakt_klasse;
   private String abteilungskontakt_patienten_identifikator;
-  private String abteilungskontakt_augnahmenummer;
+  private String abteilungskontakt_aufnahmenummer;
   private String abteilungskontakt_fachabteilungsschluessel;
   private String abteilungskontakt_beginndatum;
   private String abteilungskontakt_enddatum;
@@ -82,6 +82,30 @@ public class Fall implements Datablock {
       encounter.addReasonCode(this.getEinrichtungsEncounterReasonCode());
     // Hospitalization (optional)
     encounter.setHospitalization(this.getEinrichtungsEncounterHospitalization());
+    return encounter;
+  }
+
+  public Encounter getAbteilungsEncounter() {
+    Encounter encounter = new Encounter();
+    // Meta
+    encounter.setMeta(this.getAbteilungsEncounterMeta());
+    // Identifier (optional)
+    if (Helper.checkNonEmptyString(this.getAbteilungskontakt_aufnahmenummer()))
+      encounter.addIdentifier(this.getAbteilungsEncounterIdentifier());
+    // Status
+    encounter.setStatus(this.getAbteilungsEncounterStatus());
+    // Class
+    encounter.setClass_(this.getAbteilungsEncounterClass());
+    // Type (optional)
+    if (Helper.checkNonEmptyString(this.getAbteilungskontakt_ebene()))
+      encounter.addType(this.getAbteilungsEncounterType());
+    // ServiceType (optional)
+    if (Helper.checkNonEmptyString(this.getAbteilungskontakt_fachabteilungsschluessel()))
+      encounter.setServiceType(this.getAbteilungsEncounterServiceType());
+    // Subject
+    encounter.setSubject(this.getAbteilungsEncounterSubject());
+    // Period
+    encounter.setPeriod(this.getAbteilungsEncounterPeriod());
     return encounter;
   }
 
@@ -168,10 +192,56 @@ public class Fall implements Datablock {
     return FhirHelper.generateMeta(profile, source, versionId);
   }
 
-  public Encounter getAbteilungsEncounter() {
-    Encounter encounter = new Encounter();
-    encounter.setMeta(this.getAbteilungsEncounterMeta());
-    return encounter;
+  public Period getAbteilungsEncounterPeriod() {
+    Date start = Helper.getDateFromISO(this.getAbteilungskontakt_beginndatum());
+    if (Helper.checkNonEmptyString(this.getAbteilungskontakt_enddatum())) {
+      Date end = Helper.getDateFromISO(this.getAbteilungskontakt_enddatum());
+      return FhirHelper.generatePeriod(start, end);
+    } else {
+      return FhirHelper.generatePeriod(start);
+    }
+  }
+
+  public CodeableConcept getAbteilungsEncounterType() {
+    String code = this.getAbteilungskontakt_ebene();
+    String system = CodingSystem.FALL_KONTAKTEBENE;
+    Coding kontaktebene = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(kontaktebene);
+  }
+
+  public Reference getAbteilungsEncounterSubject() {
+    String type = ReferenceType.PATIENT;
+    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    String identifierValue = this.getAbteilungskontakt_patienten_identifikator();
+    Identifier subjectId =
+        FhirHelper.generateIdentifier(identifierValue, IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirHelper.generateReference(type, subjectId);
+  }
+
+  public CodeableConcept getAbteilungsEncounterServiceType() {
+    String code = this.getAbteilungskontakt_fachabteilungsschluessel();
+    String system = CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL;
+    Coding fachabteilungsschluessel = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(fachabteilungsschluessel);
+  }
+
+  public Coding getAbteilungsEncounterClass() {
+    String code = this.getAbteilungskontakt_klasse();
+    String system = CodingSystem.ENCOUNTER_CLASS_DE;
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Encounter.EncounterStatus getAbteilungsEncounterStatus() {
+    return Encounter.EncounterStatus.FINISHED;
+  }
+
+  public Identifier getAbteilungsEncounterIdentifier() {
+    IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
+    Coding vnType =
+        FhirHelper.generateCoding(typeCode.getCode(), typeCode.getSystem(), typeCode.getDisplay());
+    String value = this.getAbteilungskontakt_aufnahmenummer();
+    String system = IdentifierSystem.ACME_PATIENT;
+    return FhirHelper.generateIdentifier(value, system, vnType);
   }
 
   public Meta getAbteilungsEncounterMeta() {
@@ -249,11 +319,11 @@ public class Fall implements Datablock {
   }
 
   public String getEinrichtungskontakt_aufnahmegrund() {
-    return einrichtungskontakt_augnahmegrund;
+    return einrichtungskontakt_aufnahmegrund;
   }
 
-  public void setEinrichtungskontakt_augnahmegrund(String einrichtungskontakt_augnahmegrund) {
-    this.einrichtungskontakt_augnahmegrund = einrichtungskontakt_augnahmegrund;
+  public void setEinrichtungskontakt_aufnahmegrund(String einrichtungskontakt_aufnahmegrund) {
+    this.einrichtungskontakt_aufnahmegrund = einrichtungskontakt_aufnahmegrund;
   }
 
   public String getEinrichtungskontakt_beginndatum() {
@@ -305,12 +375,12 @@ public class Fall implements Datablock {
     this.abteilungskontakt_patienten_identifikator = abteilungskontakt_patienten_identifikator;
   }
 
-  public String getAbteilungskontakt_augnahmenummer() {
-    return abteilungskontakt_augnahmenummer;
+  public String getAbteilungskontakt_aufnahmenummer() {
+    return abteilungskontakt_aufnahmenummer;
   }
 
-  public void setAbteilungskontakt_augnahmenummer(String abteilungskontakt_augnahmenummer) {
-    this.abteilungskontakt_augnahmenummer = abteilungskontakt_augnahmenummer;
+  public void setAbteilungskontakt_aufnahmenummer(String abteilungskontakt_aufnahmenummer) {
+    this.abteilungskontakt_aufnahmenummer = abteilungskontakt_aufnahmenummer;
   }
 
   public String getAbteilungskontakt_fachabteilungsschluessel() {

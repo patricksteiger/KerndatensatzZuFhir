@@ -33,4 +33,6 @@ public class CodingSystem {
       "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Aufnahmeanlass";
   public static final String FALL_ENTLASSUNGSGRUND =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Entlassungsgrund";
+  public static final String FALL_FACHABTEILUNGSSCHLUESSEL =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Fachabteilungsschluessel";
 }
