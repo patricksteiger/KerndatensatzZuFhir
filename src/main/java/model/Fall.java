@@ -77,7 +77,7 @@ public class Fall implements Datablock {
     encounter.setSubject(this.getEinrichtungsEncounterSubject());
     // Period
     encounter.setPeriod(this.getEinrichtungsEncounterPeriod());
-    // ReasonCode
+    // ReasonCode (optional)
     if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_aufnahmegrund()))
       encounter.addReasonCode(this.getEinrichtungsEncounterReasonCode());
     // Hospitalization (optional)
@@ -107,6 +107,72 @@ public class Fall implements Datablock {
     // Period
     encounter.setPeriod(this.getAbteilungsEncounterPeriod());
     return encounter;
+  }
+
+  public Encounter getVersorgungsstellenEncounter() {
+    Encounter encounter = new Encounter();
+    // Meta
+    encounter.setMeta(this.getVersorgungsstellenEncounterMeta());
+    // Identifier
+    if (Helper.checkNonEmptyString(this.getVersorgungsstellenkontakt_aufnahmenummer()))
+      encounter.addIdentifier(this.getVersorgungsstellenEncounterIdentifier());
+    // Status
+    encounter.setStatus(this.getVersorgungsstellenEncounterStatus());
+    // Class
+    encounter.setClass_(this.getVersorgungsstellenEncounterClass());
+    // Type (optional)
+    if (Helper.checkNonEmptyString(this.getVersorgungsstellenkontakt_ebene()))
+      encounter.addType(this.getVersorgungsstellenEncounterType());
+    // Subject
+    encounter.setSubject(this.getVersorgungsstellenEncounterSubject());
+    // Period
+    encounter.setPeriod(this.getVersorgungsstellenEncounterPeriod());
+    return encounter;
+  }
+
+  public Reference getVersorgungsstellenEncounterSubject() {
+    String type = ReferenceType.PATIENT;
+    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    String identifierValue = this.getVersorgungsstellenkontakt_patienten_identifikator();
+    Identifier subjectId =
+        FhirHelper.generateIdentifier(identifierValue, IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirHelper.generateReference(type, subjectId);
+  }
+
+  public Period getVersorgungsstellenEncounterPeriod() {
+    Date start = Helper.getDateFromISO(this.getVersorgungsstellenkontakt_beginndatum());
+    if (Helper.checkNonEmptyString(this.getVersorgungsstellenkontakt_enddatum())) {
+      Date end = Helper.getDateFromISO(this.getVersorgungsstellenkontakt_enddatum());
+      return FhirHelper.generatePeriod(start, end);
+    } else {
+      return FhirHelper.generatePeriod(start);
+    }
+  }
+
+  public CodeableConcept getVersorgungsstellenEncounterType() {
+    String code = this.getVersorgungsstellenkontakt_ebene();
+    String system = CodingSystem.FALL_KONTAKTEBENE;
+    Coding kontaktebene = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(kontaktebene);
+  }
+
+  public Coding getVersorgungsstellenEncounterClass() {
+    String code = this.getVersorgungsstellenkontakt_klasse();
+    String system = CodingSystem.ENCOUNTER_CLASS_DE;
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Encounter.EncounterStatus getVersorgungsstellenEncounterStatus() {
+    return Encounter.EncounterStatus.FINISHED;
+  }
+
+  public Identifier getVersorgungsstellenEncounterIdentifier() {
+    IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
+    Coding vnType =
+        FhirHelper.generateCoding(typeCode.getCode(), typeCode.getSystem(), typeCode.getDisplay());
+    String value = this.getVersorgungsstellenkontakt_aufnahmenummer();
+    String system = IdentifierSystem.ACME_PATIENT;
+    return FhirHelper.generateIdentifier(value, system, vnType);
   }
 
   public Encounter.EncounterHospitalizationComponent getEinrichtungsEncounterHospitalization() {
@@ -249,12 +315,6 @@ public class Fall implements Datablock {
     String source = MetaSource.FALL_ABTEILUNG_ENCOUNTER;
     String versionId = MetaVersionId.FALL_ABTEILUNG_ENCOUNTER;
     return FhirHelper.generateMeta(profile, source, versionId);
-  }
-
-  public Encounter getVersorgungsstellenEncounter() {
-    Encounter encounter = new Encounter();
-    encounter.setMeta(this.getVersorgungsstellenEncounterMeta());
-    return encounter;
   }
 
   public Meta getVersorgungsstellenEncounterMeta() {
