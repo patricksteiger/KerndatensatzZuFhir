@@ -14,5 +14,8 @@ public class MetaSource {
   public static final String LABOR_SERVICE_REQUEST = UKU_SAP + "Laborbefund-ServiceRequest";
   public static final String LABOR_OBSERVATION = UKU_SAP + "Laborbefund-Observation";
   // Fall
-  public static final String FALL_ENCOUNTER = UKU_SAP + "Fall-Encounter";
+  public static final String FALL_EINRICHTUNG_ENCOUNTER = UKU_SAP + "Fall-Einrichtung-Encounter";
+  public static final String FALL_ABTEILUNG_ENCOUNTER = UKU_SAP + "Fall-Abteilung-Encounter";
+  public static final String FALL_VERSORGUNGSSTELLE_ENCOUNTER =
+      UKU_SAP + "Fall-Versorgungsstelle-Encounter";
 }

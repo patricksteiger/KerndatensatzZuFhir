@@ -14,5 +14,9 @@ public class MetaVersionId {
   public static final String LABOR_SERVICE_REQUEST = UKU + "Laborbefund_ServiceRequest_1.0.0.0";
   public static final String LABOR_OBSERVATION = UKU + "Laborbefund_Observation_1.0.0.0";
   // Fall
-  public static final String FALL_ENCOUNTER = UKU + "Fall_Encounter_1.0.0.0";
+  public static final String FALL_EINRICHTUNG_ENCOUNTER =
+      UKU + "Fall_Einrichtung_Encounter_1.0.0.0";
+  public static final String FALL_ABTEILUNG_ENCOUNTER = UKU + "Fall_Abteilung_Encounter_1.0.0.0";
+  public static final String FALL_VERSORGUNGSSTELLE_ENCOUNTER =
+      UKU + "Fall_Versorgungsstelle_Encounter_1.0.0.0";
 }

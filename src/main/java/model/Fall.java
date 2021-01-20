@@ -56,25 +56,54 @@ public class Fall implements Datablock {
 
   @Override
   public List<Resource> toFhirResources() {
-    return Helper.listOf(this.getEncounter(), this.getOrganization());
+    Encounter einrichtung = this.getEinrichtungsEncounter();
+    Encounter abteilung = this.getAbteilungsEncounter();
+    Encounter versorgungsstelle = this.getVersorgungsstellenEncounter();
+    return Helper.listOf(einrichtung, abteilung, versorgungsstelle, this.getOrganization());
   }
 
-  public Encounter getEncounter() {
+  public Encounter getEinrichtungsEncounter() {
     Encounter encounter = new Encounter();
-    encounter.setMeta(this.getEncounterMeta());
+    encounter.setMeta(this.getEinrichtungsEncounterMeta());
     return encounter;
+  }
+
+  public Meta getEinrichtungsEncounterMeta() {
+    String profile = MetaProfile.FALL_ENCOUNTER;
+    String source = MetaSource.FALL_EINRICHTUNG_ENCOUNTER;
+    String versionId = MetaVersionId.FALL_EINRICHTUNG_ENCOUNTER;
+    return FhirHelper.generateMeta(profile, source, versionId);
+  }
+
+  public Encounter getAbteilungsEncounter() {
+    Encounter encounter = new Encounter();
+    encounter.setMeta(this.getAbteilungsEncounterMeta());
+    return encounter;
+  }
+
+  public Meta getAbteilungsEncounterMeta() {
+    String profile = MetaProfile.FALL_ENCOUNTER;
+    String source = MetaSource.FALL_ABTEILUNG_ENCOUNTER;
+    String versionId = MetaVersionId.FALL_ABTEILUNG_ENCOUNTER;
+    return FhirHelper.generateMeta(profile, source, versionId);
+  }
+
+  public Encounter getVersorgungsstellenEncounter() {
+    Encounter encounter = new Encounter();
+    encounter.setMeta(this.getVersorgungsstellenEncounterMeta());
+    return encounter;
+  }
+
+  public Meta getVersorgungsstellenEncounterMeta() {
+    String profile = MetaProfile.FALL_ENCOUNTER;
+    String source = MetaSource.FALL_VERSORGUNGSSTELLE_ENCOUNTER;
+    String versionId = MetaVersionId.FALL_VERSORGUNGSSTELLE_ENCOUNTER;
+    return FhirHelper.generateMeta(profile, source, versionId);
   }
 
   public Organization getOrganization() {
     Organization organization = new Organization();
     return organization;
-  }
-
-  public Meta getEncounterMeta() {
-    String profile = MetaProfile.FALL_ENCOUNTER;
-    String source = MetaSource.FALL_ENCOUNTER;
-    String versionId = MetaVersionId.FALL_ENCOUNTER;
-    return FhirHelper.generateMeta(profile, source, versionId);
   }
 
   public String getPatNr() {
