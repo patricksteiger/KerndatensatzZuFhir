@@ -1,6 +1,7 @@
 package model;
 
 import constants.*;
+import enums.Aufnahmeanlass;
 import enums.Fachabteilung;
 import enums.IdentifierTypeCode;
 import helper.FhirHelper;
@@ -190,9 +191,9 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getEinrichtungsEncounterAdmitSource() {
-    String code = this.getEinrichtungskontakt_aufnahmeanlass();
-    String system = CodingSystem.FALL_AUFNAHMEANLASS;
-    Coding aufnahmegrund = FhirHelper.generateCoding(code, system);
+    Aufnahmeanlass anlass = Aufnahmeanlass.fromCode(this.getEinrichtungskontakt_aufnahmeanlass());
+    Coding aufnahmegrund =
+        FhirHelper.generateCoding(anlass.getCode(), anlass.getSystem(), anlass.getDisplay());
     return new CodeableConcept().addCoding(aufnahmegrund);
   }
 
