@@ -1,10 +1,7 @@
 package model;
 
 import constants.*;
-import enums.Aufnahmeanlass;
-import enums.Entlassungsgrund;
-import enums.Fachabteilung;
-import enums.IdentifierTypeCode;
+import enums.*;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -209,8 +206,9 @@ public class Fall implements Datablock {
 
   public CodeableConcept getEinrichtungsEncounterReasonCode() {
     String code = this.getEinrichtungskontakt_aufnahmegrund();
-    String system = CodingSystem.FALL_AUFNAHMEGRUND;
-    Coding aufnahmegrund = FhirHelper.generateCoding(code, system);
+    Aufnahmegrund grund = Aufnahmegrund.fromCode(code);
+    Coding aufnahmegrund =
+        FhirHelper.generateCoding(grund.getCode(), grund.getSystem(), grund.getDisplay());
     return new CodeableConcept().addCoding(aufnahmegrund);
   }
 
