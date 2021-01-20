@@ -7,6 +7,7 @@ import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
+import java.util.Date;
 import java.util.List;
 
 public class Fall implements Datablock {
@@ -72,7 +73,66 @@ public class Fall implements Datablock {
     // Type (optional)
     if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_ebene()))
       encounter.addType(this.getEinrichtungsEncounterType());
+    // Subject
+    encounter.setSubject(this.getEinrichtungsEncounterSubject());
+    // Period
+    encounter.setPeriod(this.getEinrichtungsEncounterPeriod());
+    // ReasonCode
+    if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_aufnahmegrund()))
+      encounter.addReasonCode(this.getEinrichtungsEncounterReasonCode());
+    // Hospitalization (optional)
+    encounter.setHospitalization(this.getEinrichtungsEncounterHospitalization());
     return encounter;
+  }
+
+  public Encounter.EncounterHospitalizationComponent getEinrichtungsEncounterHospitalization() {
+    Encounter.EncounterHospitalizationComponent hospitalization =
+        new Encounter.EncounterHospitalizationComponent();
+    if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_aufnahmeanlass()))
+      hospitalization.setAdmitSource(this.getEinrichtungsEncounterAdmitSource());
+    if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_entlassungsgrund()))
+      hospitalization.setDischargeDisposition(this.getEinrichtungsEncounterDischargeDisposition());
+    return hospitalization;
+  }
+
+  public CodeableConcept getEinrichtungsEncounterAdmitSource() {
+    String code = this.getEinrichtungskontakt_aufnahmeanlass();
+    String system = CodingSystem.FALL_AUFNAHMEANLASS;
+    Coding aufnahmegrund = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(aufnahmegrund);
+  }
+
+  public CodeableConcept getEinrichtungsEncounterDischargeDisposition() {
+    String code = this.getEinrichtungskontakt_entlassungsgrund();
+    String system = CodingSystem.FALL_ENTLASSUNGSGRUND;
+    Coding entlassungsgrund = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(entlassungsgrund);
+  }
+
+  public CodeableConcept getEinrichtungsEncounterReasonCode() {
+    String code = this.getEinrichtungskontakt_aufnahmegrund();
+    String system = CodingSystem.FALL_AUFNAHMEGRUND;
+    Coding aufnahmegrund = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(aufnahmegrund);
+  }
+
+  public Period getEinrichtungsEncounterPeriod() {
+    Date start = Helper.getDateFromISO(this.getEinrichtungskontakt_beginndatum());
+    if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_enddatum())) {
+      Date end = Helper.getDateFromISO(this.getEinrichtungskontakt_enddatum());
+      return FhirHelper.generatePeriod(start, end);
+    } else {
+      return FhirHelper.generatePeriod(start);
+    }
+  }
+
+  public Reference getEinrichtungsEncounterSubject() {
+    String type = ReferenceType.PATIENT;
+    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    String identifierValue = this.getEinrichtungskontakt_patienten_identifikator();
+    Identifier subjectId =
+        FhirHelper.generateIdentifier(identifierValue, IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirHelper.generateReference(type, subjectId);
   }
 
   public CodeableConcept getEinrichtungsEncounterType() {
@@ -188,7 +248,7 @@ public class Fall implements Datablock {
     this.einrichtungskontakt_aufnahmeanlass = einrichtungskontakt_aufnahmeanlass;
   }
 
-  public String getEinrichtungskontakt_augnahmegrund() {
+  public String getEinrichtungskontakt_aufnahmegrund() {
     return einrichtungskontakt_augnahmegrund;
   }
 

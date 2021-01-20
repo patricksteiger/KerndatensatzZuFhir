@@ -27,4 +27,10 @@ public class CodingSystem {
       "https://www.medizininformatik-initiative.de/fhir/core/ValueSet/EncounterClassDE";
   public static final String FALL_KONTAKTEBENE =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/ValueSet/Kontaktebene";
+  public static final String FALL_AUFNAHMEGRUND =
+      "https://www.medizininformatik-initiative.de/fhir/modul-fall/core/CodeSystem/Aufnahmegrund";
+  public static final String FALL_AUFNAHMEANLASS =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Aufnahmeanlass";
+  public static final String FALL_ENTLASSUNGSGRUND =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Entlassungsgrund";
 }
