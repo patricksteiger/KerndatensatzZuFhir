@@ -1,15 +1,11 @@
 package model;
 
-import constants.MetaProfile;
-import constants.MetaSource;
-import constants.MetaVersionId;
+import constants.*;
+import enums.IdentifierTypeCode;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
-import org.hl7.fhir.r4.model.Encounter;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Organization;
-import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.*;
 
 import java.util.List;
 
@@ -64,8 +60,45 @@ public class Fall implements Datablock {
 
   public Encounter getEinrichtungsEncounter() {
     Encounter encounter = new Encounter();
+    // Meta
     encounter.setMeta(this.getEinrichtungsEncounterMeta());
+    // Identifier (optional)
+    if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_aufnahmenummer()))
+      encounter.addIdentifier(this.getEinrichtungsEncounterIdentifier());
+    // Status
+    encounter.setStatus(this.getEinrichtungsEncounterStatus());
+    // Class
+    encounter.setClass_(this.getEinrichtungsEncounterClass());
+    // Type (optional)
+    if (Helper.checkNonEmptyString(this.getEinrichtungskontakt_ebene()))
+      encounter.addType(this.getEinrichtungsEncounterType());
     return encounter;
+  }
+
+  public CodeableConcept getEinrichtungsEncounterType() {
+    String code = this.getEinrichtungskontakt_ebene();
+    String system = CodingSystem.FALL_KONTAKTEBENE;
+    Coding kontaktebene = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(kontaktebene);
+  }
+
+  public Coding getEinrichtungsEncounterClass() {
+    String code = this.getEinrichtungskontakt_klasse();
+    String system = CodingSystem.ENCOUNTER_CLASS_DE;
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Encounter.EncounterStatus getEinrichtungsEncounterStatus() {
+    return Encounter.EncounterStatus.FINISHED;
+  }
+
+  public Identifier getEinrichtungsEncounterIdentifier() {
+    IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
+    Coding vnType =
+        FhirHelper.generateCoding(typeCode.getCode(), typeCode.getSystem(), typeCode.getDisplay());
+    String value = this.getEinrichtungskontakt_aufnahmenummer();
+    String system = IdentifierSystem.ACME_PATIENT;
+    return FhirHelper.generateIdentifier(value, system, vnType);
   }
 
   public Meta getEinrichtungsEncounterMeta() {

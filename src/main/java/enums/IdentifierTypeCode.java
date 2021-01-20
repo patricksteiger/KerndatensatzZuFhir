@@ -7,6 +7,7 @@ public enum IdentifierTypeCode {
   MR("MR", "Krankenaktennummer"),
   OBI("OBI", "Observation Instance Identifier"),
   RI("RI", "Resource identifier"),
+  VN("VN", "Fallnummer"),
   XX("XX", "Organisations-ID");
 
   private final String code;
