@@ -1,14 +1,14 @@
 package model;
 
-import constants.CodingSystem;
-import constants.MetaProfile;
-import constants.MetaSource;
-import constants.MetaVersionId;
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import constants.*;
+import enums.KBVBaseStageLife;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
+import java.util.Date;
 import java.util.List;
 
 public class Diagnose implements Datablock {
@@ -55,7 +55,58 @@ public class Diagnose implements Datablock {
       condition.setClinicalStatus(this.getClinicalStatus());
     // BodySite, only includes Koerperstelle
     condition.addBodySite(this.getBodySite());
+    // Onset (optional)
+    if (Helper.checkAnyNonEmptyStrings(
+        this.getZeitraum_von(),
+        this.getZeitraum_bis(),
+        this.getLebensphase_von(),
+        this.getLebensphase_bis())) condition.setOnset(this.getOnset());
     return condition;
+  }
+
+  public Type getOnset() {
+    DateTimeType start = new DateTimeType();
+    if (Helper.checkNonEmptyString(this.getZeitraum_von())) {
+      start.setPrecision(TemporalPrecisionEnum.SECOND);
+      Date startDate = Helper.getDateFromISO(this.getZeitraum_von());
+      start.setValue(startDate);
+    }
+    if (Helper.checkNonEmptyString(this.getLebensphase_von())) {
+      start.addExtension(this.getLebensphaseVon());
+    }
+    DateTimeType end = new DateTimeType();
+    if (Helper.checkNonEmptyString(this.getZeitraum_bis())) {
+      end.setPrecision(TemporalPrecisionEnum.SECOND);
+      Date endDate = Helper.getDateFromISO(this.getZeitraum_bis());
+      end.setValue(endDate);
+    }
+    if (Helper.checkNonEmptyString(this.getLebensphase_bis())) {
+      end.addExtension(this.getLebensphaseBis());
+    }
+    // Return DateTimeType if only startDate has been set. Otherwise return Period.
+    return !start.hasExtension() && !end.hasValue() && !end.hasExtension()
+        ? start
+        : new Period().setStartElement(start).setEndElement(end);
+  }
+
+  public Extension getLebensphaseVon() {
+    KBVBaseStageLife stage = KBVBaseStageLife.fromCode(this.getLebensphase_von());
+    Coding lebensphase =
+        FhirHelper.generateCoding(
+            stage.getCode(), stage.getSystem(), stage.getDisplay(), stage.getVersion());
+    CodeableConcept type = new CodeableConcept().addCoding(lebensphase);
+    String url = ExtensionUrl.STAGE_LIFE;
+    return FhirHelper.generateExtension(url, type);
+  }
+
+  public Extension getLebensphaseBis() {
+    KBVBaseStageLife stage = KBVBaseStageLife.fromCode(this.getLebensphase_bis());
+    Coding lebensphase =
+        FhirHelper.generateCoding(
+            stage.getCode(), stage.getSystem(), stage.getDisplay(), stage.getVersion());
+    CodeableConcept type = new CodeableConcept().addCoding(lebensphase);
+    String url = ExtensionUrl.STAGE_LIFE;
+    return FhirHelper.generateExtension(url, type);
   }
 
   public CodeableConcept getBodySite() {

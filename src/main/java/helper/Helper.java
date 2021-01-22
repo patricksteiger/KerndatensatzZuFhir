@@ -67,6 +67,10 @@ public class Helper {
     return Arrays.asList(values);
   }
 
+  public static boolean checkAnyNonEmptyStrings(String... s) {
+    return Arrays.stream(s).anyMatch(Helper::checkNonEmptyString);
+  }
+
   public static boolean checkNonEmptyString(String s) {
     return s != null && !s.isEmpty();
   }
