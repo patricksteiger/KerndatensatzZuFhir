@@ -1,14 +1,13 @@
 package model;
 
+import constants.CodingSystem;
 import constants.MetaProfile;
 import constants.MetaSource;
 import constants.MetaVersionId;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
-import org.hl7.fhir.r4.model.Condition;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.*;
 
 import java.util.List;
 
@@ -51,7 +50,27 @@ public class Diagnose implements Datablock {
     Condition condition = new Condition();
     // Meta
     condition.setMeta(this.getMeta());
+    // Clinical status (optional)
+    if (Helper.checkNonEmptyString(this.getKlinischer_status()))
+      condition.setClinicalStatus(this.getClinicalStatus());
+    // BodySite, only includes Koerperstelle
+    condition.addBodySite(this.getBodySite());
     return condition;
+  }
+
+  public CodeableConcept getBodySite() {
+    String code = this.getKoerperstelle();
+    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
+    Coding bodySite = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(bodySite);
+  }
+
+  public CodeableConcept getClinicalStatus() {
+    String code = this.getKlinischer_status();
+    // TODO: Clinical status system is still missing
+    String system = "";
+    Coding clinicalStatus = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(clinicalStatus);
   }
 
   public Meta getMeta() {
