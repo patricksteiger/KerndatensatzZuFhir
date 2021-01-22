@@ -4,6 +4,8 @@ public class MetaProfile {
   // Fall
   public static final String FALL_ENCOUNTER =
       "https://www.medizininformatik-initiative.de/fhir/core/StructureDefinition/Encounter/KontaktGesundheitseinrichtung";
+  public static final String DIAGNOSE_CONDITION =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose";
   // Prozedur
   private static final String STRUCTURE_PROZEDUR =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/";

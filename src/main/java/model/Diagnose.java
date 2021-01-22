@@ -1,8 +1,13 @@
 package model;
 
+import constants.MetaProfile;
+import constants.MetaSource;
+import constants.MetaVersionId;
+import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Resource;
 
 import java.util.List;
@@ -44,7 +49,16 @@ public class Diagnose implements Datablock {
 
   public Condition getCondition() {
     Condition condition = new Condition();
+    // Meta
+    condition.setMeta(this.getMeta());
     return condition;
+  }
+
+  public Meta getMeta() {
+    String profile = MetaProfile.DIAGNOSE_CONDITION;
+    String source = MetaSource.DIAGNOSE_CONDITION;
+    String versionId = MetaVersionId.DIAGNOSE_CONDITION;
+    return FhirHelper.generateMeta(profile, source, versionId);
   }
 
   public String getPatNr() {
