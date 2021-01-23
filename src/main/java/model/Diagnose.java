@@ -1,7 +1,10 @@
 package model;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import constants.Constants;
 import constants.*;
+import enums.ICD_Diagnosesicherheit;
+import enums.ICD_Seitenlokalisation;
 import enums.KBVBaseStageLife;
 import helper.FhirHelper;
 import helper.Helper;
@@ -53,6 +56,8 @@ public class Diagnose implements Datablock {
     // Clinical status (optional)
     if (Helper.checkNonEmptyString(this.getKlinischer_status()))
       condition.setClinicalStatus(this.getClinicalStatus());
+    // Code
+    condition.setCode(this.getCode());
     // BodySite, only includes Koerperstelle
     condition.addBodySite(this.getBodySite());
     // Onset (optional)
@@ -61,7 +66,138 @@ public class Diagnose implements Datablock {
         this.getZeitraum_bis(),
         this.getLebensphase_von(),
         this.getLebensphase_bis())) condition.setOnset(this.getOnset());
+    // RecordedDate
+    condition.setRecordedDate(this.getRecordedDate());
+    // Note (optional), only includes Diagnoseerläuterung
+    if (Helper.checkNonEmptyString(this.getDiagnoseerlaeuterung()))
+      condition.addNote(this.getNote());
     return condition;
+  }
+
+  public CodeableConcept getCode() {
+    CodeableConcept code = new CodeableConcept();
+    // ICD-10-GM (optional)
+    if (Helper.checkNonEmptyString(this.getIcd_diagnosecode())) code.addCoding(this.getCodeIcd());
+    // ALPHA-ID (optional)
+    if (Helper.checkNonEmptyString(this.getAlpha_diagnosecode()))
+      code.addCoding(this.getCodeAlpha());
+    // SCT (optional)
+    if (Helper.checkNonEmptyString(this.getSnomed_diagnosecode()))
+      code.addCoding(this.getCodeSct());
+    // ORPHANET (optional)
+    if (Helper.checkNonEmptyString(this.getOrphanet_diagnosecode()))
+      code.addCoding(this.getCodeOrphanet());
+    // Weitere Kodesysteme (optional)
+    if (Helper.checkNonEmptyString(this.getWeitere_diagnosecode()))
+      code.addCoding(this.getCodeWeitere());
+    // Text (optional)
+    if (Helper.checkNonEmptyString(this.getFreitextbeschreibung()))
+      code.setText(this.getFreitextbeschreibung());
+    return code;
+  }
+
+  public Coding getCodeIcd() {
+    String code = this.getIcd_diagnosecode();
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    Coding icd = FhirHelper.generateCoding(code, system);
+    if (Helper.checkNonEmptyString(this.getIcd_diagnosesicherheit()))
+      icd.addExtension(this.getCodeIcdDiagnosesicherheit());
+    if (Helper.checkNonEmptyString(this.getIcd_seitenlokalisation()))
+      icd.addExtension(this.getCodeIcdSeitenlokalisation());
+    if (Helper.checkNonEmptyString(this.getIcd_ausrufezeichencode()))
+      icd.addExtension(this.getCodeIcdAusrufezeichen());
+    if (Helper.checkNonEmptyString(this.getIcd_manifestationscode()))
+      icd.addExtension(this.getCodeIcdManifestationscode());
+    if (Helper.checkNonEmptyString(this.getIcd_primaercode()))
+      icd.addExtension(this.getCodeIcdPrimaercode());
+    return icd;
+  }
+
+  public Extension getCodeIcdPrimaercode() {
+    String code = this.getIcd_primaercode();
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    String version = Constants.VERSION_2020;
+    Coding value = FhirHelper.generateCoding(code, system, "", version);
+    String url = ExtensionUrl.ICD_10_GM_PRIMAERCODE;
+    return FhirHelper.generateExtension(url, value);
+  }
+
+  public Extension getCodeIcdManifestationscode() {
+    String code = this.getIcd_manifestationscode();
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    String version = Constants.VERSION_2020;
+    Coding value = FhirHelper.generateCoding(code, system, "", version);
+    String url = ExtensionUrl.ICD_10_GM_MANIFESTATIONSCODE;
+    return FhirHelper.generateExtension(url, value);
+  }
+
+  public Extension getCodeIcdAusrufezeichen() {
+    String code = this.getIcd_ausrufezeichencode();
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    String version = Constants.VERSION_2020;
+    Coding value = FhirHelper.generateCoding(code, system, "", version);
+    String url = ExtensionUrl.ICD_10_GM_AUSRUFEZEICHEN;
+    return FhirHelper.generateExtension(url, value);
+  }
+
+  public Extension getCodeIcdSeitenlokalisation() {
+    String code = this.getIcd_seitenlokalisation();
+    ICD_Seitenlokalisation seitenlokalisation = ICD_Seitenlokalisation.fromCode(code);
+    Coding value =
+        FhirHelper.generateCoding(
+            seitenlokalisation.getCode(),
+            seitenlokalisation.getSystem(),
+            seitenlokalisation.getDisplay());
+    String url = ExtensionUrl.ICD_10_GM_SEITENLOKALISATION;
+    return FhirHelper.generateExtension(url, value);
+  }
+
+  public Extension getCodeIcdDiagnosesicherheit() {
+    String snomedCode = this.getIcd_diagnosesicherheit();
+    ICD_Diagnosesicherheit diagnosesicherheit = ICD_Diagnosesicherheit.fromSnomedCode(snomedCode);
+    Coding value =
+        FhirHelper.generateCoding(
+            diagnosesicherheit.getCode(),
+            diagnosesicherheit.getSystem(),
+            diagnosesicherheit.getDisplay());
+    String url = ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT;
+    return FhirHelper.generateExtension(url, value);
+  }
+
+  public Coding getCodeAlpha() {
+    String code = this.getAlpha_diagnosecode();
+    String system = CodingSystem.ALPHA_ID_DIMDI;
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Coding getCodeSct() {
+    String code = this.getSnomed_diagnosecode();
+    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Coding getCodeOrphanet() {
+    String code = this.getOrphanet_diagnosecode();
+    String system = CodingSystem.ORPHANET;
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Coding getCodeWeitere() {
+    String code = this.getWeitere_diagnosecode();
+    // TODO: What is system of weiterer diagnosecode?
+    String system = "";
+    return FhirHelper.generateCoding(code, system);
+  }
+
+  public Annotation getNote() {
+    Annotation note = new Annotation();
+    note.setText(this.getDiagnoseerlaeuterung());
+    return note;
+  }
+
+  public Date getRecordedDate() {
+    Date recordedDate = Helper.getDateFromISO(this.getDokumentationsdatum());
+    return recordedDate;
   }
 
   public Type getOnset() {
