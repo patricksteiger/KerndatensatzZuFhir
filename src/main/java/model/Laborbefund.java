@@ -166,6 +166,7 @@ public class Laborbefund implements Datablock {
     return serviceRequest;
   }
 
+  // TODO: How does Specimen look?
   public Specimen getSpecimen() {
     Specimen specimen = new Specimen();
     return specimen;
@@ -176,13 +177,14 @@ public class Laborbefund implements Datablock {
     String codingSystem = CodingSystem.IDENTIFIER_TYPE;
     Coding placerv2 = FhirHelper.generateCoding(codingCode, codingSystem);
     String value = this.getIdentifikation();
+    // FIXME: What is system of ServiceRequest identifier
     String system = "";
     return FhirHelper.generateIdentifier(value, system, placerv2);
   }
 
   public Reference getServiceRequestSpecimen() {
     String type = ReferenceType.SPECIMEN;
-    // FIXME: What is system?
+    // FIXME: What is system of ServiceRequest specimen?
     String system = "";
     Identifier identifier =
         FhirHelper.generateIdentifier(
@@ -233,7 +235,7 @@ public class Laborbefund implements Datablock {
 
   public Reference getDiagnosticReportSpecimen() {
     String type = ReferenceType.SPECIMEN;
-    // FIXME: What is system?
+    // FIXME: What is system of DiagnosticReport specimen?
     String system = "";
     Identifier identifier =
         FhirHelper.generateIdentifier(this.getProbenmaterial_identifikation(), system);
@@ -295,7 +297,6 @@ public class Laborbefund implements Datablock {
 
   public Identifier getDiagnosticReportBefund() {
     String value = this.getIdentifikation();
-    // FIXME: what is sytsem?
     String system = IdentifierSystem.LOCAL_PID;
     Coding coding =
         FhirHelper.generateCoding(
@@ -347,7 +348,7 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getObservationMethod() {
     String code = this.getLaboruntersuchung_untersuchungsmethode();
-    // FIXME: What is system?
+    // FIXME: What is system of Observation method?
     String system = "";
     Coding method = FhirHelper.generateCoding(code, system);
     return new CodeableConcept().addCoding(method);
@@ -431,6 +432,7 @@ public class Laborbefund implements Datablock {
             codingCode.getCode(), codingCode.getSystem(), codingCode.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(observationInstanceV2);
     String value = this.getLaboruntersuchung_identifikation();
+    // FIXME: What is system of observation identifier?
     String system = "";
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     return FhirHelper.generateIdentifier(value, system, type, assignerRef);

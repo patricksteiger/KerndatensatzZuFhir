@@ -116,8 +116,9 @@ public class Diagnose implements Datablock {
   public Extension getCodeIcdPrimaercode() {
     String code = this.getIcd_primaercode();
     String system = CodingSystem.ICD_10_GM_DIMDI;
+    String display = Constants.EMPTY_DISPLAY;
     String version = Constants.VERSION_2020;
-    Coding value = FhirHelper.generateCoding(code, system, "", version);
+    Coding value = FhirHelper.generateCoding(code, system, display, version);
     String url = ExtensionUrl.ICD_10_GM_PRIMAERCODE;
     return FhirHelper.generateExtension(url, value);
   }
@@ -125,8 +126,9 @@ public class Diagnose implements Datablock {
   public Extension getCodeIcdManifestationscode() {
     String code = this.getIcd_manifestationscode();
     String system = CodingSystem.ICD_10_GM_DIMDI;
+    String display = Constants.EMPTY_DISPLAY;
     String version = Constants.VERSION_2020;
-    Coding value = FhirHelper.generateCoding(code, system, "", version);
+    Coding value = FhirHelper.generateCoding(code, system, display, version);
     String url = ExtensionUrl.ICD_10_GM_MANIFESTATIONSCODE;
     return FhirHelper.generateExtension(url, value);
   }
@@ -134,8 +136,9 @@ public class Diagnose implements Datablock {
   public Extension getCodeIcdAusrufezeichen() {
     String code = this.getIcd_ausrufezeichencode();
     String system = CodingSystem.ICD_10_GM_DIMDI;
+    String display = Constants.EMPTY_DISPLAY;
     String version = Constants.VERSION_2020;
-    Coding value = FhirHelper.generateCoding(code, system, "", version);
+    Coding value = FhirHelper.generateCoding(code, system, display, version);
     String url = ExtensionUrl.ICD_10_GM_AUSRUFEZEICHEN;
     return FhirHelper.generateExtension(url, value);
   }
@@ -254,8 +257,7 @@ public class Diagnose implements Datablock {
 
   public CodeableConcept getClinicalStatus() {
     String code = this.getKlinischer_status();
-    // TODO: Clinical status system is still missing
-    String system = "";
+    String system = CodingSystem.CONDITION_CLINICAL_STATUS;
     Coding clinicalStatus = FhirHelper.generateCoding(code, system);
     return new CodeableConcept().addCoding(clinicalStatus);
   }

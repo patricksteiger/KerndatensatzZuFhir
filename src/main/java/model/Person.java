@@ -254,7 +254,7 @@ public class Person implements Datablock {
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
     Identifier identifier =
         FhirHelper.generateIdentifier(identifierValue, system, identifierType, null, use);
-    return FhirHelper.generateReference("", type, identifier, "");
+    return FhirHelper.generateReference(type, identifier);
   }
 
   public ResearchSubject getResearchSubject() {
@@ -285,8 +285,9 @@ public class Person implements Datablock {
 
   public Reference getResearchSubjectConsent() {
     String type = ReferenceType.CONSENT;
-    // FIXME: System is still missing!
-    Identifier identifier = FhirHelper.generateIdentifier(this.getRechtsgrundlage(), "");
+    // FIXME: What is system of ResearchSubject consent?
+    String system = "";
+    Identifier identifier = FhirHelper.generateIdentifier(this.getRechtsgrundlage(), system);
     return FhirHelper.generateReference(type, identifier);
   }
 
