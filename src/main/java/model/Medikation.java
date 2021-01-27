@@ -8,6 +8,7 @@ import helper.Helper;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
+import java.util.Date;
 import java.util.List;
 
 public class Medikation implements Datablock {
@@ -82,6 +83,9 @@ public class Medikation implements Datablock {
     medicationStatement.setMeta(this.getMedicationStatementMeta());
     // Subject
     medicationStatement.setSubject(this.getMedicationStatementSubject());
+    // BasedOn (optional)
+    if (Helper.checkNonEmptyString(this.getBezug_verordnung()))
+      medicationStatement.addBasedOn(this.getMedicationStatementBasedOn());
     // PartOf (optional)
     if (Helper.checkNonEmptyString(this.getBezug_abgabe()))
       medicationStatement.addPartOf(this.getMedicationStatementPartOf());
@@ -90,7 +94,27 @@ public class Medikation implements Datablock {
       medicationStatement.addIdentifier(this.getMedicationStatementIdentifier());
     // Status
     medicationStatement.setStatus(this.getMedicationStatementStatus());
+    // Effective
+    medicationStatement.setEffective(this.getMedicationStatementEffective());
+    // TODO: medication[x]: reference to Medication
     return medicationStatement;
+  }
+
+  public Type getMedicationStatementEffective() {
+    Date startDate = Helper.getDateFromISO(this.getEinnahme_startzeitpunkt());
+    DateTimeType start = new DateTimeType(startDate);
+    DateTimeType end = new DateTimeType();
+    if (Helper.checkNonEmptyString(this.getEinnahme_endzeitpunkt())) {
+      Date endDate = Helper.getDateFromISO(this.getEinnahme_endzeitpunkt());
+      end.setValue(endDate);
+    }
+    // Return period if both start and end got set. Otherwise only return start.
+    return end.hasValue() ? new Period().setStartElement(start).setEndElement(end) : start;
+  }
+
+  public Reference getMedicationStatementBasedOn() {
+    String ref = this.getBezug_verordnung();
+    return FhirHelper.generateReference(ref);
   }
 
   public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
@@ -105,7 +129,8 @@ public class Medikation implements Datablock {
   }
 
   public Reference getMedicationStatementPartOf() {
-    return FhirHelper.generateReference(this.getBezug_abgabe());
+    String ref = this.getBezug_abgabe();
+    return FhirHelper.generateReference(ref);
   }
 
   public Reference getMedicationStatementSubject() {
