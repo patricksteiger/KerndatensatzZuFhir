@@ -64,20 +64,52 @@ public class Medikation implements Datablock {
 
   public Medication getMedication() {
     Medication medication = new Medication();
+    // Meta
     medication.setMeta(this.getMedicationMeta());
     return medication;
   }
 
   public MedicationAdministration getMedicationAdministration() {
     MedicationAdministration medicationAdministration = new MedicationAdministration();
+    // Meta
     medicationAdministration.setMeta(this.getMedicationAdministrationMeta());
     return medicationAdministration;
   }
 
   public MedicationStatement getMedicationStatement() {
     MedicationStatement medicationStatement = new MedicationStatement();
+    // Meta
     medicationStatement.setMeta(this.getMedicationStatementMeta());
+    // Subject
+    medicationStatement.setSubject(this.getMedicationStatementSubject());
+    // PartOf (optional)
+    if (Helper.checkNonEmptyString(this.getBezug_abgabe()))
+      medicationStatement.addPartOf(this.getMedicationStatementPartOf());
+    // Identifier (optional)
+    if (Helper.checkNonEmptyString(this.getIdentifikation()))
+      medicationStatement.addIdentifier(this.getMedicationStatementIdentifier());
+    // Status
+    medicationStatement.setStatus(this.getMedicationStatementStatus());
     return medicationStatement;
+  }
+
+  public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
+    return FhirHelper.getMedicationStatementFromCode(this.getStatus());
+  }
+
+  public Identifier getMedicationStatementIdentifier() {
+    String value = this.getIdentifikation();
+    // FIXME: What is system of MedicationStatement identifier?
+    String system = "";
+    return FhirHelper.generateIdentifier(value, system);
+  }
+
+  public Reference getMedicationStatementPartOf() {
+    return FhirHelper.generateReference(this.getBezug_abgabe());
+  }
+
+  public Reference getMedicationStatementSubject() {
+    return FhirHelper.getMIIPatientReference(this.getPatNr());
   }
 
   public Meta getMedicationMeta() {

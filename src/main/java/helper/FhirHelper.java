@@ -175,6 +175,10 @@ public class FhirHelper {
     return reference;
   }
 
+  public static Reference generateReference(String ref) {
+    return generateReference(ref, "", null, "");
+  }
+
   public static Reference generateReference(String type, Identifier identifier) {
     return generateReference("", type, identifier, "");
   }
@@ -235,6 +239,34 @@ public class FhirHelper {
         .filter(status -> status.name().equalsIgnoreCase(diagnosticReportStatus))
         .findFirst()
         .orElseThrow(Helper.illegalCode(diagnosticReportStatus, "DiagnosticReportStatus"));
+  }
+
+  /**
+   * Returns MedicationStatus corresponding to code. Valid codes are aktiv, abgeschlossen, geplant,
+   * unterbrochen, abgebrochen and unbekannt.
+   *
+   * @param code
+   * @return MedicationStatus enum
+   * @throws IllegalArgumentException if code is invalid
+   */
+  public static MedicationStatement.MedicationStatementStatus getMedicationStatementFromCode(
+      String code) {
+    switch (code) {
+      case "aktiv":
+        return MedicationStatement.MedicationStatementStatus.ACTIVE;
+      case "abgeschlossen":
+        return MedicationStatement.MedicationStatementStatus.COMPLETED;
+      case "geplant":
+        return MedicationStatement.MedicationStatementStatus.INTENDED;
+      case "unterbrochen":
+        return MedicationStatement.MedicationStatementStatus.ONHOLD;
+      case "abgebrochen":
+        return MedicationStatement.MedicationStatementStatus.STOPPED;
+      case "unbekannt":
+        return MedicationStatement.MedicationStatementStatus.UNKNOWN;
+      default:
+        throw Helper.illegalCode(code, "MedikationsStatus").get();
+    }
   }
 
   public static DateTimeType generateDate(Date date) {
