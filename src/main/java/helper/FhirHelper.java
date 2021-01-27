@@ -226,6 +226,72 @@ public class FhirHelper {
     return generateAddress(null, type, "", Helper.listOf(line), city, "", "", postalCode, country);
   }
 
+  public static Dosage generateDosage(
+      String text,
+      Timing timing,
+      Type asNeeded,
+      CodeableConcept method,
+      List<Dosage.DosageDoseAndRateComponent> doseAndRate) {
+    return generateDosage("", text, timing, asNeeded, method, doseAndRate);
+  }
+
+  public static Dosage generateDosage(
+      String sequence,
+      String text,
+      Timing timing,
+      Type asNeeded,
+      CodeableConcept method,
+      List<Dosage.DosageDoseAndRateComponent> doseAndRate) {
+    return generateDosage(
+        sequence,
+        text,
+        null,
+        "",
+        timing,
+        asNeeded,
+        null,
+        null,
+        method,
+        doseAndRate,
+        null,
+        null,
+        null);
+  }
+
+  public static Dosage generateDosage(
+      String sequence,
+      String text,
+      List<CodeableConcept> additionalInstructions,
+      String patientInstruction,
+      Timing timing,
+      Type asNeeded,
+      CodeableConcept site,
+      CodeableConcept route,
+      CodeableConcept method,
+      List<Dosage.DosageDoseAndRateComponent> doseAndRate,
+      Ratio maxDosePerPeriod,
+      SimpleQuantity maxDosePerAdministration,
+      SimpleQuantity maxDosePerLifeTime) {
+    Dosage dosage = new Dosage();
+    if (Helper.checkNonEmptyString(sequence)) dosage.setSequence(Integer.parseInt(sequence));
+    if (Helper.checkNonEmptyString(text)) dosage.setText(text);
+    if (additionalInstructions != null)
+      additionalInstructions.forEach(dosage::addAdditionalInstruction);
+    if (Helper.checkNonEmptyString(patientInstruction))
+      dosage.setPatientInstruction(patientInstruction);
+    if (timing != null) dosage.setTiming(timing);
+    if (asNeeded != null) dosage.setAsNeeded(asNeeded);
+    if (site != null) dosage.setSite(site);
+    if (route != null) dosage.setRoute(route);
+    if (method != null) dosage.setMethod(method);
+    if (doseAndRate != null) doseAndRate.forEach(dosage::addDoseAndRate);
+    if (maxDosePerPeriod != null) dosage.setMaxDosePerPeriod(maxDosePerPeriod);
+    if (maxDosePerAdministration != null)
+      dosage.setMaxDosePerAdministration(maxDosePerAdministration);
+    if (maxDosePerLifeTime != null) dosage.setMaxDosePerLifetime(maxDosePerLifeTime);
+    return dosage;
+  }
+
   /**
    * Returns diagnostic report status from case-insensitive string.
    *

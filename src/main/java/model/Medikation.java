@@ -100,6 +100,11 @@ public class Medikation implements Datablock {
     return medicationStatement;
   }
 
+  public Dosage getMedicationStatementDosage() {
+    Dosage dosage = new Dosage();
+    return dosage;
+  }
+
   public Type getMedicationStatementEffective() {
     Date startDate = Helper.getDateFromISO(this.getEinnahme_startzeitpunkt());
     DateTimeType start = new DateTimeType(startDate);
