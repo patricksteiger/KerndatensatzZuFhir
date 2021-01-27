@@ -20,4 +20,9 @@ public class MetaVersionId {
   public static final String FALL_VERSORGUNGSSTELLE_ENCOUNTER =
       UKU + "Fall_Versorgungsstelle_Encounter_1.0.0.0";
   public static final String DIAGNOSE_CONDITION = UKU + "Diagnose_Condition_1.0.0.0";
+  public static final String MEDIKATION_MEDICATION = UKU + "Medikation_Medication_1.0.0.0";
+  public static final String MEDIKATION_MEDICATION_ADMINISTRATION =
+      UKU + "Medikation_MedicationAdministration_1.0.0.0";
+  public static final String MEDIKATION_MEDICATION_STATEMENT =
+      UKU + "Medikation_MedicationStatement_1.0.0.0";
 }

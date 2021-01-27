@@ -6,6 +6,12 @@ public class MetaProfile {
       "https://www.medizininformatik-initiative.de/fhir/core/StructureDefinition/Encounter/KontaktGesundheitseinrichtung";
   public static final String DIAGNOSE_CONDITION =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose";
+  public static final String MEDIKATION_MEDICATION =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/Medication";
+  public static final String MEDIKATION_MEDICATION_ADMINISTRATION =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationAdministration";
+  public static final String MEDIKATION_MEDICATION_STATEMENT =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement";
   // Prozedur
   private static final String STRUCTURE_PROZEDUR =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/";

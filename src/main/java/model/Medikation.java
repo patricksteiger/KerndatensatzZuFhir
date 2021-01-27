@@ -1,11 +1,12 @@
 package model;
 
+import constants.MetaProfile;
+import constants.MetaSource;
+import constants.MetaVersionId;
+import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
-import org.hl7.fhir.r4.model.Medication;
-import org.hl7.fhir.r4.model.MedicationAdministration;
-import org.hl7.fhir.r4.model.MedicationStatement;
-import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.*;
 
 import java.util.List;
 
@@ -63,17 +64,41 @@ public class Medikation implements Datablock {
 
   public Medication getMedication() {
     Medication medication = new Medication();
+    medication.setMeta(this.getMedicationMeta());
     return medication;
   }
 
   public MedicationAdministration getMedicationAdministration() {
     MedicationAdministration medicationAdministration = new MedicationAdministration();
+    medicationAdministration.setMeta(this.getMedicationAdministrationMeta());
     return medicationAdministration;
   }
 
   public MedicationStatement getMedicationStatement() {
     MedicationStatement medicationStatement = new MedicationStatement();
+    medicationStatement.setMeta(this.getMedicationStatementMeta());
     return medicationStatement;
+  }
+
+  public Meta getMedicationMeta() {
+    String profile = MetaProfile.MEDIKATION_MEDICATION;
+    String source = MetaSource.MEDIKATION_MEDICATION;
+    String versionId = MetaVersionId.MEDIKATION_MEDICATION;
+    return FhirHelper.generateMeta(profile, source, versionId);
+  }
+
+  public Meta getMedicationAdministrationMeta() {
+    String profile = MetaProfile.MEDIKATION_MEDICATION_ADMINISTRATION;
+    String source = MetaSource.MEDIKATION_MEDICATION_ADMINISTRATION;
+    String versionId = MetaVersionId.MEDIKATION_MEDICATION_ADMINISTRATION;
+    return FhirHelper.generateMeta(profile, source, versionId);
+  }
+
+  public Meta getMedicationStatementMeta() {
+    String profile = MetaProfile.MEDIKATION_MEDICATION_STATEMENT;
+    String source = MetaSource.MEDIKATION_MEDICATION_STATEMENT;
+    String versionId = MetaVersionId.MEDIKATION_MEDICATION_STATEMENT;
+    return FhirHelper.generateMeta(profile, source, versionId);
   }
 
   public String getPatNr() {

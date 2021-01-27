@@ -19,4 +19,9 @@ public class MetaSource {
   public static final String FALL_VERSORGUNGSSTELLE_ENCOUNTER =
       UKU_SAP + "Fall-Versorgungsstelle-Encounter";
   public static final String DIAGNOSE_CONDITION = UKU_SAP + "Diagnose-Condition";
+  public static final String MEDIKATION_MEDICATION = UKU_SAP + "Medikation-Medication";
+  public static final String MEDIKATION_MEDICATION_ADMINISTRATION =
+      UKU_SAP + "Medikation-MedicationAdministration";
+  public static final String MEDIKATION_MEDICATION_STATEMENT =
+      UKU_SAP + "Medikation-MedicationStatement";
 }
