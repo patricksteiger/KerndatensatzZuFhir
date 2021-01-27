@@ -152,6 +152,13 @@ public class FhirHelper {
     return generateQuantity(value, null, unit, system, code);
   }
 
+  public static Reference getMIIPatientReference(String patNr) {
+    Reference assignerRef = FhirHelper.getUKUAssignerReference();
+    Identifier subjectId =
+        FhirHelper.generateIdentifier(patNr, IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirHelper.generateReference(subjectId);
+  }
+
   public static Reference getUKUAssignerReference() {
     Identifier assignerId =
         FhirHelper.generateIdentifier(MIICoreLocations.UKU.name(), IdentifierSystem.NS_DIZ);

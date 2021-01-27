@@ -60,6 +60,8 @@ public class Diagnose implements Datablock {
     condition.setCode(this.getCode());
     // BodySite, only includes Koerperstelle
     condition.addBodySite(this.getBodySite());
+    // Subject
+    condition.setSubject(this.getSubject());
     // Onset (optional)
     if (Helper.checkAnyNonEmptyStrings(
         this.getZeitraum_von(),
@@ -72,6 +74,10 @@ public class Diagnose implements Datablock {
     if (Helper.checkNonEmptyString(this.getDiagnoseerlaeuterung()))
       condition.addNote(this.getNote());
     return condition;
+  }
+
+  public Reference getSubject() {
+    return FhirHelper.getMIIPatientReference(this.getPatNr());
   }
 
   public CodeableConcept getCode() {
