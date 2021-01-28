@@ -152,6 +152,10 @@ public class FhirHelper {
     return generateQuantity(value, null, unit, system, code);
   }
 
+  public static Quantity generateQuantity(BigDecimal value, String unit) {
+    return generateQuantity(value, unit, "", "");
+  }
+
   public static Reference getMIIPatientReference(String patNr) {
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
@@ -230,9 +234,9 @@ public class FhirHelper {
       String text,
       Timing timing,
       Type asNeeded,
-      CodeableConcept method,
+      CodeableConcept route,
       List<Dosage.DosageDoseAndRateComponent> doseAndRate) {
-    return generateDosage("", text, timing, asNeeded, method, doseAndRate);
+    return generateDosage("", text, timing, asNeeded, route, doseAndRate);
   }
 
   public static Dosage generateDosage(
@@ -240,7 +244,7 @@ public class FhirHelper {
       String text,
       Timing timing,
       Type asNeeded,
-      CodeableConcept method,
+      CodeableConcept route,
       List<Dosage.DosageDoseAndRateComponent> doseAndRate) {
     return generateDosage(
         sequence,
@@ -250,8 +254,8 @@ public class FhirHelper {
         timing,
         asNeeded,
         null,
+        route,
         null,
-        method,
         doseAndRate,
         null,
         null,

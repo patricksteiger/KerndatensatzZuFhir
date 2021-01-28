@@ -1,10 +1,12 @@
 package model;
 
+import constants.CodingSystem;
 import constants.MetaProfile;
 import constants.MetaSource;
 import constants.MetaVersionId;
 import helper.FhirHelper;
 import helper.Helper;
+import helper.ValueAndUnitParsed;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -96,13 +98,78 @@ public class Medikation implements Datablock {
     medicationStatement.setStatus(this.getMedicationStatementStatus());
     // Effective
     medicationStatement.setEffective(this.getMedicationStatementEffective());
+    // Dosage (optional)
+    if (this.hasMedicationStatementDosage())
+      medicationStatement.addDosage(this.getMedicationStatementDosage());
+    // Note (optional)
+    if (Helper.checkNonEmptyString(this.getHinweis()))
+      medicationStatement.addNote(this.getMedicationStatementNote());
     // TODO: medication[x]: reference to Medication
     return medicationStatement;
   }
 
+  public Annotation getMedicationStatementNote() {
+    MarkdownType text = new MarkdownType(this.getHinweis());
+    return new Annotation(text);
+  }
+
   public Dosage getMedicationStatementDosage() {
-    Dosage dosage = new Dosage();
-    return dosage;
+    String sequence = this.getDosierung_reihenfolge();
+    String text = this.getDosierung_freitext();
+    Timing timing = this.getMedicationStatementDosageTiming();
+    Type asNeeded = this.getMedicationStatementDosageAsNeeded();
+    CodeableConcept route = this.getMedicationStatementDosageRoute();
+    List<Dosage.DosageDoseAndRateComponent> doseAndRate =
+        this.getMedicationStatementDosageDoseAndRate();
+    return FhirHelper.generateDosage(sequence, text, timing, asNeeded, route, doseAndRate);
+  }
+
+  public boolean hasMedicationStatementDosage() {
+    return Helper.checkAnyNonEmptyStrings(
+        this.getDosierung_reihenfolge(),
+        this.getDosierung_freitext(),
+        this.getDosierung_einnahme_bei_bedarf(),
+        this.getDosierung_ereignis(),
+        this.getDosierung_dosis(),
+        this.getDosierung_art_der_anwendung(),
+        this.getDosierung_offset(),
+        this.getDosierung_phase(),
+        this.getDosierung_zeitpunkt(),
+        this.getDosierung_periode());
+  }
+
+  public List<Dosage.DosageDoseAndRateComponent> getMedicationStatementDosageDoseAndRate() {
+    if (!Helper.checkNonEmptyString(this.getDosierung_dosis())) return Helper.listOf();
+    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(this.getDosierung_dosis());
+    Quantity dose = FhirHelper.generateQuantity(parsed.getValue(), parsed.getUnit());
+    Dosage.DosageDoseAndRateComponent doseAndRate = new Dosage.DosageDoseAndRateComponent();
+    doseAndRate.setDose(dose);
+    return Helper.listOf(doseAndRate);
+  }
+
+  public Timing getMedicationStatementDosageTiming() {
+    // TODO: Timing for MedicationStatement dosage
+    Timing timing = new Timing();
+    if (Helper.checkNonEmptyString(this.getDosierung_zeitpunkt())) {
+      Date event = Helper.getDateFromISO(this.getDosierung_zeitpunkt());
+      timing.addEvent(event);
+    }
+    return timing;
+  }
+
+  public CodeableConcept getMedicationStatementDosageRoute() {
+    if (!Helper.checkNonEmptyString(this.getDosierung_art_der_anwendung())) return null;
+    String code = this.getDosierung_art_der_anwendung();
+    // TODO: Is system of MedicationStatement route SNOMED? Or EDQM?
+    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
+    Coding snomed = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(snomed);
+  }
+
+  public Type getMedicationStatementDosageAsNeeded() {
+    if (!Helper.checkNonEmptyString(this.getDosierung_einnahme_bei_bedarf())) return null;
+    boolean bedarf = Helper.booleanFromString(this.getDosierung_einnahme_bei_bedarf());
+    return new BooleanType(bedarf);
   }
 
   public Type getMedicationStatementEffective() {
