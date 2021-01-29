@@ -82,7 +82,47 @@ public class Medikation implements Datablock {
       medicationAdministration.addIdentifier(this.getMedicationAdministrationIdentifier());
     // Status
     medicationAdministration.setStatus(this.getMedicationAdministrationStatus());
+    // Subject (optional)
+    if (Helper.checkNonEmptyString(this.getPatNr()))
+      medicationAdministration.setSubject(this.getMedicationAdministrationSubject());
+    // Effective
+    medicationAdministration.setEffective(this.getMedicationAdministrationEffective());
+    // Dosage (optional)
+    if (this.hasMedicationAdministrationDosage())
+      medicationAdministration.setDosage(this.getMedicationAdministrationDosage());
+    // Note (optional)
+    if (Helper.checkNonEmptyString(this.getHinweis()))
+      medicationAdministration.addNote(this.getMedicationAdministrationNode());
+    // Request (optional)
+    if (Helper.checkNonEmptyString(this.getBezug_verordnung()))
+      medicationAdministration.setRequest(this.getMedicationAdministrationRequest());
+    // TODO: medication[x]: reference to Medication
+    // TODO: How does Behandlungsgrund look like?
+    // TODO: Does MedicationAdministration have DateAsserted?
     return medicationAdministration;
+  }
+
+  public Reference getMedicationAdministrationRequest() {
+    String ref = this.getBezug_verordnung();
+    return FhirHelper.generateReference(ref);
+  }
+
+  public Annotation getMedicationAdministrationNode() {
+    return this.getMedicationStatementNote();
+  }
+
+  public MedicationAdministration.MedicationAdministrationDosageComponent
+      getMedicationAdministrationDosage() {
+    Dosage statementDosage = this.getMedicationStatementDosage();
+    return FhirHelper.getMedicationAdministrationDosageFromDosage(statementDosage);
+  }
+
+  public boolean hasMedicationAdministrationDosage() {
+    return this.hasMedicationStatementDosage();
+  }
+
+  public Reference getMedicationAdministrationSubject() {
+    return FhirHelper.getMIIPatientReference(this.getPatNr());
   }
 
   public Identifier getMedicationAdministrationIdentifier() {
@@ -126,6 +166,10 @@ public class Medikation implements Datablock {
     // TODO: medication[x]: reference to Medication
     // TODO: How does Behandlungsgrund look like?
     return medicationStatement;
+  }
+
+  public Type getMedicationAdministrationEffective() {
+    return this.getMedicationStatementEffective();
   }
 
   public MedicationAdministration.MedicationAdministrationStatus

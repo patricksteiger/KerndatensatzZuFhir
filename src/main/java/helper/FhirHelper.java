@@ -296,6 +296,14 @@ public class FhirHelper {
     return dosage;
   }
 
+  // TODO: Add mapping from Dosage to MedicationAdministrationDosage
+  public static MedicationAdministration.MedicationAdministrationDosageComponent
+      getMedicationAdministrationDosageFromDosage(Dosage dosage) {
+    MedicationAdministration.MedicationAdministrationDosageComponent dosageComponent =
+        new MedicationAdministration.MedicationAdministrationDosageComponent();
+    return dosageComponent;
+  }
+
   /**
    * Returns diagnostic report status from case-insensitive string.
    *
