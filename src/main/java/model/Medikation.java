@@ -104,8 +104,25 @@ public class Medikation implements Datablock {
     // Note (optional)
     if (Helper.checkNonEmptyString(this.getHinweis()))
       medicationStatement.addNote(this.getMedicationStatementNote());
+    // DateAsserted (optional)
+    if (Helper.checkNonEmptyString(this.getDatum_eintrag()))
+      medicationStatement.setDateAsserted(this.getMedicationStatementDateAsserted());
+    // InformationSource (optional)
+    if (Helper.checkNonEmptyString(this.getOrganisationsname()))
+      medicationStatement.setInformationSource(this.getMedicationStatementInformationSource());
     // TODO: medication[x]: reference to Medication
+    // TODO: How does Behandlungsgrund look like?
     return medicationStatement;
+  }
+
+  public Reference getMedicationStatementInformationSource() {
+    String ref = this.getOrganisationsname();
+    return FhirHelper.generateReference(ref);
+  }
+
+  public Date getMedicationStatementDateAsserted() {
+    Date dateAsserted = Helper.getDateFromISO(this.getDatum_eintrag());
+    return dateAsserted;
   }
 
   public Annotation getMedicationStatementNote() {
