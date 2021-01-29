@@ -30,4 +30,6 @@ public class ExtensionUrl {
       "http://fhir.de/StructureDefinition/icd-10-gm-manifestationscode";
   public static final String ICD_10_GM_PRIMAERCODE =
       "http://fhir.de/StructureDefinition/icd-10-gm-primaercode";
+  public static final String MEDIKATION_WIRKSTOFFTYP =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp";
 }

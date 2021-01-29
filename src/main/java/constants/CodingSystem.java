@@ -40,4 +40,9 @@ public class CodingSystem {
   public static final String ICD_10_GM_DIMDI = "http://fhir.de/CodeSystem/dimdi/icd-10-gm";
   public static final String CONDITION_CLINICAL_STATUS =
       "http://terminology.hl7.org/CodeSystem/condition-clinical";
+  public static final String PHARMA_ZENTRAL_NUMMER = "http://fhir.de/CodeSystem/ifa/pzn";
+  public static final String ATC_DIMDI = "http://fhir.de/CodeSystem/dimdi/atc";
+  public static final String EDQM_STANDARD = "http://standardterms.edqm.eu";
+  public static final String MEDIKATION_WIRKSTOFFTYP =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/CodeSystem/wirkstofftyp";
 }

@@ -1,16 +1,15 @@
 package model;
 
-import constants.CodingSystem;
-import constants.MetaProfile;
-import constants.MetaSource;
-import constants.MetaVersionId;
+import constants.*;
 import enums.MedikationStatus;
+import enums.Wirkstofftyp;
 import helper.FhirHelper;
 import helper.Helper;
 import helper.ValueAndUnitParsed;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -66,13 +65,6 @@ public class Medikation implements Datablock {
         this.getMedication(), this.getMedicationAdministration(), this.getMedicationStatement());
   }
 
-  public Medication getMedication() {
-    Medication medication = new Medication();
-    // Meta
-    medication.setMeta(this.getMedicationMeta());
-    return medication;
-  }
-
   public MedicationAdministration getMedicationAdministration() {
     MedicationAdministration medicationAdministration = new MedicationAdministration();
     // Meta
@@ -100,36 +92,6 @@ public class Medikation implements Datablock {
     // TODO: How does Behandlungsgrund look like?
     // TODO: Does MedicationAdministration have DateAsserted?
     return medicationAdministration;
-  }
-
-  public Reference getMedicationAdministrationRequest() {
-    String ref = this.getBezug_verordnung();
-    return FhirHelper.generateReference(ref);
-  }
-
-  public Annotation getMedicationAdministrationNode() {
-    return this.getMedicationStatementNote();
-  }
-
-  public MedicationAdministration.MedicationAdministrationDosageComponent
-      getMedicationAdministrationDosage() {
-    Dosage statementDosage = this.getMedicationStatementDosage();
-    return FhirHelper.getMedicationAdministrationDosageFromDosage(statementDosage);
-  }
-
-  public boolean hasMedicationAdministrationDosage() {
-    return this.hasMedicationStatementDosage();
-  }
-
-  public Reference getMedicationAdministrationSubject() {
-    return FhirHelper.getMIIPatientReference(this.getPatNr());
-  }
-
-  public Identifier getMedicationAdministrationIdentifier() {
-    String value = this.getIdentifikation();
-    // FIXME: What is system of MedicationAdministration identifier?
-    String system = "";
-    return FhirHelper.generateIdentifier(value, system);
   }
 
   public MedicationStatement getMedicationStatement() {
@@ -166,6 +128,140 @@ public class Medikation implements Datablock {
     // TODO: medication[x]: reference to Medication
     // TODO: How does Behandlungsgrund look like?
     return medicationStatement;
+  }
+
+  public Medication getMedication() {
+    Medication medication = new Medication();
+    // Meta
+    medication.setMeta(this.getMedicationMeta());
+    // Code (optional)
+    if (Helper.checkNonEmptyString(this.getArzneimittel_code()))
+      medication.setCode(this.getMedicationCode());
+    // Form (optional)
+    if (Helper.checkNonEmptyString(this.getDarreichungsform()))
+      medication.setForm(this.getMedicationForm());
+    // Amount (optional)
+    if (Helper.checkNonEmptyString(this.getArzneimittel_wirkstaerke()))
+      medication.setAmount(this.getMedicationAmount());
+    // Ingredient
+    medication.addIngredient(this.getMedicationIngredient());
+    return medication;
+  }
+
+  public Medication.MedicationIngredientComponent getMedicationIngredient() {
+    Medication.MedicationIngredientComponent ingredient =
+        new Medication.MedicationIngredientComponent();
+    if (Helper.checkNonEmptyString(this.getWirkstoff_code_allgemein()))
+      ingredient.addExtension(this.getMedicationIngredientExtension());
+    ingredient.setItem(this.getMedicationIngredientItem());
+    if (Helper.checkNonEmptyString(this.getWirkstoff_menge()))
+      ingredient.setStrength(this.getMedicationIngredientStrength());
+    return ingredient;
+  }
+
+  public Ratio getMedicationIngredientStrength() {
+    ValueAndUnitParsed parsedStrength = ValueAndUnitParsed.fromString(this.getWirkstoff_menge());
+    Quantity numerator =
+        FhirHelper.generateQuantity(parsedStrength.getValue(), parsedStrength.getUnit());
+    // TODO: Is only numerator for Ratio correct?
+    return new Ratio().setNumerator(numerator);
+  }
+
+  public CodeableConcept getMedicationIngredientItem() {
+    String code = this.getWirkstoff_code_aktiv();
+    // TODO: What is system of ingredient in Medication
+    String system = "";
+    String display = this.getWirkstoff_name_aktiv();
+    Coding coding = FhirHelper.generateCoding(code, system, display);
+    return new CodeableConcept().addCoding(coding);
+  }
+
+  public Extension getMedicationIngredientExtension() {
+    Wirkstofftyp wirkstofftyp = Wirkstofftyp.fromCode(this.getWirkstoff_code_allgemein());
+    Coding value =
+        FhirHelper.generateCoding(
+            wirkstofftyp.getCode(), wirkstofftyp.getSystem(), wirkstofftyp.getDisplay());
+    String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
+    return FhirHelper.generateExtension(url, value);
+  }
+
+  public Ratio getMedicationAmount() {
+    ValueAndUnitParsed parseStaerke =
+        ValueAndUnitParsed.fromString(this.getArzneimittel_wirkstaerke());
+    BigDecimal value = parseStaerke.getValue();
+    String unit = parseStaerke.getUnit();
+    Quantity numerator = FhirHelper.generateQuantity(value, unit);
+    // TODO: Is only numerator for Ratio correct?
+    return new Ratio().setNumerator(numerator);
+  }
+
+  public CodeableConcept getMedicationForm() {
+    String code = this.getDarreichungsform();
+    String system = CodingSystem.EDQM_STANDARD;
+    Coding edqm = FhirHelper.generateCoding(code, system);
+    return new CodeableConcept().addCoding(edqm);
+  }
+
+  // TODO: How do you separate PHARMA from ATC? ATC always DE?
+  public CodeableConcept getMedicationCode() {
+    CodeableConcept code = new CodeableConcept();
+    if (Helper.checkNonEmptyString(this.getArzneimittel_code())) {
+      Coding pharma = this.getMedicationCodePharma();
+      code.addCoding(pharma);
+    }
+    if (Helper.checkNonEmptyString(this.getArzneimittel_code())) {
+      Coding atcDE = this.getMedicationCodeAtcDE();
+      code.addCoding(atcDE);
+    }
+    if (Helper.checkNonEmptyString(this.getRezeptur_freitextzeile())) {
+      String text = this.getRezeptur_freitextzeile();
+      code.setText(text);
+    }
+    return code;
+  }
+
+  public Coding getMedicationCodeAtcDE() {
+    String code = this.getArzneimittel_code();
+    String system = CodingSystem.ATC_DIMDI;
+    String display = this.getArzneimittel_name();
+    return FhirHelper.generateCoding(code, system, display);
+  }
+
+  public Coding getMedicationCodePharma() {
+    String code = this.getArzneimittel_code();
+    String system = CodingSystem.PHARMA_ZENTRAL_NUMMER;
+    String display = this.getArzneimittel_name();
+    return FhirHelper.generateCoding(code, system, display);
+  }
+
+  public Reference getMedicationAdministrationRequest() {
+    String ref = this.getBezug_verordnung();
+    return FhirHelper.generateReference(ref);
+  }
+
+  public Annotation getMedicationAdministrationNode() {
+    return this.getMedicationStatementNote();
+  }
+
+  public MedicationAdministration.MedicationAdministrationDosageComponent
+      getMedicationAdministrationDosage() {
+    Dosage statementDosage = this.getMedicationStatementDosage();
+    return FhirHelper.getMedicationAdministrationDosageFromDosage(statementDosage);
+  }
+
+  public boolean hasMedicationAdministrationDosage() {
+    return this.hasMedicationStatementDosage();
+  }
+
+  public Reference getMedicationAdministrationSubject() {
+    return FhirHelper.getMIIPatientReference(this.getPatNr());
+  }
+
+  public Identifier getMedicationAdministrationIdentifier() {
+    String value = this.getIdentifikation();
+    // FIXME: What is system of MedicationAdministration identifier?
+    String system = "";
+    return FhirHelper.generateIdentifier(value, system);
   }
 
   public Type getMedicationAdministrationEffective() {
