@@ -4,6 +4,7 @@ import constants.CodingSystem;
 import constants.MetaProfile;
 import constants.MetaSource;
 import constants.MetaVersionId;
+import enums.MedikationStatus;
 import helper.FhirHelper;
 import helper.Helper;
 import helper.ValueAndUnitParsed;
@@ -76,7 +77,19 @@ public class Medikation implements Datablock {
     MedicationAdministration medicationAdministration = new MedicationAdministration();
     // Meta
     medicationAdministration.setMeta(this.getMedicationAdministrationMeta());
+    // Identifier (optional)
+    if (Helper.checkNonEmptyString(this.getIdentifikation()))
+      medicationAdministration.addIdentifier(this.getMedicationAdministrationIdentifier());
+    // Status
+    medicationAdministration.setStatus(this.getMedicationAdministrationStatus());
     return medicationAdministration;
+  }
+
+  public Identifier getMedicationAdministrationIdentifier() {
+    String value = this.getIdentifikation();
+    // FIXME: What is system of MedicationAdministration identifier?
+    String system = "";
+    return FhirHelper.generateIdentifier(value, system);
   }
 
   public MedicationStatement getMedicationStatement() {
@@ -113,6 +126,11 @@ public class Medikation implements Datablock {
     // TODO: medication[x]: reference to Medication
     // TODO: How does Behandlungsgrund look like?
     return medicationStatement;
+  }
+
+  public MedicationAdministration.MedicationAdministrationStatus
+      getMedicationAdministrationStatus() {
+    return MedikationStatus.medicationAdministrationStatusFromCode(this.getStatus());
   }
 
   public Reference getMedicationStatementInformationSource() {
@@ -207,7 +225,7 @@ public class Medikation implements Datablock {
   }
 
   public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
-    return FhirHelper.getMedicationStatementFromCode(this.getStatus());
+    return MedikationStatus.medicationStatementStatusFromCode(this.getStatus());
   }
 
   public Identifier getMedicationStatementIdentifier() {
