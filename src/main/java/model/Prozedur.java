@@ -6,6 +6,7 @@ import constants.*;
 import enums.DurchfuehrungsabsichtCode;
 import enums.ProcedureCategorySnomedMapping;
 import enums.SeitenlokalisationCode;
+import helper.FhirGenerator;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -69,12 +70,12 @@ public class Prozedur implements Datablock {
   public Reference getSubject() {
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
-        FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirHelper.generateReference(subjectId);
+        FhirGenerator.identifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirGenerator.reference(subjectId);
   }
 
   public Meta getMeta() {
-    return FhirHelper.generateMeta(
+    return FhirGenerator.meta(
         MetaProfile.PROZEDUR_PROCEDURE,
         MetaSource.PROZEDUR_PROCEDURE,
         MetaVersionId.PROZEDUR_PROCEDURE);
@@ -85,7 +86,7 @@ public class Prozedur implements Datablock {
     ProcedureCategorySnomedMapping mapping =
         ProcedureCategorySnomedMapping.fromOpsCode(this.getOPS_Vollst_Prozedurenkode());
     Coding categoryCode =
-        FhirHelper.generateCoding(mapping.getCode(), mapping.getSystem(), mapping.getDisplay());
+        FhirGenerator.coding(mapping.getCode(), mapping.getSystem(), mapping.getDisplay());
     return new CodeableConcept().addCoding(categoryCode);
   }
 
@@ -100,7 +101,7 @@ public class Prozedur implements Datablock {
 
   public Coding getCodingOps() {
     Coding ops =
-        FhirHelper.generateCoding(
+        FhirGenerator.coding(
             this.getOPS_Vollst_Prozedurenkode(),
             CodingSystem.OPS_DIMDI,
             Constants.EMPTY_DISPLAY,
@@ -115,19 +116,18 @@ public class Prozedur implements Datablock {
     SeitenlokalisationCode seitenCode =
         SeitenlokalisationCode.fromCode(this.getOPS_Seitenlokalisation());
     Coding value =
-        FhirHelper.generateCoding(
-            seitenCode.getCode(), seitenCode.getSystem(), seitenCode.getDisplay());
-    return FhirHelper.generateExtension(ExtensionUrl.OPS_SEITENLOKALISATION, value);
+        FhirGenerator.coding(seitenCode.getCode(), seitenCode.getSystem(), seitenCode.getDisplay());
+    return FhirGenerator.extension(ExtensionUrl.OPS_SEITENLOKALISATION, value);
   }
 
   public Coding getCodingSnomed() {
-    return FhirHelper.generateCoding(
+    return FhirGenerator.coding(
         this.getSNOMED_Vollst_Prozedurenkode(), CodingSystem.SNOMED_CLINICAL_TERMS);
   }
 
   public DateTimeType getPerformed() {
     Date date = Helper.getDateFromISO(this.getDurchfuehrungsdatum());
-    return FhirHelper.generateDate(date);
+    return FhirGenerator.dateTimeType(date);
   }
 
   /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80349/" */
@@ -144,7 +144,7 @@ public class Prozedur implements Datablock {
     String code = codeAndDisplay[0];
     // Check in case display is not given
     String display = (codeAndDisplay.length > 1) ? codeAndDisplay[1] : "";
-    Coding coding = FhirHelper.generateCoding(code, CodingSystem.SNOMED_CLINICAL_TERMS, display);
+    Coding coding = FhirGenerator.coding(code, CodingSystem.SNOMED_CLINICAL_TERMS, display);
     return new CodeableConcept().addCoding(coding);
   }
 
@@ -161,8 +161,8 @@ public class Prozedur implements Datablock {
 
   public Extension getRecordedDate() {
     Date recorded = Helper.getDateFromISO(this.getDokumentationsdatum());
-    DateTimeType date = FhirHelper.generateDate(recorded);
-    return FhirHelper.generateExtension(ExtensionUrl.RECORDED_DATE, date);
+    DateTimeType date = FhirGenerator.dateTimeType(recorded);
+    return FhirGenerator.extension(ExtensionUrl.RECORDED_DATE, date);
   }
 
   /**
@@ -172,11 +172,11 @@ public class Prozedur implements Datablock {
     DurchfuehrungsabsichtCode durchfuehrungsabsichtCode =
         DurchfuehrungsabsichtCode.fromCode(this.getKernDurchfuehrungsabsicht());
     Coding code =
-        FhirHelper.generateCoding(
+        FhirGenerator.coding(
             durchfuehrungsabsichtCode.getCode(),
             durchfuehrungsabsichtCode.getSystem(),
             durchfuehrungsabsichtCode.getDisplay());
-    return FhirHelper.generateExtension(ExtensionUrl.DURCHFUEHRUNGSABSICHT, code);
+    return FhirGenerator.extension(ExtensionUrl.DURCHFUEHRUNGSABSICHT, code);
   }
 
   public void setDurchfuehrungsabsicht(String durchfuehrungsabsicht) {

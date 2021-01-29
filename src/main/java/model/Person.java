@@ -6,6 +6,7 @@ import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
 import enums.VersichertenCode;
 import enums.VitalStatus;
+import helper.FhirGenerator;
 import helper.FhirHelper;
 import helper.Helper;
 import interfaces.Datablock;
@@ -95,7 +96,7 @@ public class Person implements Datablock {
   }
 
   public Meta getPatientMeta() {
-    return FhirHelper.generateMeta(
+    return FhirGenerator.meta(
         MetaProfile.PERSON_PATIENT, MetaSource.PERSON_PATIENT, MetaVersionId.PERSON_PATIENT);
   }
 
@@ -113,7 +114,7 @@ public class Person implements Datablock {
     String city = this.getStrassenanschrift_wohnort();
     String postalCode = this.getStrassenanschrift_plz();
     String country = this.getStrassenanschrift_land();
-    return FhirHelper.generateAddress(type, line, city, postalCode, country);
+    return FhirGenerator.address(type, line, city, postalCode, country);
   }
 
   public Address getPostfach() {
@@ -122,13 +123,13 @@ public class Person implements Datablock {
     String city = this.getPostfach_wohnort();
     String postalCode = this.getPostfach_plz();
     String country = this.getPostfach_land();
-    return FhirHelper.generateAddress(type, line, city, postalCode, country);
+    return FhirGenerator.address(type, line, city, postalCode, country);
   }
 
   public Type getDeceased() {
     if (Helper.checkNonEmptyString(this.getTodeszeitpunkt())) {
       Date deceasedTime = Helper.getDateFromISO(this.getTodeszeitpunkt());
-      return FhirHelper.generateDate(deceasedTime);
+      return FhirGenerator.dateTimeType(deceasedTime);
     } else {
       boolean deceased = Helper.booleanFromString(this.getPatient_verstorben());
       return new BooleanType(deceased);
@@ -137,29 +138,28 @@ public class Person implements Datablock {
 
   public Extension getBirthDate() {
     Date birthDate = Helper.getDateFromISO(this.getGeburtsdatum());
-    DateTimeType type = FhirHelper.generateDate(birthDate);
-    return FhirHelper.generateExtension(ExtensionUrl.BIRTH_DATE, type);
+    DateTimeType type = FhirGenerator.dateTimeType(birthDate);
+    return FhirGenerator.extension(ExtensionUrl.BIRTH_DATE, type);
   }
 
   public Extension getGender() {
     Enumerations.AdministrativeGender gender =
         FhirHelper.getGenderMapping(this.getAdmininistratives_geschlecht());
-    Coding coding =
-        FhirHelper.generateCoding(gender.name(), gender.getSystem(), gender.getDisplay());
-    return FhirHelper.generateExtension(ExtensionUrl.GENDER, coding);
+    Coding coding = FhirGenerator.coding(gender.name(), gender.getSystem(), gender.getDisplay());
+    return FhirGenerator.extension(ExtensionUrl.GENDER, coding);
   }
 
   public HumanName getGeburtsName() {
     HumanName.NameUse use = HumanName.NameUse.MAIDEN;
     List<Extension> family = this.getMaidenFamily();
-    return FhirHelper.generateHumanName(use, family);
+    return FhirGenerator.humanName(use, family);
   }
 
   public List<Extension> getMaidenFamily() {
     List<Extension> family = new ArrayList<>();
     if (Helper.checkNonEmptyString(this.getGeburtsname())) {
       StringType nachname = new StringType(this.getGeburtsname());
-      family.add(FhirHelper.generateExtension(ExtensionUrl.NACHNAME, nachname));
+      family.add(FhirGenerator.extension(ExtensionUrl.NACHNAME, nachname));
     }
     return family;
   }
@@ -170,22 +170,22 @@ public class Person implements Datablock {
     List<String> given = this.getGiven();
     List<Extension> artDesPrefix = this.getPrefix();
     String prefix = this.getPraefix();
-    return FhirHelper.generateHumanName(use, family, given, artDesPrefix, prefix);
+    return FhirGenerator.humanName(use, family, given, artDesPrefix, prefix);
   }
 
   public List<Extension> getFamily() {
     List<Extension> family = new ArrayList<>();
     if (Helper.checkNonEmptyString(this.getNamenszusatz())) {
       StringType zusatz = new StringType(this.getNamenszusatz());
-      family.add(FhirHelper.generateExtension(ExtensionUrl.NAMENSZUSATZ, zusatz));
+      family.add(FhirGenerator.extension(ExtensionUrl.NAMENSZUSATZ, zusatz));
     }
     if (Helper.checkNonEmptyString(this.getNachname())) {
       StringType nachname = new StringType(this.getNachname());
-      family.add(FhirHelper.generateExtension(ExtensionUrl.NACHNAME, nachname));
+      family.add(FhirGenerator.extension(ExtensionUrl.NACHNAME, nachname));
     }
     if (Helper.checkNonEmptyString(this.getVorsatzwort())) {
       StringType vorsatzwort = new StringType(this.getVorsatzwort());
-      family.add(FhirHelper.generateExtension(ExtensionUrl.VORSATZWORT, vorsatzwort));
+      family.add(FhirGenerator.extension(ExtensionUrl.VORSATZWORT, vorsatzwort));
     }
     return family;
   }
@@ -200,7 +200,7 @@ public class Person implements Datablock {
     List<Extension> prefix = new ArrayList<>();
     if (Helper.checkNonEmptyString(this.getArt_des_praefix())) {
       StringType artDesPrefix = new StringType(this.getArt_des_praefix());
-      prefix.add(FhirHelper.generateExtension(ExtensionUrl.PREFIX, artDesPrefix));
+      prefix.add(FhirGenerator.extension(ExtensionUrl.PREFIX, artDesPrefix));
     }
     return prefix;
   }
@@ -209,34 +209,33 @@ public class Person implements Datablock {
     String value = this.getPatient_pid();
     String system = IdentifierSystem.PID;
     IdentifierTypeCode code = IdentifierTypeCode.MR;
-    Coding pidCoding =
-        FhirHelper.generateCoding(code.getCode(), code.getSystem(), code.getDisplay());
+    Coding pidCoding = FhirGenerator.coding(code.getCode(), code.getSystem(), code.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(pidCoding);
     Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
-    return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
+    return FhirGenerator.identifier(value, system, type, assignerRef, use);
   }
 
   public Identifier getGKV() {
     String value = this.getVersichertenId_gkv();
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     VersichertenCode gkv = VersichertenCode.GKV;
-    Coding gkvCoding = FhirHelper.generateCoding(gkv.getCode(), gkv.getSystem(), gkv.getDisplay());
+    Coding gkvCoding = FhirGenerator.coding(gkv.getCode(), gkv.getSystem(), gkv.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(gkvCoding);
     Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
-    return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
+    return FhirGenerator.identifier(value, system, type, assignerRef, use);
   }
 
   public Identifier getPKV() {
     String value = this.getVersichertennummer_pkv();
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     VersichertenCode pkv = VersichertenCode.PKV;
-    Coding pkvCoding = FhirHelper.generateCoding(pkv.getCode(), pkv.getSystem(), pkv.getDisplay());
+    Coding pkvCoding = FhirGenerator.coding(pkv.getCode(), pkv.getSystem(), pkv.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(pkvCoding);
     Reference assignerRef = this.getPatientOrganizationReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
-    return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
+    return FhirGenerator.identifier(value, system, type, assignerRef, use);
   }
 
   public Reference getPatientOrganizationReference() {
@@ -246,15 +245,15 @@ public class Person implements Datablock {
     String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
     IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
     Coding coding =
-        FhirHelper.generateCoding(
+        FhirGenerator.coding(
             identifierTypeCode.getCode(),
             identifierTypeCode.getSystem(),
             identifierTypeCode.getDisplay());
     CodeableConcept identifierType = new CodeableConcept().addCoding(coding);
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
     Identifier identifier =
-        FhirHelper.generateIdentifier(identifierValue, system, identifierType, null, use);
-    return FhirHelper.generateReference(type, identifier);
+        FhirGenerator.identifier(identifierValue, system, identifierType, null, use);
+    return FhirGenerator.reference(type, identifier);
   }
 
   public ResearchSubject getResearchSubject() {
@@ -277,7 +276,7 @@ public class Person implements Datablock {
   }
 
   public Meta getResearchSubjectMeta() {
-    return FhirHelper.generateMeta(
+    return FhirGenerator.meta(
         MetaProfile.PERSON_RESEARCH_SUBJECT,
         MetaSource.PERSON_RESEARCH_SUBJECT,
         MetaVersionId.PERSON_RESEARCH_SUBJECT);
@@ -287,25 +286,25 @@ public class Person implements Datablock {
     String type = ReferenceType.CONSENT;
     // FIXME: What is system of ResearchSubject consent?
     String system = "";
-    Identifier identifier = FhirHelper.generateIdentifier(this.getRechtsgrundlage(), system);
-    return FhirHelper.generateReference(type, identifier);
+    Identifier identifier = FhirGenerator.identifier(this.getRechtsgrundlage(), system);
+    return FhirGenerator.reference(type, identifier);
   }
 
   public Reference getResearchSubjectIndividual() {
     String type = ReferenceType.PATIENT;
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
-        FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirHelper.generateReference(type, subjectId);
+        FhirGenerator.identifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirGenerator.reference(type, subjectId);
   }
 
   public Period getResearchSubjectPeriod() {
     Date start = Helper.getDateFromISO(this.getTeilnahme_beginn());
     if (Helper.checkNonEmptyString(this.getTeilnahme_ende())) {
       Date end = Helper.getDateFromISO(this.getTeilnahme_ende());
-      return FhirHelper.generatePeriod(start, end);
+      return FhirGenerator.period(start, end);
     }
-    return FhirHelper.generatePeriod(start);
+    return FhirGenerator.period(start);
   }
 
   public ResearchSubject.ResearchSubjectStatus getStatus() {
@@ -321,11 +320,11 @@ public class Person implements Datablock {
     String value = this.getSubjekt_identifizierungscode();
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
     IdentifierTypeCode code = IdentifierTypeCode.RI;
-    Coding coding = FhirHelper.generateCoding(code.getCode(), code.getSystem(), code.getDisplay());
+    Coding coding = FhirGenerator.coding(code.getCode(), code.getSystem(), code.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(coding);
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
-    return FhirHelper.generateIdentifier(value, system, type, assignerRef, use);
+    return FhirGenerator.identifier(value, system, type, assignerRef, use);
   }
 
   public Observation getObservation() {
@@ -349,7 +348,7 @@ public class Person implements Datablock {
   }
 
   public Meta getObservationMeta() {
-    return FhirHelper.generateMeta(
+    return FhirGenerator.meta(
         MetaProfile.PERSON_OBSERVATION,
         MetaSource.PERSON_OBSERVATION,
         MetaVersionId.PERSON_OBSERVATION);
@@ -358,8 +357,8 @@ public class Person implements Datablock {
   public Reference getObservationSubject() {
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
-        FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirHelper.generateReference(subjectId);
+        FhirGenerator.identifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirGenerator.reference(subjectId);
   }
 
   public Coding getObservationValue() {
@@ -371,25 +370,25 @@ public class Person implements Datablock {
       } catch (IllegalArgumentException e) {
       }
     }
-    return FhirHelper.generateCoding(code.getCode(), code.getSystem(), code.getDisplay());
+    return FhirGenerator.coding(code.getCode(), code.getSystem(), code.getDisplay());
   }
 
   public DateTimeType getObservationEffective() {
     Date effective = Helper.getDateFromISO(this.getLetzter_lebendzeitpunkt());
-    return FhirHelper.generateDate(effective);
+    return FhirGenerator.dateTimeType(effective);
   }
 
   public CodeableConcept getObservationCode() {
     String code = CodingCode.LOINC_OBSERVATION;
     String system = CodingSystem.LOINC;
-    Coding loinc = FhirHelper.generateCoding(code, system);
+    Coding loinc = FhirGenerator.coding(code, system);
     CodeableConcept observationCode = new CodeableConcept().addCoding(loinc);
     return observationCode;
   }
 
   public CodeableConcept getObservationCategory() {
     String code = CodingCode.SURVEY;
-    Coding survey = FhirHelper.generateCoding(code, CodingSystem.OBSERVATION_CATEGORY);
+    Coding survey = FhirGenerator.coding(code, CodingSystem.OBSERVATION_CATEGORY);
     CodeableConcept category = new CodeableConcept().addCoding(survey);
     return category;
   }

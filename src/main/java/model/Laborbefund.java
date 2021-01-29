@@ -4,6 +4,7 @@ import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
 import enums.Laborbereich;
+import helper.FhirGenerator;
 import helper.FhirHelper;
 import helper.Helper;
 import helper.ValueAndUnitParsed;
@@ -175,11 +176,11 @@ public class Laborbefund implements Datablock {
   public Identifier getServiceRequestIdentifier() {
     String codingCode = CodingCode.PLAC;
     String codingSystem = CodingSystem.IDENTIFIER_TYPE;
-    Coding placerv2 = FhirHelper.generateCoding(codingCode, codingSystem);
+    Coding placerv2 = FhirGenerator.coding(codingCode, codingSystem);
     String value = this.getIdentifikation();
     // FIXME: What is system of ServiceRequest identifier
     String system = "";
-    return FhirHelper.generateIdentifier(value, system, placerv2);
+    return FhirGenerator.identifier(value, system, placerv2);
   }
 
   public Reference getServiceRequestSpecimen() {
@@ -187,9 +188,8 @@ public class Laborbefund implements Datablock {
     // FIXME: What is system of ServiceRequest specimen?
     String system = "";
     Identifier identifier =
-        FhirHelper.generateIdentifier(
-            this.getLaboranforderung_probenmaterial_identifikation(), system);
-    return FhirHelper.generateReference(type, identifier);
+        FhirGenerator.identifier(this.getLaboranforderung_probenmaterial_identifikation(), system);
+    return FhirGenerator.reference(type, identifier);
   }
 
   public Date getServiceRequestAuthoredOn() {
@@ -203,7 +203,7 @@ public class Laborbefund implements Datablock {
   public CodeableConcept getServiceRequestCode() {
     String code = this.getLaboranforderung_laborparameter_code();
     String system = CodingSystem.LOINC;
-    Coding coding = FhirHelper.generateCoding(code, system);
+    Coding coding = FhirGenerator.coding(code, system);
     CodeableConcept serviceCode = new CodeableConcept();
     serviceCode.addCoding(coding);
     if (Helper.checkNonEmptyString(this.getLaboranforderung_laborparameter_bezeichnung()))
@@ -214,7 +214,7 @@ public class Laborbefund implements Datablock {
   public CodeableConcept getServiceRequestCategory() {
     String code = CodingCode.LABORATORY;
     String system = CodingSystem.TERMINOLOGY_OBSERVATION_VATEGORY;
-    Coding laboratory = FhirHelper.generateCoding(code, system);
+    Coding laboratory = FhirGenerator.coding(code, system);
     return new CodeableConcept().addCoding(laboratory);
   }
 
@@ -230,7 +230,7 @@ public class Laborbefund implements Datablock {
     String profile = MetaProfile.LABOR_SERVICE_REQUEST;
     String source = MetaSource.LABOR_SERVICE_REQUEST;
     String versionId = MetaVersionId.LABOR_SERVICE_REQUEST;
-    return FhirHelper.generateMeta(profile, source, versionId);
+    return FhirGenerator.meta(profile, source, versionId);
   }
 
   public Reference getDiagnosticReportSpecimen() {
@@ -238,8 +238,8 @@ public class Laborbefund implements Datablock {
     // FIXME: What is system of DiagnosticReport specimen?
     String system = "";
     Identifier identifier =
-        FhirHelper.generateIdentifier(this.getProbenmaterial_identifikation(), system);
-    return FhirHelper.generateReference(type, identifier);
+        FhirGenerator.identifier(this.getProbenmaterial_identifikation(), system);
+    return FhirGenerator.reference(type, identifier);
   }
 
   public Date getDiagnosticReportIssued() {
@@ -251,15 +251,15 @@ public class Laborbefund implements Datablock {
     if (Helper.checkNonEmptyString(this.getProbenmaterial_abnahmezeitpunkt()))
       date = Helper.getDateFromISO(this.getProbenmaterial_abnahmezeitpunkt());
     else date = Helper.getDateFromISO(this.getProbenmaterial_laboreingangszeitpunkt());
-    return FhirHelper.generateDate(date);
+    return FhirGenerator.dateTimeType(date);
   }
 
   public Reference getDiagnosticReportSubject() {
     String type = ReferenceType.PATIENT;
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
-        FhirHelper.generateIdentifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirHelper.generateReference(type, subjectId);
+        FhirGenerator.identifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+    return FhirGenerator.reference(type, subjectId);
   }
 
   public CodeableConcept getDiagnosticReportCode() {
@@ -269,7 +269,7 @@ public class Laborbefund implements Datablock {
   public Coding getDiagnosticReportLabReport() {
     String code = CodingCode.LOINC_LAB_REPORT;
     String system = CodingSystem.LOINC;
-    return FhirHelper.generateCoding(code, system);
+    return FhirGenerator.coding(code, system);
   }
 
   public DiagnosticReport.DiagnosticReportStatus getDiagnosticReportStatus() {
@@ -286,28 +286,27 @@ public class Laborbefund implements Datablock {
   public Coding getDiagnosticReportLoincLab() {
     String code = CodingCode.LOINC_LAB;
     String system = CodingSystem.LOINC;
-    return FhirHelper.generateCoding(code, system);
+    return FhirGenerator.coding(code, system);
   }
 
   public Coding getDiagnosticReportServiceSection() {
     String code = CodingCode.LAB_DIAGNOSTIC_REPORT;
     String system = CodingSystem.DIAGNOSTIC_SERVICE_SECTION;
-    return FhirHelper.generateCoding(code, system);
+    return FhirGenerator.coding(code, system);
   }
 
   public Identifier getDiagnosticReportBefund() {
     String value = this.getIdentifikation();
     String system = IdentifierSystem.LOCAL_PID;
     Coding coding =
-        FhirHelper.generateCoding(
-            CodingCode.BEFUND_DIAGNOSTIC_REPORT, CodingSystem.IDENTIFIER_TYPE);
+        FhirGenerator.coding(CodingCode.BEFUND_DIAGNOSTIC_REPORT, CodingSystem.IDENTIFIER_TYPE);
     CodeableConcept type = new CodeableConcept().addCoding(coding);
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    return FhirHelper.generateIdentifier(value, system, type, assignerRef);
+    return FhirGenerator.identifier(value, system, type, assignerRef);
   }
 
   public Meta getDiagnosticReportMeta() {
-    return FhirHelper.generateMeta(
+    return FhirGenerator.meta(
         MetaProfile.LABOR_DIAGNOSTIC_REPORT,
         MetaSource.LABOR_DIAGNOSTIC_REPORT,
         MetaVersionId.LABOR_DIAGNOSTIC_REPORT);
@@ -328,21 +327,21 @@ public class Laborbefund implements Datablock {
   public CodeableConcept getObservationReferenceRangeType() {
     String code = this.getLaboruntersuchung_referenzbereich_typ();
     String system = CodingSystem.REFERENCE_RANGE_MEANING;
-    Coding coding = FhirHelper.generateCoding(code, system);
+    Coding coding = FhirGenerator.coding(code, system);
     return new CodeableConcept().addCoding(coding);
   }
 
   public Quantity getObservationReferenceRangeLow() {
     String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(lower);
-    return FhirHelper.generateQuantity(
+    return FhirGenerator.quantity(
         parsed.getValue(), parsed.getUnit(), Constants.QUANTITY_SYSTEM, Constants.QUANTITY_CODE);
   }
 
   public Quantity getObservationReferenceRangeHigh() {
     String higher = this.getLaboruntersuchung_referenzbereich_obergrenze();
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(higher);
-    return FhirHelper.generateQuantity(
+    return FhirGenerator.quantity(
         parsed.getValue(), parsed.getUnit(), Constants.QUANTITY_SYSTEM, Constants.QUANTITY_CODE);
   }
 
@@ -350,7 +349,7 @@ public class Laborbefund implements Datablock {
     String code = this.getLaboruntersuchung_untersuchungsmethode();
     // FIXME: What is system of Observation method?
     String system = "";
-    Coding method = FhirHelper.generateCoding(code, system);
+    Coding method = FhirGenerator.coding(code, system);
     return new CodeableConcept().addCoding(method);
   }
 
@@ -368,7 +367,7 @@ public class Laborbefund implements Datablock {
     String unit = valueQuantity[1];
     String system = Constants.QUANTITY_SYSTEM;
     String code = Constants.QUANTITY_CODE;
-    return FhirHelper.generateQuantity(value, unit, system, code);
+    return FhirGenerator.quantity(value, unit, system, code);
   }
 
   public Date getObservationIssued() {
@@ -377,7 +376,7 @@ public class Laborbefund implements Datablock {
 
   public DateTimeType getObservationEffective() {
     Date effective = Helper.getDateFromISO(this.getLaboruntersuchung_untersuchungszeitpunkt());
-    return FhirHelper.generateDate(effective);
+    return FhirGenerator.dateTimeType(effective);
   }
 
   public Reference getObservationSubject() {
@@ -387,31 +386,30 @@ public class Laborbefund implements Datablock {
   public CodeableConcept getObservationCode() {
     String codingCode = this.getLaborparameter_bezeichnung();
     String system = CodingSystem.LOINC;
-    Coding code = FhirHelper.generateCoding(codingCode, system);
+    Coding code = FhirGenerator.coding(codingCode, system);
     return new CodeableConcept().addCoding(code);
   }
 
   public CodeableConcept getObservationCategory() {
     CodeableConcept category = new CodeableConcept();
     // LOINC
-    Coding loincCoding = FhirHelper.generateCoding(CodingCode.LOINC_LAB, CodingSystem.LOINC);
+    Coding loincCoding = FhirGenerator.coding(CodingCode.LOINC_LAB, CodingSystem.LOINC);
     category.addCoding(loincCoding);
     // Observation-Category
     Coding categoryCoding =
-        FhirHelper.generateCoding(
-            CodingCode.LABORATORY, CodingSystem.OBSERVATION_CATEGORY_TERMINOLOGY);
+        FhirGenerator.coding(CodingCode.LABORATORY, CodingSystem.OBSERVATION_CATEGORY_TERMINOLOGY);
     category.addCoding(categoryCoding);
     // Laborbereichcode
     if (Helper.checkNonEmptyString(this.getLaborbereich_code())) {
       Laborbereich bereich = Laborbereich.fromCode(this.getLaborbereich_code());
       Coding bereichCoding =
-          FhirHelper.generateCoding(bereich.getCode(), bereich.getSystem(), bereich.getDisplay());
+          FhirGenerator.coding(bereich.getCode(), bereich.getSystem(), bereich.getDisplay());
       category.addCoding(bereichCoding);
     }
     // Laborgruppencode
     if (Helper.checkNonEmptyString(this.getLaborgruppe_code())) {
       Coding gruppenCoding =
-          FhirHelper.generateCoding(this.getLaborgruppe_code(), CodingSystem.LABORGRUPPEN_CODE);
+          FhirGenerator.coding(this.getLaborgruppe_code(), CodingSystem.LABORGRUPPEN_CODE);
       category.addCoding(gruppenCoding);
     }
     return category;
@@ -428,21 +426,20 @@ public class Laborbefund implements Datablock {
   public Identifier getObservationIdentifier() {
     IdentifierTypeCode codingCode = IdentifierTypeCode.OBI;
     Coding observationInstanceV2 =
-        FhirHelper.generateCoding(
-            codingCode.getCode(), codingCode.getSystem(), codingCode.getDisplay());
+        FhirGenerator.coding(codingCode.getCode(), codingCode.getSystem(), codingCode.getDisplay());
     CodeableConcept type = new CodeableConcept().addCoding(observationInstanceV2);
     String value = this.getLaboruntersuchung_identifikation();
     // FIXME: What is system of observation identifier?
     String system = "";
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    return FhirHelper.generateIdentifier(value, system, type, assignerRef);
+    return FhirGenerator.identifier(value, system, type, assignerRef);
   }
 
   public Meta getObservationMeta() {
     String profile = MetaProfile.LABOR_OBSERVATION;
     String source = MetaSource.LABOR_OBSERVATION;
     String versionId = MetaVersionId.LABOR_OBSERVATION;
-    return FhirHelper.generateMeta(profile, source, versionId);
+    return FhirGenerator.meta(profile, source, versionId);
   }
 
   public String getIdentifikation() {

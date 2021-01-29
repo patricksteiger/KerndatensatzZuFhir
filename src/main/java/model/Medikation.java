@@ -3,6 +3,7 @@ package model;
 import constants.*;
 import enums.MedikationStatus;
 import enums.Wirkstofftyp;
+import helper.FhirGenerator;
 import helper.FhirHelper;
 import helper.Helper;
 import helper.ValueAndUnitParsed;
@@ -162,7 +163,7 @@ public class Medikation implements Datablock {
   public Ratio getMedicationIngredientStrength() {
     ValueAndUnitParsed parsedStrength = ValueAndUnitParsed.fromString(this.getWirkstoff_menge());
     Quantity numerator =
-        FhirHelper.generateQuantity(parsedStrength.getValue(), parsedStrength.getUnit());
+        FhirGenerator.quantity(parsedStrength.getValue(), parsedStrength.getUnit());
     // TODO: Is only numerator for Ratio correct?
     return new Ratio().setNumerator(numerator);
   }
@@ -172,17 +173,17 @@ public class Medikation implements Datablock {
     // TODO: What is system of ingredient in Medication
     String system = "";
     String display = this.getWirkstoff_name_aktiv();
-    Coding coding = FhirHelper.generateCoding(code, system, display);
+    Coding coding = FhirGenerator.coding(code, system, display);
     return new CodeableConcept().addCoding(coding);
   }
 
   public Extension getMedicationIngredientExtension() {
     Wirkstofftyp wirkstofftyp = Wirkstofftyp.fromCode(this.getWirkstoff_code_allgemein());
     Coding value =
-        FhirHelper.generateCoding(
+        FhirGenerator.coding(
             wirkstofftyp.getCode(), wirkstofftyp.getSystem(), wirkstofftyp.getDisplay());
     String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
-    return FhirHelper.generateExtension(url, value);
+    return FhirGenerator.extension(url, value);
   }
 
   public Ratio getMedicationAmount() {
@@ -190,7 +191,7 @@ public class Medikation implements Datablock {
         ValueAndUnitParsed.fromString(this.getArzneimittel_wirkstaerke());
     BigDecimal value = parseStaerke.getValue();
     String unit = parseStaerke.getUnit();
-    Quantity numerator = FhirHelper.generateQuantity(value, unit);
+    Quantity numerator = FhirGenerator.quantity(value, unit);
     // TODO: Is only numerator for Ratio correct?
     return new Ratio().setNumerator(numerator);
   }
@@ -198,7 +199,7 @@ public class Medikation implements Datablock {
   public CodeableConcept getMedicationForm() {
     String code = this.getDarreichungsform();
     String system = CodingSystem.EDQM_STANDARD;
-    Coding edqm = FhirHelper.generateCoding(code, system);
+    Coding edqm = FhirGenerator.coding(code, system);
     return new CodeableConcept().addCoding(edqm);
   }
 
@@ -224,19 +225,19 @@ public class Medikation implements Datablock {
     String code = this.getArzneimittel_code();
     String system = CodingSystem.ATC_DIMDI;
     String display = this.getArzneimittel_name();
-    return FhirHelper.generateCoding(code, system, display);
+    return FhirGenerator.coding(code, system, display);
   }
 
   public Coding getMedicationCodePharma() {
     String code = this.getArzneimittel_code();
     String system = CodingSystem.PHARMA_ZENTRAL_NUMMER;
     String display = this.getArzneimittel_name();
-    return FhirHelper.generateCoding(code, system, display);
+    return FhirGenerator.coding(code, system, display);
   }
 
   public Reference getMedicationAdministrationRequest() {
     String ref = this.getBezug_verordnung();
-    return FhirHelper.generateReference(ref);
+    return FhirGenerator.reference(ref);
   }
 
   public Annotation getMedicationAdministrationNode() {
@@ -261,7 +262,7 @@ public class Medikation implements Datablock {
     String value = this.getIdentifikation();
     // FIXME: What is system of MedicationAdministration identifier?
     String system = "";
-    return FhirHelper.generateIdentifier(value, system);
+    return FhirGenerator.identifier(value, system);
   }
 
   public Type getMedicationAdministrationEffective() {
@@ -275,7 +276,7 @@ public class Medikation implements Datablock {
 
   public Reference getMedicationStatementInformationSource() {
     String ref = this.getOrganisationsname();
-    return FhirHelper.generateReference(ref);
+    return FhirGenerator.reference(ref);
   }
 
   public Date getMedicationStatementDateAsserted() {
@@ -296,7 +297,7 @@ public class Medikation implements Datablock {
     CodeableConcept route = this.getMedicationStatementDosageRoute();
     List<Dosage.DosageDoseAndRateComponent> doseAndRate =
         this.getMedicationStatementDosageDoseAndRate();
-    return FhirHelper.generateDosage(sequence, text, timing, asNeeded, route, doseAndRate);
+    return FhirGenerator.dosage(sequence, text, timing, asNeeded, route, doseAndRate);
   }
 
   public boolean hasMedicationStatementDosage() {
@@ -316,7 +317,7 @@ public class Medikation implements Datablock {
   public List<Dosage.DosageDoseAndRateComponent> getMedicationStatementDosageDoseAndRate() {
     if (!Helper.checkNonEmptyString(this.getDosierung_dosis())) return Helper.listOf();
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(this.getDosierung_dosis());
-    Quantity dose = FhirHelper.generateQuantity(parsed.getValue(), parsed.getUnit());
+    Quantity dose = FhirGenerator.quantity(parsed.getValue(), parsed.getUnit());
     Dosage.DosageDoseAndRateComponent doseAndRate = new Dosage.DosageDoseAndRateComponent();
     doseAndRate.setDose(dose);
     return Helper.listOf(doseAndRate);
@@ -337,7 +338,7 @@ public class Medikation implements Datablock {
     String code = this.getDosierung_art_der_anwendung();
     // TODO: Is system of MedicationStatement route SNOMED? Or EDQM?
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    Coding snomed = FhirHelper.generateCoding(code, system);
+    Coding snomed = FhirGenerator.coding(code, system);
     return new CodeableConcept().addCoding(snomed);
   }
 
@@ -361,7 +362,7 @@ public class Medikation implements Datablock {
 
   public Reference getMedicationStatementBasedOn() {
     String ref = this.getBezug_verordnung();
-    return FhirHelper.generateReference(ref);
+    return FhirGenerator.reference(ref);
   }
 
   public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
@@ -372,12 +373,12 @@ public class Medikation implements Datablock {
     String value = this.getIdentifikation();
     // FIXME: What is system of MedicationStatement identifier?
     String system = "";
-    return FhirHelper.generateIdentifier(value, system);
+    return FhirGenerator.identifier(value, system);
   }
 
   public Reference getMedicationStatementPartOf() {
     String ref = this.getBezug_abgabe();
-    return FhirHelper.generateReference(ref);
+    return FhirGenerator.reference(ref);
   }
 
   public Reference getMedicationStatementSubject() {
@@ -388,21 +389,21 @@ public class Medikation implements Datablock {
     String profile = MetaProfile.MEDIKATION_MEDICATION;
     String source = MetaSource.MEDIKATION_MEDICATION;
     String versionId = MetaVersionId.MEDIKATION_MEDICATION;
-    return FhirHelper.generateMeta(profile, source, versionId);
+    return FhirGenerator.meta(profile, source, versionId);
   }
 
   public Meta getMedicationAdministrationMeta() {
     String profile = MetaProfile.MEDIKATION_MEDICATION_ADMINISTRATION;
     String source = MetaSource.MEDIKATION_MEDICATION_ADMINISTRATION;
     String versionId = MetaVersionId.MEDIKATION_MEDICATION_ADMINISTRATION;
-    return FhirHelper.generateMeta(profile, source, versionId);
+    return FhirGenerator.meta(profile, source, versionId);
   }
 
   public Meta getMedicationStatementMeta() {
     String profile = MetaProfile.MEDIKATION_MEDICATION_STATEMENT;
     String source = MetaSource.MEDIKATION_MEDICATION_STATEMENT;
     String versionId = MetaVersionId.MEDIKATION_MEDICATION_STATEMENT;
-    return FhirHelper.generateMeta(profile, source, versionId);
+    return FhirGenerator.meta(profile, source, versionId);
   }
 
   public String getPatNr() {
