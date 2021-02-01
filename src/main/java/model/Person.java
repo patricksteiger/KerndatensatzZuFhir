@@ -269,9 +269,8 @@ public class Person implements Datablock {
     // Individual
     if (Helper.checkNonEmptyString(this.getPatNr()))
       researchSubject.setIndividual(this.getResearchSubjectIndividual());
-    // Consent
-    if (Helper.checkNonEmptyString(this.getRechtsgrundlage()))
-      researchSubject.setConsent(this.getResearchSubjectConsent());
+    // Consent, TODO: Consent in Erweiterungsmodul?
+    // if(Helper.checkNonEmptyString(this.getRechtsgrundlage()))researchSubject.setConsent(this.getResearchSubjectConsent());
     return researchSubject;
   }
 
