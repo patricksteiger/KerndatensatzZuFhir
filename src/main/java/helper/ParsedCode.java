@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParsedCode {
-  private static final String SEPARATOR_REGEX = " ";
-
   private final String code;
   private final String system;
   private final String display;
@@ -19,23 +17,28 @@ public class ParsedCode {
   /**
    * Parses given string. It expects following format:
    * system="http://hl7.org/fhir/ValueSet/diagnostic-report-status" code="final" display="Final"
-   * Order of code, system and display doesn't matter, but they are case-sensitive. The separator is
-   * expected to be a single space. If code, system or display are missing, they are initialized
-   * with an empty string. Quotes around the values are trimmed.
+   * Order of code, system and display doesn't matter, but they are case-sensitive. If code, system
+   * or display are missing, they are initialized with an empty string. Quotes around the values are
+   * trimmed. Currently doesn't handle quotes within the values.
    *
    * @param str String containing code, system and display
    * @return Parsed code, system and display
    */
   public static ParsedCode fromString(String str) {
     List<String> words = splitCode(str);
-    String code = Helper.trimQuotes(extractCode(words, "code="));
-    String system = Helper.trimQuotes(extractCode(words, "system="));
-    String display = Helper.trimQuotes(extractCode(words, "display="));
+    String code = extractCode(words, "code=");
+    String system = extractCode(words, "system=");
+    String display = extractCode(words, "display=");
     return new ParsedCode(code, system, display);
   }
 
   private static String extractCode(List<String> words, String code) {
-    for (String word : words) if (word.startsWith(code)) return word.substring(code.length());
+    for (String word : words) {
+      if (word.startsWith(code)) {
+        String extractedCode = word.substring(code.length());
+        return Helper.trimQuotes(extractedCode);
+      }
+    }
     return "";
   }
 
@@ -46,7 +49,7 @@ public class ParsedCode {
     int index = 0;
     // Example: code="1234"
     while (index < CODE_LEN) {
-      // Skip whitespaces before and after parsed words
+      // Skip whitespaces before parsed words
       while (index < CODE_LEN && Character.isWhitespace(code.charAt(index))) index++;
       // return codes if no new code was parsed
       if (index >= CODE_LEN) return codes;
@@ -86,5 +89,9 @@ public class ParsedCode {
 
   public String getDisplay() {
     return display;
+  }
+
+  public boolean hasDisplay() {
+    return Helper.checkNonEmptyString(display);
   }
 }

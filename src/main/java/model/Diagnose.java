@@ -9,6 +9,7 @@ import enums.KBVBaseStageLife;
 import helper.FhirGenerator;
 import helper.FhirHelper;
 import helper.Helper;
+import helper.ParsedCode;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -193,10 +194,11 @@ public class Diagnose implements Datablock {
   }
 
   public Coding getCodeWeitere() {
-    String code = this.getWeitere_diagnosecode();
-    // TODO: What is system of weiterer diagnosecode?
-    String system = "";
-    return FhirGenerator.coding(code, system);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getWeitere_diagnosecode());
+    String code = parsedCode.getCode();
+    String system = parsedCode.getSystem();
+    String display = parsedCode.getDisplay();
+    return FhirGenerator.coding(code, system, display);
   }
 
   public Annotation getNote() {

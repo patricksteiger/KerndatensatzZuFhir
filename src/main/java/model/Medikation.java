@@ -3,10 +3,7 @@ package model;
 import constants.*;
 import enums.MedikationStatus;
 import enums.Wirkstofftyp;
-import helper.FhirGenerator;
-import helper.FhirHelper;
-import helper.Helper;
-import helper.ValueAndUnitParsed;
+import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -169,10 +166,11 @@ public class Medikation implements Datablock {
   }
 
   public CodeableConcept getMedicationIngredientItem() {
-    String code = this.getWirkstoff_code_aktiv();
-    // TODO: What is system of ingredient in Medication
-    String system = "";
+    ParsedCode parsedCode = ParsedCode.fromString(this.getWirkstoff_code_aktiv());
+    String code = parsedCode.getCode();
+    String system = parsedCode.getSystem();
     String display = this.getWirkstoff_name_aktiv();
+    if (parsedCode.hasDisplay()) display = parsedCode.getDisplay();
     Coding coding = FhirGenerator.coding(code, system, display);
     return new CodeableConcept().addCoding(coding);
   }
@@ -335,10 +333,12 @@ public class Medikation implements Datablock {
 
   public CodeableConcept getMedicationStatementDosageRoute() {
     if (!Helper.checkNonEmptyString(this.getDosierung_art_der_anwendung())) return null;
-    String code = this.getDosierung_art_der_anwendung();
-    // TODO: Is system of MedicationStatement route SNOMED? Or EDQM?
-    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    Coding snomed = FhirGenerator.coding(code, system);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_art_der_anwendung());
+    String code = parsedCode.getCode();
+    // CodeSystem can be SNOMED or EDQM
+    String system = parsedCode.getSystem();
+    String display = parsedCode.getDisplay();
+    Coding snomed = FhirGenerator.coding(code, system, display);
     return new CodeableConcept().addCoding(snomed);
   }
 

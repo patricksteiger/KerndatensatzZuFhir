@@ -4,10 +4,7 @@ import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
 import enums.Laborbereich;
-import helper.FhirGenerator;
-import helper.FhirHelper;
-import helper.Helper;
-import helper.ValueAndUnitParsed;
+import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -346,10 +343,11 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationMethod() {
-    String code = this.getLaboruntersuchung_untersuchungsmethode();
-    // FIXME: What is system of Observation method?
-    String system = "";
-    Coding method = FhirGenerator.coding(code, system);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_untersuchungsmethode());
+    String code = parsedCode.getCode();
+    String system = parsedCode.getSystem();
+    String display = parsedCode.getDisplay();
+    Coding method = FhirGenerator.coding(code, system, display);
     return new CodeableConcept().addCoding(method);
   }
 
