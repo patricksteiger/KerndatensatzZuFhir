@@ -74,4 +74,26 @@ public class Helper {
   public static boolean checkNonEmptyString(String s) {
     return s != null && !s.isEmpty();
   }
+
+  public static boolean checkEmptyString(String s) {
+    return !checkNonEmptyString(s);
+  }
+
+  public static String trimQuotes(String s) {
+    return trimCharacter(s, '\"');
+  }
+
+  public static String trimCharacter(String s, char c) {
+    if (checkEmptyString(s)) return s;
+    int lo = 0;
+    while (lo < s.length() && s.charAt(lo) == c) lo++;
+    // return empty string if all characters are trimmed
+    if (lo >= s.length()) return "";
+    int hi = s.length() - 1;
+    while (hi >= 0 && s.charAt(hi) == c) hi--;
+    // If string doesn't start or end with given character return itself
+    if (lo == 0 && hi == s.length() - 1) return s;
+    // Consider the fact that lo and hi are indices that are not equal to given character
+    return s.substring(lo, hi + 1);
+  }
 }
