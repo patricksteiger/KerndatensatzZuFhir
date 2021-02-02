@@ -31,10 +31,14 @@ public class HelperTest {
     assertEquals(0, Helper.splitCode(nullStr).size());
     String emptyStr = "";
     assertEquals(0, Helper.splitCode(emptyStr).size());
+    String simpleCode = "1234";
+    List<String> values = Helper.splitCode(simpleCode);
+    assertEquals(1, values.size());
+    assertEquals("1234", values.get(0));
     String codeSystem = "  system=\"http://loinc.org\"";
     String codeCode = "code=\"20570-8\"  ";
     String code = codeSystem + "\t \n " + codeCode;
-    List<String> values = Helper.splitCode(code);
+    values = Helper.splitCode(code);
     assertEquals(2, values.size());
     assertEquals(codeSystem.trim(), values.get(0));
     assertEquals(codeCode.trim(), values.get(1));

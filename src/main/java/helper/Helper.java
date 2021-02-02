@@ -133,8 +133,9 @@ public class Helper {
       if (index < CODE_LEN) {
         sb.append(code.charAt(index));
         index++;
-        codes.add(sb.toString());
       }
+      if (sb.length() > 0)
+        codes.add(sb.toString());
     }
     return codes;
   }
