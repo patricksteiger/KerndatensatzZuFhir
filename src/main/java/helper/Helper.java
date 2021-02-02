@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class Helper {
@@ -77,6 +74,69 @@ public class Helper {
 
   public static boolean checkEmptyString(String s) {
     return !checkNonEmptyString(s);
+  }
+
+  /**
+   * Extracts the first word that starts with code and returns string without prefix code and
+   * removes quotes.
+   *
+   * @param words
+   * @param code
+   * @return Substring of first word starting with code
+   */
+  public static String extractCode(List<String> words, String code) {
+    for (String word : words) {
+      if (word.startsWith(code)) {
+        String extractedCode = word.substring(code.length());
+        return Helper.trimQuotes(extractedCode);
+      }
+    }
+    return "";
+  }
+
+  /**
+   * Splits code into different values. Example: system="http://loinc.org" code="20570-8" gets split
+   * into [system="http://loinc.org", code="20570-8"]. Quotes can't be within the values, they need
+   * to wrap around as seen in the example.
+   *
+   * @param code Code containing values
+   * @return Split values from code
+   */
+  public static List<String> splitCode(String code) {
+    List<String> codes = new ArrayList<>();
+    if (Helper.checkEmptyString(code)) return codes;
+    final int CODE_LEN = code.length();
+    int index = 0;
+    // Example: code="1234"
+    while (index < CODE_LEN) {
+      // Skip whitespaces before parsed words
+      while (index < CODE_LEN && Character.isWhitespace(code.charAt(index))) index++;
+      // return codes if no new code was parsed
+      if (index >= CODE_LEN) return codes;
+      StringBuilder sb = new StringBuilder();
+      // Parse every non-whitespace character, e.g. code=
+      while (index < CODE_LEN && code.charAt(index) != '\"') {
+        sb.append(code.charAt(index));
+        index++;
+      }
+      // If index is valid, add quote
+      if (index < CODE_LEN) {
+        sb.append(code.charAt(index));
+        index++;
+      }
+      // Parse everything until next quote, e.g. 1234
+      while (index < CODE_LEN && code.charAt(index) != '\"') {
+        sb.append(code.charAt(index));
+        index++;
+      }
+      // If index is valid, add quote and parsed code to codes
+      if (index < CODE_LEN) {
+        sb.append(code.charAt(index));
+        index++;
+        codes.add(sb.toString());
+      }
+    }
+    return codes;
   }
 
   public static String trimQuotes(String s) {
