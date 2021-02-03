@@ -77,6 +77,10 @@ public class Helper {
     return !checkNonEmptyString(s);
   }
 
+  public static boolean checkAllEmptyString(String... s) {
+    return Arrays.stream(s).allMatch(Helper::checkEmptyString);
+  }
+
   /**
    * Extracts the first word that starts with code and returns string without prefix code and
    * removes quotes.

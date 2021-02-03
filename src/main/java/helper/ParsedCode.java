@@ -15,8 +15,8 @@ public class ParsedCode {
 
   /**
    * Parses given string. It expects following formats:
-   * system="http://hl7.org/fhir/ValueSet/diagnostic-report-status" code="final" display="Final" or
-   * "final". Order of code, system and display doesn't matter, but they are case-sensitive. If
+   * "system="http://hl7.org/fhir/ValueSet/diagnostic-report-status" code="final" display="Final""
+   * or ""final"". Order of code, system and display doesn't matter, but they are case-sensitive. If
    * code, system or display are missing, they are initialized with an empty string. Quotes around
    * the values are trimmed. Currently doesn't handle quotes within the values. If simple value is
    * given (second format) it is parsed as code.
@@ -30,7 +30,7 @@ public class ParsedCode {
     String system = Helper.extractCode(words, "system=");
     String display = Helper.extractCode(words, "display=");
     // Set code in case of simple format
-    if (Helper.checkEmptyString(code)) {
+    if (Helper.checkAllEmptyString(code, system, display)) {
       code =
           words.stream()
               .filter(Helper::checkNonEmptyString)
