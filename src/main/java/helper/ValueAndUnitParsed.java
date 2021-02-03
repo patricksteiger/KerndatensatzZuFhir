@@ -3,8 +3,8 @@ package helper;
 import java.math.BigDecimal;
 
 public class ValueAndUnitParsed {
-  private BigDecimal value;
-  private String unit;
+  private final BigDecimal value;
+  private final String unit;
 
   public ValueAndUnitParsed(BigDecimal value, String unit) {
     this.value = value;

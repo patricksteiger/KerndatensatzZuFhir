@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class Helper {
+  private Helper() {}
 
   /**
    * Parses ISO-8601 formatted date to Date-object.
@@ -134,8 +135,7 @@ public class Helper {
         sb.append(code.charAt(index));
         index++;
       }
-      if (sb.length() > 0)
-        codes.add(sb.toString());
+      if (sb.length() > 0) codes.add(sb.toString());
     }
     return codes;
   }

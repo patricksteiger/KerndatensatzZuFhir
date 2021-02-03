@@ -1,5 +1,7 @@
 package enums;
 
+import constants.CodingSystem;
+
 public enum ICD_Diagnosesicherheit {
   AUSGESCHLOSSEN("A", "ausgeschlossen"),
   GESICHERTE_DIAGNOSE("G", "gesicherte Diagnose"),
@@ -37,6 +39,6 @@ public enum ICD_Diagnosesicherheit {
   }
 
   public String getSystem() {
-    return "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT";
+    return CodingSystem.ICD_DIAGNOSESICHERHEIT;
   }
 }

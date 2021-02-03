@@ -7,6 +7,8 @@ import org.hl7.fhir.r4.model.*;
 import java.util.Arrays;
 
 public class FhirHelper {
+  private FhirHelper() {}
+
   // TODO: Add mapping from Dosage to MedicationAdministrationDosage
   public static MedicationAdministration.MedicationAdministrationDosageComponent
       getMedicationAdministrationDosageFromDosage(Dosage dosage) {

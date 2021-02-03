@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 public class FhirGenerator {
+  private FhirGenerator() {}
 
   public static Meta meta(
       List<String> profiles,
