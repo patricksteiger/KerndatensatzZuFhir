@@ -9,6 +9,7 @@ import enums.VitalStatus;
 import helper.FhirGenerator;
 import helper.FhirHelper;
 import helper.Helper;
+import helper.ParsedCode;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -71,21 +72,17 @@ public class Person implements Datablock {
     // Identifier - PID
     patient.addIdentifier(this.getPID());
     // Identifier - GKV
-    if (Helper.checkNonEmptyString(this.getVersichertenId_gkv()))
-      patient.addIdentifier(this.getGKV());
+    patient.addIdentifier(this.getGKV());
     // Identifier - PKV
-    if (Helper.checkNonEmptyString(this.getVersichertennummer_pkv()))
-      patient.addIdentifier(this.getPKV());
+    patient.addIdentifier(this.getPKV());
     // Name
     patient.addName(this.getName());
     // Geburtsname
-    if (Helper.checkNonEmptyString(this.getGeburtsname())) patient.addName(this.getGeburtsName());
+    patient.addName(this.getGeburtsName());
     // Administratives Geschlecht, returns UNKNOWN if gender isn't set
-    patient.setGender(FhirHelper.getGenderMapping(this.getAdmininistratives_geschlecht()));
-    // patient.addExtension(this.getGender());
+    patient.setGender(this.getGender());
     // Geburtsdatum
-    patient.setBirthDate(Helper.getDateFromISO(this.getGeburtsdatum()));
-    // patient.addExtension(this.getBirthDate());
+    patient.setBirthDate(this.getBirthDate());
     // Deceased
     patient.setDeceased(this.getDeceased());
     // Address
@@ -93,6 +90,41 @@ public class Person implements Datablock {
     // Managing organization
     patient.setManagingOrganization(this.getManagingOrganization());
     return patient;
+  }
+
+  public ResearchSubject getResearchSubject() {
+    ResearchSubject researchSubject = new ResearchSubject();
+    // Meta
+    researchSubject.setMeta(this.getResearchSubjectMeta());
+    // Subject identification code
+    researchSubject.addIdentifier(this.getSubjectIdentificationCode());
+    // Status
+    researchSubject.setStatus(this.getStatus());
+    // Period
+    researchSubject.setPeriod(this.getResearchSubjectPeriod());
+    // Individual
+    researchSubject.setIndividual(this.getResearchSubjectIndividual());
+    // TODO: Consent in Erweiterungsmodul?
+    return researchSubject;
+  }
+
+  public Observation getObservation() {
+    Observation observation = new Observation();
+    // Meta
+    observation.setMeta(this.getObservationMeta());
+    // Status
+    observation.setStatus(this.getObservationStatus());
+    // Category
+    observation.addCategory(this.getObservationCategory());
+    // Code
+    observation.setCode(this.getObservationCode());
+    // Subject
+    observation.setSubject(this.getObservationSubject());
+    // Effective
+    observation.setEffective(this.getObservationEffective());
+    // Value
+    observation.setValue(this.getObservationValue());
+    return observation;
   }
 
   public Meta getPatientMeta() {
@@ -136,20 +168,27 @@ public class Person implements Datablock {
     }
   }
 
-  public Extension getBirthDate() {
-    Date birthDate = Helper.getDateFromISO(this.getGeburtsdatum());
-    DateTimeType type = FhirGenerator.dateTimeType(birthDate);
-    return FhirGenerator.extension(ExtensionUrl.BIRTH_DATE, type);
+  public Date getBirthDate() {
+    String birthDate = this.getGeburtsdatum();
+    if (Helper.checkEmptyString(birthDate)) {
+      return null;
+    }
+    return Helper.getDateFromISO(birthDate);
   }
 
-  public Extension getGender() {
-    Enumerations.AdministrativeGender gender =
-        FhirHelper.getGenderMapping(this.getAdmininistratives_geschlecht());
-    Coding coding = FhirGenerator.coding(gender.name(), gender.getSystem(), gender.getDisplay());
-    return FhirGenerator.extension(ExtensionUrl.GENDER, coding);
+  public Enumerations.AdministrativeGender getGender() {
+    ParsedCode parsedCode = ParsedCode.fromString(this.getAdmininistratives_geschlecht());
+    String gender = parsedCode.getCode();
+    if (Helper.checkEmptyString(gender)) {
+      return null;
+    }
+    return FhirHelper.getGenderMapping(gender);
   }
 
   public HumanName getGeburtsName() {
+    if (Helper.checkEmptyString(this.getGeburtsname())) {
+      return null;
+    }
     HumanName.NameUse use = HumanName.NameUse.MAIDEN;
     List<Extension> family = this.getMaidenFamily();
     return FhirGenerator.humanName(use, family);
@@ -198,8 +237,10 @@ public class Person implements Datablock {
 
   public List<Extension> getPrefix() {
     List<Extension> prefix = new ArrayList<>();
-    if (Helper.checkNonEmptyString(this.getArt_des_praefix())) {
-      StringType artDesPrefix = new StringType(this.getArt_des_praefix());
+    ParsedCode parsedCode = ParsedCode.fromString(this.getArt_des_praefix());
+    String code = parsedCode.getCode();
+    if (Helper.checkNonEmptyString(code)) {
+      StringType artDesPrefix = new StringType(code);
       prefix.add(FhirGenerator.extension(ExtensionUrl.PREFIX, artDesPrefix));
     }
     return prefix;
@@ -207,7 +248,7 @@ public class Person implements Datablock {
 
   public Identifier getPID() {
     String value = this.getPatient_pid();
-    if (Helper.checkEmptyString(this.getPatient_pid())) {
+    if (Helper.checkEmptyString(value)) {
       return null;
     }
     String system = IdentifierSystem.PID;
@@ -221,6 +262,9 @@ public class Person implements Datablock {
 
   public Identifier getGKV() {
     String value = this.getVersichertenId_gkv();
+    if (Helper.checkEmptyString(value)) {
+      return null;
+    }
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     VersichertenCode gkv = VersichertenCode.GKV;
     Coding gkvCoding = FhirGenerator.coding(gkv);
@@ -232,6 +276,9 @@ public class Person implements Datablock {
 
   public Identifier getPKV() {
     String value = this.getVersichertennummer_pkv();
+    if (Helper.checkEmptyString(value)) {
+      return null;
+    }
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     VersichertenCode pkv = VersichertenCode.PKV;
     Coding pkvCoding = FhirGenerator.coding(pkv);
@@ -255,24 +302,6 @@ public class Person implements Datablock {
     return FhirGenerator.reference(type, identifier);
   }
 
-  public ResearchSubject getResearchSubject() {
-    ResearchSubject researchSubject = new ResearchSubject();
-    // Meta
-    researchSubject.setMeta(this.getResearchSubjectMeta());
-    // Subject identification code
-    researchSubject.addIdentifier(this.getSubjectIdentificationCode());
-    // Status
-    researchSubject.setStatus(this.getStatus());
-    // Period
-    researchSubject.setPeriod(this.getResearchSubjectPeriod());
-    // Individual
-    if (Helper.checkNonEmptyString(this.getPatNr()))
-      researchSubject.setIndividual(this.getResearchSubjectIndividual());
-    // Consent, TODO: Consent in Erweiterungsmodul?
-    // if(Helper.checkNonEmptyString(this.getRechtsgrundlage()))researchSubject.setConsent(this.getResearchSubjectConsent());
-    return researchSubject;
-  }
-
   public Meta getResearchSubjectMeta() {
     return FhirGenerator.meta(
         MetaProfile.PERSON_RESEARCH_SUBJECT,
@@ -289,10 +318,13 @@ public class Person implements Datablock {
   }
 
   public Reference getResearchSubjectIndividual() {
+    String patNr = this.getPatNr();
+    if (Helper.checkEmptyString(patNr)) {
+      return null;
+    }
     String type = ReferenceType.PATIENT;
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    Identifier subjectId =
-        FhirGenerator.identifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+    Identifier subjectId = FhirGenerator.identifier(patNr, IdentifierSystem.LOCAL_PID, assignerRef);
     return FhirGenerator.reference(type, subjectId);
   }
 
@@ -306,8 +338,9 @@ public class Person implements Datablock {
   }
 
   public ResearchSubject.ResearchSubjectStatus getStatus() {
+    ParsedCode parsedCode = ParsedCode.fromString(this.getTeilnahme_status());
     try {
-      return ResearchSubject.ResearchSubjectStatus.fromCode(this.getTeilnahme_status());
+      return ResearchSubject.ResearchSubjectStatus.fromCode(parsedCode.getCode());
     } catch (Exception e) {
       throw new IllegalArgumentException(
           "Status \"" + this.getTeilnahme_status() + "\" is not a valid Teilnahmestatus");
@@ -315,7 +348,8 @@ public class Person implements Datablock {
   }
 
   public Identifier getSubjectIdentificationCode() {
-    String value = this.getSubjekt_identifizierungscode();
+    ParsedCode parsedCode = ParsedCode.fromString(this.getSubjekt_identifizierungscode());
+    String value = parsedCode.getCode();
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
     IdentifierTypeCode code = IdentifierTypeCode.RI;
     Coding coding = FhirGenerator.coding(code);
@@ -323,26 +357,6 @@ public class Person implements Datablock {
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
     return FhirGenerator.identifier(value, system, type, assignerRef, use);
-  }
-
-  public Observation getObservation() {
-    Observation observation = new Observation();
-    // Meta
-    observation.setMeta(this.getObservationMeta());
-    // Status
-    observation.setStatus(this.getObservationStatus());
-    // Category
-    observation.addCategory(this.getObservationCategory());
-    // Code
-    observation.setCode(this.getObservationCode());
-    // Subject
-    if (Helper.checkNonEmptyString(this.getPatNr()))
-      observation.setSubject(this.getObservationSubject());
-    // Effective
-    observation.setEffective(this.getObservationEffective());
-    // Value
-    observation.setValue(this.getObservationValue());
-    return observation;
   }
 
   public Meta getObservationMeta() {
@@ -353,19 +367,24 @@ public class Person implements Datablock {
   }
 
   public Reference getObservationSubject() {
+    String patNr = this.getPatNr();
+    if (Helper.checkEmptyString(patNr)) {
+      return null;
+    }
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    Identifier subjectId =
-        FhirGenerator.identifier(this.getPatNr(), IdentifierSystem.LOCAL_PID, assignerRef);
+    Identifier subjectId = FhirGenerator.identifier(patNr, IdentifierSystem.LOCAL_PID, assignerRef);
     return FhirGenerator.reference(subjectId);
   }
 
   public Coding getObservationValue() {
     VitalStatus code = VitalStatus.UNBEKANNT;
-    if (Helper.checkNonEmptyString(this.getPatient_verstorben())) {
-      try {
-        boolean verstorben = Helper.booleanFromString(this.getPatient_verstorben());
-        if (verstorben) code = VitalStatus.VERSTORBEN;
-      } catch (IllegalArgumentException e) {
+    String patientVerstorben = this.getPatient_verstorben();
+    if (Helper.checkNonEmptyString(patientVerstorben)) {
+      boolean verstorben = Helper.booleanFromString(patientVerstorben);
+      if (verstorben) {
+        code = VitalStatus.VERSTORBEN;
+      } else {
+        code = VitalStatus.LEBENDIG;
       }
     }
     return FhirGenerator.coding(code);
