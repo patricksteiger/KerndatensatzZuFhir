@@ -1,12 +1,13 @@
 package enums;
 
 import constants.CodingSystem;
+import interfaces.Code;
 
 import java.util.Arrays;
 
 import static helper.Helper.illegalCode;
 
-public enum SeitenlokalisationCode {
+public enum SeitenlokalisationCode implements Code {
   RECHTS("R", "rechts", CodingSystem.OPS_SEITENLOKALISATION),
   LINKS("L", "links", CodingSystem.OPS_SEITENLOKALISATION),
   BEIDSEITS("B", "beidseits", CodingSystem.OPS_SEITENLOKALISATION),

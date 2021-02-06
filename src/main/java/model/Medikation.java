@@ -170,9 +170,7 @@ public class Medikation implements Datablock {
       return null;
     }
     Wirkstofftyp wirkstofftyp = Wirkstofftyp.fromCode(code);
-    Coding value =
-        FhirGenerator.coding(
-            wirkstofftyp.getCode(), wirkstofftyp.getSystem(), wirkstofftyp.getDisplay());
+    Coding value = FhirGenerator.coding(wirkstofftyp);
     String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
     return FhirGenerator.extension(url, value);
   }

@@ -1,10 +1,11 @@
 package enums;
 
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
-public enum ICD_Seitenlokalisation {
+public enum ICD_Seitenlokalisation implements Code {
   RECHTS("R", "rechts"),
   LINKS("L", "links"),
   BEIDSEITIG("B", "beidseitig");

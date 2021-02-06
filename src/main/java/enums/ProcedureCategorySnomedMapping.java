@@ -2,12 +2,13 @@ package enums;
 
 import constants.CodingSystem;
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
 import static helper.Helper.illegalCode;
 
-public enum ProcedureCategorySnomedMapping {
+public enum ProcedureCategorySnomedMapping implements Code {
   DIAGNOSTIC("103693007", "Diagnostic procedure", '1'),
   IMAGING("363679005", "Imaging", '3'),
   SURGICAL("387713003", "Surgical procedure", '5'),

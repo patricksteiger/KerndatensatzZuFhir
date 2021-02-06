@@ -2,6 +2,7 @@ package enums;
 
 import constants.CodingSystem;
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
@@ -9,7 +10,7 @@ import java.util.Arrays;
  * @see
  *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulFall-ImplementationGuide/Terminologien"
  */
-public enum Aufnahmegrund {
+public enum Aufnahmegrund implements Code {
   G01("01", "Krankenhausbehandlung, vollstationär"),
   G02("02", "Krankenhausbehandlung, vollstationär mit vorausgegangener vorstationärer Behandlung"),
   G03("03", "Krankenhausbehandlung, teilstationär"),

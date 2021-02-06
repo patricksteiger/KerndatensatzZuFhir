@@ -457,7 +457,7 @@ public class Laborbefund implements Datablock {
       return null;
     }
     Laborbereich bereich = Laborbereich.fromCode(code);
-    return FhirGenerator.coding(bereich.getCode(), bereich.getSystem(), bereich.getDisplay());
+    return FhirGenerator.coding(bereich);
   }
 
   public Coding getObservationCategoryCategory() {
@@ -484,8 +484,7 @@ public class Laborbefund implements Datablock {
 
   public Identifier getObservationIdentifier() {
     IdentifierTypeCode codingCode = IdentifierTypeCode.OBI;
-    Coding observationInstanceV2 =
-        FhirGenerator.coding(codingCode.getCode(), codingCode.getSystem(), codingCode.getDisplay());
+    Coding observationInstanceV2 = FhirGenerator.coding(codingCode);
     CodeableConcept type = new CodeableConcept().addCoding(observationInstanceV2);
     String value = this.getLaboruntersuchung_identifikation();
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;

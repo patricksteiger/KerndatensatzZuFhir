@@ -176,11 +176,7 @@ public class Diagnose implements Datablock {
       return null;
     }
     ICD_Seitenlokalisation seitenlokalisation = ICD_Seitenlokalisation.fromCode(code);
-    Coding value =
-        FhirGenerator.coding(
-            seitenlokalisation.getCode(),
-            seitenlokalisation.getSystem(),
-            seitenlokalisation.getDisplay());
+    Coding value = FhirGenerator.coding(seitenlokalisation);
     String url = ExtensionUrl.ICD_10_GM_SEITENLOKALISATION;
     return FhirGenerator.extension(url, value);
   }
@@ -192,11 +188,7 @@ public class Diagnose implements Datablock {
       return null;
     }
     ICD_Diagnosesicherheit diagnosesicherheit = ICD_Diagnosesicherheit.fromSnomedCode(snomedCode);
-    Coding value =
-        FhirGenerator.coding(
-            diagnosesicherheit.getCode(),
-            diagnosesicherheit.getSystem(),
-            diagnosesicherheit.getDisplay());
+    Coding value = FhirGenerator.coding(diagnosesicherheit);
     String url = ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT;
     return FhirGenerator.extension(url, value);
   }

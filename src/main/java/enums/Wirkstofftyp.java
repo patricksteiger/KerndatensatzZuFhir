@@ -2,11 +2,12 @@ package enums;
 
 import constants.CodingSystem;
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
 /** @see "https://simplifier.net/medizininformatikinitiative-modulmedikation/wirkstofftyp" */
-public enum Wirkstofftyp {
+public enum Wirkstofftyp implements Code {
   ALLGEMEIN("IN", "Wirkstoff allgemein"),
   PRAEZISE("PIN", "Wirkstoff präzise"),
   KOMBINATION("MIN", "Kombinationswirkstoff");

@@ -1,8 +1,9 @@
 package enums;
 
 import constants.CodingSystem;
+import interfaces.Code;
 
-public enum VersichertenCode {
+public enum VersichertenCode implements Code {
   GKV("GKV", "Gesetzliche Krankenversicherung"),
   PKV("PKV", "Private Krankenversicherung"),
   LANR("LANR", "Lebenslange Arztnummer"),

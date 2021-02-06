@@ -85,8 +85,7 @@ public class Prozedur implements Datablock {
   public CodeableConcept getCategory() {
     ProcedureCategorySnomedMapping mapping =
         ProcedureCategorySnomedMapping.fromOpsCode(this.getOPS_Vollst_Prozedurenkode());
-    Coding categoryCode =
-        FhirGenerator.coding(mapping.getCode(), mapping.getSystem(), mapping.getDisplay());
+    Coding categoryCode = FhirGenerator.coding(mapping);
     return new CodeableConcept().addCoding(categoryCode);
   }
 
@@ -115,8 +114,7 @@ public class Prozedur implements Datablock {
   public Extension getSeitenlokalisation() {
     SeitenlokalisationCode seitenCode =
         SeitenlokalisationCode.fromCode(this.getOPS_Seitenlokalisation());
-    Coding value =
-        FhirGenerator.coding(seitenCode.getCode(), seitenCode.getSystem(), seitenCode.getDisplay());
+    Coding value = FhirGenerator.coding(seitenCode);
     return FhirGenerator.extension(ExtensionUrl.OPS_SEITENLOKALISATION, value);
   }
 
@@ -171,11 +169,7 @@ public class Prozedur implements Datablock {
   public Extension getDurchfuehrungsabsicht() {
     DurchfuehrungsabsichtCode durchfuehrungsabsichtCode =
         DurchfuehrungsabsichtCode.fromCode(this.getKernDurchfuehrungsabsicht());
-    Coding code =
-        FhirGenerator.coding(
-            durchfuehrungsabsichtCode.getCode(),
-            durchfuehrungsabsichtCode.getSystem(),
-            durchfuehrungsabsichtCode.getDisplay());
+    Coding code = FhirGenerator.coding(durchfuehrungsabsichtCode);
     return FhirGenerator.extension(ExtensionUrl.DURCHFUEHRUNGSABSICHT, code);
   }
 

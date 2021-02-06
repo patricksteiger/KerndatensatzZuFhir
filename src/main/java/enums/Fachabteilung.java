@@ -1,6 +1,7 @@
 package enums;
 
 import constants.CodingSystem;
+import interfaces.Code;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -10,7 +11,7 @@ import java.util.Optional;
  *
  * @see "https://simplifier.net/medizininformatikinitiative-modulfall/fachabteilungsschluessel"
  */
-public enum Fachabteilung {
+public enum Fachabteilung implements Code {
   INNERE_MEDIZIN("0100", "Innere Medizin"),
   GERIATRIE("0200", "Geriatrie"),
   KARDIOLOGIE("0300", "Kardiologie"),

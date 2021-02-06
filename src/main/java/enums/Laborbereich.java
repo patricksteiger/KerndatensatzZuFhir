@@ -1,11 +1,12 @@
 package enums;
 
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
 /** @see "https://simplifier.net/medizininformatikinitiative-modullabor/laborbereich" */
-public enum Laborbereich {
+public enum Laborbereich implements Code {
   BLOOD_BANK("18717-9", "BLOOD BANK STUDIES"),
   CELL_MARKER("18718-7", "CELL MARKER STUDIES"),
   CHEMISTRY("18719-5", "CHEMISTRY STUDIES"),

@@ -2,6 +2,7 @@ package enums;
 
 import constants.CodingSystem;
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
@@ -9,7 +10,7 @@ import java.util.Arrays;
  * @see
  *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulFall-ImplementationGuide/Terminologien"
  */
-public enum Entlassungsgrund {
+public enum Entlassungsgrund implements Code {
   G01("01", "Behandlung regulär beendet"),
   G02("02", "Behandlung regulär beendet, nachstationäre Behandlung vorgesehen"),
   G03("03", "Behandlung aus sonstigen Gründen beendet"),

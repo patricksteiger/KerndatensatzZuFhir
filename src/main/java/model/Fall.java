@@ -176,8 +176,7 @@ public class Fall implements Datablock {
       return null;
     }
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
-    Coding vnType =
-        FhirGenerator.coding(typeCode.getCode(), typeCode.getSystem(), typeCode.getDisplay());
+    Coding vnType = FhirGenerator.coding(typeCode);
     String system = IdentifierSystem.ACME_PATIENT;
     return FhirGenerator.identifier(aufnahmenummer, system, vnType);
   }
@@ -197,8 +196,7 @@ public class Fall implements Datablock {
       return null;
     }
     Aufnahmeanlass anlass = Aufnahmeanlass.fromCode(code);
-    Coding aufnahmegrund =
-        FhirGenerator.coding(anlass.getCode(), anlass.getSystem(), anlass.getDisplay());
+    Coding aufnahmegrund = FhirGenerator.coding(anlass);
     return new CodeableConcept().addCoding(aufnahmegrund);
   }
 
@@ -209,8 +207,7 @@ public class Fall implements Datablock {
       return null;
     }
     Entlassungsgrund grund = Entlassungsgrund.fromCode(code);
-    Coding entlassungsgrund =
-        FhirGenerator.coding(grund.getCode(), grund.getSystem(), grund.getDisplay());
+    Coding entlassungsgrund = FhirGenerator.coding(grund);
     return new CodeableConcept().addCoding(entlassungsgrund);
   }
 
@@ -221,8 +218,7 @@ public class Fall implements Datablock {
       return null;
     }
     Aufnahmegrund grund = Aufnahmegrund.fromCode(code);
-    Coding aufnahmegrund =
-        FhirGenerator.coding(grund.getCode(), grund.getSystem(), grund.getDisplay());
+    Coding aufnahmegrund = FhirGenerator.coding(grund);
     return new CodeableConcept().addCoding(aufnahmegrund);
   }
 
@@ -247,8 +243,7 @@ public class Fall implements Datablock {
 
   public CodeableConcept getEinrichtungsEncounterServiceType() {
     Fachabteilung abteilung = Fachabteilung.INNERE_MEDIZIN;
-    Coding fachabteilungsschluessel =
-        FhirGenerator.coding(abteilung.getCode(), abteilung.getSystem(), abteilung.getDisplay());
+    Coding fachabteilungsschluessel = FhirGenerator.coding(abteilung);
     return new CodeableConcept().addCoding(fachabteilungsschluessel);
   }
 
@@ -282,8 +277,7 @@ public class Fall implements Datablock {
       return null;
     }
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
-    Coding vnType =
-        FhirGenerator.coding(typeCode.getCode(), typeCode.getSystem(), typeCode.getDisplay());
+    Coding vnType = FhirGenerator.coding(typeCode);
     String value = aufnahmenummer;
     String system = IdentifierSystem.ACME_PATIENT;
     return FhirGenerator.identifier(value, system, vnType);
@@ -339,7 +333,7 @@ public class Fall implements Datablock {
     Optional<Fachabteilung> abteilungFromCode = Fachabteilung.fromCode(abteilungsCode);
     Coding fachabteilungsschluessel =
         abteilungFromCode
-            .map(abt -> FhirGenerator.coding(abt.getCode(), abt.getSystem(), abt.getDisplay()))
+            .map(FhirGenerator::coding)
             .orElse(FhirGenerator.coding(abteilungsCode, system, display));
     return new CodeableConcept().addCoding(fachabteilungsschluessel);
   }
@@ -362,8 +356,7 @@ public class Fall implements Datablock {
       return null;
     }
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
-    Coding vnType =
-        FhirGenerator.coding(typeCode.getCode(), typeCode.getSystem(), typeCode.getDisplay());
+    Coding vnType = FhirGenerator.coding(typeCode);
     String value = aufnahmenummer;
     String system = IdentifierSystem.ACME_PATIENT;
     return FhirGenerator.identifier(value, system, vnType);

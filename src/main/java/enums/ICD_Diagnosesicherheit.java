@@ -1,8 +1,9 @@
 package enums;
 
 import constants.CodingSystem;
+import interfaces.Code;
 
-public enum ICD_Diagnosesicherheit {
+public enum ICD_Diagnosesicherheit implements Code {
   AUSGESCHLOSSEN("A", "ausgeschlossen"),
   GESICHERTE_DIAGNOSE("G", "gesicherte Diagnose"),
   VERDACHT_AUF("V", "Verdacht auf / zum Ausschluss von"),

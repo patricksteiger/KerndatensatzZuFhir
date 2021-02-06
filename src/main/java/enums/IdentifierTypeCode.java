@@ -1,9 +1,10 @@
 package enums;
 
 import constants.CodingSystem;
+import interfaces.Code;
 
 /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80925" */
-public enum IdentifierTypeCode {
+public enum IdentifierTypeCode implements Code {
   MR("MR", "Krankenaktennummer"),
   OBI("OBI", "Observation Instance Identifier"),
   RI("RI", "Resource identifier"),

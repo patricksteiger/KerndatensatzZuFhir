@@ -1,6 +1,7 @@
 package helper;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
 
 import java.math.BigDecimal;
@@ -43,6 +44,10 @@ public class FhirGenerator {
 
   public static Coding coding(String code, String system, String display) {
     return coding(code, system, display, "");
+  }
+
+  public static Coding coding(Code code) {
+    return coding(code.getCode(), code.getSystem(), code.getDisplay());
   }
 
   public static Coding coding(String code, String system) {

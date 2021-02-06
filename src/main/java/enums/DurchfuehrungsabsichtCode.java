@@ -1,12 +1,13 @@
 package enums;
 
 import constants.CodingSystem;
+import interfaces.Code;
 
 import java.util.Arrays;
 
 import static helper.Helper.illegalCode;
 
-public enum DurchfuehrungsabsichtCode {
+public enum DurchfuehrungsabsichtCode implements Code {
   THERAPEUTIC("262202000", "Therapeutic"),
   PALLIATIVE_INTENT("363676003", "Palliative intent"),
   DIAGNOSTIC_INTENT("261004008", "Diagnostic intent"),

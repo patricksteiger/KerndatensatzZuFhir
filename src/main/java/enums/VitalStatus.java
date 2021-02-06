@@ -1,8 +1,9 @@
 package enums;
 
 import constants.CodingSystem;
+import interfaces.Code;
 
-public enum VitalStatus {
+public enum VitalStatus implements Code {
   LEBENDIG("L", "Patient lebt"),
   VERSTORBEN("T", "Patient verstorben"),
   NICHT_AUFFINDBAR("A", "unbekannt, Patient nicht mehr auffindbar (lost to follow-up)"),
