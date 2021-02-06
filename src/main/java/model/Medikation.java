@@ -204,7 +204,8 @@ public class Medikation implements Datablock {
 
   // TODO: How do you separate PHARMA from ATC? ATC always DE?
   public CodeableConcept getMedicationCode() {
-    if (Helper.checkEmptyString(this.getArzneimittel_code())) {
+    ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
+    if (Helper.checkEmptyString(parsedCode.getCode())) {
       return null;
     }
     CodeableConcept code = new CodeableConcept();
@@ -420,7 +421,8 @@ public class Medikation implements Datablock {
   }
 
   public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
-    return MedikationStatus.medicationStatementStatusFromCode(this.getStatus());
+    ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
+    return MedikationStatus.medicationStatementStatusFromCode(parsedCode.getCode());
   }
 
   public Identifier getMedicationStatementIdentifier() {
