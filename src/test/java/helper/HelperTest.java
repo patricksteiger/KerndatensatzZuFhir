@@ -35,6 +35,10 @@ public class HelperTest {
     List<String> values = Helper.splitCode(simpleCode);
     assertEquals(1, values.size());
     assertEquals("1234", values.get(0));
+    String simpleCodeWithQuotes = "\"1234\"";
+    values = Helper.splitCode(simpleCodeWithQuotes);
+    assertEquals(1, values.size());
+    assertEquals(simpleCodeWithQuotes, values.get(0));
     String codeSystem = "  system=\"http://loinc.org\"";
     String codeCode = "code=\"20570-8\"  ";
     String code = codeSystem + "\t \n " + codeCode;

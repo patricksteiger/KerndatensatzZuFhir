@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class Helper {
@@ -112,36 +113,39 @@ public class Helper {
     if (Helper.checkEmptyString(code)) return codes;
     final int CODE_LEN = code.length();
     int index = 0;
-    // Example: code="1234"
     while (index < CODE_LEN) {
-      // Skip whitespaces before parsed words
-      while (index < CODE_LEN && Character.isWhitespace(code.charAt(index))) index++;
-      // return codes if no new code was parsed
-      if (index >= CODE_LEN) return codes;
-      StringBuilder sb = new StringBuilder();
-      // Parse every non-whitespace character, e.g. code=
-      while (index < CODE_LEN && code.charAt(index) != '\"') {
-        sb.append(code.charAt(index));
-        index++;
+      // Skip whitespaces
+      int wordIndex = indexAfterWhitespace(code, index);
+      int firstQuoteIndex = indexNextQuote(code, wordIndex);
+      // Get index of second index, so code spans from wordIndex to secondQuoteIndex
+      int secondQuoteIndex = indexNextQuote(code, firstQuoteIndex + 1);
+      // Update index to next character
+      index = secondQuoteIndex + 1;
+      if (wordIndex < CODE_LEN) {
+        // If code has simple format, index > code.length().
+        int endIndex = Math.min(index, CODE_LEN);
+        String word = code.substring(wordIndex, endIndex);
+        codes.add(word);
       }
-      // If index is valid, add quote
-      if (index < CODE_LEN) {
-        sb.append(code.charAt(index));
-        index++;
-      }
-      // Parse everything until next quote, e.g. 1234
-      while (index < CODE_LEN && code.charAt(index) != '\"') {
-        sb.append(code.charAt(index));
-        index++;
-      }
-      // If index is valid, add quote and parsed code to codes
-      if (index < CODE_LEN) {
-        sb.append(code.charAt(index));
-        index++;
-      }
-      if (sb.length() > 0) codes.add(sb.toString());
     }
     return codes;
+  }
+
+  public static int indexNextQuote(String s, int from) {
+    return indexAfterPredicate(s, from, c -> c != '\"');
+  }
+
+  public static int indexAfterWhitespace(String s, int from) {
+    return indexAfterPredicate(s, from, Character::isWhitespace);
+  }
+
+  public static int indexAfterPredicate(String s, int from, Predicate<Character> predicate) {
+    for (int i = from; i < s.length(); i++) {
+      if (!predicate.test(s.charAt(i))) {
+        return i;
+      }
+    }
+    return s.length();
   }
 
   public static String trimQuotes(String s) {
