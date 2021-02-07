@@ -79,7 +79,7 @@ public class Medikation implements Datablock {
     // Dosage (optional)
     medicationAdministration.setDosage(this.getMedicationAdministrationDosage());
     // Note (optional)
-    medicationAdministration.addNote(this.getMedicationAdministrationNode());
+    medicationAdministration.addNote(this.getMedicationAdministrationNote());
     // Request (optional)
     medicationAdministration.setRequest(this.getMedicationAdministrationRequest());
     // TODO: medication[x]: reference to Medication
@@ -256,7 +256,7 @@ public class Medikation implements Datablock {
     return FhirGenerator.reference(verordnung);
   }
 
-  public Annotation getMedicationAdministrationNode() {
+  public Annotation getMedicationAdministrationNote() {
     return this.getMedicationStatementNote();
   }
 
@@ -265,8 +265,23 @@ public class Medikation implements Datablock {
     if (this.hasNoMedicationAdministrationDosage()) {
       return null;
     }
-    Dosage statementDosage = this.getMedicationStatementDosage();
-    return FhirHelper.getMedicationAdministrationDosageFromDosage(statementDosage);
+    MedicationAdministration.MedicationAdministrationDosageComponent dosageComponent =
+        new MedicationAdministration.MedicationAdministrationDosageComponent();
+    dosageComponent.setText(this.getMedicationAdministrationDosageText());
+    dosageComponent.setRoute(this.getMedicationAdministrationDosageRoute());
+    return dosageComponent;
+  }
+
+  public CodeableConcept getMedicationAdministrationDosageRoute() {
+    return this.getMedicationStatementDosageRoute();
+  }
+
+  public String getMedicationAdministrationDosageText() {
+    String text = this.getDosierung_freitext();
+    if (Helper.checkEmptyString(text)) {
+      return null;
+    }
+    return text;
   }
 
   public boolean hasNoMedicationAdministrationDosage() {
@@ -326,6 +341,7 @@ public class Medikation implements Datablock {
     return new Annotation().setText(hinweis);
   }
 
+  // TODO: Is route, site and method the same?
   public Dosage getMedicationStatementDosage() {
     if (this.hasNoMedicationStatementDosage()) {
       return null;
@@ -369,11 +385,40 @@ public class Medikation implements Datablock {
   public Timing getMedicationStatementDosageTiming() {
     // TODO: Timing for MedicationStatement dosage
     Timing timing = new Timing();
-    if (Helper.checkNonEmptyString(this.getDosierung_zeitpunkt())) {
-      Date event = Helper.getDateFromISO(this.getDosierung_zeitpunkt());
-      timing.addEvent(event);
-    }
+    timing.addEvent(this.getMedicationStatementDosageTimingEvent());
+    timing.addEvent(this.getMedicationStatementDosageTimingPhase());
+    timing.setRepeat(this.getMedicationStatementDosageTimingRepeat());
     return timing;
+  }
+
+  public Date getMedicationStatementDosageTimingEvent() {
+    String zeitpunkt = this.getDosierung_zeitpunkt();
+    if (Helper.checkEmptyString(zeitpunkt)) {
+      return null;
+    }
+    return Helper.getDateFromISO(zeitpunkt);
+  }
+
+  public Date getMedicationStatementDosageTimingPhase() {
+    String phase = this.getDosierung_phase();
+    if (Helper.checkEmptyString(phase)) {
+      return null;
+    }
+    return Helper.getDateFromISO(phase);
+  }
+
+  public Timing.TimingRepeatComponent getMedicationStatementDosageTimingRepeat() {
+    ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_ereignis());
+    String ereignis = parsedCode.getCode();
+    if (Helper.checkEmptyString(ereignis)) {
+      return null;
+    }
+    Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
+    // TODO: ereignis can be when, dayOfWeek, timeOfDay, ... which is it? How can we distinguish?
+    ValueAndUnitParsed offset = ValueAndUnitParsed.fromString(this.getDosierung_offset());
+    repeat.setOffset(offset.getValue().intValue());
+    // TODO: How does Periode look like?
+    return repeat;
   }
 
   public CodeableConcept getMedicationStatementDosageRoute() {
