@@ -3,7 +3,10 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.*;
 import enums.*;
-import helper.*;
+import helper.FhirGenerator;
+import helper.Helper;
+import helper.Logger;
+import helper.ParsedCode;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -127,12 +130,7 @@ public class Fall implements Datablock {
   }
 
   public Reference getVersorgungsstellenEncounterSubject() {
-    String type = ReferenceType.PATIENT;
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    String identifierValue = this.getVersorgungsstellenkontakt_patienten_identifikator();
-    Identifier subjectId =
-        FhirGenerator.identifier(identifierValue, IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirGenerator.reference(type, subjectId);
+    return this.getEinrichtungsEncounterSubject();
   }
 
   public Period getVersorgungsstellenEncounterPeriod() {
@@ -154,7 +152,7 @@ public class Fall implements Datablock {
     String system = CodingSystem.FALL_KONTAKTEBENE;
     String display = parsedCode.getDisplay();
     Coding kontaktebene = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(kontaktebene);
+    return FhirGenerator.codeableConcept(kontaktebene);
   }
 
   public Coding getVersorgungsstellenEncounterClass() {
@@ -213,7 +211,7 @@ public class Fall implements Datablock {
     }
     Entlassungsgrund grund = Entlassungsgrund.fromCode(code);
     Coding entlassungsgrund = FhirGenerator.coding(grund);
-    return new CodeableConcept().addCoding(entlassungsgrund);
+    return FhirGenerator.codeableConcept(entlassungsgrund);
   }
 
   public CodeableConcept getEinrichtungsEncounterReasonCode() {
@@ -224,7 +222,7 @@ public class Fall implements Datablock {
     }
     Aufnahmegrund grund = Aufnahmegrund.fromCode(code);
     Coding aufnahmegrund = FhirGenerator.coding(grund);
-    return new CodeableConcept().addCoding(aufnahmegrund);
+    return FhirGenerator.codeableConcept(aufnahmegrund);
   }
 
   public Period getEinrichtungsEncounterPeriod() {
@@ -238,18 +236,18 @@ public class Fall implements Datablock {
   }
 
   public Reference getEinrichtungsEncounterSubject() {
-    String type = ReferenceType.PATIENT;
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    String identifierValue = this.getEinrichtungskontakt_patienten_identifikator();
-    Identifier subjectId =
-        FhirGenerator.identifier(identifierValue, IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirGenerator.reference(type, subjectId);
+    String patientNr = this.getPatNr();
+    if (Helper.checkEmptyString(patientNr)) {
+      throw new IllegalStateException("Fall: patNr needs to be set");
+    }
+    String ref = MIIReference.getPatient(patNr);
+    return FhirGenerator.reference(ref);
   }
 
   public CodeableConcept getEinrichtungsEncounterServiceType() {
     Fachabteilung abteilung = Fachabteilung.INNERE_MEDIZIN;
     Coding fachabteilungsschluessel = FhirGenerator.coding(abteilung);
-    return new CodeableConcept().addCoding(fachabteilungsschluessel);
+    return FhirGenerator.codeableConcept(fachabteilungsschluessel);
   }
 
   public CodeableConcept getEinrichtungsEncounterType() {
@@ -261,7 +259,7 @@ public class Fall implements Datablock {
     String system = CodingSystem.FALL_KONTAKTEBENE;
     String display = parsedCode.getDisplay();
     Coding kontaktebene = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(kontaktebene);
+    return FhirGenerator.codeableConcept(kontaktebene);
   }
 
   public Coding getEinrichtungsEncounterClass() {
@@ -314,16 +312,11 @@ public class Fall implements Datablock {
     String system = CodingSystem.FALL_KONTAKTEBENE;
     String display = parsedCode.getDisplay();
     Coding kontaktebene = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(kontaktebene);
+    return FhirGenerator.codeableConcept(kontaktebene);
   }
 
   public Reference getAbteilungsEncounterSubject() {
-    String type = ReferenceType.PATIENT;
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    String identifierValue = this.getAbteilungskontakt_patienten_identifikator();
-    Identifier subjectId =
-        FhirGenerator.identifier(identifierValue, IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirGenerator.reference(type, subjectId);
+    return this.getEinrichtungsEncounterSubject();
   }
 
   public CodeableConcept getAbteilungsEncounterServiceType() {
@@ -340,7 +333,7 @@ public class Fall implements Datablock {
         abteilungFromCode
             .map(FhirGenerator::coding)
             .orElse(FhirGenerator.coding(abteilungsCode, system, display));
-    return new CodeableConcept().addCoding(fachabteilungsschluessel);
+    return FhirGenerator.codeableConcept(fachabteilungsschluessel);
   }
 
   public Coding getAbteilungsEncounterClass() {
@@ -381,6 +374,7 @@ public class Fall implements Datablock {
     return FhirGenerator.meta(profile, source, versionId);
   }
 
+  // TODO: What is organization?
   public Organization getOrganization() {
     Organization organization = new Organization();
     return organization;
