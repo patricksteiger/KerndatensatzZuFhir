@@ -90,14 +90,17 @@ public class Prozedur implements Datablock {
     }
     ProcedureCategorySnomedMapping mapping = ProcedureCategorySnomedMapping.fromOpsCode(ops);
     Coding categoryCode = FhirGenerator.coding(mapping);
-    return new CodeableConcept().addCoding(categoryCode);
+    return FhirGenerator.codeableConcept(categoryCode);
   }
 
   public CodeableConcept getCode() {
-    CodeableConcept code = new CodeableConcept();
-    code.addCoding(this.getCodingSnomed());
-    code.addCoding(this.getCodingOps());
-    return code;
+    if (Helper.checkAllEmptyString(
+        this.getSNOMED_Vollst_Prozedurenkode(), this.getOPS_Vollst_Prozedurenkode())) {
+      throw new IllegalStateException("Prozedur: Code needs at least OPS or SNOMED");
+    }
+    Coding snomed = this.getCodingSnomed();
+    Coding ops = this.getCodingOps();
+    return FhirGenerator.codeableConcept(snomed, ops);
   }
 
   public Coding getCodingOps() {
@@ -152,7 +155,7 @@ public class Prozedur implements Datablock {
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     String display = parsedCode.getDisplay();
     Coding coding = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(coding);
+    return FhirGenerator.codeableConcept(coding);
   }
 
   public Annotation getNote() {

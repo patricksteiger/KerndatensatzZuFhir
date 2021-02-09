@@ -4,10 +4,6 @@ import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
-
-import static helper.Helper.illegalCode;
-
 public enum ProcedureCategorySnomedMapping implements Code {
   DIAGNOSTIC("103693007", "Diagnostic procedure", '1'),
   IMAGING("363679005", "Imaging", '3'),
@@ -36,13 +32,16 @@ public enum ProcedureCategorySnomedMapping implements Code {
    *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
    */
   public static ProcedureCategorySnomedMapping fromOpsCode(String opsCode) {
-    if (!Helper.checkNonEmptyString(opsCode))
+    if (Helper.checkEmptyString(opsCode)) {
       throw new IllegalArgumentException("OPS-Code can't be null or empty");
-    final char opsMapping = opsCode.charAt(0);
-    return Arrays.stream(ProcedureCategorySnomedMapping.values())
-        .filter(mappingEnum -> mappingEnum.getOpsMapping() == opsMapping)
-        .findFirst()
-        .orElseThrow(illegalCode(opsCode, "OPS-Code"));
+    }
+    char opsMap = opsCode.charAt(0);
+    for (ProcedureCategorySnomedMapping mapping : ProcedureCategorySnomedMapping.values()) {
+      if (mapping.getOpsMapping() == opsMap) {
+        return mapping;
+      }
+    }
+    throw Helper.illegalCode(opsCode, "OPS-Code").get();
   }
 
   public String getCode() {

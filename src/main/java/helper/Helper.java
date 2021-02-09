@@ -73,11 +73,11 @@ public class Helper {
   }
 
   public static boolean checkNonEmptyString(String s) {
-    return s != null && !s.isEmpty();
+    return !checkEmptyString(s);
   }
 
   public static boolean checkEmptyString(String s) {
-    return !checkNonEmptyString(s);
+    return s == null || s.isEmpty();
   }
 
   public static boolean checkAllEmptyString(String... s) {
