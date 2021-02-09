@@ -1,5 +1,6 @@
 package model;
 
+import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
@@ -13,64 +14,64 @@ import java.util.Date;
 import java.util.List;
 
 public class Laborbefund implements Datablock {
-  private String patNr;
-  private String identifikation;
-  private String status;
-  private String klinisches_bezugsdatum;
-  private String dokumentationsdatum;
-  private String geraet;
+  @CsvBindByName private String patNr;
+  @CsvBindByName private String identifikation;
+  @CsvBindByName private String status;
+  @CsvBindByName private String klinisches_bezugsdatum;
+  @CsvBindByName private String dokumentationsdatum;
+  @CsvBindByName private String geraet;
   // Probenmaterial
-  private String probenmaterial_identifikation;
-  private String probenmaterial_abnahmezeitpunkt;
-  private String probenmaterial_laboreingangszeitpunkt;
-  private String probenmaterial_probenart;
-  private String probenmaterial_koerperstelle;
-  private String probenmaterial_kommentar;
+  @CsvBindByName private String probenmaterial_identifikation;
+  @CsvBindByName private String probenmaterial_abnahmezeitpunkt;
+  @CsvBindByName private String probenmaterial_laboreingangszeitpunkt;
+  @CsvBindByName private String probenmaterial_probenart;
+  @CsvBindByName private String probenmaterial_koerperstelle;
+  @CsvBindByName private String probenmaterial_kommentar;
   // Laboruntersuchung (Laboranalyse)
-  private String laboruntersuchung_code;
-  private String laboruntersuchung_identifikation;
-  private String laboruntersuchung_status;
+  @CsvBindByName private String laboruntersuchung_code;
+  @CsvBindByName private String laboruntersuchung_identifikation;
+  @CsvBindByName private String laboruntersuchung_status;
   // Laboruntersuchung - Bereich
-  private String laborbereich_code;
-  private String laborbereich_bezeichnung;
+  @CsvBindByName private String laborbereich_code;
+  @CsvBindByName private String laborbereich_bezeichnung;
   // Laboruntersuchung - Gruppe
-  private String laborgruppe_code;
-  private String laborgruppe_bezeichnung;
+  @CsvBindByName private String laborgruppe_code;
+  @CsvBindByName private String laborgruppe_bezeichnung;
   // Laboruntersuchung - Laborparameter
-  private String laborparameter_bezeichnung;
-  private String laboruntersuchung_klinisches_bezugsdatum;
-  private String laboruntersuchung_dokumentationsdatum;
-  private String laboruntersuchung_untersuchungszeitpunkt;
-  private String laboruntersuchung_ergebnis;
-  private String laboruntersuchung_bewertung;
-  private String laboruntersuchung_kommentar;
-  private String laboruntersuchung_untersuchungsmethode;
+  @CsvBindByName private String laborparameter_bezeichnung;
+  @CsvBindByName private String laboruntersuchung_klinisches_bezugsdatum;
+  @CsvBindByName private String laboruntersuchung_dokumentationsdatum;
+  @CsvBindByName private String laboruntersuchung_untersuchungszeitpunkt;
+  @CsvBindByName private String laboruntersuchung_ergebnis;
+  @CsvBindByName private String laboruntersuchung_bewertung;
+  @CsvBindByName private String laboruntersuchung_kommentar;
+  @CsvBindByName private String laboruntersuchung_untersuchungsmethode;
   // Laboruntersuchung - Probenmaterial
-  private String laboruntersuchung_probenmaterial_identifikation;
-  private String laboruntersuchung_probenmaterial_abnahmezeitpunkt;
-  private String laboruntersuchung_probenmaterial_laboreingangszeitpunkt;
-  private String laboruntersuchung_probenmaterial_probenart;
-  private String laboruntersuchung_probenmaterial_koerperstelle;
-  private String laboruntersuchung_probenmaterial_kommentar;
-  private String laboruntersuchung_probenentnahme_methode;
+  @CsvBindByName private String laboruntersuchung_probenmaterial_identifikation;
+  @CsvBindByName private String laboruntersuchung_probenmaterial_abnahmezeitpunkt;
+  @CsvBindByName private String laboruntersuchung_probenmaterial_laboreingangszeitpunkt;
+  @CsvBindByName private String laboruntersuchung_probenmaterial_probenart;
+  @CsvBindByName private String laboruntersuchung_probenmaterial_koerperstelle;
+  @CsvBindByName private String laboruntersuchung_probenmaterial_kommentar;
+  @CsvBindByName private String laboruntersuchung_probenentnahme_methode;
   // Laboruntersuchung - Referenzbereich (Normalbereich)
-  private String laboruntersuchung_referenzbereich_typ;
-  private String laboruntersuchung_referenzbereich_obergrenze;
-  private String laboruntersuchung_referenzbereich_untergrenze;
+  @CsvBindByName private String laboruntersuchung_referenzbereich_typ;
+  @CsvBindByName private String laboruntersuchung_referenzbereich_obergrenze;
+  @CsvBindByName private String laboruntersuchung_referenzbereich_untergrenze;
   // Laboranforderung
-  private String laboranforderung_identifikation;
-  private String laboranforderung_status;
-  private String laboranforderung_anforderungsdatum;
+  @CsvBindByName private String laboranforderung_identifikation;
+  @CsvBindByName private String laboranforderung_status;
+  @CsvBindByName private String laboranforderung_anforderungsdatum;
   // Laboranforderung - Laborparameter
-  private String laboranforderung_laborparameter_code;
-  private String laboranforderung_laborparameter_bezeichnung;
+  @CsvBindByName private String laboranforderung_laborparameter_code;
+  @CsvBindByName private String laboranforderung_laborparameter_bezeichnung;
   // Laboranforderung - Probenmaterial
-  private String laboranforderung_probenmaterial_identifikation;
-  private String laboranforderung_probenmaterial_abnahmezeitpunkt;
-  private String laboranforderung_probenmaterial_laboreingangszeitpunkt;
-  private String laboranforderung_probenmaterial_probenart;
-  private String laboranforderung_probenmaterial_koerperstelle;
-  private String laboranforderung_probenmaterial_kommentar;
+  @CsvBindByName private String laboranforderung_probenmaterial_identifikation;
+  @CsvBindByName private String laboranforderung_probenmaterial_abnahmezeitpunkt;
+  @CsvBindByName private String laboranforderung_probenmaterial_laboreingangszeitpunkt;
+  @CsvBindByName private String laboranforderung_probenmaterial_probenart;
+  @CsvBindByName private String laboranforderung_probenmaterial_koerperstelle;
+  @CsvBindByName private String laboranforderung_probenmaterial_kommentar;
 
   @Override
   public List<Resource> toFhirResources() {

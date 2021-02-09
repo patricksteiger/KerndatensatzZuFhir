@@ -1,5 +1,6 @@
 package model;
 
+import com.opencsv.bean.CsvBindByName;
 import constants.*;
 import enums.*;
 import helper.*;
@@ -12,45 +13,45 @@ import java.util.Optional;
 
 public class Fall implements Datablock {
   private final Logger LOGGER = new Logger("Fall");
-  private String patNr;
+  @CsvBindByName private String patNr;
   // Einrichtungskontakt
-  private String einrichtungskontakt_ebene;
-  private String einrichtungskontakt_klasse;
-  private String einrichtungskontakt_patienten_identifikator;
-  private String einrichtungskontakt_aufnahmenummer;
-  private String einrichtungskontakt_aufnahmeanlass;
-  private String einrichtungskontakt_aufnahmegrund;
-  private String einrichtungskontakt_beginndatum;
-  private String einrichtungskontakt_enddatum;
-  private String einrichtungskontakt_entlassungsgrund;
+  @CsvBindByName private String einrichtungskontakt_ebene;
+  @CsvBindByName private String einrichtungskontakt_klasse;
+  @CsvBindByName private String einrichtungskontakt_patienten_identifikator;
+  @CsvBindByName private String einrichtungskontakt_aufnahmenummer;
+  @CsvBindByName private String einrichtungskontakt_aufnahmeanlass;
+  @CsvBindByName private String einrichtungskontakt_aufnahmegrund;
+  @CsvBindByName private String einrichtungskontakt_beginndatum;
+  @CsvBindByName private String einrichtungskontakt_enddatum;
+  @CsvBindByName private String einrichtungskontakt_entlassungsgrund;
   // Abteilungskontakt
-  private String abteilungskontakt_ebene;
-  private String abteilungskontakt_klasse;
-  private String abteilungskontakt_patienten_identifikator;
-  private String abteilungskontakt_aufnahmenummer;
-  private String abteilungskontakt_fachabteilungsschluessel;
-  private String abteilungskontakt_beginndatum;
-  private String abteilungskontakt_enddatum;
+  @CsvBindByName private String abteilungskontakt_ebene;
+  @CsvBindByName private String abteilungskontakt_klasse;
+  @CsvBindByName private String abteilungskontakt_patienten_identifikator;
+  @CsvBindByName private String abteilungskontakt_aufnahmenummer;
+  @CsvBindByName private String abteilungskontakt_fachabteilungsschluessel;
+  @CsvBindByName private String abteilungskontakt_beginndatum;
+  @CsvBindByName private String abteilungskontakt_enddatum;
   // Versorgungsstellenkontakt
-  private String versorgungsstellenkontakt_ebene;
-  private String versorgungsstellenkontakt_klasse;
-  private String versorgungsstellenkontakt_patienten_identifikator;
-  private String versorgungsstellenkontakt_aufnahmenummer;
-  private String versorgungsstellenkontakt_beginndatum;
-  private String versorgungsstellenkontakt_enddatum;
+  @CsvBindByName private String versorgungsstellenkontakt_ebene;
+  @CsvBindByName private String versorgungsstellenkontakt_klasse;
+  @CsvBindByName private String versorgungsstellenkontakt_patienten_identifikator;
+  @CsvBindByName private String versorgungsstellenkontakt_aufnahmenummer;
+  @CsvBindByName private String versorgungsstellenkontakt_beginndatum;
+  @CsvBindByName private String versorgungsstellenkontakt_enddatum;
   // Organisationseinheit - Einrichtung
-  private String einrichtungsidentifikator;
+  @CsvBindByName private String einrichtungsidentifikator;
   // Organisationseinheit - Einrichtung - Abteilung
-  private String abteilungsidentifikator;
+  @CsvBindByName private String abteilungsidentifikator;
   // Organisationseinheit - Einrichtung - Abteilung - Versorgungsstelle
-  private String versorgungsstellenidentifikator;
+  @CsvBindByName private String versorgungsstellenidentifikator;
   // Abrechnungsfall
-  private String abrechnungsfallnummer;
-  private String abrechnungsfall_startdatum;
-  private String abrechnungsfall_enddatum;
-  private String abrechnungsfall_zieleinrichtung;
-  private String abrechnungsfall_aufnahmenummer;
-  private String abrechnungsfall_fallzusammenfuehrung;
+  @CsvBindByName private String abrechnungsfallnummer;
+  @CsvBindByName private String abrechnungsfall_startdatum;
+  @CsvBindByName private String abrechnungsfall_enddatum;
+  @CsvBindByName private String abrechnungsfall_zieleinrichtung;
+  @CsvBindByName private String abrechnungsfall_aufnahmenummer;
+  @CsvBindByName private String abrechnungsfall_fallzusammenfuehrung;
 
   @Override
   public List<Resource> toFhirResources() {

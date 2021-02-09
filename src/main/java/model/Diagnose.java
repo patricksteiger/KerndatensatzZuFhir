@@ -1,6 +1,7 @@
 package model;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
 import enums.ICD_Diagnosesicherheit;
@@ -17,34 +18,34 @@ import java.util.Date;
 import java.util.List;
 
 public class Diagnose implements Datablock {
-  private String patNr;
+  @CsvBindByName private String patNr;
   // ICD-10-GM Diagnose kodiert
-  private String icd_diagnosecode;
-  private String icd_primaercode;
-  private String icd_manifestationscode;
-  private String icd_ausrufezeichencode;
-  private String icd_diagnosesicherheit;
-  private String icd_seitenlokalisation;
+  @CsvBindByName private String icd_diagnosecode;
+  @CsvBindByName private String icd_primaercode;
+  @CsvBindByName private String icd_manifestationscode;
+  @CsvBindByName private String icd_ausrufezeichencode;
+  @CsvBindByName private String icd_diagnosesicherheit;
+  @CsvBindByName private String icd_seitenlokalisation;
   // ALPHA-ID kodiert
-  private String alpha_diagnosecode;
+  @CsvBindByName private String alpha_diagnosecode;
   // ORPHANET Diagnose kodiert
-  private String orphanet_diagnosecode;
+  @CsvBindByName private String orphanet_diagnosecode;
   // SNOMED Diagnose kodiert
-  private String snomed_diagnosecode;
+  @CsvBindByName private String snomed_diagnosecode;
   // Weitere Kodesysteme
-  private String weitere_diagnosecode;
-  private String koerperstelle;
-  private String freitextbeschreibung;
-  private String diagnoseerlaeuterung;
-  private String dokumentationsdatum;
-  private String klinischer_status;
+  @CsvBindByName private String weitere_diagnosecode;
+  @CsvBindByName private String koerperstelle;
+  @CsvBindByName private String freitextbeschreibung;
+  @CsvBindByName private String diagnoseerlaeuterung;
+  @CsvBindByName private String dokumentationsdatum;
+  @CsvBindByName private String klinischer_status;
   // Klinisch relevanter Zeitraum - Zeitraum
-  private String zeitraum_von;
-  private String zeitraum_bis;
+  @CsvBindByName private String zeitraum_von;
+  @CsvBindByName private String zeitraum_bis;
   // klinisch relevanter Zeitraum - Lebensphase
-  private String lebensphase_von;
-  private String lebensphase_bis;
-  private String feststellungsdatum;
+  @CsvBindByName private String lebensphase_von;
+  @CsvBindByName private String lebensphase_bis;
+  @CsvBindByName private String feststellungsdatum;
 
   @Override
   public List<Resource> toFhirResources() {

@@ -1,5 +1,6 @@
 package model;
 
+import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
 import enums.MedikationStatus;
@@ -13,50 +14,50 @@ import java.util.Date;
 import java.util.List;
 
 public class Medikation implements Datablock {
-  private String patNr;
+  @CsvBindByName private String patNr;
   // Medikationseintrag
-  private String identifikation;
-  private String status;
-  private String hinweis;
-  private String behandlungsgrund;
-  private String bezug_verordnung;
-  private String bezug_abgabe;
-  private String datum_eintrag;
+  @CsvBindByName private String identifikation;
+  @CsvBindByName private String status;
+  @CsvBindByName private String hinweis;
+  @CsvBindByName private String behandlungsgrund;
+  @CsvBindByName private String bezug_verordnung;
+  @CsvBindByName private String bezug_abgabe;
+  @CsvBindByName private String datum_eintrag;
   // Arzneimittel/Wirkstoff/Rezeptur
-  private String darreichungsform;
+  @CsvBindByName private String darreichungsform;
   // Arzneimittel/Wirkstoff/Rezeptur - Arzneimittelprodukt
-  private String arzneimittel_name;
-  private String arzneimittel_code;
-  private String arzneimittel_wirkstaerke;
+  @CsvBindByName private String arzneimittel_name;
+  @CsvBindByName private String arzneimittel_code;
+  @CsvBindByName private String arzneimittel_wirkstaerke;
   // Arzneimittel/Wirkstoff/Rezeptur - Rezeptur
-  private String rezeptur_freitextzeile;
+  @CsvBindByName private String rezeptur_freitextzeile;
   // Arzneimittel/Wirkstoff/Rezeptur - Wirkstoff
-  private String wirkstoff_name_allgemein;
-  private String wirkstoff_code_allgemein;
-  private String wirkstoff_name_aktiv;
-  private String wirkstoff_code_aktiv;
-  private String wirkstoff_menge;
+  @CsvBindByName private String wirkstoff_name_allgemein;
+  @CsvBindByName private String wirkstoff_code_allgemein;
+  @CsvBindByName private String wirkstoff_name_aktiv;
+  @CsvBindByName private String wirkstoff_code_aktiv;
+  @CsvBindByName private String wirkstoff_menge;
   // Einnahmedauer
-  private String einnahme_startzeitpunkt;
-  private String einnahme_endzeitpunkt;
-  private String einnahme_dauer;
+  @CsvBindByName private String einnahme_startzeitpunkt;
+  @CsvBindByName private String einnahme_endzeitpunkt;
+  @CsvBindByName private String einnahme_dauer;
   // Dosierung (Freitext)
-  private String dosierung_freitext;
+  @CsvBindByName private String dosierung_freitext;
   // Dosierung (strukturiert) (Dosierungsinformationen, Angaben zur Dosierung)
-  private String dosierung_reihenfolge;
-  private String dosierung_einnahme_bei_bedarf;
-  private String dosierung_art_der_anwendung;
-  private String dosierung_dosis;
+  @CsvBindByName private String dosierung_reihenfolge;
+  @CsvBindByName private String dosierung_einnahme_bei_bedarf;
+  @CsvBindByName private String dosierung_art_der_anwendung;
+  @CsvBindByName private String dosierung_dosis;
   // Dosierung (strukturiert) - Zeitangabe
-  private String dosierung_zeitpunkt;
+  @CsvBindByName private String dosierung_zeitpunkt;
   // Dosierung (strukturiert) - Zeitangabe - Ereignisbezogene Wiederholung
-  private String dosierung_ereignis;
-  private String dosierung_offset;
+  @CsvBindByName private String dosierung_ereignis;
+  @CsvBindByName private String dosierung_offset;
   // Dosierung (strukturiert) - Zeitangabe - Periodisches Intervall
-  private String dosierung_phase;
-  private String dosierung_periode;
+  @CsvBindByName private String dosierung_phase;
+  @CsvBindByName private String dosierung_periode;
   // Autor/Informant des Eintrags
-  private String organisationsname;
+  @CsvBindByName private String organisationsname;
 
   @Override
   public List<Resource> toFhirResources() {
