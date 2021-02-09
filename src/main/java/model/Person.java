@@ -104,7 +104,10 @@ public class Person implements Datablock {
     researchSubject.setPeriod(this.getResearchSubjectPeriod());
     // Individual
     researchSubject.setIndividual(this.getResearchSubjectIndividual());
-    // TODO: Consent in Erweiterungsmodul?
+    // Consent
+    researchSubject.setConsent(this.getResearchSubjectConsent());
+    // Study (optional)
+    researchSubject.setStudy(this.getResearchSubjectStudy());
     return researchSubject;
   }
 
@@ -310,22 +313,18 @@ public class Person implements Datablock {
   }
 
   public Reference getResearchSubjectConsent() {
-    String type = ReferenceType.CONSENT;
-    // FIXME: What is system of ResearchSubject consent?
-    String system = "";
-    Identifier identifier = FhirGenerator.identifier(this.getRechtsgrundlage(), system);
-    return FhirGenerator.reference(type, identifier);
+    String ref = MIIReference.CONSENT_MII;
+    return FhirGenerator.reference(ref);
   }
 
   public Reference getResearchSubjectIndividual() {
-    String patNr = this.getPatNr();
-    if (Helper.checkEmptyString(patNr)) {
-      return null;
-    }
-    String type = ReferenceType.PATIENT;
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    Identifier subjectId = FhirGenerator.identifier(patNr, IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirGenerator.reference(type, subjectId);
+    String ref = MIIReference.PATIENT_MII;
+    return FhirGenerator.reference(ref);
+  }
+
+  public Reference getResearchSubjectStudy() {
+    String ref = MIIReference.RESEARCH_STUDY_MII;
+    return FhirGenerator.reference(ref);
   }
 
   public Period getResearchSubjectPeriod() {
@@ -367,13 +366,12 @@ public class Person implements Datablock {
   }
 
   public Reference getObservationSubject() {
-    String patNr = this.getPatNr();
-    if (Helper.checkEmptyString(patNr)) {
-      return null;
+    String patientNummer = this.getPatNr();
+    if (Helper.checkEmptyString(patientNummer)) {
+      throw new IllegalStateException("Person: patNr needs to be non-empty");
     }
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    Identifier subjectId = FhirGenerator.identifier(patNr, IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirGenerator.reference(subjectId);
+    String ref = MIIReference.getPatient(patientNummer);
+    return FhirGenerator.reference(ref);
   }
 
   public Coding getObservationValue() {
