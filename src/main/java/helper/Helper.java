@@ -68,8 +68,13 @@ public class Helper {
     return Arrays.asList(values);
   }
 
-  public static boolean checkAnyNonEmptyStrings(String... s) {
-    return Arrays.stream(s).anyMatch(Helper::checkNonEmptyString);
+  public static <T> boolean checkAllNull(List<T> list) {
+    for (T elem : list) {
+      if (elem != null) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public static boolean checkNonEmptyString(String s) {
@@ -81,7 +86,12 @@ public class Helper {
   }
 
   public static boolean checkAllEmptyString(String... s) {
-    return Arrays.stream(s).allMatch(Helper::checkEmptyString);
+    for (String str : s) {
+      if (Helper.checkNonEmptyString(str)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
