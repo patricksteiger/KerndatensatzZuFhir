@@ -3,11 +3,12 @@ package enums;
 import constants.CodingSystem;
 import constants.Constants;
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
 /** @see "https://simplifier.net/packages/kbv.basis/1.1.0/files/242198" */
-public enum KBVBaseStageLife {
+public enum KBVBaseStageLife implements Code {
   ADULTHOOD("41847000", "Adulthood (qualifier value)"),
   ADOLESCENCE("263659003", "Adolescence (qualifier value)"),
   CHILDHOOD("255398004", "Childhood (qualifier value)"),

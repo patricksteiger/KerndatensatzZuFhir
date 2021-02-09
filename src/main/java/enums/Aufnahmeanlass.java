@@ -4,7 +4,7 @@ import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @see
@@ -38,11 +38,9 @@ public enum Aufnahmeanlass implements Code {
    * @return Aufnahmeanlass corresponding to code
    * @throws IllegalArgumentException if code is not E, Z, N, R, V, A, G, B.
    */
-  public static Aufnahmeanlass fromCode(String code) {
-    return Arrays.stream(Aufnahmeanlass.values())
-        .filter(anlass -> anlass.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "Aufnahmeanlass"));
+  public static Optional<Aufnahmeanlass> fromCode(String code) {
+    return Helper.codeFromString(Aufnahmeanlass.values(), code);
+    // .orElseThrow(Helper.illegalCode(code, "Aufnahmeanlass"));
   }
 
   public String getCode() {

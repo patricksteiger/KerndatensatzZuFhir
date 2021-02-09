@@ -2,10 +2,11 @@ package enums;
 
 import constants.CodingSystem;
 import helper.Helper;
+import interfaces.Code;
 
 import java.util.Arrays;
 
-public enum Diagnosesicherheit {
+public enum Diagnosesicherheit implements Code {
   SUSPECTED("415684004", "Suspected", ICD_Diagnosesicherheit.VERDACHT_AUF),
   DIAGNOSIS_OF_EXCLUSION(
       "733495001", "Diagnosis of exclusion", ICD_Diagnosesicherheit.AUSGESCHLOSSEN),

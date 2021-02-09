@@ -2,10 +2,7 @@ package model;
 
 import constants.*;
 import enums.*;
-import helper.FhirGenerator;
-import helper.FhirHelper;
-import helper.Helper;
-import helper.ParsedCode;
+import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -14,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class Fall implements Datablock {
+  private final Logger LOGGER = new Logger("Fall");
   private String patNr;
   // Einrichtungskontakt
   private String einrichtungskontakt_ebene;
@@ -195,9 +193,15 @@ public class Fall implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    Aufnahmeanlass anlass = Aufnahmeanlass.fromCode(code);
-    Coding aufnahmegrund = FhirGenerator.coding(anlass);
-    return new CodeableConcept().addCoding(aufnahmegrund);
+    return Aufnahmeanlass.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(
+            LOGGER.log(
+                "EinrichtungsEncounter",
+                "einrichtungskontakt_aufnahmeanlass",
+                code,
+                "getEinrichtungsEncounterAdmitSource"));
   }
 
   public CodeableConcept getEinrichtungsEncounterDischargeDisposition() {

@@ -1,5 +1,7 @@
 package helper;
 
+import interfaces.Code;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -80,6 +82,24 @@ public class Helper {
 
   public static boolean checkAllEmptyString(String... s) {
     return Arrays.stream(s).allMatch(Helper::checkEmptyString);
+  }
+
+  /**
+   * Iterates over codes and returns first code whose code is equal to string. If no code has given
+   * string as code, empty is returned.
+   *
+   * @param codes Codes containing codes, that are searched for code string
+   * @param string String representing code
+   * @param <T> Type of Code
+   * @return Code if corresponding code was found. Otherwise is empty.
+   */
+  public static <T extends Code> Optional<T> codeFromString(T[] codes, String string) {
+    for (T code : codes) {
+      if (code.getCode().equals(string)) {
+        return Optional.of(code);
+      }
+    }
+    return Optional.empty();
   }
 
   /**
