@@ -6,10 +6,7 @@ import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
 import enums.VersichertenCode;
 import enums.VitalStatus;
-import helper.FhirGenerator;
-import helper.FhirHelper;
-import helper.Helper;
-import helper.ParsedCode;
+import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -18,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Person implements Datablock {
+  private final Logger LOGGER = new Logger(Person.class);
   @CsvBindByName private String patNr;
   // Name
   @CsvBindByName private String vorname;
@@ -79,7 +77,7 @@ public class Person implements Datablock {
     patient.setGender(this.getPatientGender());
     // Geburtsdatum
     patient.setBirthDate(this.getPatientBirthDate());
-    // Deceased
+    // Deceased (optional)
     patient.setDeceased(this.getPatientDeceased());
     // Address
     this.getPatientAddresses().forEach(patient::addAddress);
@@ -170,13 +168,17 @@ public class Person implements Datablock {
 
   public Type getPatientDeceased() {
     String todeszeitpunkt = this.getTodeszeitpunkt();
+    String verstorben = this.getPatient_verstorben();
     if (Helper.checkNonEmptyString(todeszeitpunkt)) {
-      Date deceasedTime = Helper.getDateFromISO(todeszeitpunkt);
-      return FhirGenerator.dateTimeType(deceasedTime);
-    } else {
-      boolean deceased = Helper.booleanFromString(this.getPatient_verstorben());
-      return new BooleanType(deceased);
+      return Helper.getDateFromISO(todeszeitpunkt)
+          .map(FhirGenerator::dateTimeType)
+          .orElse(LOGGER.error("getPatientDeceased", "todeszeitpunkt", todeszeitpunkt));
+    } else if (Helper.checkNonEmptyString(verstorben)) {
+      return Helper.booleanFromString(verstorben)
+          .map(FhirGenerator::booleanType)
+          .orElse(LOGGER.error("getPatientDeceased", "patient_verstorben", verstorben));
     }
+    return null;
   }
 
   public Date getPatientBirthDate() {
@@ -184,7 +186,8 @@ public class Person implements Datablock {
     if (Helper.checkEmptyString(birthDate)) {
       return null;
     }
-    return Helper.getDateFromISO(birthDate);
+    return Helper.getDateFromISO(birthDate)
+        .orElse(LOGGER.error("getPatientBirthDate", "geburtsdatum", birthDate));
   }
 
   public Enumerations.AdministrativeGender getPatientGender() {
@@ -336,9 +339,15 @@ public class Person implements Datablock {
   }
 
   public Period getResearchSubjectPeriod() {
-    Date start = Helper.getDateFromISO(this.getTeilnahme_beginn());
-    if (Helper.checkNonEmptyString(this.getTeilnahme_ende())) {
-      Date end = Helper.getDateFromISO(this.getTeilnahme_ende());
+    String beginn = this.getTeilnahme_beginn();
+    Date start =
+        Helper.getDateFromISO(beginn)
+            .orElse(LOGGER.error("getResearchSubjectPeriod", "teilnahme_beginn", beginn));
+    String ende = this.getTeilnahme_ende();
+    if (Helper.checkNonEmptyString(ende)) {
+      Date end =
+          Helper.getDateFromISO(ende)
+              .orElse(LOGGER.error("getResearchSubjectPeriod", "teilnahme_ende", ende));
       return FhirGenerator.period(start, end);
     }
     return FhirGenerator.period(start);
@@ -386,7 +395,7 @@ public class Person implements Datablock {
     VitalStatus code = VitalStatus.UNBEKANNT;
     String patientVerstorben = this.getPatient_verstorben();
     if (Helper.checkNonEmptyString(patientVerstorben)) {
-      boolean verstorben = Helper.booleanFromString(patientVerstorben);
+      boolean verstorben = Helper.booleanFromString(patientVerstorben).orElse(false);
       if (verstorben) {
         code = VitalStatus.VERSTORBEN;
       }
@@ -395,8 +404,10 @@ public class Person implements Datablock {
   }
 
   public DateTimeType getObservationEffective() {
-    Date effective = Helper.getDateFromISO(this.getLetzter_lebendzeitpunkt());
-    return FhirGenerator.dateTimeType(effective);
+    String zeitpunkt = this.getLetzter_lebendzeitpunkt();
+    return Helper.getDateFromISO(zeitpunkt)
+        .map(FhirGenerator::dateTimeType)
+        .orElse(LOGGER.error("getObservationEffective", "letzter_lebendzeitpunkt", zeitpunkt));
   }
 
   public CodeableConcept getObservationCode() {

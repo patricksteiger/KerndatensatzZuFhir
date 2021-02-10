@@ -1,21 +1,30 @@
 package helper;
 
-public class Logger {
-  private final String datablock;
+import interfaces.Datablock;
+import org.slf4j.LoggerFactory;
 
-  public Logger(String datablock) {
-    this.datablock = datablock;
+public class Logger {
+
+  private final org.slf4j.Logger logger;
+  private long errorCounter;
+
+  public <T extends Datablock> Logger(Class<T> datablockClass) {
+    this.logger = LoggerFactory.getLogger(datablockClass);
+    this.errorCounter = 0L;
   }
-  public <T extends Object> T log(
-      String fhirResourceClass, String valueName, String value, String method) {
-    System.err.println(
-        "In datablock \""
-            + datablock
-            + "\" the FHIR-Resource \""
-            + fhirResourceClass
-            + "\" misses a value due to an invalid datablock-value!");
-    System.err.println("Valuename: \"" + valueName + "\", invalid value: \"" + value + "\".");
-    System.err.println("Method: \"" + method + "\".\n");
+
+  public <T extends Object> T error(String method, String valueName, String value) {
+    this.logger.error(
+        "In method \"{}\" an error occurred!\n"
+            + "Datablock-Valuename: \"{}\", invalid value: \"{}\".\n",
+        method,
+        valueName,
+        value);
+    this.errorCounter++;
     return null;
+  }
+
+  public long getErrorCount() {
+    return errorCounter;
   }
 }

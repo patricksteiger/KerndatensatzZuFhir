@@ -6,17 +6,14 @@ import constants.*;
 import enums.DurchfuehrungsabsichtCode;
 import enums.ProcedureCategorySnomedMapping;
 import enums.SeitenlokalisationCode;
-import helper.FhirGenerator;
-import helper.FhirHelper;
-import helper.Helper;
-import helper.ParsedCode;
+import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
-import java.util.Date;
 import java.util.List;
 
 public class Prozedur implements Datablock {
+  private final Logger LOGGER = new Logger(Prozedur.class);
   @CsvBindByName private String patNr;
   // OPS Prozedur kodiert
   @CsvBindByName private String OPS_Vollst_Prozedurenkode;
@@ -141,8 +138,10 @@ public class Prozedur implements Datablock {
   }
 
   public DateTimeType getPerformed() {
-    Date date = Helper.getDateFromISO(this.getDurchfuehrungsdatum());
-    return FhirGenerator.dateTimeType(date);
+    String datum = this.getDurchfuehrungsdatum();
+    return Helper.getDateFromISO(datum)
+        .map(FhirGenerator::dateTimeType)
+        .orElse(LOGGER.error("getPerformed", "durchfuehrungsdatum", datum));
   }
 
   /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80349/" */
@@ -171,8 +170,10 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(dokuDatum) || dokuDatum.equals(this.getDurchfuehrungsdatum())) {
       return null;
     }
-    Date recorded = Helper.getDateFromISO(dokuDatum);
-    DateTimeType date = FhirGenerator.dateTimeType(recorded);
+    DateTimeType date =
+        Helper.getDateFromISO(dokuDatum)
+            .map(FhirGenerator::dateTimeType)
+            .orElse(LOGGER.error("getRecordedDate", "dokumentationsdatum", dokuDatum));
     return FhirGenerator.extension(ExtensionUrl.RECORDED_DATE, date);
   }
 

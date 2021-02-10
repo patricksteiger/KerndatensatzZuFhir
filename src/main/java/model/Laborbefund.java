@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Laborbefund implements Datablock {
+  private final Logger LOGGER = new Logger(Laborbefund.class);
   @CsvBindByName private String patNr;
   @CsvBindByName private String identifikation;
   @CsvBindByName private String status;
@@ -184,7 +185,13 @@ public class Laborbefund implements Datablock {
   }
 
   public Date getServiceRequestAuthoredOn() {
-    return Helper.getDateFromISO(this.getLaboranforderung_anforderungsdatum());
+    String anforderungsdatum = this.getLaboranforderung_anforderungsdatum();
+    return Helper.getDateFromISO(anforderungsdatum)
+        .orElse(
+            LOGGER.error(
+                "getServiceRequestAuthoredOn",
+                "laboranforderung_anforderungsdatum",
+                anforderungsdatum));
   }
 
   public Reference getServiceRequestSubject() {
@@ -246,15 +253,32 @@ public class Laborbefund implements Datablock {
   }
 
   public Date getDiagnosticReportIssued() {
-    return Helper.getDateFromISO(this.getDokumentationsdatum());
+    String dokumentationsdatum = this.getDokumentationsdatum();
+    return Helper.getDateFromISO(dokumentationsdatum)
+        .orElse(
+            LOGGER.error("getDiagnosticReportIssued", "dokumentationsdatum", dokumentationsdatum));
   }
 
   public DateTimeType getDiagnosticReportEffective() {
     Date date;
-    if (Helper.checkNonEmptyString(this.getProbenmaterial_abnahmezeitpunkt())) {
-      date = Helper.getDateFromISO(this.getProbenmaterial_abnahmezeitpunkt());
+    String abnahmezeitpunkt = this.getProbenmaterial_abnahmezeitpunkt();
+    if (Helper.checkNonEmptyString(abnahmezeitpunkt)) {
+      date =
+          Helper.getDateFromISO(abnahmezeitpunkt)
+              .orElse(
+                  LOGGER.error(
+                      "getDiagnosticReportEffective",
+                      "probenmaterial_abnahmezeitpunkt",
+                      abnahmezeitpunkt));
     } else {
-      date = Helper.getDateFromISO(this.getProbenmaterial_laboreingangszeitpunkt());
+      String laboreingangszeitpunkt = this.getProbenmaterial_laboreingangszeitpunkt();
+      date =
+          Helper.getDateFromISO(laboreingangszeitpunkt)
+              .orElse(
+                  LOGGER.error(
+                      "getDiagnosticReportEffective",
+                      "probenmaterial_laboreingangszeitpunkt",
+                      laboreingangszeitpunkt));
     }
     return FhirGenerator.dateTimeType(date);
   }
@@ -404,12 +428,23 @@ public class Laborbefund implements Datablock {
     if (Helper.checkEmptyString(dokumentationsdatum)) {
       return null;
     }
-    return Helper.getDateFromISO(dokumentationsdatum);
+    return Helper.getDateFromISO(dokumentationsdatum)
+        .orElse(
+            LOGGER.error(
+                "getObservationIssued",
+                "laboruntersuchung_dokumentationsdatum",
+                dokumentationsdatum));
   }
 
   public DateTimeType getObservationEffective() {
-    Date effective = Helper.getDateFromISO(this.getLaboruntersuchung_untersuchungszeitpunkt());
-    return FhirGenerator.dateTimeType(effective);
+    String untersuchungszeitpunkt = this.getLaboruntersuchung_untersuchungszeitpunkt();
+    return Helper.getDateFromISO(untersuchungszeitpunkt)
+            .map(FhirGenerator::dateTimeType)
+            .orElse(
+                LOGGER.error(
+                    "getObservationEffective",
+                    "laboruntersuchung_untersuchungszeitpunkt",
+                    untersuchungszeitpunkt));
   }
 
   public Reference getObservationSubject() {

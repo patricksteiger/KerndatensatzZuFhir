@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Medikation implements Datablock {
+  private final Logger LOGGER = new Logger(Medikation.class);
   @CsvBindByName private String patNr;
   // Medikationseintrag
   @CsvBindByName private String identifikation;
@@ -331,7 +332,8 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(eintragsDatum)) {
       return null;
     }
-    return Helper.getDateFromISO(eintragsDatum);
+    return Helper.getDateFromISO(eintragsDatum)
+        .orElse(LOGGER.error("getMedicationStatementDateAsserted", "datum_eintrag", eintragsDatum));
   }
 
   public Annotation getMedicationStatementNote() {
@@ -397,7 +399,10 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(zeitpunkt)) {
       return null;
     }
-    return Helper.getDateFromISO(zeitpunkt);
+    return Helper.getDateFromISO(zeitpunkt)
+        .orElse(
+            LOGGER.error(
+                "getMedicationStatementDosageTimingEvent", "dosierung_zeitpunkt", zeitpunkt));
   }
 
   public Date getMedicationStatementDosageTimingPhase() {
@@ -405,7 +410,8 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(phase)) {
       return null;
     }
-    return Helper.getDateFromISO(phase);
+    return Helper.getDateFromISO(phase)
+        .orElse(LOGGER.error("getMedicationStatementDosageTimingPhase", "dosierung_phase", phase));
   }
 
   public Timing.TimingRepeatComponent getMedicationStatementDosageTimingRepeat() {
@@ -440,16 +446,31 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(einnahmeBeiBedarf)) {
       return null;
     }
-    boolean bedarf = Helper.booleanFromString(einnahmeBeiBedarf);
-    return new BooleanType(bedarf);
+    return Helper.booleanFromString(einnahmeBeiBedarf)
+        .map(FhirGenerator::booleanType)
+        .orElse(
+            LOGGER.error(
+                "getMedicationStatementDosageAsNeeded",
+                "dosierung_einnahme_bei_bedarf",
+                einnahmeBeiBedarf));
   }
 
   public Type getMedicationStatementEffective() {
-    Date startDate = Helper.getDateFromISO(this.getEinnahme_startzeitpunkt());
-    DateTimeType start = new DateTimeType(startDate);
+    String startzeitpunkt = this.getEinnahme_startzeitpunkt();
+    DateTimeType start =
+        Helper.getDateFromISO(startzeitpunkt)
+            .map(FhirGenerator::dateTimeType)
+            .orElse(
+                LOGGER.error(
+                    "getMedicationStatementEffective", "einnahme_startzeitpunkt", startzeitpunkt));
     DateTimeType end = new DateTimeType();
-    if (Helper.checkNonEmptyString(this.getEinnahme_endzeitpunkt())) {
-      Date endDate = Helper.getDateFromISO(this.getEinnahme_endzeitpunkt());
+    String endzeitpunkt = this.getEinnahme_endzeitpunkt();
+    if (Helper.checkNonEmptyString(endzeitpunkt)) {
+      Date endDate =
+          Helper.getDateFromISO(endzeitpunkt)
+              .orElse(
+                  LOGGER.error(
+                      "getMedicationStatementEffective", "einnahme_endzeitpunkt", endzeitpunkt));
       end.setValue(endDate);
     }
     // Return period if both start and end got set. Otherwise only return start.

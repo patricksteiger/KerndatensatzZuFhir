@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,19 +78,19 @@ public class HelperTest {
 
   @Test
   public void testGetDateFromISO() throws ParseException {
-    assertThrows(NullPointerException.class, () -> Helper.getDateFromISO(null));
-    assertThrows(DateTimeParseException.class, () -> Helper.getDateFromISO(""));
-    assertThrows(DateTimeParseException.class, () -> Helper.getDateFromISO("20.10.2020"));
-    assertThrows(DateTimeParseException.class, () -> Helper.getDateFromISO("2020-21-13"));
-    assertThrows(DateTimeParseException.class, () -> Helper.getDateFromISO("2020-1-13"));
+    assertEquals(Optional.empty(), Helper.getDateFromISO(null));
+    assertEquals(Optional.empty(), Helper.getDateFromISO(""));
+    assertEquals(Optional.empty(), Helper.getDateFromISO("20.10.2020"));
+    assertEquals(Optional.empty(), Helper.getDateFromISO("2020-21-13"));
+    assertEquals(Optional.empty(), Helper.getDateFromISO("2020-1-13"));
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
     String simpleDate = "2020-07-21";
-    Date actual = Helper.getDateFromISO(simpleDate);
+    Date actual = Helper.getDateFromISO(simpleDate).get();
     assertEquals(simpleDateFormat.parse(simpleDate + "T00:00:00"), actual);
     String date = simpleDate + "T13:34:15";
-    actual = Helper.getDateFromISO(date);
+    actual = Helper.getDateFromISO(date).get();
     assertEquals(simpleDateFormat.parse(date), actual);
-    actual = Helper.getDateFromISO(date + "+01:00");
+    actual = Helper.getDateFromISO(date + "+01:00").get();
     assertEquals(simpleDateFormat.parse(date), actual);
   }
 

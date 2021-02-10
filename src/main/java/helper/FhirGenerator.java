@@ -161,6 +161,10 @@ public class FhirGenerator {
     return quantity(value, unit, "", "");
   }
 
+  public static BooleanType booleanType(boolean type) {
+    return new BooleanType(type);
+  }
+
   public static Reference reference(
       String ref, String type, Identifier identifier, String display) {
     Reference reference = new Reference();

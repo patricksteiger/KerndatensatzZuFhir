@@ -5,7 +5,6 @@ import interfaces.Code;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -17,19 +16,21 @@ public class Helper {
    * Parses ISO-8601 formatted date to Date-object.
    *
    * @param date formatted according to ISO-8601
-   * @return Date object at given date
-   * @throws DateTimeParseException if date is not ISO-8601 formatted
-   * @throws NullPointerException if date is null
+   * @return Optional containing ISO-Date if parsable.
    */
-  public static Date getDateFromISO(String date) {
-    String isoDate = date;
-    // Example: 2020-07-21
-    final int simpleDateLength = 10;
-    // Add timestamp if needed to avoid parsing exception
-    if (isoDate.length() <= simpleDateLength) isoDate += "T00:00:00";
-    // Use LocalDateTime to properly parse ISO 8601-Date
-    LocalDateTime localDateTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
-    return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+  public static Optional<Date> getDateFromISO(String date) {
+    try {
+      String isoDate = date;
+      // Example: 2020-07-21
+      final int simpleDateLength = 10;
+      // Add timestamp if needed to avoid parsing exception
+      if (isoDate.length() <= simpleDateLength) isoDate += "T00:00:00";
+      // Use LocalDateTime to properly parse ISO 8601-Date
+      LocalDateTime localDateTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
+      return Optional.of(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 
   public static Date getDateFromGermanTime(String germanDate) {
@@ -54,13 +55,16 @@ public class Helper {
    * case-insensitively.
    *
    * @param s String which should be parsed
-   * @return boolean parsed from String s
-   * @throws IllegalArgumentException if s is not 0, false, 1 or true.
+   * @return boolean parsed from String s or empty.
    */
-  public static boolean booleanFromString(String s) {
-    if ("1".equals(s) || "true".equalsIgnoreCase(s)) return true;
-    if ("0".equals(s) || "false".equalsIgnoreCase(s)) return false;
-    throw new IllegalArgumentException("Couldn't read boolean from String: \"" + s + "\"");
+  public static Optional<Boolean> booleanFromString(String s) {
+    if ("1".equals(s) || "true".equalsIgnoreCase(s)) {
+      return Optional.of(true);
+    }
+    if ("0".equals(s) || "false".equalsIgnoreCase(s)) {
+      return Optional.of(false);
+    }
+    return Optional.empty();
   }
 
   @SafeVarargs

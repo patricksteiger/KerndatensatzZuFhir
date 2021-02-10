@@ -7,10 +7,7 @@ import constants.*;
 import enums.ICD_Diagnosesicherheit;
 import enums.ICD_Seitenlokalisation;
 import enums.KBVBaseStageLife;
-import helper.FhirGenerator;
-import helper.FhirHelper;
-import helper.Helper;
-import helper.ParsedCode;
+import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -18,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Diagnose implements Datablock {
+  private final Logger LOGGER = new Logger(Diagnose.class);
   @CsvBindByName private String patNr;
   // ICD-10-GM Diagnose kodiert
   @CsvBindByName private String icd_diagnosecode;
@@ -247,8 +245,9 @@ public class Diagnose implements Datablock {
   }
 
   public Date getRecordedDate() {
-    Date recordedDate = Helper.getDateFromISO(this.getDokumentationsdatum());
-    return recordedDate;
+    String dokumentationsdatum = this.getDokumentationsdatum();
+    return Helper.getDateFromISO(dokumentationsdatum)
+        .orElse(LOGGER.error("getRecordedDate", "dokumentationsdatum", dokumentationsdatum));
   }
 
   public Type getOnset() {
@@ -262,14 +261,18 @@ public class Diagnose implements Datablock {
     DateTimeType start = new DateTimeType();
     if (Helper.checkNonEmptyString(zeitraumVon)) {
       start.setPrecision(TemporalPrecisionEnum.SECOND);
-      Date startDate = Helper.getDateFromISO(zeitraumVon);
+      Date startDate =
+          Helper.getDateFromISO(zeitraumVon)
+              .orElse(LOGGER.error("getOnset", "zeitraum_von", zeitraumVon));
       start.setValue(startDate);
     }
     start.addExtension(this.getLebensphaseVon());
     DateTimeType end = new DateTimeType();
     if (Helper.checkNonEmptyString(zeitraumBis)) {
       end.setPrecision(TemporalPrecisionEnum.SECOND);
-      Date endDate = Helper.getDateFromISO(zeitraumBis);
+      Date endDate =
+          Helper.getDateFromISO(zeitraumBis)
+              .orElse(LOGGER.error("getOnset", "zeitraum_bis", zeitraumBis));
       end.setValue(endDate);
     }
     end.addExtension(this.getLebensphaseBis());
