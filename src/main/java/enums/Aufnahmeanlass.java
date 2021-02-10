@@ -32,15 +32,13 @@ public enum Aufnahmeanlass implements Code {
   }
 
   /**
-   * Return Aufnahmeanlass corresponding to code.
+   * Return Aufnahmeanlass corresponding to code. Valid codes: E, Z, N, R, V, A, G, B.
    *
-   * @param code Augnahmeanlasscode
+   * @param code Aufnahmeanlasscode
    * @return Aufnahmeanlass corresponding to code
-   * @throws IllegalArgumentException if code is not E, Z, N, R, V, A, G, B.
    */
   public static Optional<Aufnahmeanlass> fromCode(String code) {
     return Helper.codeFromString(Aufnahmeanlass.values(), code);
-    // .orElseThrow(Helper.illegalCode(code, "Aufnahmeanlass"));
   }
 
   public String getCode() {

@@ -186,8 +186,11 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(snomedCode)) {
       return null;
     }
-    ICD_Diagnosesicherheit diagnosesicherheit = ICD_Diagnosesicherheit.fromSnomedCode(snomedCode);
-    Coding value = FhirGenerator.coding(diagnosesicherheit);
+    Coding value =
+        ICD_Diagnosesicherheit.fromSnomedCode(snomedCode)
+            .map(FhirGenerator::coding)
+            .orElse(
+                LOGGER.error("getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode));
     String url = ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT;
     return FhirGenerator.extension(url, value);
   }

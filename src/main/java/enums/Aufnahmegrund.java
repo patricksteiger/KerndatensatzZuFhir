@@ -4,7 +4,7 @@ import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @see
@@ -30,17 +30,13 @@ public enum Aufnahmegrund implements Code {
   }
 
   /**
-   * Returns Aufnahmegrund corresponding to given code.
+   * Returns Aufnahmegrund corresponding to given code. Valid codes: "01"-"08" or "10".
    *
    * @param code Aufnahmegrundcode
    * @return Aufnahmegrund enum
-   * @throws IllegalArgumentException if code is not in "01"-"08" or "10"
    */
-  public static Aufnahmegrund fromCode(String code) {
-    return Arrays.stream(Aufnahmegrund.values())
-        .filter(grund -> grund.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "Aufnahmegrund"));
+  public static Optional<Aufnahmegrund> fromCode(String code) {
+    return Helper.codeFromString(Aufnahmegrund.values(), code);
   }
 
   public String getCode() {

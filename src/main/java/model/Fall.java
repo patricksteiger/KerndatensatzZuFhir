@@ -230,14 +230,20 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getEinrichtungsEncounterReasonCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_aufnahmegrund());
+    String aufnahmegrund = this.getEinrichtungskontakt_aufnahmegrund();
+    ParsedCode parsedCode = ParsedCode.fromString(aufnahmegrund);
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    Aufnahmegrund grund = Aufnahmegrund.fromCode(code);
-    Coding aufnahmegrund = FhirGenerator.coding(grund);
-    return FhirGenerator.codeableConcept(aufnahmegrund);
+    return Aufnahmegrund.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(
+            LOGGER.error(
+                "getEinrichtungsEncounterReasonCode",
+                "einrichtungskontakt_aufnahmegrund",
+                aufnahmegrund));
   }
 
   public Period getEinrichtungsEncounterPeriod() {

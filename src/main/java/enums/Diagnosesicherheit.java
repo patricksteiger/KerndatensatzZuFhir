@@ -4,7 +4,7 @@ import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 public enum Diagnosesicherheit implements Code {
   SUSPECTED("415684004", "Suspected", ICD_Diagnosesicherheit.VERDACHT_AUF),
@@ -27,16 +27,12 @@ public enum Diagnosesicherheit implements Code {
    * Returns Diagnosesicherheit corresponding to code.
    *
    * @param code SNOMED Code
-   * @return Diagnosesicherheit-enum
-   * @throws IllegalArgumentException if code is invalid
+   * @return Diagnosesicherheit-enum, empty if code is invalid.
    * @see
    *     "https://art-decor.org/decor/services/RetrieveValueSet?prefix=mide-&id=2.16.840.1.113883.3.1937.777.24.11.1&effectiveDate=2018-06-13T13:05:22&version=&format=html&language=de-DE&seetype=live-services"
    */
-  public static Diagnosesicherheit fromCode(String code) {
-    return Arrays.stream(Diagnosesicherheit.values())
-        .filter(diagnosesicherheit -> diagnosesicherheit.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "Diagnosesicherheit"));
+  public static Optional<Diagnosesicherheit> fromCode(String code) {
+    return Helper.codeFromString(Diagnosesicherheit.values(), code);
   }
 
   public String getCode() {

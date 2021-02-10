@@ -3,6 +3,8 @@ package enums;
 import constants.CodingSystem;
 import interfaces.Code;
 
+import java.util.Optional;
+
 public enum ICD_Diagnosesicherheit implements Code {
   AUSGESCHLOSSEN("A", "ausgeschlossen"),
   GESICHERTE_DIAGNOSE("G", "gesicherte Diagnose"),
@@ -22,13 +24,11 @@ public enum ICD_Diagnosesicherheit implements Code {
    * Diagnosesicherheit. From there the ICD-Mapping can be extracted.
    *
    * @param snomedCode SNOMED-Code of Diagnosesicherheit
-   * @return ICD-Diagnosesicherheit-enum
-   * @throws IllegalArgumentException if snomedCode is invalid for Diagnosesicherheit
+   * @return ICD-Diagnosesicherheit-enum, or empty if code is invalid
    * @see "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT"
    */
-  public static ICD_Diagnosesicherheit fromSnomedCode(String snomedCode) {
-    Diagnosesicherheit diagnosesicherheit = Diagnosesicherheit.fromCode(snomedCode);
-    return diagnosesicherheit.getIcdMapping();
+  public static Optional<ICD_Diagnosesicherheit> fromSnomedCode(String snomedCode) {
+    return Diagnosesicherheit.fromCode(snomedCode).map(Diagnosesicherheit::getIcdMapping);
   }
 
   public String getCode() {
