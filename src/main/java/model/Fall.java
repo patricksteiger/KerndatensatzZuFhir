@@ -1,6 +1,7 @@
 package model;
 
 import com.opencsv.bean.CsvBindByName;
+import constants.Constants;
 import constants.*;
 import enums.*;
 import helper.FhirGenerator;
@@ -165,7 +166,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getVersorgungsstellenkontakt_ebene());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.FALL_KONTAKTEBENE;
     String display = parsedCode.getDisplay();
@@ -188,7 +189,7 @@ public class Fall implements Datablock {
   public Identifier getVersorgungsstellenEncounterIdentifier() {
     String aufnahmenummer = this.getVersorgungsstellenkontakt_aufnahmenummer();
     if (Helper.checkEmptyString(aufnahmenummer)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
     Coding vnType = FhirGenerator.coding(typeCode);
@@ -208,7 +209,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_aufnahmeanlass());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Aufnahmeanlass.fromCode(code)
         .map(FhirGenerator::coding)
@@ -222,7 +223,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_entlassungsgrund());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Entlassungsgrund.fromCode(code)
         .map(FhirGenerator::coding)
@@ -239,7 +240,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(aufnahmegrund);
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Aufnahmegrund.fromCode(code)
         .map(FhirGenerator::coding)
@@ -292,7 +293,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_ebene());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.FALL_KONTAKTEBENE;
     String display = parsedCode.getDisplay();
@@ -315,7 +316,7 @@ public class Fall implements Datablock {
   public Identifier getEinrichtungsEncounterIdentifier() {
     String aufnahmenummer = this.getEinrichtungskontakt_aufnahmenummer();
     if (Helper.checkEmptyString(aufnahmenummer)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
     Coding vnType = FhirGenerator.coding(typeCode);
@@ -355,7 +356,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_ebene());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.FALL_KONTAKTEBENE;
     String display = parsedCode.getDisplay();
@@ -372,7 +373,7 @@ public class Fall implements Datablock {
         ParsedCode.fromString(this.getAbteilungskontakt_fachabteilungsschluessel());
     String abteilungsCode = parsedCode.getCode();
     if (Helper.checkEmptyString(abteilungsCode)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL;
     String display = parsedCode.getDisplay();
@@ -399,7 +400,7 @@ public class Fall implements Datablock {
   public Identifier getAbteilungsEncounterIdentifier() {
     String aufnahmenummer = this.getAbteilungskontakt_aufnahmenummer();
     if (Helper.checkEmptyString(aufnahmenummer)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
     Coding vnType = FhirGenerator.coding(typeCode);

@@ -101,18 +101,14 @@ public class Diagnose implements Datablock {
   }
 
   public String getText() {
-    String beschreibung = this.getFreitextbeschreibung();
-    if (Helper.checkEmptyString(beschreibung)) {
-      return null;
-    }
-    return beschreibung;
+    return this.getFreitextbeschreibung();
   }
 
   public Coding getCodeIcd() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_diagnosecode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.ICD_10_GM_DIMDI;
     String display = parsedCode.getDisplay();
@@ -129,7 +125,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_primaercode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.ICD_10_GM_DIMDI;
     String display = parsedCode.getDisplay();
@@ -143,7 +139,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_manifestationscode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.ICD_10_GM_DIMDI;
     String display = parsedCode.getDisplay();
@@ -158,7 +154,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_ausrufezeichencode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.ICD_10_GM_DIMDI;
     String display = parsedCode.getDisplay();
@@ -172,7 +168,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_seitenlokalisation());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(this.getIcd_seitenlokalisation())) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Coding value =
         ICD_Seitenlokalisation.fromCode(code)
@@ -186,7 +182,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_diagnosesicherheit());
     String snomedCode = parsedCode.getCode();
     if (Helper.checkEmptyString(snomedCode)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Coding value =
         ICD_Diagnosesicherheit.fromSnomedCode(snomedCode)
@@ -201,7 +197,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAlpha_diagnosecode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.ALPHA_ID_DIMDI;
     String display = parsedCode.getDisplay();
@@ -212,7 +208,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getSnomed_diagnosecode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     String display = parsedCode.getDisplay();
@@ -223,7 +219,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getOrphanet_diagnosecode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.ORPHANET;
     String display = parsedCode.getDisplay();
@@ -234,7 +230,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getWeitere_diagnosecode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = parsedCode.getSystem();
     String display = parsedCode.getDisplay();
@@ -244,7 +240,7 @@ public class Diagnose implements Datablock {
   public Annotation getNote() {
     String erlaeuterung = this.getDiagnoseerlaeuterung();
     if (Helper.checkEmptyString(erlaeuterung)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return new Annotation().setText(erlaeuterung);
   }
@@ -261,7 +257,7 @@ public class Diagnose implements Datablock {
     String lebensphaseVon = this.getLebensphase_von();
     String lebensphaseBis = this.getLebensphase_bis();
     if (Helper.checkAllEmptyString(zeitraumVon, zeitraumBis, lebensphaseVon, lebensphaseBis)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     DateTimeType start = new DateTimeType();
     if (Helper.checkNonEmptyString(zeitraumVon)) {
@@ -291,7 +287,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLebensphase_von());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     CodeableConcept type =
         KBVBaseStageLife.fromCode(code)
@@ -306,7 +302,7 @@ public class Diagnose implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLebensphase_bis());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     CodeableConcept type =
         KBVBaseStageLife.fromCode(code)
@@ -324,19 +320,19 @@ public class Diagnose implements Datablock {
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     String display = parsedCode.getDisplay();
     Coding bodySite = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(bodySite);
+    return FhirGenerator.codeableConcept(bodySite);
   }
 
   public CodeableConcept getClinicalStatus() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getKlinischer_status());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.CONDITION_CLINICAL_STATUS;
     String display = parsedCode.getDisplay();
     Coding clinicalStatus = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(clinicalStatus);
+    return FhirGenerator.codeableConcept(clinicalStatus);
   }
 
   public Meta getMeta() {

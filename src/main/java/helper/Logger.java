@@ -1,5 +1,6 @@
 package helper;
 
+import constants.Constants;
 import interfaces.Datablock;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,7 @@ public class Logger {
         valueName,
         value);
     this.errorCounter++;
-    return null;
+    return Constants.getEmptyValue();
   }
 
   public long getErrorCount() {

@@ -175,7 +175,7 @@ public class Laborbefund implements Datablock {
   public Reference getServiceRequestSpecimen() {
     String id = this.getLaboranforderung_probenmaterial_identifikation();
     if (Helper.checkEmptyString(id)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String type = ReferenceType.SPECIMEN;
     // FIXME: What is system of ServiceRequest specimen?
@@ -213,7 +213,7 @@ public class Laborbefund implements Datablock {
   public String getServiceRequestCodeText() {
     String bezeichnung = this.getLaboranforderung_laborparameter_bezeichnung();
     if (Helper.checkEmptyString(bezeichnung)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return bezeichnung;
   }
@@ -243,7 +243,7 @@ public class Laborbefund implements Datablock {
   public Reference getDiagnosticReportSpecimen() {
     String id = this.getProbenmaterial_identifikation();
     if (Helper.checkEmptyString(id)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String type = ReferenceType.SPECIMEN;
     // FIXME: What is system of DiagnosticReport specimen?
@@ -286,7 +286,7 @@ public class Laborbefund implements Datablock {
   public Reference getDiagnosticReportSubject() {
     String patNr = this.getPatNr();
     if (Helper.checkEmptyString(patNr)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String type = ReferenceType.PATIENT;
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
@@ -350,7 +350,7 @@ public class Laborbefund implements Datablock {
     String obergrenze = this.getLaboruntersuchung_referenzbereich_obergrenze();
     String typ = this.getLaboruntersuchung_referenzbereich_typ();
     if (Helper.checkAllEmptyString(untergrenze, obergrenze, typ)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Observation.ObservationReferenceRangeComponent range =
         new Observation.ObservationReferenceRangeComponent();
@@ -364,7 +364,7 @@ public class Laborbefund implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_referenzbereich_typ());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.REFERENCE_RANGE_MEANING;
     String display = parsedCode.getDisplay();
@@ -375,7 +375,7 @@ public class Laborbefund implements Datablock {
   public Quantity getObservationReferenceRangeLow() {
     String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
     if (Helper.checkEmptyString(lower)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(lower);
     return FhirGenerator.quantity(
@@ -385,7 +385,7 @@ public class Laborbefund implements Datablock {
   public Quantity getObservationReferenceRangeHigh() {
     String higher = this.getLaboruntersuchung_referenzbereich_obergrenze();
     if (Helper.checkEmptyString(higher)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(higher);
     return FhirGenerator.quantity(
@@ -396,7 +396,7 @@ public class Laborbefund implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_untersuchungsmethode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = parsedCode.getSystem();
     String display = parsedCode.getDisplay();
@@ -407,7 +407,7 @@ public class Laborbefund implements Datablock {
   public Annotation getObservationNote() {
     String kommentar = this.getLaboruntersuchung_kommentar();
     if (Helper.checkEmptyString(kommentar)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return new Annotation().setText(kommentar);
   }
@@ -426,7 +426,7 @@ public class Laborbefund implements Datablock {
   public Date getObservationIssued() {
     String dokumentationsdatum = this.getLaboruntersuchung_dokumentationsdatum();
     if (Helper.checkEmptyString(dokumentationsdatum)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(dokumentationsdatum)
         .orElse(
@@ -479,7 +479,7 @@ public class Laborbefund implements Datablock {
     ParsedCode parsedGruppe = ParsedCode.fromString(this.getLaborgruppe_code());
     String code = parsedGruppe.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.LABORGRUPPEN_CODE;
     String display = parsedGruppe.getDisplay();
@@ -490,7 +490,7 @@ public class Laborbefund implements Datablock {
     ParsedCode parsedBereich = ParsedCode.fromString(this.getLaborbereich_code());
     String code = parsedBereich.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Laborbereich.fromCode(code)
         .map(FhirGenerator::coding)

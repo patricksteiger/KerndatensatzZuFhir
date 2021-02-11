@@ -146,7 +146,7 @@ public class Medikation implements Datablock {
   public Ratio getMedicationIngredientStrength() {
     String menge = this.getWirkstoff_menge();
     if (Helper.checkEmptyString(menge)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     ValueAndUnitParsed parsedStrength = ValueAndUnitParsed.fromString(menge);
     Quantity numerator =
@@ -169,7 +169,7 @@ public class Medikation implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getWirkstoff_code_allgemein());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Coding value =
         Wirkstofftyp.fromCode(code)
@@ -183,7 +183,7 @@ public class Medikation implements Datablock {
   public Ratio getMedicationAmount() {
     String wirkstaerke = this.getArzneimittel_wirkstaerke();
     if (Helper.checkEmptyString(wirkstaerke)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     ValueAndUnitParsed parseStaerke = ValueAndUnitParsed.fromString(wirkstaerke);
     BigDecimal value = parseStaerke.getValue();
@@ -197,7 +197,7 @@ public class Medikation implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getDarreichungsform());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.EDQM_STANDARD;
     String display = parsedCode.getDisplay();
@@ -209,7 +209,7 @@ public class Medikation implements Datablock {
   public CodeableConcept getMedicationCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
     if (Helper.checkEmptyString(parsedCode.getCode())) {
-      return null;
+      return Constants.getEmptyValue();
     }
     CodeableConcept code = new CodeableConcept();
     // PHARMA
@@ -224,18 +224,14 @@ public class Medikation implements Datablock {
   }
 
   public String getMedicationCodeText() {
-    String text = this.getRezeptur_freitextzeile();
-    if (Helper.checkEmptyString(text)) {
-      return null;
-    }
-    return text;
+    return this.getRezeptur_freitextzeile();
   }
 
   public Coding getMedicationCodeAtcDE() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.ATC_DIMDI;
     String display = this.getArzneimittel_name();
@@ -246,7 +242,7 @@ public class Medikation implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.PHARMA_ZENTRAL_NUMMER;
     String display = this.getArzneimittel_name();
@@ -256,7 +252,7 @@ public class Medikation implements Datablock {
   public Reference getMedicationAdministrationRequest() {
     String verordnung = this.getBezug_verordnung();
     if (Helper.checkEmptyString(verordnung)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return FhirGenerator.reference(verordnung);
   }
@@ -268,7 +264,7 @@ public class Medikation implements Datablock {
   public MedicationAdministration.MedicationAdministrationDosageComponent
       getMedicationAdministrationDosage() {
     if (this.hasNoMedicationAdministrationDosage()) {
-      return null;
+      return Constants.getEmptyValue();
     }
     MedicationAdministration.MedicationAdministrationDosageComponent dosageComponent =
         new MedicationAdministration.MedicationAdministrationDosageComponent();
@@ -282,11 +278,7 @@ public class Medikation implements Datablock {
   }
 
   public String getMedicationAdministrationDosageText() {
-    String text = this.getDosierung_freitext();
-    if (Helper.checkEmptyString(text)) {
-      return null;
-    }
-    return text;
+    return this.getDosierung_freitext();
   }
 
   public boolean hasNoMedicationAdministrationDosage() {
@@ -294,17 +286,17 @@ public class Medikation implements Datablock {
   }
 
   public Reference getMedicationAdministrationSubject() {
-    String patNr = this.getPatNr();
-    if (Helper.checkEmptyString(patNr)) {
-      return null;
+    String patientenNr = this.getPatNr();
+    if (Helper.checkEmptyString(patientenNr)) {
+      return Constants.getEmptyValue();
     }
-    return FhirHelper.getMIIPatientReference(patNr);
+    return FhirHelper.getMIIPatientReference(patientenNr);
   }
 
   public Identifier getMedicationAdministrationIdentifier() {
     String value = this.getIdentifikation();
     if (Helper.checkEmptyString(value)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     // FIXME: What is system of MedicationAdministration identifier?
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
@@ -326,7 +318,7 @@ public class Medikation implements Datablock {
   public Reference getMedicationStatementInformationSource() {
     String ref = this.getOrganisationsname();
     if (Helper.checkEmptyString(ref)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return FhirGenerator.reference(ref);
   }
@@ -334,7 +326,7 @@ public class Medikation implements Datablock {
   public Date getMedicationStatementDateAsserted() {
     String eintragsDatum = this.getDatum_eintrag();
     if (Helper.checkEmptyString(eintragsDatum)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(eintragsDatum)
         .orElse(LOGGER.error("getMedicationStatementDateAsserted", "datum_eintrag", eintragsDatum));
@@ -343,7 +335,7 @@ public class Medikation implements Datablock {
   public Annotation getMedicationStatementNote() {
     String hinweis = this.getHinweis();
     if (Helper.checkEmptyString(hinweis)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return new Annotation().setText(hinweis);
   }
@@ -351,7 +343,7 @@ public class Medikation implements Datablock {
   // TODO: Is route, site and method the same?
   public Dosage getMedicationStatementDosage() {
     if (this.hasNoMedicationStatementDosage()) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String sequence = this.getDosierung_reihenfolge();
     String text = this.getDosierung_freitext();
@@ -401,7 +393,7 @@ public class Medikation implements Datablock {
   public Date getMedicationStatementDosageTimingEvent() {
     String zeitpunkt = this.getDosierung_zeitpunkt();
     if (Helper.checkEmptyString(zeitpunkt)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(zeitpunkt)
         .orElse(
@@ -412,7 +404,7 @@ public class Medikation implements Datablock {
   public Date getMedicationStatementDosageTimingPhase() {
     String phase = this.getDosierung_phase();
     if (Helper.checkEmptyString(phase)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(phase)
         .orElse(LOGGER.error("getMedicationStatementDosageTimingPhase", "dosierung_phase", phase));
@@ -422,7 +414,7 @@ public class Medikation implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_ereignis());
     String ereignis = parsedCode.getCode();
     if (Helper.checkEmptyString(ereignis)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
     // TODO: ereignis can be when, dayOfWeek, timeOfDay, ... which is it? How can we distinguish?
@@ -436,7 +428,7 @@ public class Medikation implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_art_der_anwendung());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     // CodeSystem can be SNOMED or EDQM
     String system = parsedCode.getSystem();
@@ -448,7 +440,7 @@ public class Medikation implements Datablock {
   public Type getMedicationStatementDosageAsNeeded() {
     String einnahmeBeiBedarf = this.getDosierung_einnahme_bei_bedarf();
     if (Helper.checkEmptyString(einnahmeBeiBedarf)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Helper.booleanFromString(einnahmeBeiBedarf)
         .map(FhirGenerator::booleanType)
@@ -484,7 +476,7 @@ public class Medikation implements Datablock {
   public Reference getMedicationStatementBasedOn() {
     String verordnung = this.getBezug_verordnung();
     if (Helper.checkEmptyString(verordnung)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return FhirGenerator.reference(verordnung);
   }
@@ -499,7 +491,7 @@ public class Medikation implements Datablock {
   public Identifier getMedicationStatementIdentifier() {
     String value = this.getIdentifikation();
     if (Helper.checkEmptyString(value)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     // FIXME: What is system of MedicationStatement identifier?
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
@@ -509,7 +501,7 @@ public class Medikation implements Datablock {
   public Reference getMedicationStatementPartOf() {
     String abgabe = this.getBezug_abgabe();
     if (Helper.checkEmptyString(abgabe)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return FhirGenerator.reference(abgabe);
   }

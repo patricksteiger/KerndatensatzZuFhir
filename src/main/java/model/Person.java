@@ -1,6 +1,7 @@
 package model;
 
 import com.opencsv.bean.CsvBindByName;
+import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
@@ -178,13 +179,13 @@ public class Person implements Datablock {
           .map(FhirGenerator::booleanType)
           .orElse(LOGGER.error("getPatientDeceased", "patient_verstorben", verstorben));
     }
-    return null;
+    return Constants.getEmptyValue();
   }
 
   public Date getPatientBirthDate() {
     String birthDate = this.getGeburtsdatum();
     if (Helper.checkEmptyString(birthDate)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(birthDate)
         .orElse(LOGGER.error("getPatientBirthDate", "geburtsdatum", birthDate));
@@ -194,14 +195,14 @@ public class Person implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAdmininistratives_geschlecht());
     String gender = parsedCode.getCode();
     if (Helper.checkEmptyString(gender)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return FhirHelper.getGenderMapping(gender);
   }
 
   public HumanName getPatientGeburtsName() {
     if (Helper.checkEmptyString(this.getGeburtsname())) {
-      return null;
+      return Constants.getEmptyValue();
     }
     HumanName.NameUse use = HumanName.NameUse.MAIDEN;
     List<Extension> family = this.getPatientNameMaidenFamily();
@@ -263,7 +264,7 @@ public class Person implements Datablock {
   public Identifier getPatientPID() {
     String value = this.getPatient_pid();
     if (Helper.checkEmptyString(value)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     IdentifierTypeCode code = IdentifierTypeCode.MR;
     Coding pidCoding = FhirGenerator.coding(code);
@@ -277,7 +278,7 @@ public class Person implements Datablock {
   public Identifier getPatientGKV() {
     String value = this.getVersichertenId_gkv();
     if (Helper.checkEmptyString(value)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     VersichertenCode gkv = VersichertenCode.GKV;
     Coding gkvCoding = FhirGenerator.coding(gkv);
@@ -291,7 +292,7 @@ public class Person implements Datablock {
   public Identifier getPatientPKV() {
     String value = this.getVersichertennummer_pkv();
     if (Helper.checkEmptyString(value)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     VersichertenCode pkv = VersichertenCode.PKV;
@@ -312,7 +313,8 @@ public class Person implements Datablock {
     CodeableConcept identifierType = new CodeableConcept().addCoding(coding);
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
     Identifier identifier =
-        FhirGenerator.identifier(identifierValue, system, identifierType, null, use);
+        FhirGenerator.identifier(
+            identifierValue, system, identifierType, Constants.getEmptyValue(), use);
     return FhirGenerator.reference(type, identifier);
   }
 

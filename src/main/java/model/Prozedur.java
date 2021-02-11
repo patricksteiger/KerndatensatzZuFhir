@@ -63,7 +63,7 @@ public class Prozedur implements Datablock {
   public Reference getSubject() {
     String patientenNummer = this.getPatNr();
     if (Helper.checkEmptyString(patientenNummer)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
@@ -83,7 +83,7 @@ public class Prozedur implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getOPS_Vollst_Prozedurenkode());
     String ops = parsedCode.getCode();
     if (Helper.checkEmptyString(ops)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return ProcedureCategorySnomedMapping.fromOpsCode(ops)
         .map(FhirGenerator::coding)
@@ -105,7 +105,7 @@ public class Prozedur implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getOPS_Vollst_Prozedurenkode());
     String opsCode = parsedCode.getCode();
     if (Helper.checkEmptyString(opsCode)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.OPS_DIMDI;
     String display = parsedCode.getDisplay();
@@ -120,7 +120,7 @@ public class Prozedur implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getOPS_Seitenlokalisation());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Coding value =
         SeitenlokalisationCode.fromCode(code)
@@ -134,7 +134,7 @@ public class Prozedur implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getSNOMED_Vollst_Prozedurenkode());
     String snomed = parsedCode.getCode();
     if (Helper.checkEmptyString(snomed)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     String display = parsedCode.getDisplay();
@@ -153,7 +153,7 @@ public class Prozedur implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     String display = parsedCode.getDisplay();
@@ -164,7 +164,7 @@ public class Prozedur implements Datablock {
   public Annotation getNote() {
     String text = this.getFreitextbeschreibung();
     if (Helper.checkEmptyString(text)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     return new Annotation().setText(text);
   }
@@ -172,7 +172,7 @@ public class Prozedur implements Datablock {
   public Extension getRecordedDate() {
     String dokuDatum = this.getDokumentationsdatum();
     if (Helper.checkEmptyString(dokuDatum) || dokuDatum.equals(this.getDurchfuehrungsdatum())) {
-      return null;
+      return Constants.getEmptyValue();
     }
     DateTimeType date =
         Helper.getDateFromISO(dokuDatum)
@@ -189,7 +189,7 @@ public class Prozedur implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getKernDurchfuehrungsabsicht());
     String absichtCode = parsedCode.getCode();
     if (Helper.checkEmptyString(absichtCode)) {
-      return null;
+      return Constants.getEmptyValue();
     }
     Coding code =
         DurchfuehrungsabsichtCode.fromCode(absichtCode)
