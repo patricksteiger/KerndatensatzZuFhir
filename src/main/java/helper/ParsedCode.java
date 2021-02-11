@@ -31,12 +31,7 @@ public class ParsedCode {
     String display = Helper.extractCode(words, "display=");
     // Set code in case of simple format
     if (Helper.checkAllEmptyString(code, system, display)) {
-      code =
-          words.stream()
-              .filter(Helper::checkNonEmptyString)
-              .findFirst()
-              .map(Helper::trimQuotes)
-              .orElse("");
+      code = Helper.checkNonEmptyString(str) ? Helper.trimQuotes(str) : "";
     }
     return new ParsedCode(code, system, display);
   }
