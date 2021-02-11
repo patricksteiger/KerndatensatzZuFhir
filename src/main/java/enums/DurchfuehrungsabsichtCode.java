@@ -4,10 +4,7 @@ import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
 import java.util.Optional;
-
-import static helper.Helper.illegalCode;
 
 public enum DurchfuehrungsabsichtCode implements Code {
   THERAPEUTIC("262202000", "Therapeutic"),

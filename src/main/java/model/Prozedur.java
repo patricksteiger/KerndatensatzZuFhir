@@ -63,7 +63,7 @@ public class Prozedur implements Datablock {
   public Reference getSubject() {
     String patientenNummer = this.getPatNr();
     if (Helper.checkEmptyString(patientenNummer)) {
-      return Constants.getEmptyValue();
+      return LOGGER.error("getSubject", "patNr can't be empty!");
     }
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
@@ -94,7 +94,7 @@ public class Prozedur implements Datablock {
   public CodeableConcept getCode() {
     if (Helper.checkAllEmptyString(
         this.getSNOMED_Vollst_Prozedurenkode(), this.getOPS_Vollst_Prozedurenkode())) {
-      throw new IllegalStateException("Prozedur: Code needs at least OPS or SNOMED");
+      return LOGGER.error("getCode", "Either SNOMED- or OPS-Code need to be defined!");
     }
     Coding snomed = this.getCodingSnomed();
     Coding ops = this.getCodingOps();

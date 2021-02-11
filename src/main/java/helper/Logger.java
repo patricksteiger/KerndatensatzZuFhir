@@ -6,21 +6,28 @@ import org.slf4j.LoggerFactory;
 
 public class Logger {
 
-  private final org.slf4j.Logger logger;
+  private final org.slf4j.Logger SL4J_LOGGER;
   private long errorCounter;
 
   public <T extends Datablock> Logger(Class<T> datablockClass) {
-    this.logger = LoggerFactory.getLogger(datablockClass);
+    this.SL4J_LOGGER = LoggerFactory.getLogger(datablockClass);
     this.errorCounter = 0L;
   }
 
-  public <T extends Object> T error(String method, String valueName, String value) {
-    this.logger.error(
+  public <T> T error(String method, String valueName, String value) {
+    this.SL4J_LOGGER.error(
         "In method \"{}\" an error occurred!\n"
             + "Datablock-Valuename: \"{}\", invalid value: \"{}\".\n",
         method,
         valueName,
         value);
+    this.errorCounter++;
+    return Constants.getEmptyValue();
+  }
+
+  public <T> T error(String method, String message) {
+    this.SL4J_LOGGER.error(
+        "In method \"{}\" an error occurred!\n" + "Message: {}", method, message);
     this.errorCounter++;
     return Constants.getEmptyValue();
   }
