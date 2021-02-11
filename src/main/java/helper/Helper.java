@@ -7,7 +7,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class Helper {
   private Helper() {}
@@ -19,15 +18,16 @@ public class Helper {
    * @return Optional containing ISO-Date if parsable.
    */
   public static Optional<Date> getDateFromISO(String date) {
+    String isoDate = date;
+    // Example: 2020-07-21
+    final int simpleDateLength = 10;
+    // Add timestamp if needed to avoid parsing exception
+    if (isoDate.length() <= simpleDateLength) isoDate += "T00:00:00";
     try {
-      String isoDate = date;
-      // Example: 2020-07-21
-      final int simpleDateLength = 10;
-      // Add timestamp if needed to avoid parsing exception
-      if (isoDate.length() <= simpleDateLength) isoDate += "T00:00:00";
       // Use LocalDateTime to properly parse ISO 8601-Date
       LocalDateTime localDateTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
-      return Optional.of(Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant()));
+      Date iso = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+      return Optional.of(iso);
     } catch (Exception e) {
       return Optional.empty();
     }
@@ -44,10 +44,6 @@ public class Helper {
     calendar.set(Calendar.MONTH, Integer.parseInt(dates[1]) - 1);
     calendar.set(Calendar.YEAR, Integer.parseInt(dates[2]));
     return calendar.getTime();
-  }
-
-  public static Supplier<IllegalArgumentException> illegalCode(String code, String codeName) {
-    return () -> new IllegalArgumentException("Code \"" + code + "\" is not a valid " + codeName);
   }
 
   /**

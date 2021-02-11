@@ -7,7 +7,7 @@ import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 public class FhirHelper {
   private FhirHelper() {}
@@ -19,12 +19,15 @@ public class FhirHelper {
    * @return diagnostic report status enum
    * @throws IllegalArgumentException if diagnosticReportStatus is not valid.
    */
-  public static DiagnosticReport.DiagnosticReportStatus getDiagnosticReportStatusFromString(
-      String diagnosticReportStatus) {
-    return Arrays.stream(DiagnosticReport.DiagnosticReportStatus.values())
-        .filter(status -> status.name().equalsIgnoreCase(diagnosticReportStatus))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(diagnosticReportStatus, "DiagnosticReportStatus"));
+  public static Optional<DiagnosticReport.DiagnosticReportStatus>
+      getDiagnosticReportStatusFromString(String diagnosticReportStatus) {
+    for (DiagnosticReport.DiagnosticReportStatus status :
+        DiagnosticReport.DiagnosticReportStatus.values()) {
+      if (status.name().equalsIgnoreCase(diagnosticReportStatus)) {
+        return Optional.of(status);
+      }
+    }
+    return Optional.empty();
   }
 
   // TODO: Implement changes to "divers"-gender when finalized

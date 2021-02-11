@@ -306,7 +306,9 @@ public class Laborbefund implements Datablock {
 
   public DiagnosticReport.DiagnosticReportStatus getDiagnosticReportStatus() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
-    return FhirHelper.getDiagnosticReportStatusFromString(parsedCode.getCode());
+    String code = parsedCode.getCode();
+    return FhirHelper.getDiagnosticReportStatusFromString(code)
+        .orElse(LOGGER.error("getDiagnosticReportStatus", "status", code));
   }
 
   public CodeableConcept getDiagnosticReportCategory() {
@@ -515,7 +517,7 @@ public class Laborbefund implements Datablock {
     try {
       return Observation.ObservationStatus.fromCode(code);
     } catch (Exception e) {
-      throw Helper.illegalCode(code, "ObservationStatus").get();
+      return LOGGER.error("getObservationStatus", "laboruntersuchung_status", code);
     }
   }
 
