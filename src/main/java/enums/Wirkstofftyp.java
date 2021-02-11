@@ -4,7 +4,7 @@ import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 /** @see "https://simplifier.net/medizininformatikinitiative-modulmedikation/wirkstofftyp" */
 public enum Wirkstofftyp implements Code {
@@ -24,14 +24,10 @@ public enum Wirkstofftyp implements Code {
    * Returns Wirkstofftyp corresponding to code. Valid codes are IN, PIN and MIN.
    *
    * @param code Wirkstofftyp
-   * @return Wirkstofftyp enum
-   * @throws IllegalArgumentException if code is invalid
+   * @return Wirkstofftyp enum, empty if code is invalid.
    */
-  public static Wirkstofftyp fromCode(String code) {
-    return Arrays.stream(Wirkstofftyp.values())
-        .filter(typ -> typ.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "Wirkstofftyp"));
+  public static Optional<Wirkstofftyp> fromCode(String code) {
+    return Helper.codeFromString(Wirkstofftyp.values(), code);
   }
 
   public String getCode() {

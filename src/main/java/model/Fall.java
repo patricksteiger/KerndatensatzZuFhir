@@ -224,9 +224,14 @@ public class Fall implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    Entlassungsgrund grund = Entlassungsgrund.fromCode(code);
-    Coding entlassungsgrund = FhirGenerator.coding(grund);
-    return FhirGenerator.codeableConcept(entlassungsgrund);
+    return Entlassungsgrund.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(
+            LOGGER.error(
+                "getEinrichtungsEncounterDischargeDisposition",
+                "einrichtungskontakt_entlassungsgrund",
+                code));
   }
 
   public CodeableConcept getEinrichtungsEncounterReasonCode() {

@@ -1,10 +1,9 @@
 package enums;
 
-import helper.Helper;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.MedicationStatement;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/78822"
@@ -53,41 +52,40 @@ public enum MedikationStatus {
 
   /**
    * Returns MedikationStatus corresponding to code. Valid codes are aktiv, abgeschlossen, geplant,
-   * unterbrochen, abgebrochen and unbekannt.
+   * unterbrochen, abgebrochen and unbekannt. Codes are checked case-sensitively.
    *
    * @param code
-   * @return MedaikationStatus enum
-   * @throws IllegalArgumentException if code is invalid
+   * @return MedaikationStatus enum, empty if code is invalid
    */
-  public static MedikationStatus fromCode(String code) {
-    return Arrays.stream(MedikationStatus.values())
-        .filter(status -> status.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "MedikationStatus"));
+  public static Optional<MedikationStatus> fromCode(String code) {
+    for (MedikationStatus status : MedikationStatus.values()) {
+      if (status.getCode().equals(code)) {
+        return Optional.of(status);
+      }
+    }
+    return Optional.empty();
   }
 
   /**
    * Returns MedicationStatementStatus corresponding to MedikationStatus-mapping.
    *
    * @param code MedikationStatus
-   * @return MedicationStatementStatus enum
-   * @throws IllegalArgumentException if code is invalid MedikationStatus
+   * @return MedicationStatementStatus enum, empty if MedikationStatus is invalid.
    */
-  public static MedicationStatement.MedicationStatementStatus medicationStatementStatusFromCode(
-      String code) {
-    return MedikationStatus.fromCode(code).getMedicationStatementStatus();
+  public static Optional<MedicationStatement.MedicationStatementStatus>
+      medicationStatementStatusFromCode(String code) {
+    return MedikationStatus.fromCode(code).map(MedikationStatus::getMedicationStatementStatus);
   }
 
   /**
    * Returns MedicationAdministrationStatus corresponding to MedikationStatus-mapping.
    *
    * @param code MedikationStatus
-   * @return MedicationAdministrationStatus enum
-   * @throws IllegalArgumentException if code is invalid MedikationStatus
+   * @return MedicationAdministrationStatus enum, empty if MedikationStatus is invalid.
    */
-  public static MedicationAdministration.MedicationAdministrationStatus
+  public static Optional<MedicationAdministration.MedicationAdministrationStatus>
       medicationAdministrationStatusFromCode(String code) {
-    return MedikationStatus.fromCode(code).getMedicationAdministrationStatus();
+    return MedikationStatus.fromCode(code).map(MedikationStatus::getMedicationAdministrationStatus);
   }
 
   public String getCode() {

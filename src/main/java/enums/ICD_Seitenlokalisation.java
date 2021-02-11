@@ -3,7 +3,7 @@ package enums;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 public enum ICD_Seitenlokalisation implements Code {
   RECHTS("R", "rechts"),
@@ -22,14 +22,10 @@ public enum ICD_Seitenlokalisation implements Code {
    * Returs ICD-Seitenlokalisation corresponding to case-sensitive code.
    *
    * @param code Valid codes: R, L, B
-   * @return ICD-Seitenlokalisation-enum
-   * @throws IllegalArgumentException if code is invalid.
+   * @return ICD-Seitenlokalisation-enum, empty if code is invalid
    */
-  public static ICD_Seitenlokalisation fromCode(String code) {
-    return Arrays.stream(ICD_Seitenlokalisation.values())
-        .filter(seite -> seite.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "ICD-Seitenlokalisation"));
+  public static Optional<ICD_Seitenlokalisation> fromCode(String code) {
+    return Helper.codeFromString(ICD_Seitenlokalisation.values(), code);
   }
 
   public String getCode() {

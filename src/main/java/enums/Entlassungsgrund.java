@@ -4,7 +4,7 @@ import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @see
@@ -68,17 +68,13 @@ public enum Entlassungsgrund implements Code {
   }
 
   /**
-   * Returns Entlassungsgrund corresponding to given code.
+   * Returns Entlassungsgrund corresponding to given code. Valid codes: "01"-"29".
    *
    * @param code Entlassungsgrundcode
-   * @return Entlasungsgrund enum
-   * @throws IllegalArgumentException if code is not in "01"-"29"
+   * @return Entlasungsgrund enum, empty if code is invalid.
    */
-  public static Entlassungsgrund fromCode(String code) {
-    return Arrays.stream(Entlassungsgrund.values())
-        .filter(grund -> grund.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "Entlassungsgrund"));
+  public static Optional<Entlassungsgrund> fromCode(String code) {
+    return Helper.codeFromString(Entlassungsgrund.values(), code);
   }
 
   public String getCode() {

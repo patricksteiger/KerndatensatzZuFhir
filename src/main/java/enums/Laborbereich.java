@@ -3,7 +3,7 @@ package enums;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 /** @see "https://simplifier.net/medizininformatikinitiative-modullabor/laborbereich" */
 public enum Laborbereich implements Code {
@@ -40,14 +40,11 @@ public enum Laborbereich implements Code {
    * Returns Laborbereich corresponding to code.
    *
    * @param code laborbereich code
-   * @return Laborbereich enum corresponding to code
+   * @return Laborbereich enum corresponding to code, empty if code is invalid
    * @see "https://simplifier.net/medizininformatikinitiative-modullabor/laborbereich"
    */
-  public static Laborbereich fromCode(String code) {
-    return Arrays.stream(Laborbereich.values())
-        .filter(laborbereich -> laborbereich.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "LaborbereichCode"));
+  public static Optional<Laborbereich> fromCode(String code) {
+    return Helper.codeFromString(Laborbereich.values(), code);
   }
 
   public String getSystem() {

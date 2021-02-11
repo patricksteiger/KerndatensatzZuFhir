@@ -85,9 +85,10 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(ops)) {
       return null;
     }
-    ProcedureCategorySnomedMapping mapping = ProcedureCategorySnomedMapping.fromOpsCode(ops);
-    Coding categoryCode = FhirGenerator.coding(mapping);
-    return FhirGenerator.codeableConcept(categoryCode);
+    return ProcedureCategorySnomedMapping.fromOpsCode(ops)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(LOGGER.error("getCategory", "OPS_Vollst_Prozedurenkode", ops));
   }
 
   public CodeableConcept getCode() {
@@ -121,9 +122,12 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    SeitenlokalisationCode seitenCode = SeitenlokalisationCode.fromCode(code);
-    Coding value = FhirGenerator.coding(seitenCode);
-    return FhirGenerator.extension(ExtensionUrl.OPS_SEITENLOKALISATION, value);
+    Coding value =
+        SeitenlokalisationCode.fromCode(code)
+            .map(FhirGenerator::coding)
+            .orElse(LOGGER.error("getSeitenlokalisation", "OPS_Seitenlokalisation", code));
+    String url = ExtensionUrl.OPS_SEITENLOKALISATION;
+    return FhirGenerator.extension(url, value);
   }
 
   public Coding getCodingSnomed() {
@@ -174,7 +178,8 @@ public class Prozedur implements Datablock {
         Helper.getDateFromISO(dokuDatum)
             .map(FhirGenerator::dateTimeType)
             .orElse(LOGGER.error("getRecordedDate", "dokumentationsdatum", dokuDatum));
-    return FhirGenerator.extension(ExtensionUrl.RECORDED_DATE, date);
+    String url = ExtensionUrl.RECORDED_DATE;
+    return FhirGenerator.extension(url, date);
   }
 
   /**
@@ -186,10 +191,12 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(absichtCode)) {
       return null;
     }
-    DurchfuehrungsabsichtCode durchfuehrungsabsichtCode =
-        DurchfuehrungsabsichtCode.fromCode(absichtCode);
-    Coding code = FhirGenerator.coding(durchfuehrungsabsichtCode);
-    return FhirGenerator.extension(ExtensionUrl.DURCHFUEHRUNGSABSICHT, code);
+    Coding code =
+        DurchfuehrungsabsichtCode.fromCode(absichtCode)
+            .map(FhirGenerator::coding)
+            .orElse(LOGGER.error("getDurchfuehrungsabsicht", "durchfuehrungsabsicht", absichtCode));
+    String url = ExtensionUrl.DURCHFUEHRUNGSABSICHT;
+    return FhirGenerator.extension(url, code);
   }
 
   public void setDurchfuehrungsabsicht(String durchfuehrungsabsicht) {

@@ -439,12 +439,12 @@ public class Laborbefund implements Datablock {
   public DateTimeType getObservationEffective() {
     String untersuchungszeitpunkt = this.getLaboruntersuchung_untersuchungszeitpunkt();
     return Helper.getDateFromISO(untersuchungszeitpunkt)
-            .map(FhirGenerator::dateTimeType)
-            .orElse(
-                LOGGER.error(
-                    "getObservationEffective",
-                    "laboruntersuchung_untersuchungszeitpunkt",
-                    untersuchungszeitpunkt));
+        .map(FhirGenerator::dateTimeType)
+        .orElse(
+            LOGGER.error(
+                "getObservationEffective",
+                "laboruntersuchung_untersuchungszeitpunkt",
+                untersuchungszeitpunkt));
   }
 
   public Reference getObservationSubject() {
@@ -492,8 +492,9 @@ public class Laborbefund implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    Laborbereich bereich = Laborbereich.fromCode(code);
-    return FhirGenerator.coding(bereich);
+    return Laborbereich.fromCode(code)
+        .map(FhirGenerator::coding)
+        .orElse(LOGGER.error("getObservationCategoryBereich", "laborbereich_code", code));
   }
 
   public Coding getObservationCategoryCategory() {

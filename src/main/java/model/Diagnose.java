@@ -174,8 +174,10 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(this.getIcd_seitenlokalisation())) {
       return null;
     }
-    ICD_Seitenlokalisation seitenlokalisation = ICD_Seitenlokalisation.fromCode(code);
-    Coding value = FhirGenerator.coding(seitenlokalisation);
+    Coding value =
+        ICD_Seitenlokalisation.fromCode(code)
+            .map(FhirGenerator::coding)
+            .orElse(LOGGER.error("getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", code));
     String url = ExtensionUrl.ICD_10_GM_SEITENLOKALISATION;
     return FhirGenerator.extension(url, value);
   }
@@ -291,11 +293,11 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    KBVBaseStageLife stage = KBVBaseStageLife.fromCode(code);
-    Coding lebensphase =
-        FhirGenerator.coding(
-            stage.getCode(), stage.getSystem(), stage.getDisplay(), stage.getVersion());
-    CodeableConcept type = new CodeableConcept().addCoding(lebensphase);
+    CodeableConcept type =
+        KBVBaseStageLife.fromCode(code)
+            .map(FhirGenerator::coding)
+            .map(FhirGenerator::codeableConcept)
+            .orElse(LOGGER.error("getLebensphaseVon", "lebensphase_von", code));
     String url = ExtensionUrl.STAGE_LIFE;
     return FhirGenerator.extension(url, type);
   }
@@ -306,11 +308,11 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    KBVBaseStageLife stage = KBVBaseStageLife.fromCode(code);
-    Coding lebensphase =
-        FhirGenerator.coding(
-            stage.getCode(), stage.getSystem(), stage.getDisplay(), stage.getVersion());
-    CodeableConcept type = new CodeableConcept().addCoding(lebensphase);
+    CodeableConcept type =
+        KBVBaseStageLife.fromCode(code)
+            .map(FhirGenerator::coding)
+            .map(FhirGenerator::codeableConcept)
+            .orElse(LOGGER.error("getLebensphaseBis", "lebensphase_bis", code));
     String url = ExtensionUrl.STAGE_LIFE;
     return FhirGenerator.extension(url, type);
   }

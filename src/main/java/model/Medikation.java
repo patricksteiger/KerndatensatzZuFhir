@@ -171,8 +171,11 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return null;
     }
-    Wirkstofftyp wirkstofftyp = Wirkstofftyp.fromCode(code);
-    Coding value = FhirGenerator.coding(wirkstofftyp);
+    Coding value =
+        Wirkstofftyp.fromCode(code)
+            .map(FhirGenerator::coding)
+            .orElse(
+                LOGGER.error("getMedicationIngredientExtension", "wirkstoff_code_allgemein", code));
     String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
     return FhirGenerator.extension(url, value);
   }
@@ -316,7 +319,8 @@ public class Medikation implements Datablock {
       getMedicationAdministrationStatus() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
     String code = parsedCode.getCode();
-    return MedikationStatus.medicationAdministrationStatusFromCode(code);
+    return MedikationStatus.medicationAdministrationStatusFromCode(code)
+        .orElse(LOGGER.error("getMedicationAdministrationStatus", "status", code));
   }
 
   public Reference getMedicationStatementInformationSource() {
@@ -487,7 +491,9 @@ public class Medikation implements Datablock {
 
   public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
-    return MedikationStatus.medicationStatementStatusFromCode(parsedCode.getCode());
+    String code = parsedCode.getCode();
+    return MedikationStatus.medicationStatementStatusFromCode(code)
+        .orElse(LOGGER.error("getMedicationStatementStatus", "status", code));
   }
 
   public Identifier getMedicationStatementIdentifier() {

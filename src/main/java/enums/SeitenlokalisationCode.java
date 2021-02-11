@@ -1,11 +1,10 @@
 package enums;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
-
-import static helper.Helper.illegalCode;
+import java.util.Optional;
 
 public enum SeitenlokalisationCode implements Code {
   RECHTS("R", "rechts", CodingSystem.OPS_SEITENLOKALISATION),
@@ -29,16 +28,12 @@ public enum SeitenlokalisationCode implements Code {
    * Gets SeitenlokalisationsCode for given, case-sensitive code.
    *
    * @param code Valid codes: R, L, B, M, NA, UNK.
-   * @return SeitenlokalisationsCode
-   * @throws IllegalArgumentException If invalid code is given.
+   * @return SeitenlokalisationsCode, empty if code is invalid.
    * @see
    *     "https://art-decor.org/art-decor/decor-valuesets--mide-?id=1.2.40.0.34.10.176&effectiveDate="
    */
-  public static SeitenlokalisationCode fromCode(String code) {
-    return Arrays.stream(SeitenlokalisationCode.values())
-        .filter(seitenEnum -> seitenEnum.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(illegalCode(code, SeitenlokalisationCode.class.getSimpleName()));
+  public static Optional<SeitenlokalisationCode> fromCode(String code) {
+    return Helper.codeFromString(SeitenlokalisationCode.values(), code);
   }
 
   public String getCode() {

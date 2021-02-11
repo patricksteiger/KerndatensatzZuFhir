@@ -60,6 +60,7 @@ public enum Fachabteilung implements Code {
     this.display = display;
   }
 
+  // TODO: How to distinguish codes who are invalid and not missing?
   /**
    * Returns Fachabteilung corresponding to given code. Since Fachabteilung only is a subset of all
    * valid codes, it returns an optional. Therefore returning empty does not necessarily mean, that

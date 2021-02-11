@@ -1,9 +1,11 @@
 package enums;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static helper.Helper.illegalCode;
 
@@ -30,16 +32,12 @@ public enum DurchfuehrungsabsichtCode implements Code {
    * Returns Durchfuehrungsabsicht-Code corresponding to SNOMED-Code.
    *
    * @param code SNOMED-Code
-   * @return Durchfuehrungs-Code
-   * @throws IllegalArgumentException if code is not part of the value set of Durchfuehrungsabsicht
+   * @return Durchfuehrungs-Code, empty if code is invalid
    * @see
    *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
    */
-  public static DurchfuehrungsabsichtCode fromCode(String code) {
-    return Arrays.stream(DurchfuehrungsabsichtCode.values())
-        .filter(durchEnum -> durchEnum.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(illegalCode(code, DurchfuehrungsabsichtCode.class.getSimpleName()));
+  public static Optional<DurchfuehrungsabsichtCode> fromCode(String code) {
+    return Helper.codeFromString(DurchfuehrungsabsichtCode.values(), code);
   }
 
   public String getCode() {

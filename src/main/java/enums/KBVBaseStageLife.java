@@ -5,7 +5,7 @@ import constants.Constants;
 import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 /** @see "https://simplifier.net/packages/kbv.basis/1.1.0/files/242198" */
 public enum KBVBaseStageLife implements Code {
@@ -29,15 +29,11 @@ public enum KBVBaseStageLife implements Code {
    * Returns KBV Base Stage Life corresponding to code.
    *
    * @param code SNOMED_CT code
-   * @return KBV Base Stage Life
-   * @throws IllegalArgumentException if code is invalid
+   * @return KBV Base Stage Life, empty if code is invalid
    * @see "https://simplifier.net/packages/kbv.basis/1.1.0/files/242198"
    */
-  public static KBVBaseStageLife fromCode(String code) {
-    return Arrays.stream(KBVBaseStageLife.values())
-        .filter(stage -> stage.getCode().equals(code))
-        .findFirst()
-        .orElseThrow(Helper.illegalCode(code, "KBV Base Stage Life"));
+  public static Optional<KBVBaseStageLife> fromCode(String code) {
+    return Helper.codeFromString(KBVBaseStageLife.values(), code);
   }
 
   public String getCode() {
