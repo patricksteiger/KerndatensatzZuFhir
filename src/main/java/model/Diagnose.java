@@ -314,7 +314,6 @@ public class Diagnose implements Datablock {
   }
 
   public CodeableConcept getBodySite() {
-    // TODO: Is Koerperstelle correct format? Example: 6930008 Jugular arch
     ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle());
     String code = parsedCode.getCode();
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;

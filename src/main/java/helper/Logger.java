@@ -21,15 +21,28 @@ public class Logger {
         method,
         valueName,
         value);
-    this.errorCounter++;
+    countError();
     return Constants.getEmptyValue();
   }
 
   public <T> T error(String method, String message) {
     this.SL4J_LOGGER.error(
         "In method \"{}\" an error occurred!\n" + "Message: {}", method, message);
-    this.errorCounter++;
+    countError();
     return Constants.getEmptyValue();
+  }
+
+  public <T> T emptyValue(String method, String value) {
+    this.SL4J_LOGGER.error(
+        "In method \"{}\" an error occurred!\n" + "Datablock-Value \"{}\" has to have a value!",
+        method,
+        value);
+    countError();
+    return Constants.getEmptyValue();
+  }
+
+  private void countError() {
+    this.errorCounter++;
   }
 
   public long getErrorCount() {

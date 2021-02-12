@@ -119,7 +119,7 @@ public class Fall implements Datablock {
     Encounter encounter = new Encounter();
     // Meta
     encounter.setMeta(this.getVersorgungsstellenEncounterMeta());
-    // Identifier
+    // Identifier (optional)
     encounter.addIdentifier(this.getVersorgungsstellenEncounterIdentifier());
     // Status
     encounter.setStatus(this.getVersorgungsstellenEncounterStatus());
@@ -140,6 +140,10 @@ public class Fall implements Datablock {
 
   public Period getVersorgungsstellenEncounterPeriod() {
     String beginndatum = this.getVersorgungsstellenkontakt_beginndatum();
+    if (Helper.checkEmptyString(beginndatum)) {
+      return LOGGER.emptyValue(
+          "getVersorgungsstellenEncounterPeriod", "versorgungsstellenkontakt_beginndatum");
+    }
     Date start =
         Helper.getDateFromISO(beginndatum)
             .orElse(
@@ -177,6 +181,10 @@ public class Fall implements Datablock {
   public Coding getVersorgungsstellenEncounterClass() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getVersorgungsstellenkontakt_klasse());
     String code = parsedCode.getCode();
+    if (Helper.checkEmptyString(code)) {
+      return LOGGER.emptyValue(
+          "getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse");
+    }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
     return FhirGenerator.coding(code, system, display);
@@ -254,6 +262,9 @@ public class Fall implements Datablock {
 
   public Period getEinrichtungsEncounterPeriod() {
     String beginndatum = this.getEinrichtungskontakt_beginndatum();
+    if (Helper.checkEmptyString(beginndatum)) {
+      return LOGGER.emptyValue("getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum");
+    }
     Date start =
         Helper.getDateFromISO(beginndatum)
             .orElse(
@@ -277,7 +288,7 @@ public class Fall implements Datablock {
   public Reference getEinrichtungsEncounterSubject() {
     String patientNr = this.getPatNr();
     if (Helper.checkEmptyString(patientNr)) {
-      throw new IllegalStateException("Fall: patNr needs to be set");
+      return LOGGER.emptyValue("getEinrichtungsEncounterSubject", "patNr");
     }
     String ref = MIIReference.getPatient(patNr);
     return FhirGenerator.reference(ref);
@@ -304,6 +315,9 @@ public class Fall implements Datablock {
   public Coding getEinrichtungsEncounterClass() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_klasse());
     String code = parsedCode.getCode();
+    if (Helper.checkEmptyString(code)) {
+      return LOGGER.emptyValue("getEinrichtungsEncounterClass", "einrichtungskontakt_klasse");
+    }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
     return FhirGenerator.coding(code, system, display);
@@ -334,6 +348,9 @@ public class Fall implements Datablock {
 
   public Period getAbteilungsEncounterPeriod() {
     String beginndatum = this.getAbteilungskontakt_beginndatum();
+    if (Helper.checkEmptyString(beginndatum)) {
+      return LOGGER.emptyValue("getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum");
+    }
     Date start =
         Helper.getDateFromISO(beginndatum)
             .orElse(
@@ -388,6 +405,9 @@ public class Fall implements Datablock {
   public Coding getAbteilungsEncounterClass() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_klasse());
     String code = parsedCode.getCode();
+    if (Helper.checkEmptyString(code)) {
+      return LOGGER.emptyValue("getAbteilungsEncounterClass", "abteilungskontakt_klasse");
+    }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
     return FhirGenerator.coding(code, system, display);
