@@ -4,7 +4,6 @@ import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
-import enums.MIICoreLocations;
 import enums.VersichertenCode;
 import enums.VitalStatus;
 import helper.*;
@@ -92,9 +91,9 @@ public class Person implements Datablock {
     // Meta
     researchSubject.setMeta(this.getResearchSubjectMeta());
     // Subject identification code
-    researchSubject.addIdentifier(this.getSubjectIdentificationCode());
+    researchSubject.addIdentifier(this.getResearchSubjectSubjectIdentificationCode());
     // Status
-    researchSubject.setStatus(this.getStatus());
+    researchSubject.setStatus(this.getResearchSubjectStatus());
     // Period
     researchSubject.setPeriod(this.getResearchSubjectPeriod());
     // Individual
@@ -129,8 +128,7 @@ public class Person implements Datablock {
     List<Identifier> identifiers =
         Helper.listOf(this.getPatientGKV(), this.getPatientPKV(), this.getPatientPID());
     if (Helper.checkAllNull(identifiers)) {
-      throw new IllegalStateException(
-          "Person: At least 1 identifier out of PID, GKV and PKV needs to be set");
+      return LOGGER.error("getPatientIdentifiers", "At least 1 of GKV, PKV or PID has to be set!");
     }
     return identifiers;
   }
@@ -141,12 +139,18 @@ public class Person implements Datablock {
   }
 
   public Reference getPatientManagingOrganization() {
-    return new Reference().setReference("Organization/" + MIICoreLocations.UKU.toString());
+    String ref = MIIReference.ORGANIZATION_MII;
+    return FhirGenerator.reference(ref);
   }
 
   public List<Address> getPatientAddresses() {
-    return Helper.listOf(
-        this.getPatientAddressStrassenanschrift(), this.getPatientAddressPostfach());
+    List<Address> addresses =
+        Helper.listOf(this.getPatientAddressStrassenanschrift(), this.getPatientAddressPostfach());
+    if (Helper.checkAllNull(addresses)) {
+      return LOGGER.error(
+          "getPatientAddresses", "At least 1 of Strassenaschrift and Postfach needs to be set!");
+    }
+    return addresses;
   }
 
   public Address getPatientAddressStrassenanschrift() {
@@ -155,6 +159,14 @@ public class Person implements Datablock {
     String city = this.getStrassenanschrift_wohnort();
     String postalCode = this.getStrassenanschrift_plz();
     String country = this.getStrassenanschrift_land();
+    if (Helper.checkAllEmptyString(line, city, postalCode, country)) {
+      return Constants.getEmptyValue();
+    }
+    if (Helper.checkAnyEmptyString(line, city, postalCode, country)) {
+      return LOGGER.error(
+          "getPatientAddressStrassenanschrift",
+          "All values for line, city, postalCode and countryy have to be set!");
+    }
     return FhirGenerator.address(type, line, city, postalCode, country);
   }
 
@@ -164,6 +176,14 @@ public class Person implements Datablock {
     String city = this.getPostfach_wohnort();
     String postalCode = this.getPostfach_plz();
     String country = this.getPostfach_land();
+    if (Helper.checkAllEmptyString(line, city, postalCode, country)) {
+      return Constants.getEmptyValue();
+    }
+    if (Helper.checkAnyEmptyString(line, city, postalCode, country)) {
+      return LOGGER.error(
+          "getPatientAddressPostfach",
+          "All values for line, city, postalCode and country have to be set!");
+    }
     return FhirGenerator.address(type, line, city, postalCode, country);
   }
 
@@ -185,7 +205,7 @@ public class Person implements Datablock {
   public Date getPatientBirthDate() {
     String birthDate = this.getGeburtsdatum();
     if (Helper.checkEmptyString(birthDate)) {
-      return Constants.getEmptyValue();
+      return LOGGER.emptyValue("getPatientBirthDate", "geburtsdatum");
     }
     return Helper.getDateFromISO(birthDate)
         .orElse(LOGGER.error("getPatientBirthDate", "geburtsdatum", birthDate));
@@ -219,9 +239,15 @@ public class Person implements Datablock {
   }
 
   public HumanName getPatientName() {
-    HumanName.NameUse use = HumanName.NameUse.OFFICIAL;
+    HumanName.NameUse use = HumanName.NameUse.OFFICIAL; /* Use has to be set! */
     List<Extension> family = this.getPatientNameFamily();
+    if (family.isEmpty()) {
+      return LOGGER.error("getPatientName", "family is required!");
+    }
     List<String> given = this.getPatientNameGiven();
+    if (given.isEmpty()) {
+      return LOGGER.error("getPatientName", "given is required!");
+    }
     List<Extension> artDesPrefix = this.getPatientNamePrefix();
     String prefix = this.getPraefix();
     return FhirGenerator.humanName(use, family, given, artDesPrefix, prefix);
@@ -342,6 +368,9 @@ public class Person implements Datablock {
 
   public Period getResearchSubjectPeriod() {
     String beginn = this.getTeilnahme_beginn();
+    if (Helper.checkEmptyString(beginn)) {
+      return LOGGER.emptyValue("getResearchSubjectPeriod", "teilnahme_beginn");
+    }
     Date start =
         Helper.getDateFromISO(beginn)
             .orElse(LOGGER.error("getResearchSubjectPeriod", "teilnahme_beginn", beginn));
@@ -355,19 +384,23 @@ public class Person implements Datablock {
     return FhirGenerator.period(start);
   }
 
-  public ResearchSubject.ResearchSubjectStatus getStatus() {
+  public ResearchSubject.ResearchSubjectStatus getResearchSubjectStatus() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getTeilnahme_status());
+    String code = parsedCode.getCode();
     try {
-      return ResearchSubject.ResearchSubjectStatus.fromCode(parsedCode.getCode());
+      return ResearchSubject.ResearchSubjectStatus.fromCode(code);
     } catch (Exception e) {
-      throw new IllegalArgumentException(
-          "Status \"" + this.getTeilnahme_status() + "\" is not a valid Teilnahmestatus");
+      return LOGGER.error("getResearchSubjectStatus", "teilnahme_status", code);
     }
   }
 
-  public Identifier getSubjectIdentificationCode() {
+  public Identifier getResearchSubjectSubjectIdentificationCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getSubjekt_identifizierungscode());
     String value = parsedCode.getCode();
+    if (Helper.checkEmptyString(value)) {
+      return LOGGER.emptyValue(
+          "getResearchSubjectSubjectIdentificationCode", "subjekt_identifizierungscode");
+    }
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
     IdentifierTypeCode code = IdentifierTypeCode.RI;
     Coding coding = FhirGenerator.coding(code);
@@ -387,7 +420,7 @@ public class Person implements Datablock {
   public Reference getObservationSubject() {
     String patientNummer = this.getPatNr();
     if (Helper.checkEmptyString(patientNummer)) {
-      throw new IllegalStateException("Person: patNr needs to be non-empty");
+      return LOGGER.emptyValue("getObservationSubject", "patNr");
     }
     String ref = MIIReference.getPatient(patientNummer);
     return FhirGenerator.reference(ref);

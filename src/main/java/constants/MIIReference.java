@@ -1,6 +1,10 @@
 package constants;
 
+import enums.MIICoreLocations;
+
 public class MIIReference {
+  public static final String ORGANIZATION = "Organization/";
+  public static final String ORGANIZATION_MII = ORGANIZATION + MIICoreLocations.UKU.toString();
   private static final String PATIENT = "Patient/";
   public static final String PATIENT_MII = PATIENT + "MII-Patient";
   private static final String CONSENT = "Consent/";

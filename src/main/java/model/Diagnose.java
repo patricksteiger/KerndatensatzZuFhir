@@ -82,7 +82,7 @@ public class Diagnose implements Datablock {
     String orphanetCode = this.getOrphanet_diagnosecode();
     String weitererCode = this.getWeitere_diagnosecode();
     if (Helper.checkAllEmptyString(icdCode, alphaCode, snomedCode, orphanetCode, weitererCode)) {
-      throw new IllegalStateException("There has to be at least 1 Diagnosecode in Diagnose!");
+      return LOGGER.error("getCode", "There has to be at least 1 code");
     }
     CodeableConcept code = new CodeableConcept();
     // ICD-10-GM (optional)

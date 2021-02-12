@@ -85,6 +85,15 @@ public class Helper {
     return s == null || s.isEmpty();
   }
 
+  public static boolean checkAnyEmptyString(String... s) {
+    for (String str : s) {
+      if (Helper.checkEmptyString(str)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static boolean checkAllEmptyString(String... s) {
     for (String str : s) {
       if (Helper.checkNonEmptyString(str)) {
