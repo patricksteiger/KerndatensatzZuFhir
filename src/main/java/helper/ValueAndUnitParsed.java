@@ -11,6 +11,9 @@ public class ValueAndUnitParsed {
 
   // TODO: Maybe define format similar to ParsedCode?
   public static ValueAndUnitParsed fromString(String s) {
+    if (Helper.checkEmptyString(s)) {
+      return new ValueAndUnitParsed("", "");
+    }
     String trimmed = s.trim();
     int index = 0;
     while (index < trimmed.length()) {

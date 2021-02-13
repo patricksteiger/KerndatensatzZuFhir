@@ -17,6 +17,19 @@ class ValueAndUnitParsedTest {
   }
 
   @Test
+  void testFromStringEmpty() {
+    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(null);
+    assertEquals("", parsed.getValue());
+    assertEquals("", parsed.getUnit());
+    parsed = ValueAndUnitParsed.fromString("");
+    assertEquals("", parsed.getValue());
+    assertEquals("", parsed.getUnit());
+    parsed = ValueAndUnitParsed.fromString("   ");
+    assertEquals("", parsed.getValue());
+    assertEquals("", parsed.getUnit());
+  }
+
+  @Test
   void testFromStringSpaces() {
     String value = "75";
     String unit = "mg";
