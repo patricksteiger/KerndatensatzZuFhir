@@ -33,6 +33,7 @@ public class Helper {
     }
   }
 
+  // TODO: Delete getDateFromGermanTime?
   public static Date getDateFromGermanTime(String germanDate) {
     String[] dates = germanDate.split("\\.");
     if (dates.length != 3)

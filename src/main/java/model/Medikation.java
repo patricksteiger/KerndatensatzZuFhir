@@ -138,7 +138,11 @@ public class Medikation implements Datablock {
     Medication.MedicationIngredientComponent ingredient =
         new Medication.MedicationIngredientComponent();
     ingredient.addExtension(this.getMedicationIngredientExtension());
-    ingredient.setItem(this.getMedicationIngredientItem());
+    CodeableConcept item = this.getMedicationIngredientItem();
+    if (item == Constants.getEmptyValue()) {
+      return LOGGER.error("getMedicationIngredient", "Item needs to be set for Ingredient!");
+    }
+    ingredient.setItem(item);
     ingredient.setStrength(this.getMedicationIngredientStrength());
     return ingredient;
   }
@@ -158,11 +162,14 @@ public class Medikation implements Datablock {
   public CodeableConcept getMedicationIngredientItem() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getWirkstoff_code_aktiv());
     String code = parsedCode.getCode();
+    if (Helper.checkEmptyString(code)) {
+      return LOGGER.emptyValue("getMedicationIngredientItem", "wirkstoff_code_aktiv");
+    }
     String system = parsedCode.getSystem();
     String display = this.getWirkstoff_name_aktiv();
     if (parsedCode.hasDisplay()) display = parsedCode.getDisplay();
     Coding coding = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(coding);
+    return FhirGenerator.codeableConcept(coding);
   }
 
   public Extension getMedicationIngredientExtension() {
@@ -290,7 +297,8 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(patientenNr)) {
       return Constants.getEmptyValue();
     }
-    return FhirHelper.getMIIPatientReference(patientenNr);
+    String ref = MIIReference.getPatient(patientenNr);
+    return FhirGenerator.reference(ref);
   }
 
   public Identifier getMedicationAdministrationIdentifier() {
@@ -453,6 +461,9 @@ public class Medikation implements Datablock {
 
   public Type getMedicationStatementEffective() {
     String startzeitpunkt = this.getEinnahme_startzeitpunkt();
+    if (Helper.checkEmptyString(startzeitpunkt)) {
+      return LOGGER.emptyValue("getMedicationStatementEffective", "einnahme_startzeitpunkt");
+    }
     DateTimeType start =
         Helper.getDateFromISO(startzeitpunkt)
             .map(FhirGenerator::dateTimeType)
@@ -507,7 +518,7 @@ public class Medikation implements Datablock {
   }
 
   public Reference getMedicationStatementSubject() {
-    return FhirHelper.getMIIPatientReference(this.getPatNr());
+    return this.getMedicationAdministrationSubject();
   }
 
   public Meta getMedicationMeta() {
