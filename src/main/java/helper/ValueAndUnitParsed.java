@@ -9,6 +9,7 @@ public class ValueAndUnitParsed {
     this.unit = unit;
   }
 
+  // TODO: Maybe define format similar to ParsedCode?
   public static ValueAndUnitParsed fromString(String s) {
     String trimmed = s.trim();
     int index = 0;
