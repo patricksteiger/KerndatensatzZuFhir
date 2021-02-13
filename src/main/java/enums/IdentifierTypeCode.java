@@ -5,8 +5,10 @@ import interfaces.Code;
 
 /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80925" */
 public enum IdentifierTypeCode implements Code {
+  FILL("FILL", "Filler Identifier"),
   MR("MR", "Krankenaktennummer"),
   OBI("OBI", "Observation Instance Identifier"),
+  PLAC("PLAC", "Placer Identifier"),
   RI("RI", "Resource identifier"),
   VN("VN", "Fallnummer"),
   XX("XX", "Organisations-ID");

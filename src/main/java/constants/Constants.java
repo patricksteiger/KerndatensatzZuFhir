@@ -4,6 +4,7 @@ public class Constants {
   public static final String EMPTY_IDENTIFIER_SYSTEM = "";
   public static final String VERSION_2020 = "2020";
   public static final String QUANTITY_SYSTEM = "http://unitsofmeasure.org";
+  // TODO: Replace usage to actual UCUM-Code!
   public static final String QUANTITY_CODE = "UCUM";
 
   private Constants() {}

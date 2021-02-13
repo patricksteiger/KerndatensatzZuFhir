@@ -1,31 +1,31 @@
 package helper;
 
-import java.math.BigDecimal;
-
 public class ValueAndUnitParsed {
-  private final BigDecimal value;
+  private final String value;
   private final String unit;
 
-  public ValueAndUnitParsed(BigDecimal value, String unit) {
+  public ValueAndUnitParsed(String value, String unit) {
     this.value = value;
     this.unit = unit;
   }
 
   public static ValueAndUnitParsed fromString(String s) {
     String trimmed = s.trim();
-    StringBuilder sb = new StringBuilder();
     int index = 0;
-    for (; index < trimmed.length(); index++) {
+    while (index < trimmed.length()) {
       char c = trimmed.charAt(index);
-      if (Character.isDigit(c) || c == '.') sb.append(c);
-      else break;
+      if (Character.isDigit(c) || c == '.') {
+        index++;
+      } else {
+        break;
+      }
     }
-    BigDecimal value = new BigDecimal(sb.toString());
+    String value = trimmed.substring(0, index);
     String unit = trimmed.substring(index).trim();
     return new ValueAndUnitParsed(value, unit);
   }
 
-  public BigDecimal getValue() {
+  public String getValue() {
     return value;
   }
 

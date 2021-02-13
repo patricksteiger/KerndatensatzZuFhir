@@ -153,8 +153,10 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     ValueAndUnitParsed parsedStrength = ValueAndUnitParsed.fromString(menge);
-    Quantity numerator =
-        FhirGenerator.quantity(parsedStrength.getValue(), parsedStrength.getUnit());
+    String parsedValue = parsedStrength.getValue();
+    String parsedUnit = parsedStrength.getUnit();
+    BigDecimal value = new BigDecimal(parsedValue);
+    Quantity numerator = FhirGenerator.quantity(value, parsedUnit);
     // TODO: Is only numerator for Ratio correct?
     return new Ratio().setNumerator(numerator);
   }
@@ -193,7 +195,8 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     ValueAndUnitParsed parseStaerke = ValueAndUnitParsed.fromString(wirkstaerke);
-    BigDecimal value = parseStaerke.getValue();
+    String parsedValue = parseStaerke.getValue();
+    BigDecimal value = new BigDecimal(parsedValue);
     String unit = parseStaerke.getUnit();
     Quantity numerator = FhirGenerator.quantity(value, unit);
     // TODO: Is only numerator for Ratio correct?
@@ -383,7 +386,10 @@ public class Medikation implements Datablock {
       return Helper.listOf();
     }
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(dosis);
-    Quantity dose = FhirGenerator.quantity(parsed.getValue(), parsed.getUnit());
+    String parsedValue = parsed.getValue();
+    String parsedUnit = parsed.getUnit();
+    BigDecimal value = new BigDecimal(parsedValue);
+    Quantity dose = FhirGenerator.quantity(value, parsedUnit);
     Dosage.DosageDoseAndRateComponent doseAndRate = new Dosage.DosageDoseAndRateComponent();
     doseAndRate.setDose(dose);
     return Helper.listOf(doseAndRate);
@@ -427,7 +433,9 @@ public class Medikation implements Datablock {
     Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
     // TODO: ereignis can be when, dayOfWeek, timeOfDay, ... which is it? How can we distinguish?
     ValueAndUnitParsed offset = ValueAndUnitParsed.fromString(this.getDosierung_offset());
-    repeat.setOffset(offset.getValue().intValue());
+    String parsedValue = offset.getValue();
+    int value = Integer.parseInt(parsedValue);
+    repeat.setOffset(value);
     // TODO: How does Periode look like?
     return repeat;
   }
