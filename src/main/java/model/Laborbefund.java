@@ -391,8 +391,8 @@ public class Laborbefund implements Datablock {
     String parsedValue = parsed.getValue();
     String parsUnit = parsed.getUnit();
     BigDecimal value = new BigDecimal(parsedValue);
-    return FhirGenerator.quantity(
-        value, parsUnit, Constants.QUANTITY_SYSTEM, Constants.QUANTITY_CODE);
+    String ucum = parsed.getUcum();
+    return FhirGenerator.quantity(value, parsUnit, Constants.QUANTITY_SYSTEM, ucum);
   }
 
   public Quantity getObservationReferenceRangeHigh() {
@@ -404,8 +404,8 @@ public class Laborbefund implements Datablock {
     String parsedValue = parsed.getValue();
     String parsedUnit = parsed.getUnit();
     BigDecimal value = new BigDecimal(parsedValue);
-    return FhirGenerator.quantity(
-        value, parsedUnit, Constants.QUANTITY_SYSTEM, Constants.QUANTITY_CODE);
+    String ucum = parsed.getUcum();
+    return FhirGenerator.quantity(value, parsedUnit, Constants.QUANTITY_SYSTEM, ucum);
   }
 
   public CodeableConcept getObservationMethod() {
@@ -437,7 +437,7 @@ public class Laborbefund implements Datablock {
     BigDecimal value = new BigDecimal(parsedValue);
     String unit = valueAndUnitParsed.getUnit();
     String system = Constants.QUANTITY_SYSTEM;
-    String code = Constants.QUANTITY_CODE;
+    String code = valueAndUnitParsed.getUcum();
     return FhirGenerator.quantity(value, unit, system, code);
   }
 
