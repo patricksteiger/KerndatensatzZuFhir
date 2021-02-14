@@ -352,16 +352,19 @@ public class Person implements Datablock {
   }
 
   public Reference getResearchSubjectConsent() {
+    // TODO: Get id from Erweiterungsmodul consent?
     String ref = MIIReference.CONSENT_MII;
     return FhirGenerator.reference(ref);
   }
 
   public Reference getResearchSubjectIndividual() {
+    // TODO: Get id from Patient?
     String ref = MIIReference.PATIENT_MII;
     return FhirGenerator.reference(ref);
   }
 
   public Reference getResearchSubjectStudy() {
+    // TODO: Where to get id for ResearchStudy
     String ref = MIIReference.RESEARCH_STUDY_MII;
     return FhirGenerator.reference(ref);
   }
