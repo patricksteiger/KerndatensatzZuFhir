@@ -16,11 +16,9 @@ public class ValueAndUnitParsed {
     }
     String trimmed = s.trim();
     int index = 0;
-    while (index < trimmed.length()) {
+    for (; index < trimmed.length(); index++) {
       char c = trimmed.charAt(index);
-      if (Character.isDigit(c) || c == '.') {
-        index++;
-      } else {
+      if (!Character.isDigit(c) && c != '.') {
         break;
       }
     }

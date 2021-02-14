@@ -225,7 +225,7 @@ public class Laborbefund implements Datablock {
     String code = CodingCode.LABORATORY;
     String system = CodingSystem.TERMINOLOGY_OBSERVATION_VATEGORY;
     Coding laboratory = FhirGenerator.coding(code, system);
-    return new CodeableConcept().addCoding(laboratory);
+    return FhirGenerator.codeableConcept(laboratory);
   }
 
   public ServiceRequest.ServiceRequestIntent getServiceRequestIntent() {
@@ -482,20 +482,11 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationCategory() {
-    CodeableConcept category = new CodeableConcept();
-    // LOINC
-    Coding loincCoding = this.getObservationCategoryLoinc();
-    category.addCoding(loincCoding);
-    // Observation-Category
-    Coding categoryCoding = this.getObservationCategoryCategory();
-    category.addCoding(categoryCoding);
-    // Laborbereichcode
-    Coding bereichCoding = this.getObservationCategoryBereich();
-    category.addCoding(bereichCoding);
-    // Laborgruppencode
-    Coding gruppenCoding = this.getObservationCategoryGruppen();
-    category.addCoding(gruppenCoding);
-    return category;
+    Coding loinc = this.getObservationCategoryLoinc();
+    Coding category = this.getObservationCategoryCategory();
+    Coding bereich = this.getObservationCategoryBereich();
+    Coding gruppe = this.getObservationCategoryGruppen();
+    return FhirGenerator.codeableConcept(loinc, category, bereich, gruppe);
   }
 
   public Coding getObservationCategoryGruppen() {
