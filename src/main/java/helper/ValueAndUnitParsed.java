@@ -16,6 +16,7 @@ public class ValueAndUnitParsed {
   public static ValueAndUnitParsed fromString(String s) {
     List<String> splitCode = Helper.splitCode(s);
     String value = Helper.extractCode(splitCode, "value=");
+    // TODO: Split into numerator and denominator?
     String unit = Helper.extractCode(splitCode, "unit=");
     return new ValueAndUnitParsed(value, unit, unit);
   }

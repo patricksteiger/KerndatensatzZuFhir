@@ -47,4 +47,5 @@ public class CodingSystem {
       "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/CodeSystem/wirkstofftyp";
   public static final String ICD_DIAGNOSESICHERHEIT =
       "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT";
+  public static final String BEHANDLUNGSGRUND = "http://terminology.hl7.org/CodeSystem/reason-medication-given";
 }

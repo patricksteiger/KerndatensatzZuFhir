@@ -3,6 +3,7 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
+import enums.Behandlungsgrund;
 import enums.MedikationStatus;
 import enums.Wirkstofftyp;
 import helper.*;
@@ -86,8 +87,23 @@ public class Medikation implements Datablock {
     medicationAdministration.setRequest(this.getMedicationAdministrationRequest());
     // TODO: medication[x]: reference to Medication
     // TODO: How does Behandlungsgrund look like?
+    medicationAdministration.addReasonCode(this.getMedicationAdministrationReasonCode());
     // TODO: Does MedicationAdministration have DateAsserted?
     return medicationAdministration;
+  }
+
+  public CodeableConcept getMedicationAdministrationReasonCode() {
+    ParsedCode parsedCode = ParsedCode.fromString(this.getBehandlungsgrund());
+    String behandlungsgrund = parsedCode.getCode();
+    if (Helper.checkEmptyString(behandlungsgrund)) {
+      return Constants.getEmptyValue();
+    }
+    return Behandlungsgrund.fromCode(behandlungsgrund)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(
+            LOGGER.error(
+                "getMedicationAdministrationReasonCode", "behandlungsgrund", behandlungsgrund));
   }
 
   public MedicationStatement getMedicationStatement() {
