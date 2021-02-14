@@ -85,25 +85,10 @@ public class Medikation implements Datablock {
     medicationAdministration.addNote(this.getMedicationAdministrationNote());
     // Request (optional)
     medicationAdministration.setRequest(this.getMedicationAdministrationRequest());
-    // TODO: medication[x]: reference to Medication
+    // TODO: medication[x]: reference to Medication. Need id of medication?
     // TODO: How does Behandlungsgrund look like?
     medicationAdministration.addReasonCode(this.getMedicationAdministrationReasonCode());
-    // TODO: Does MedicationAdministration have DateAsserted?
     return medicationAdministration;
-  }
-
-  public CodeableConcept getMedicationAdministrationReasonCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getBehandlungsgrund());
-    String behandlungsgrund = parsedCode.getCode();
-    if (Helper.checkEmptyString(behandlungsgrund)) {
-      return Constants.getEmptyValue();
-    }
-    return Behandlungsgrund.fromCode(behandlungsgrund)
-        .map(FhirGenerator::coding)
-        .map(FhirGenerator::codeableConcept)
-        .orElse(
-            LOGGER.error(
-                "getMedicationAdministrationReasonCode", "behandlungsgrund", behandlungsgrund));
   }
 
   public MedicationStatement getMedicationStatement() {
@@ -148,6 +133,20 @@ public class Medikation implements Datablock {
     // Ingredient
     medication.addIngredient(this.getMedicationIngredient());
     return medication;
+  }
+
+  public CodeableConcept getMedicationAdministrationReasonCode() {
+    ParsedCode parsedCode = ParsedCode.fromString(this.getBehandlungsgrund());
+    String behandlungsgrund = parsedCode.getCode();
+    if (Helper.checkEmptyString(behandlungsgrund)) {
+      return Constants.getEmptyValue();
+    }
+    return Behandlungsgrund.fromCode(behandlungsgrund)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(
+            LOGGER.error(
+                "getMedicationAdministrationReasonCode", "behandlungsgrund", behandlungsgrund));
   }
 
   public Medication.MedicationIngredientComponent getMedicationIngredient() {
@@ -289,14 +288,14 @@ public class Medikation implements Datablock {
 
   public MedicationAdministration.MedicationAdministrationDosageComponent
       getMedicationAdministrationDosage() {
-    if (this.hasNoMedicationAdministrationDosage()) {
+    String text = this.getMedicationAdministrationDosageText();
+    CodeableConcept route = this.getMedicationAdministrationDosageRoute();
+    if (Helper.checkEmptyString(text) && route == Constants.getEmptyValue()) {
       return Constants.getEmptyValue();
     }
-    MedicationAdministration.MedicationAdministrationDosageComponent dosageComponent =
-        new MedicationAdministration.MedicationAdministrationDosageComponent();
-    dosageComponent.setText(this.getMedicationAdministrationDosageText());
-    dosageComponent.setRoute(this.getMedicationAdministrationDosageRoute());
-    return dosageComponent;
+    return new MedicationAdministration.MedicationAdministrationDosageComponent()
+        .setText(text)
+        .setRoute(route);
   }
 
   public CodeableConcept getMedicationAdministrationDosageRoute() {
@@ -305,10 +304,6 @@ public class Medikation implements Datablock {
 
   public String getMedicationAdministrationDosageText() {
     return this.getDosierung_freitext();
-  }
-
-  public boolean hasNoMedicationAdministrationDosage() {
-    return this.hasNoMedicationStatementDosage();
   }
 
   public Reference getMedicationAdministrationSubject() {
@@ -325,7 +320,6 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    // FIXME: What is system of MedicationAdministration identifier?
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
     return FhirGenerator.identifier(value, system);
   }
@@ -369,9 +363,6 @@ public class Medikation implements Datablock {
 
   // TODO: Is route, site and method the same?
   public Dosage getMedicationStatementDosage() {
-    if (this.hasNoMedicationStatementDosage()) {
-      return Constants.getEmptyValue();
-    }
     String sequence = this.getDosierung_reihenfolge();
     String text = this.getDosierung_freitext();
     Timing timing = this.getMedicationStatementDosageTiming();
@@ -379,27 +370,17 @@ public class Medikation implements Datablock {
     CodeableConcept route = this.getMedicationStatementDosageRoute();
     List<Dosage.DosageDoseAndRateComponent> doseAndRate =
         this.getMedicationStatementDosageDoseAndRate();
+    if (Helper.checkAllEmptyString(sequence, text)
+        && Helper.checkAllNull(timing, asNeeded, route, doseAndRate)) {
+      return Constants.getEmptyValue();
+    }
     return FhirGenerator.dosage(sequence, text, timing, asNeeded, route, doseAndRate);
-  }
-
-  public boolean hasNoMedicationStatementDosage() {
-    return Helper.checkAllEmptyString(
-        this.getDosierung_reihenfolge(),
-        this.getDosierung_freitext(),
-        this.getDosierung_einnahme_bei_bedarf(),
-        this.getDosierung_ereignis(),
-        this.getDosierung_dosis(),
-        this.getDosierung_art_der_anwendung(),
-        this.getDosierung_offset(),
-        this.getDosierung_phase(),
-        this.getDosierung_zeitpunkt(),
-        this.getDosierung_periode());
   }
 
   public List<Dosage.DosageDoseAndRateComponent> getMedicationStatementDosageDoseAndRate() {
     String dosis = this.getDosierung_dosis();
     if (Helper.checkEmptyString(dosis)) {
-      return Helper.listOf();
+      return Constants.getEmptyValue();
     }
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(dosis);
     String parsedValue = parsed.getValue();
@@ -466,7 +447,7 @@ public class Medikation implements Datablock {
     String system = parsedCode.getSystem();
     String display = parsedCode.getDisplay();
     Coding coding = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(coding);
+    return FhirGenerator.codeableConcept(coding);
   }
 
   public Type getMedicationStatementDosageAsNeeded() {
@@ -528,7 +509,6 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    // FIXME: What is system of MedicationStatement identifier?
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
     return FhirGenerator.identifier(value, system);
   }

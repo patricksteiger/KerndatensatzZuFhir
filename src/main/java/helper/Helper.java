@@ -78,6 +78,15 @@ public class Helper {
     return true;
   }
 
+  public static boolean checkAllNull(Object... objects) {
+    for (Object object : objects) {
+      if (object != null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   public static boolean checkNonEmptyString(String s) {
     return !checkEmptyString(s);
   }
