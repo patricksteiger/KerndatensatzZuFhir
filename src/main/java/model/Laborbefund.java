@@ -87,7 +87,8 @@ public class Laborbefund implements Datablock {
     diagnosticReport.setMeta(this.getDiagnosticReportMeta());
     // Identifier Befund
     diagnosticReport.addIdentifier(this.getDiagnosticReportBefund());
-    // TODO: Was ist die initiale ServiceRequest für basedOn?
+    // BasedOn
+    diagnosticReport.addBasedOn();
     // Status
     diagnosticReport.setStatus(this.getDiagnosticReportStatus());
     // Category
@@ -103,6 +104,12 @@ public class Laborbefund implements Datablock {
     // Specimen (optional)
     diagnosticReport.addSpecimen(this.getDiagnosticReportSpecimen());
     return diagnosticReport;
+  }
+
+  public Reference getDiagnosticReportBasedOn() {
+    // TODO: Where is initial Service Request coming from?
+    String ref = MIIReference.getServiceRequest("");
+    return FhirGenerator.reference(ref);
   }
 
   public Observation getObservation() {
@@ -180,7 +187,6 @@ public class Laborbefund implements Datablock {
       return Constants.getEmptyValue();
     }
     String type = ReferenceType.SPECIMEN;
-    // FIXME: What is system of ServiceRequest specimen?
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
     Identifier identifier = FhirGenerator.identifier(id, system);
     return FhirGenerator.reference(type, identifier);
@@ -249,7 +255,6 @@ public class Laborbefund implements Datablock {
       return Constants.getEmptyValue();
     }
     String type = ReferenceType.SPECIMEN;
-    // FIXME: What is system of DiagnosticReport specimen?
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
     Identifier identifier = FhirGenerator.identifier(id, system);
     return FhirGenerator.reference(type, identifier);
