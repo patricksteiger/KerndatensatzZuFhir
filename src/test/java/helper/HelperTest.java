@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,16 +91,6 @@ public class HelperTest {
     assertEquals(simpleDateFormat.parse(date), actual);
     actual = Helper.getDateFromISO(date + "+01:00").get();
     assertEquals(simpleDateFormat.parse(date), actual);
-  }
-
-  @Test
-  public void testGetDateFromGermanTime() {
-    String germanTime = "10.1.2020";
-    Date received = Helper.getDateFromGermanTime(germanTime);
-    SimpleDateFormat dateFormat = new SimpleDateFormat();
-    String formatted = dateFormat.format(received);
-    // Take substring, because actual return is: "10.01.20 20:00"
-    assertEquals("10.01.20", formatted.substring(0, 8));
   }
 
   @Test
