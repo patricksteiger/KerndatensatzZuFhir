@@ -286,11 +286,7 @@ public class Fall implements Datablock {
   }
 
   public Reference getEinrichtungsEncounterSubject() {
-    String patientNr = this.getPatNr();
-    if (Helper.checkEmptyString(patientNr)) {
-      return LOGGER.emptyValue("getEinrichtungsEncounterSubject", "patNr");
-    }
-    String ref = MIIReference.getPatient(patNr);
+    String ref = MIIReference.MII_PATIENT;
     return FhirGenerator.reference(ref);
   }
 

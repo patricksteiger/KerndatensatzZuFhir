@@ -88,7 +88,7 @@ public class Laborbefund implements Datablock {
     // Identifier Befund
     diagnosticReport.addIdentifier(this.getDiagnosticReportBefund());
     // BasedOn
-    diagnosticReport.addBasedOn();
+    diagnosticReport.addBasedOn(this.getDiagnosticReportBasedOn());
     // Status
     diagnosticReport.setStatus(this.getDiagnosticReportStatus());
     // Category
@@ -108,7 +108,7 @@ public class Laborbefund implements Datablock {
 
   public Reference getDiagnosticReportBasedOn() {
     // TODO: Where is initial Service Request coming from?
-    String ref = MIIReference.getServiceRequest("");
+    String ref = MIIReference.MII_SERVICE_REQUEST;
     return FhirGenerator.reference(ref);
   }
 
@@ -295,11 +295,7 @@ public class Laborbefund implements Datablock {
   }
 
   public Reference getDiagnosticReportSubject() {
-    String patientenNr = this.getPatNr();
-    if (Helper.checkEmptyString(patientenNr)) {
-      return LOGGER.emptyValue("getDiagnosticReportSubject", "patNr");
-    }
-    String ref = MIIReference.getPatient(patientenNr);
+    String ref = MIIReference.MII_PATIENT;
     return FhirGenerator.reference(ref);
   }
 
@@ -348,7 +344,7 @@ public class Laborbefund implements Datablock {
     IdentifierTypeCode fill = IdentifierTypeCode.FILL;
     Coding coding = FhirGenerator.coding(fill);
     CodeableConcept type = FhirGenerator.codeableConcept(coding);
-    String ref = MIIReference.ORGANIZATION_MII;
+    String ref = MIIReference.MII_ORGANIZATION;
     Reference assignerRef = FhirGenerator.reference(ref);
     return FhirGenerator.identifier(value, system, type, assignerRef);
   }
@@ -547,7 +543,7 @@ public class Laborbefund implements Datablock {
     Coding observationInstanceV2 = FhirGenerator.coding(codingCode);
     CodeableConcept type = FhirGenerator.codeableConcept(observationInstanceV2);
     String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
-    String ref = MIIReference.ORGANIZATION_MII;
+    String ref = MIIReference.MII_ORGANIZATION;
     Reference assignerRef = FhirGenerator.reference(ref);
     return FhirGenerator.identifier(value, system, type, assignerRef);
   }

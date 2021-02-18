@@ -139,7 +139,7 @@ public class Person implements Datablock {
   }
 
   public Reference getPatientManagingOrganization() {
-    String ref = MIIReference.ORGANIZATION_MII;
+    String ref = MIIReference.MII_ORGANIZATION;
     return FhirGenerator.reference(ref);
   }
 
@@ -353,19 +353,19 @@ public class Person implements Datablock {
 
   public Reference getResearchSubjectConsent() {
     // TODO: Get id from Erweiterungsmodul consent?
-    String ref = MIIReference.CONSENT_MII;
+    String ref = MIIReference.MII_CONSENT;
     return FhirGenerator.reference(ref);
   }
 
   public Reference getResearchSubjectIndividual() {
     // TODO: Get id from Patient?
-    String ref = MIIReference.PATIENT_MII;
+    String ref = MIIReference.MII_PATIENT;
     return FhirGenerator.reference(ref);
   }
 
   public Reference getResearchSubjectStudy() {
     // TODO: Where to get id for ResearchStudy
-    String ref = MIIReference.RESEARCH_STUDY_MII;
+    String ref = MIIReference.MII_RESEARCH_STUDY;
     return FhirGenerator.reference(ref);
   }
 
@@ -421,11 +421,7 @@ public class Person implements Datablock {
   }
 
   public Reference getObservationSubject() {
-    String patientNummer = this.getPatNr();
-    if (Helper.checkEmptyString(patientNummer)) {
-      return LOGGER.emptyValue("getObservationSubject", "patNr");
-    }
-    String ref = MIIReference.getPatient(patientNummer);
+    String ref = MIIReference.MII_PATIENT;
     return FhirGenerator.reference(ref);
   }
 

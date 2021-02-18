@@ -7,7 +7,10 @@ import constants.*;
 import enums.ICD_Diagnosesicherheit;
 import enums.ICD_Seitenlokalisation;
 import enums.KBVBaseStageLife;
-import helper.*;
+import helper.FhirGenerator;
+import helper.Helper;
+import helper.Logger;
+import helper.ParsedCode;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -72,7 +75,8 @@ public class Diagnose implements Datablock {
   }
 
   public Reference getSubject() {
-    return FhirHelper.getMIIPatientReference(this.getPatNr());
+    String ref = MIIReference.MII_PATIENT;
+    return FhirGenerator.reference(ref);
   }
 
   public CodeableConcept getCode() {

@@ -307,11 +307,7 @@ public class Medikation implements Datablock {
   }
 
   public Reference getMedicationAdministrationSubject() {
-    String patientenNr = this.getPatNr();
-    if (Helper.checkEmptyString(patientenNr)) {
-      return Constants.getEmptyValue();
-    }
-    String ref = MIIReference.getPatient(patientenNr);
+    String ref = MIIReference.MII_PATIENT;
     return FhirGenerator.reference(ref);
   }
 
