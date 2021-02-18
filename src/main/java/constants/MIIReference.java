@@ -13,6 +13,8 @@ public class MIIReference {
   public static final String MII_RESEARCH_STUDY = RESEARCH_STUDY + "MII-Beispielstudie";
   private static final String SERVICE_REQUEST = "ServiceRequest/";
   public static final String MII_SERVICE_REQUEST = SERVICE_REQUEST + "MII-ServiceRequest";
+  private static final String MEDICATION = "Medication/";
+  public static final String REF_MEDICATION = MEDICATION + "Reference-Medication";
 
   private MIIReference() {}
 }

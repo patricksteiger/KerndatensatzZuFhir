@@ -85,8 +85,9 @@ public class Medikation implements Datablock {
     medicationAdministration.addNote(this.getMedicationAdministrationNote());
     // Request (optional)
     medicationAdministration.setRequest(this.getMedicationAdministrationRequest());
-    // TODO: medication[x]: reference to Medication. Need id of medication?
-    // TODO: How does Behandlungsgrund look like?
+    // Medication
+    medicationAdministration.setMedication(this.getMedicationAdministrationMedication());
+    // ReasonCode (optional)
     medicationAdministration.addReasonCode(this.getMedicationAdministrationReasonCode());
     return medicationAdministration;
   }
@@ -115,8 +116,10 @@ public class Medikation implements Datablock {
     medicationStatement.setDateAsserted(this.getMedicationStatementDateAsserted());
     // InformationSource (optional)
     medicationStatement.setInformationSource(this.getMedicationStatementInformationSource());
-    // TODO: medication[x]: reference to Medication
-    // TODO: How does Behandlungsgrund look like?
+    // Medication
+    medicationStatement.setMedication(this.getMedicationStatementMedication());
+    // ReasonCode (optional)
+    medicationStatement.addReasonCode(this.getMedicationStatementReasonCode());
     return medicationStatement;
   }
 
@@ -135,6 +138,20 @@ public class Medikation implements Datablock {
     return medication;
   }
 
+  public Reference getMedicationStatementMedication() {
+    return this.getMedicationAdministrationMedication();
+  }
+
+  public CodeableConcept getMedicationStatementReasonCode() {
+    return this.getMedicationAdministrationReasonCode();
+  }
+
+  // TODO: medication could also be CodeableConcept containing code of medi
+  public Reference getMedicationAdministrationMedication() {
+    String ref = MIIReference.REF_MEDICATION;
+    return FhirGenerator.reference(ref);
+  }
+  // TODO: How does Behandlungsgrund look like?
   public CodeableConcept getMedicationAdministrationReasonCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getBehandlungsgrund());
     String behandlungsgrund = parsedCode.getCode();

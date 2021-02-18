@@ -154,7 +154,6 @@ public class Diagnose implements Datablock {
   }
 
   public Extension getCodeIcdAusrufezeichen() {
-    // TODO: Is Ausrufezeichen code or count?
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_ausrufezeichencode());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
