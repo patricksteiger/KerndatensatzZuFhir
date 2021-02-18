@@ -66,7 +66,8 @@ public class Fall implements Datablock {
     Encounter einrichtung = this.getEinrichtungsEncounter();
     Encounter abteilung = this.getAbteilungsEncounter();
     Encounter versorgungsstelle = this.getVersorgungsstellenEncounter();
-    return Helper.listOf(einrichtung, abteilung, versorgungsstelle, this.getOrganization());
+    Organization organization = this.getOrganization();
+    return Helper.listOf(einrichtung, abteilung, versorgungsstelle, organization);
   }
 
   public Encounter getEinrichtungsEncounter() {
