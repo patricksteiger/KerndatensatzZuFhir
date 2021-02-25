@@ -1,9 +1,9 @@
 package enums;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -60,19 +60,16 @@ public enum Fachabteilung implements Code {
     this.display = display;
   }
 
-  // TODO: How to distinguish codes who are invalid and not missing?
   /**
    * Returns Fachabteilung corresponding to given code. Since Fachabteilung only is a subset of all
-   * valid codes, it returns an optional. Therefore returning empty does not necessarily mean, that
-   * the given code is invalid.
+   * valid codes, returning empty does not necessarily mean, that the given code is invalid.
    *
    * @param code Fachabteilungsschluessel
    * @return Optional containing Fachabteilung or empty if code is not part of subset.
+   * @see "https://simplifier.net/medizininformatikinitiative-modulfall/fachabteilungsschluessel"
    */
   public static Optional<Fachabteilung> fromCode(String code) {
-    return Arrays.stream(Fachabteilung.values())
-        .filter(schluessel -> schluessel.getCode().equals(code))
-        .findFirst();
+    return Helper.codeFromString(Fachabteilung.values(), code);
   }
 
   public String getCode() {

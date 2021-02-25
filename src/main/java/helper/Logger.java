@@ -41,6 +41,11 @@ public class Logger {
     return Constants.getEmptyValue();
   }
 
+  public <T> T warn(T value, String method, String message) {
+    this.SL4J_LOGGER.warn("In method {} a warning occured!\n" + "Message: {}", method, message);
+    return value;
+  }
+
   private void countError() {
     this.errorCounter++;
   }

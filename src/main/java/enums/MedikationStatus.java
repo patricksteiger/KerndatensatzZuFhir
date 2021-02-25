@@ -10,7 +10,6 @@ import java.util.Optional;
  * @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/82252"
  */
 public enum MedikationStatus {
-  // TODO: Check for correct mappings in MedikationStatus
   AKTIV(
       "aktiv",
       MedicationStatement.MedicationStatementStatus.ACTIVE,

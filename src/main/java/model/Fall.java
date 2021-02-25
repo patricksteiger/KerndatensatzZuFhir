@@ -395,7 +395,11 @@ public class Fall implements Datablock {
     Coding fachabteilungsschluessel =
         abteilungFromCode
             .map(FhirGenerator::coding)
-            .orElse(FhirGenerator.coding(abteilungsCode, system, display));
+            .orElse(
+                this.LOGGER.warn(
+                    FhirGenerator.coding(abteilungsCode, system, display),
+                    "getAbteilungsEncounterServiceType",
+                    "Fachabteilungsschlüssel could be wrong: " + abteilungsCode));
     return FhirGenerator.codeableConcept(fachabteilungsschluessel);
   }
 
