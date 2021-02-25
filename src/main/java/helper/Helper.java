@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Helper {
@@ -48,6 +49,27 @@ public class Helper {
       return Optional.of(false);
     }
     return Optional.empty();
+  }
+
+  /**
+   * Iterates over list and every element which satisfies predicate gets consumed. If list is null,
+   * nothing happens.
+   *
+   * @param list List of elements to be consumed
+   * @param predicate Predicate which chooses elements to consume
+   * @param consumer Consumer to consume elements
+   * @param <T> Any type
+   */
+  public static <T> void forFilterEach(
+      List<T> list, Predicate<T> predicate, Consumer<? super T> consumer) {
+    if (list == null) {
+      return;
+    }
+    for (T elem : list) {
+      if (predicate.test(elem)) {
+        consumer.accept(elem);
+      }
+    }
   }
 
   @SafeVarargs

@@ -22,9 +22,9 @@ public class FhirGenerator {
     Meta meta = new Meta();
     if (Helper.checkNonEmptyString(source)) meta.setSource(source);
     if (Helper.checkNonEmptyString(versionId)) meta.setVersionId(versionId);
-    profiles.stream().filter(Helper::checkNonEmptyString).forEach(meta::addProfile);
-    securities.stream().filter(Objects::nonNull).forEach(meta::addSecurity);
-    tags.stream().filter(Objects::nonNull).forEach(meta::addTag);
+    Helper.forFilterEach(profiles, Helper::checkNonEmptyString, meta::addProfile);
+    Helper.forFilterEach(securities, Objects::nonNull, meta::addSecurity);
+    Helper.forFilterEach(tags, Objects::nonNull, meta::addTag);
     meta.setLastUpdated(new Date());
     return meta;
   }
@@ -117,11 +117,11 @@ public class FhirGenerator {
     HumanName name = new HumanName();
     if (use != null) name.setUse(use);
     if (Helper.checkNonEmptyString(text)) name.setText(text);
-    family.stream().filter(Objects::nonNull).forEach(name::addExtension);
-    given.stream().filter(Helper::checkNonEmptyString).forEach(name::addGiven);
-    artDesPrefix.stream().filter(Objects::nonNull).forEach(name::addExtension);
-    prefix.stream().filter(Helper::checkNonEmptyString).forEach(name::addPrefix);
-    suffix.stream().filter(Helper::checkNonEmptyString).forEach(name::addSuffix);
+    Helper.forFilterEach(family, Objects::nonNull, name::addExtension);
+    Helper.forFilterEach(given, Helper::checkNonEmptyString, name::addGiven);
+    Helper.forFilterEach(artDesPrefix, Objects::nonNull, name::addExtension);
+    Helper.forFilterEach(prefix, Helper::checkNonEmptyString, name::addPrefix);
+    Helper.forFilterEach(suffix, Helper::checkNonEmptyString, name::addSuffix);
     return name;
   }
 
@@ -131,11 +131,11 @@ public class FhirGenerator {
       List<String> given,
       List<Extension> artDesPrefix,
       String prefix) {
-    return humanName(use, "", family, given, artDesPrefix, Helper.listOf(prefix), Helper.listOf());
+    return humanName(use, "", family, given, artDesPrefix, Helper.listOf(prefix), null);
   }
 
   public static HumanName humanName(HumanName.NameUse use, List<Extension> family) {
-    return humanName(use, family, Helper.listOf(), Helper.listOf(), "");
+    return humanName(use, family, null, null, "");
   }
 
   public static Quantity quantity(
@@ -212,7 +212,7 @@ public class FhirGenerator {
     if (use != null) address.setUse(use);
     if (type != null) address.setType(type);
     if (Helper.checkNonEmptyString(text)) address.setText(text);
-    line.stream().filter(Helper::checkNonEmptyString).forEach(address::addLine);
+    Helper.forFilterEach(line, Helper::checkNonEmptyString, address::addLine);
     if (Helper.checkNonEmptyString(city)) address.setCity(city);
     if (Helper.checkNonEmptyString(district)) address.setDistrict(district);
     if (Helper.checkNonEmptyString(state)) address.setState(state);
@@ -275,8 +275,8 @@ public class FhirGenerator {
     Dosage dosage = new Dosage();
     if (Helper.checkNonEmptyString(sequence)) dosage.setSequence(Integer.parseInt(sequence));
     if (Helper.checkNonEmptyString(text)) dosage.setText(text);
-    if (additionalInstructions != null)
-      additionalInstructions.forEach(dosage::addAdditionalInstruction);
+    Helper.forFilterEach(
+        additionalInstructions, Objects::nonNull, dosage::addAdditionalInstruction);
     if (Helper.checkNonEmptyString(patientInstruction))
       dosage.setPatientInstruction(patientInstruction);
     if (timing != null) dosage.setTiming(timing);
@@ -284,7 +284,7 @@ public class FhirGenerator {
     if (site != null) dosage.setSite(site);
     if (route != null) dosage.setRoute(route);
     if (method != null) dosage.setMethod(method);
-    if (doseAndRate != null) doseAndRate.forEach(dosage::addDoseAndRate);
+    Helper.forFilterEach(doseAndRate, Objects::nonNull, dosage::addDoseAndRate);
     if (maxDosePerPeriod != null) dosage.setMaxDosePerPeriod(maxDosePerPeriod);
     if (maxDosePerAdministration != null)
       dosage.setMaxDosePerAdministration(maxDosePerAdministration);
