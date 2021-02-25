@@ -357,17 +357,17 @@ public class Laborbefund implements Datablock {
   }
 
   public Observation.ObservationReferenceRangeComponent getObservationReferenceRange() {
-    String untergrenze = this.getLaboruntersuchung_referenzbereich_untergrenze();
-    String obergrenze = this.getLaboruntersuchung_referenzbereich_obergrenze();
-    String typ = this.getLaboruntersuchung_referenzbereich_typ();
-    if (Helper.checkAllEmptyString(untergrenze, obergrenze, typ)) {
+    Quantity untergrenze = this.getObservationReferenceRangeLow();
+    Quantity obergrenze = this.getObservationReferenceRangeHigh();
+    CodeableConcept typ = this.getObservationReferenceRangeType();
+    if (Helper.checkAllNull(untergrenze, obergrenze, typ)) {
       return Constants.getEmptyValue();
     }
     Observation.ObservationReferenceRangeComponent range =
         new Observation.ObservationReferenceRangeComponent();
-    range.setLow(this.getObservationReferenceRangeLow());
-    range.setHigh(this.getObservationReferenceRangeHigh());
-    range.setType(this.getObservationReferenceRangeType());
+    range.setLow(untergrenze);
+    range.setHigh(obergrenze);
+    range.setType(typ);
     return range;
   }
 
@@ -380,31 +380,45 @@ public class Laborbefund implements Datablock {
     String system = CodingSystem.REFERENCE_RANGE_MEANING;
     String display = parsedCode.getDisplay();
     Coding coding = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(coding);
+    return FhirGenerator.codeableConcept(coding);
   }
 
   public Quantity getObservationReferenceRangeLow() {
     String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
-    if (Helper.checkEmptyString(lower)) {
-      return Constants.getEmptyValue();
-    }
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(lower);
     String parsedValue = parsed.getValue();
+    if (Helper.checkEmptyString(parsedValue)) {
+      return Constants.getEmptyValue();
+    }
+    BigDecimal value =
+        parsed
+            .getDecimalValue()
+            .orElse(
+                this.LOGGER.error(
+                    "getObservationReferenceRangeLow",
+                    "laboruntersuchung_referenzbereich_untergrenze",
+                    parsedValue));
     String parsUnit = parsed.getUnit();
-    BigDecimal value = new BigDecimal(parsedValue);
     String ucum = parsed.getUcum();
     return FhirGenerator.quantity(value, parsUnit, Constants.QUANTITY_SYSTEM, ucum);
   }
 
   public Quantity getObservationReferenceRangeHigh() {
     String higher = this.getLaboruntersuchung_referenzbereich_obergrenze();
-    if (Helper.checkEmptyString(higher)) {
-      return Constants.getEmptyValue();
-    }
     ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(higher);
     String parsedValue = parsed.getValue();
+    if (Helper.checkEmptyString(parsedValue)) {
+      return Constants.getEmptyValue();
+    }
+    BigDecimal value =
+        parsed
+            .getDecimalValue()
+            .orElse(
+                this.LOGGER.error(
+                    "getObservationReferenceRangeHigh",
+                    "laboruntersuchung_referenzbereich_obergrenze",
+                    parsedValue));
     String parsedUnit = parsed.getUnit();
-    BigDecimal value = new BigDecimal(parsedValue);
     String ucum = parsed.getUcum();
     return FhirGenerator.quantity(value, parsedUnit, Constants.QUANTITY_SYSTEM, ucum);
   }
@@ -418,7 +432,7 @@ public class Laborbefund implements Datablock {
     String system = parsedCode.getSystem();
     String display = parsedCode.getDisplay();
     Coding method = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(method);
+    return FhirGenerator.codeableConcept(method);
   }
 
   public Annotation getObservationNote() {

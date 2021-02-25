@@ -1,6 +1,8 @@
 package helper;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public class ValueAndUnitParsed {
   private final String value;
@@ -19,6 +21,14 @@ public class ValueAndUnitParsed {
     // TODO: Split into numerator and denominator?
     String unit = Helper.extractCode(splitCode, "unit=");
     return new ValueAndUnitParsed(value, unit, unit);
+  }
+
+  public Optional<BigDecimal> getDecimalValue() {
+    try {
+      return Optional.of(new BigDecimal(this.getValue()));
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 
   public String getValue() {
