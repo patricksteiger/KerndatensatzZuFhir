@@ -10,7 +10,6 @@ import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -300,13 +299,13 @@ public class Medikation implements Datablock {
   public MedicationAdministration.MedicationAdministrationDosageComponent
       getMedicationAdministrationDosage() {
     String text = this.getMedicationAdministrationDosageText();
-    CodeableConcept route = this.getMedicationAdministrationDosageRoute();
-    if (Helper.checkEmptyString(text) && route == Constants.getEmptyValue()) {
+    // Dosage is not yet structurally defined. Only text is set currently.
+    // CodeableConcept route = this.getMedicationAdministrationDosageRoute();
+    if (Helper.checkEmptyString(text) /*&& route == Constants.getEmptyValue()*/) {
       return Constants.getEmptyValue();
     }
-    return new MedicationAdministration.MedicationAdministrationDosageComponent()
-        .setText(text)
-        .setRoute(route);
+    return new MedicationAdministration.MedicationAdministrationDosageComponent().setText(text);
+    // .setRoute(route);
   }
 
   public CodeableConcept getMedicationAdministrationDosageRoute() {
@@ -368,9 +367,9 @@ public class Medikation implements Datablock {
     return new Annotation().setText(hinweis);
   }
 
+  // Dosage is currently not structurally defined. Only text is set.
   public Dosage getMedicationStatementDosage() {
-    String sequence = this.getDosierung_reihenfolge();
-    String text = this.getDosierung_freitext();
+    /*String sequence = this.getDosierung_reihenfolge();
     Timing timing = this.getMedicationStatementDosageTiming();
     Type asNeeded = this.getMedicationStatementDosageAsNeeded();
     CodeableConcept route = this.getMedicationStatementDosageRoute();
@@ -379,8 +378,12 @@ public class Medikation implements Datablock {
     if (Helper.checkAllEmptyString(sequence, text)
         && Helper.checkAllNull(timing, asNeeded, route, doseAndRate)) {
       return Constants.getEmptyValue();
+    }*/
+    String text = this.getDosierung_freitext();
+    if (Helper.checkEmptyString(text)) {
+      return Constants.getEmptyValue();
     }
-    return FhirGenerator.dosage(sequence, text, timing, asNeeded, route, doseAndRate);
+    return FhirGenerator.dosage(text);
   }
 
   public List<Dosage.DosageDoseAndRateComponent> getMedicationStatementDosageDoseAndRate() {

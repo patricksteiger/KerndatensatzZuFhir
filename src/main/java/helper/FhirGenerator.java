@@ -234,6 +234,10 @@ public class FhirGenerator {
     return address(null, type, "", Helper.listOf(line), city, "", "", postalCode, country);
   }
 
+  public static Dosage dosage(String text) {
+    return dosage(text, null, null, null, null);
+  }
+
   public static Dosage dosage(
       String text,
       Timing timing,
