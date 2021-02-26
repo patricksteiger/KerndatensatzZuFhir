@@ -1,7 +1,9 @@
 package helper;
 
+import constants.Constants;
 import interfaces.Code;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +21,9 @@ public class Helper {
    * @return Optional containing ISO-Date if parsable.
    */
   public static Optional<Date> getDateFromISO(String date) {
+    if (Helper.checkEmptyString(date)) {
+      return Optional.empty();
+    }
     String isoDate = date;
     // Example: 2020-07-21
     final int simpleDateLength = 10;
@@ -69,6 +74,44 @@ public class Helper {
       if (predicate.test(elem)) {
         consumer.accept(elem);
       }
+    }
+  }
+
+  public static Optional<BigDecimal> parseValue(String value) {
+    if (Helper.checkEmptyString(value)) {
+      return Optional.empty();
+    }
+    String[] split = value.split("/");
+    if (split.length == 1) {
+      return maybeBigDecimal(value);
+    } else if (split.length == 2) {
+      Optional<BigDecimal> numerator = maybeBigDecimal(split[0]);
+      Optional<BigDecimal> denominator = maybeBigDecimal(split[1]);
+      if (!denominator.isPresent()) {
+        return Optional.empty();
+      }
+      try {
+        return numerator.map(
+            n ->
+                n.divide(
+                    denominator.get(),
+                    Constants.BIG_DECIMAL_SCALE,
+                    Constants.BIG_DECIMAL_ROUNDING_MODE));
+      } catch (Exception e) {
+        return Optional.empty();
+      }
+    } else {
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<BigDecimal> maybeBigDecimal(String value) {
+    try {
+      return Optional.of(
+          new BigDecimal(value.trim())
+              .setScale(Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE));
+    } catch (Exception e) {
+      return Optional.empty();
     }
   }
 

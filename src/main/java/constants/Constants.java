@@ -1,9 +1,13 @@
 package constants;
 
+import java.math.BigDecimal;
+
 public class Constants {
   public static final String EMPTY_IDENTIFIER_SYSTEM = "";
   public static final String VERSION_2020 = "2020";
   public static final String QUANTITY_SYSTEM = "http://unitsofmeasure.org";
+  public static final int BIG_DECIMAL_SCALE = 20;
+  public static final int BIG_DECIMAL_ROUNDING_MODE = BigDecimal.ROUND_HALF_DOWN;
 
   private Constants() {}
 

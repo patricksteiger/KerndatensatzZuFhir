@@ -1,7 +1,9 @@
 package helper;
 
+import constants.Constants;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +48,54 @@ public class HelperTest {
     assertEquals(2, values.size());
     assertEquals(codeSystem.trim(), values.get(0));
     assertEquals(codeCode.trim(), values.get(1));
+  }
+
+  @Test
+  public void testParseValue() {
+    assertFalse(Helper.parseValue(null).isPresent());
+    assertFalse(Helper.parseValue("").isPresent());
+    assertFalse(Helper.parseValue("/").isPresent());
+    assertFalse(Helper.parseValue("abc").isPresent());
+    assertFalse(Helper.parseValue("3/").isPresent());
+    assertFalse(Helper.parseValue("/3").isPresent());
+    assertFalse(Helper.parseValue("3,4").isPresent());
+    assertFalse(Helper.parseValue("3/0").isPresent());
+    assertFalse(Helper.parseValue("0/0").isPresent());
+    String value = "12.7";
+    Optional<BigDecimal> result = Helper.parseValue(value);
+    assertTrue(result.isPresent());
+    assertEquals(scaledBigDecimal(value), result.get());
+    value = "0";
+    result = Helper.parseValue(value);
+    assertTrue(result.isPresent());
+    assertEquals(scaledBigDecimal("0"), result.get());
+    value = "3/4";
+    result = Helper.parseValue(value);
+    assertTrue(result.isPresent());
+    assertEquals(scaledBigDecimal("0.75"), result.get());
+    value = "3/-4";
+    result = Helper.parseValue(value);
+    assertTrue(result.isPresent());
+    assertEquals(scaledBigDecimal("-0.75"), result.get());
+    value = "6.3/2";
+    result = Helper.parseValue(value);
+    assertTrue(result.isPresent());
+    assertEquals(scaledBigDecimal("3.15"), result.get());
+    String nominator = "1";
+    String denominator = "7";
+    result = Helper.parseValue(nominator + "/" + denominator);
+    assertTrue(result.isPresent());
+    assertEquals(scaledBigDecimalDivide(nominator, denominator), result.get());
+  }
+
+  private BigDecimal scaledBigDecimal(String value) {
+    return scaledBigDecimalDivide(value, "1");
+  }
+
+  private BigDecimal scaledBigDecimalDivide(String v1, String v2) {
+    return new BigDecimal(v1)
+        .divide(
+            new BigDecimal(v2), Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE);
   }
 
   @Test
