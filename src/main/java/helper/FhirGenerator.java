@@ -138,6 +138,10 @@ public class FhirGenerator {
     return humanName(use, family, null, null, "");
   }
 
+  public static Ratio ratio(Quantity numerator, Quantity denominator) {
+    return new Ratio().setNumerator(numerator).setDenominator(denominator);
+  }
+
   public static Quantity quantity(
       BigDecimal value,
       Quantity.QuantityComparator comparator,
