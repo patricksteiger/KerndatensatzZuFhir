@@ -64,11 +64,11 @@ public class HelperTest {
     String value = "12.7";
     Optional<BigDecimal> result = Helper.parseValue(value);
     assertTrue(result.isPresent());
-    assertEquals(scaledBigDecimal(value), result.get());
+    assertEquals(new BigDecimal(value), result.get());
     value = "0";
     result = Helper.parseValue(value);
     assertTrue(result.isPresent());
-    assertEquals(scaledBigDecimal("0"), result.get());
+    assertEquals(new BigDecimal("0"), result.get());
     value = "3/4";
     result = Helper.parseValue(value);
     assertTrue(result.isPresent());

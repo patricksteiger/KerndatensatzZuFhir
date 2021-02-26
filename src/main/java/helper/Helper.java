@@ -107,9 +107,7 @@ public class Helper {
 
   public static Optional<BigDecimal> maybeBigDecimal(String value) {
     try {
-      return Optional.of(
-          new BigDecimal(value.trim())
-              .setScale(Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE));
+      return Optional.of(new BigDecimal(value.trim()));
     } catch (Exception e) {
       return Optional.empty();
     }
