@@ -157,7 +157,7 @@ public class FhirGenerator {
     return quantity;
   }
 
-  public static Quantity quantity(BigDecimal value, ValueAndUnitParsed unit) {
+  public static Quantity quantity(BigDecimal value, ParsedQuantity unit) {
     return quantity(value, unit.getUnit(), unit.getSystem(), unit.getUcum());
   }
 

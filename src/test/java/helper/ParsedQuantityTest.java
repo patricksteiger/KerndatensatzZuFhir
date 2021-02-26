@@ -4,27 +4,27 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ValueAndUnitParsedTest {
+class ParsedQuantityTest {
 
   @Test
   void testFromStringSimple() {
     String value = "75";
     String unit = "mg";
     String toTest = getValueStr(value) + getUnitStr(unit);
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(toTest);
+    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
     assertEquals(value, parsed.getValue());
     assertEquals(unit, parsed.getUnit());
   }
 
   @Test
   void testFromStringEmpty() {
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(null);
+    ParsedQuantity parsed = ParsedQuantity.fromString(null);
     assertEquals("", parsed.getValue());
     assertEquals("", parsed.getUnit());
-    parsed = ValueAndUnitParsed.fromString("");
+    parsed = ParsedQuantity.fromString("");
     assertEquals("", parsed.getValue());
     assertEquals("", parsed.getUnit());
-    parsed = ValueAndUnitParsed.fromString("   ");
+    parsed = ParsedQuantity.fromString("   ");
     assertEquals("", parsed.getValue());
     assertEquals("", parsed.getUnit());
   }
@@ -34,7 +34,7 @@ class ValueAndUnitParsedTest {
     String value = "75";
     String unit = "mg";
     String toTest = "  " + getValueStr(value) + "   " + getUnitStr(unit) + " ";
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(toTest);
+    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
     assertEquals(value, parsed.getValue());
     assertEquals(unit, parsed.getUnit());
   }
@@ -44,7 +44,7 @@ class ValueAndUnitParsedTest {
     String value = "12.7";
     String unit = "g/ml";
     String toTest = getValueStr(value) + getUnitStr(unit);
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(toTest);
+    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
     assertEquals(value, parsed.getValue());
     assertEquals(unit, parsed.getUnit());
   }
@@ -53,7 +53,7 @@ class ValueAndUnitParsedTest {
   void testFromStringNoUnit() {
     String value = "123";
     String toTest = getValueStr(value);
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(toTest);
+    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
     assertEquals(value, parsed.getValue());
     assertEquals("", parsed.getUnit());
   }
@@ -62,7 +62,7 @@ class ValueAndUnitParsedTest {
   void TestFromStringNoValue() {
     String unit = "g";
     String toTest = getUnitStr(unit);
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(toTest);
+    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
     assertEquals("", parsed.getValue());
     assertEquals(unit, parsed.getUnit());
   }

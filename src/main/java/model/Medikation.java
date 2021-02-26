@@ -384,16 +384,16 @@ public class Medikation implements Datablock {
   }
 
   public List<Dosage.DosageDoseAndRateComponent> getMedicationStatementDosageDoseAndRate() {
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(this.getDosierung_dosis());
-    String value = parsed.getValue();
+    ParsedQuantity parsedQuantity = ParsedQuantity.fromString(this.getDosierung_dosis());
+    String value = parsedQuantity.getValue();
     if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    Optional<BigDecimal> parsedValue = parsed.getDecimalValue();
-    if (!parsedValue.isPresent()) {
+    Optional<Quantity> quantity = parsedQuantity.toQuantity();
+    if (!quantity.isPresent()) {
       return this.LOGGER.error("getMedicationStatementDosageDoseAndRate", "dosierung_dosis", value);
     }
-    Quantity dose = FhirGenerator.quantity(parsedValue.get(), parsed);
+    Quantity dose = quantity.get();
     Dosage.DosageDoseAndRateComponent doseAndRate = new Dosage.DosageDoseAndRateComponent();
     doseAndRate.setDose(dose);
     return Helper.listOf(doseAndRate);
@@ -436,7 +436,8 @@ public class Medikation implements Datablock {
     }
     Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
     // TODO: ereignis can be when, dayOfWeek, timeOfDay, ... which is it? How can we distinguish?
-    ValueAndUnitParsed offset = ValueAndUnitParsed.fromString(this.getDosierung_offset());
+    // TODO: Is offset an int or quantity in MII?
+    ParsedQuantity offset = ParsedQuantity.fromString(this.getDosierung_offset());
     String parsedValue = offset.getValue();
     int value = Integer.parseInt(parsedValue);
     repeat.setOffset(value);

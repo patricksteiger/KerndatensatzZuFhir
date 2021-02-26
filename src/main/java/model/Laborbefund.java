@@ -10,10 +10,8 @@ import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class Laborbefund implements Datablock {
   private final Logger LOGGER = new Logger(Laborbefund.class);
@@ -132,13 +130,13 @@ public class Laborbefund implements Datablock {
     observation.setEffective(this.getObservationEffective());
     // Issued (optional)
     observation.setIssued(this.getObservationIssued());
-    // Value TODO: CodeableConcept!
+    // Value
     observation.setValue(this.getObservationValue());
     // Note (optional)
     observation.addNote(this.getObservationNote());
     // Method (optional)
     observation.setMethod(this.getObservationMethod());
-    // reference Range (optional)
+    // Reference Range (optional)
     observation.addReferenceRange(this.getObservationReferenceRange());
     return observation;
   }
@@ -387,38 +385,34 @@ public class Laborbefund implements Datablock {
 
   public Quantity getObservationReferenceRangeLow() {
     String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(lower);
-    String parsedValue = parsed.getValue();
+    ParsedQuantity parsedQuantity = ParsedQuantity.fromString(lower);
+    String parsedValue = parsedQuantity.getValue();
     if (Helper.checkEmptyString(parsedValue)) {
       return Constants.getEmptyValue();
     }
-    BigDecimal value =
-        parsed
-            .getDecimalValue()
-            .orElse(
-                this.LOGGER.error(
-                    "getObservationReferenceRangeLow",
-                    "laboruntersuchung_referenzbereich_untergrenze",
-                    parsedValue));
-    return FhirGenerator.quantity(value, parsed);
+    return parsedQuantity
+        .toQuantity()
+        .orElse(
+            this.LOGGER.error(
+                "getObservationReferenceRangeLow",
+                "laboruntersuchung_referenzbereich_untergrenze",
+                lower));
   }
 
   public Quantity getObservationReferenceRangeHigh() {
     String higher = this.getLaboruntersuchung_referenzbereich_obergrenze();
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(higher);
-    String parsedValue = parsed.getValue();
+    ParsedQuantity parsedQuantity = ParsedQuantity.fromString(higher);
+    String parsedValue = parsedQuantity.getValue();
     if (Helper.checkEmptyString(parsedValue)) {
       return Constants.getEmptyValue();
     }
-    BigDecimal value =
-        parsed
-            .getDecimalValue()
-            .orElse(
-                this.LOGGER.error(
-                    "getObservationReferenceRangeHigh",
-                    "laboruntersuchung_referenzbereich_obergrenze",
-                    parsedValue));
-    return FhirGenerator.quantity(value, parsed);
+    return parsedQuantity
+        .toQuantity()
+        .orElse(
+            this.LOGGER.error(
+                "getObservationReferenceRangeHigh",
+                "laboruntersuchung_referenzbereich_obergrenze",
+                higher));
   }
 
   public CodeableConcept getObservationMethod() {
@@ -443,10 +437,7 @@ public class Laborbefund implements Datablock {
 
   public Type getObservationValue() {
     CodeableConcept code = this.getObservationValueCodeableConcept();
-    if (code != null) {
-      return code;
-    }
-    return this.getObservationValueQuantity();
+    return (code == Constants.getEmptyValue()) ? this.getObservationValueQuantity() : code;
   }
 
   public CodeableConcept getObservationValueCodeableConcept() {
@@ -459,15 +450,10 @@ public class Laborbefund implements Datablock {
 
   public Quantity getObservationValueQuantity() {
     String ergebnis = this.getLaboruntersuchung_ergebnis();
-    ValueAndUnitParsed valueAndUnitParsed = ValueAndUnitParsed.fromString(ergebnis);
-    Optional<BigDecimal> value = valueAndUnitParsed.getDecimalValue();
-    return value
-        .map(bigDecimal -> FhirGenerator.quantity(bigDecimal, valueAndUnitParsed))
-        .orElse(
-            this.LOGGER.error(
-                "getObservationValue",
-                "laboruntersuchung_ergebnis",
-                valueAndUnitParsed.getValue()));
+    ParsedQuantity parsedQuantity = ParsedQuantity.fromString(ergebnis);
+    return parsedQuantity
+        .toQuantity()
+        .orElse(this.LOGGER.error("getObservationValue", "laboruntersuchung_ergebnis", ergebnis));
   }
 
   public Date getObservationIssued() {
