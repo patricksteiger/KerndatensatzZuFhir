@@ -240,15 +240,19 @@ public class Medikation implements Datablock {
     return FhirGenerator.codeableConcept(edqm);
   }
 
-  // TODO: How do you separate PHARMA from ATC? ATC always DE?
   public CodeableConcept getMedicationCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
     if (Helper.checkEmptyString(parsedCode.getCode())) {
       return Constants.getEmptyValue();
     }
-    Coding pharma = this.getMedicationCodePharma();
-    Coding atcDE = this.getMedicationCodeAtcDE();
-    return FhirGenerator.codeableConcept(pharma, atcDE).setText(this.getMedicationCodeText());
+    Coding code;
+    // Generally system is expected to be AtcDE. Only Change if PZN is given explicitly.
+    if (parsedCode.getDisplay().equals(CodingSystem.PHARMA_ZENTRAL_NUMMER)) {
+      code = this.getMedicationCodePharma();
+    } else {
+      code = this.getMedicationCodeAtcDE();
+    }
+    return FhirGenerator.codeableConcept(code).setText(this.getMedicationCodeText());
   }
 
   public String getMedicationCodeText() {
@@ -262,7 +266,9 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     String system = CodingSystem.ATC_DIMDI;
-    String display = this.getArzneimittel_name();
+    String parsedDisplay = parsedCode.getDisplay();
+    String display =
+        (Helper.checkEmptyString(parsedDisplay)) ? this.getArzneimittel_name() : parsedDisplay;
     return FhirGenerator.coding(code, system, display);
   }
 
@@ -273,7 +279,9 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     String system = CodingSystem.PHARMA_ZENTRAL_NUMMER;
-    String display = this.getArzneimittel_name();
+    String parsedDisplay = parsedCode.getDisplay();
+    String display =
+        (Helper.checkEmptyString(parsedDisplay)) ? this.getArzneimittel_name() : parsedDisplay;
     return FhirGenerator.coding(code, system, display);
   }
 
