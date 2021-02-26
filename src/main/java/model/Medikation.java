@@ -185,13 +185,9 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(menge)) {
       return Constants.getEmptyValue();
     }
-    ValueAndUnitParsed parsedStrength = ValueAndUnitParsed.fromString(menge);
-    String parsedValue = parsedStrength.getValue();
-    String parsedUnit = parsedStrength.getUnit();
-    BigDecimal value = new BigDecimal(parsedValue);
-    Quantity numerator = FhirGenerator.quantity(value, parsedUnit);
-    // TODO: Is only numerator for Ratio correct?
-    return new Ratio().setNumerator(numerator);
+    return ParsedRatio.fromString(menge)
+        .toRatio()
+        .orElse(this.LOGGER.error("getMedicationIngredientStrength", "wirkstoff_menge", menge));
   }
 
   public CodeableConcept getMedicationIngredientItem() {
@@ -227,13 +223,9 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(wirkstaerke)) {
       return Constants.getEmptyValue();
     }
-    ValueAndUnitParsed parseStaerke = ValueAndUnitParsed.fromString(wirkstaerke);
-    String parsedValue = parseStaerke.getValue();
-    BigDecimal value = new BigDecimal(parsedValue);
-    String unit = parseStaerke.getUnit();
-    Quantity numerator = FhirGenerator.quantity(value, unit);
-    // TODO: Is only numerator for Ratio correct?
-    return new Ratio().setNumerator(numerator);
+    return ParsedRatio.fromString(wirkstaerke)
+        .toRatio()
+        .orElse(this.LOGGER.error("getMedicationAmount", "arzneimittel_wirkstaerke", wirkstaerke));
   }
 
   public CodeableConcept getMedicationForm() {
@@ -245,7 +237,7 @@ public class Medikation implements Datablock {
     String system = CodingSystem.EDQM_STANDARD;
     String display = parsedCode.getDisplay();
     Coding edqm = FhirGenerator.coding(code, system, display);
-    return new CodeableConcept().addCoding(edqm);
+    return FhirGenerator.codeableConcept(edqm);
   }
 
   // TODO: How do you separate PHARMA from ATC? ATC always DE?
