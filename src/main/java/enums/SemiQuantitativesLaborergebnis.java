@@ -1,35 +1,39 @@
 package enums;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
 
 import java.util.Optional;
 
+/**
+ * @see "https://simplifier.net/guide/LaborbefundinderMedizininformatik-Initiative/Terminologien"
+ */
 public enum SemiQuantitativesLaborergebnis implements Code {
-  NOT_PRESENT("410594000", "Definitely not present", "-"),
-  TRACE("260405006", "Trace", "0"),
-  ONE_PLUS("441614007", "Present one plus out of three plus", "+"),
-  TWO_PLUS("441517005", "Present two plus out of three plus", "++"),
-  THREE_PLUS("441521003", "Present three plus out of three plus", "+++"),
-  FOUR_PLUS("260350009", "Present four plus out of four plus", "++++");
+  NOT_PRESENT("410594000", "Definitely not present"),
+  TRACE("260405006", "Trace"),
+  ONE_PLUS("441614007", "Present one plus out of three plus"),
+  TWO_PLUS("441517005", "Present two plus out of three plus"),
+  THREE_PLUS("441521003", "Present three plus out of three plus"),
+  FOUR_PLUS("260350009", "Present four plus out of four plus");
 
   private final String code;
   private final String display;
-  private final String mapping;
 
-  SemiQuantitativesLaborergebnis(String code, String display, String mapping) {
+  SemiQuantitativesLaborergebnis(String code, String display) {
     this.code = code;
     this.display = display;
-    this.mapping = mapping;
   }
 
+  /**
+   * Returns enum containing semi-quantitatives Laborergebnis corresponding to code.
+   *
+   * @param code SNOMED-Code
+   * @return enum, empty if code is invalid.
+   * @see "https://simplifier.net/guide/LaborbefundinderMedizininformatik-Initiative/Terminologien"
+   */
   public static Optional<SemiQuantitativesLaborergebnis> fromCode(String code) {
-    for (SemiQuantitativesLaborergebnis ergebnis : SemiQuantitativesLaborergebnis.values()) {
-      if (ergebnis.getMapping().equals(code)) {
-        return Optional.of(ergebnis);
-      }
-    }
-    return Optional.empty();
+    return Helper.codeFromString(SemiQuantitativesLaborergebnis.values(), code);
   }
 
   @Override
@@ -45,9 +49,5 @@ public enum SemiQuantitativesLaborergebnis implements Code {
   @Override
   public String getDisplay() {
     return display;
-  }
-
-  public String getMapping() {
-    return mapping;
   }
 }

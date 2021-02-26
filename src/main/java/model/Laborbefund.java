@@ -5,6 +5,7 @@ import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
 import enums.Laborbereich;
+import enums.SemiQuantitativesLaborergebnis;
 import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
@@ -440,9 +441,23 @@ public class Laborbefund implements Datablock {
     return new Annotation().setText(kommentar);
   }
 
-  // TODO: Is there semi quantitive result? (0, +, ++, ...)
-  public Quantity getObservationValue() {
-    // TODO: How does the ergebnis really look?
+  public Type getObservationValue() {
+    CodeableConcept code = this.getObservationValueCodeableConcept();
+    if (code != null) {
+      return code;
+    }
+    return this.getObservationValueQuantity();
+  }
+
+  public CodeableConcept getObservationValueCodeableConcept() {
+    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_ergebnis());
+    return SemiQuantitativesLaborergebnis.fromCode(parsedCode.getCode())
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(Constants.getEmptyValue());
+  }
+
+  public Quantity getObservationValueQuantity() {
     String ergebnis = this.getLaboruntersuchung_ergebnis();
     ValueAndUnitParsed valueAndUnitParsed = ValueAndUnitParsed.fromString(ergebnis);
     Optional<BigDecimal> value = valueAndUnitParsed.getDecimalValue();
