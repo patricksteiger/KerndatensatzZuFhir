@@ -13,6 +13,7 @@ import org.hl7.fhir.r4.model.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Medikation implements Datablock {
   private final Logger LOGGER = new Logger(Medikation.class);
@@ -367,7 +368,6 @@ public class Medikation implements Datablock {
     return new Annotation().setText(hinweis);
   }
 
-  // TODO: Is route, site and method the same?
   public Dosage getMedicationStatementDosage() {
     String sequence = this.getDosierung_reihenfolge();
     String text = this.getDosierung_freitext();
@@ -384,15 +384,16 @@ public class Medikation implements Datablock {
   }
 
   public List<Dosage.DosageDoseAndRateComponent> getMedicationStatementDosageDoseAndRate() {
-    String dosis = this.getDosierung_dosis();
-    if (Helper.checkEmptyString(dosis)) {
+    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(this.getDosierung_dosis());
+    String value = parsed.getValue();
+    if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    ValueAndUnitParsed parsed = ValueAndUnitParsed.fromString(dosis);
-    String parsedValue = parsed.getValue();
-    String parsedUnit = parsed.getUnit();
-    BigDecimal value = new BigDecimal(parsedValue);
-    Quantity dose = FhirGenerator.quantity(value, parsedUnit);
+    Optional<BigDecimal> parsedValue = parsed.getDecimalValue();
+    if (!parsedValue.isPresent()) {
+      return this.LOGGER.error("getMedicationStatementDosageDoseAndRate", "dosierung_dosis", value);
+    }
+    Quantity dose = FhirGenerator.quantity(parsedValue.get(), parsed);
     Dosage.DosageDoseAndRateComponent doseAndRate = new Dosage.DosageDoseAndRateComponent();
     doseAndRate.setDose(dose);
     return Helper.listOf(doseAndRate);

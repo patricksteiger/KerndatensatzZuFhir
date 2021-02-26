@@ -12,6 +12,7 @@ import org.hl7.fhir.r4.model.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Laborbefund implements Datablock {
   private final Logger LOGGER = new Logger(Laborbefund.class);
@@ -398,9 +399,7 @@ public class Laborbefund implements Datablock {
                     "getObservationReferenceRangeLow",
                     "laboruntersuchung_referenzbereich_untergrenze",
                     parsedValue));
-    String parsUnit = parsed.getUnit();
-    String ucum = parsed.getUcum();
-    return FhirGenerator.quantity(value, parsUnit, Constants.QUANTITY_SYSTEM, ucum);
+    return FhirGenerator.quantity(value, parsed);
   }
 
   public Quantity getObservationReferenceRangeHigh() {
@@ -418,9 +417,7 @@ public class Laborbefund implements Datablock {
                     "getObservationReferenceRangeHigh",
                     "laboruntersuchung_referenzbereich_obergrenze",
                     parsedValue));
-    String parsedUnit = parsed.getUnit();
-    String ucum = parsed.getUcum();
-    return FhirGenerator.quantity(value, parsedUnit, Constants.QUANTITY_SYSTEM, ucum);
+    return FhirGenerator.quantity(value, parsed);
   }
 
   public CodeableConcept getObservationMethod() {
@@ -448,12 +445,14 @@ public class Laborbefund implements Datablock {
     // TODO: How does the ergebnis really look?
     String ergebnis = this.getLaboruntersuchung_ergebnis();
     ValueAndUnitParsed valueAndUnitParsed = ValueAndUnitParsed.fromString(ergebnis);
-    String parsedValue = valueAndUnitParsed.getValue();
-    BigDecimal value = new BigDecimal(parsedValue);
-    String unit = valueAndUnitParsed.getUnit();
-    String system = Constants.QUANTITY_SYSTEM;
-    String code = valueAndUnitParsed.getUcum();
-    return FhirGenerator.quantity(value, unit, system, code);
+    Optional<BigDecimal> value = valueAndUnitParsed.getDecimalValue();
+    return value
+        .map(bigDecimal -> FhirGenerator.quantity(bigDecimal, valueAndUnitParsed))
+        .orElse(
+            this.LOGGER.error(
+                "getObservationValue",
+                "laboruntersuchung_ergebnis",
+                valueAndUnitParsed.getValue()));
   }
 
   public Date getObservationIssued() {
