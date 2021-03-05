@@ -7,6 +7,7 @@ import interfaces.Datablock;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -27,7 +28,7 @@ public class CsvParser {
    */
   public static <T extends Datablock> List<T> parseDatablocks(
       String csvFilePath, Class<T> datablockClass) throws IOException {
-    BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(csvFilePath));
+    BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(csvFilePath), StandardCharsets.ISO_8859_1);
     HeaderColumnNameMappingStrategy<T> headerStrategy = new HeaderColumnNameMappingStrategy<>();
     headerStrategy.setType(datablockClass);
     CsvToBean<T> beanParser =
