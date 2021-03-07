@@ -157,6 +157,18 @@ public class FhirGenerator {
     return quantity;
   }
 
+  public static Quantity quantity(String value, String unit, String system, String code) {
+    Quantity quantity = new Quantity();
+    if (Helper.checkNonEmptyString(value)) {
+      DecimalType decimalType = new DecimalType().setRepresentation(value);
+      quantity.setValueElement(decimalType);
+    }
+    if (Helper.checkNonEmptyString(unit)) quantity.setUnit(unit);
+    if (Helper.checkNonEmptyString(system)) quantity.setSystem(system);
+    if (Helper.checkNonEmptyString(code)) quantity.setCode(code);
+    return quantity;
+  }
+
   public static Quantity quantity(BigDecimal value, ParsedQuantity unit) {
     return quantity(value, unit.getUnit(), unit.getSystem(), unit.getUcum());
   }
