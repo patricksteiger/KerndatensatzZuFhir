@@ -1,6 +1,5 @@
 package unit.convert;
 
-import org.fhir.ucum.UcumException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import unit.convert.mapping.UnitMapping;
@@ -18,15 +17,7 @@ public class UnitConverter {
   private static final Logger LOGGER = LoggerFactory.getLogger(UnitConverter.class);
   private static final boolean LOGGING_ACTIVATED = false;
 
-  private static Map<String, UnitMapping> mappings;
-
-  static {
-    try {
-      mappings = generateMappings(ParseMappings.list());
-    } catch (UcumException e) {
-      e.printStackTrace();
-    }
-  }
+  private static final Map<String, UnitMapping> mappings = generateMappings(ParseMappings.list());
 
   private UnitConverter() {}
 
@@ -39,8 +30,7 @@ public class UnitConverter {
     return mapping != null ? Optional.of(mapping) : Optional.empty();
   }
 
-  private static Map<String, UnitMapping> generateMappings(List<MappingBean> mappingsBeans)
-      throws UcumException {
+  private static Map<String, UnitMapping> generateMappings(List<MappingBean> mappingsBeans) {
     Map<String, UnitMapping> mappings = new HashMap<>();
     // Start at 1 to skip header
     for (int line = 1; line < mappingsBeans.size(); line++) {
