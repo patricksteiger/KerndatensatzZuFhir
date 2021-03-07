@@ -1,4 +1,4 @@
-package converter.parse;
+package unit.convert.parse;
 
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;

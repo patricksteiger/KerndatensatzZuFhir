@@ -1,6 +1,5 @@
-package converter;
+package unit.ucum;
 
-import helper.Helper;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 
@@ -21,13 +20,10 @@ public class Ucum {
   private Ucum() {}
 
   public static boolean validate(String unit) {
-    return Helper.checkNonEmptyString(unit) && service.validate(unit) == null;
+    return unit != null && service.validate(unit) == null;
   }
 
   public static Optional<String> formalRepresentation(String ucumUnit) {
-    if (Helper.checkEmptyString(ucumUnit)) {
-      return Optional.empty();
-    }
     try {
       String formal = service.analyse(ucumUnit);
       return Optional.of(formal);

@@ -1,26 +1,28 @@
-package converter.mapping;
+package unit.convert.mapping;
 
-import converter.Ucum;
-import converter.parse.MappingBean;
 import helper.Helper;
+import unit.convert.parse.MappingBean;
+import unit.ucum.Ucum;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 public class UnitMapping {
   private final String ucumCode;
-  private final String ucumUnit;
   private final BigDecimal conversion;
 
-  private UnitMapping(String ucumCode, String ucumUnit, BigDecimal conversion) {
+  private UnitMapping(String ucumCode, BigDecimal conversion) {
     this.ucumCode = ucumCode;
-    this.ucumUnit = ucumUnit;
     this.conversion = conversion;
   }
 
   public static Optional<UnitMapping> fromUcumUnit(String ucumUnit) {
-    return Ucum.formalRepresentation(ucumUnit)
-        .map(r -> new UnitMapping(ucumUnit, r, BigDecimal.ONE));
+    if (Ucum.validate(ucumUnit)) {
+      UnitMapping mapping = new UnitMapping(ucumUnit, BigDecimal.ONE);
+      return Optional.of(mapping);
+    } else {
+      return Optional.empty();
+    }
   }
 
   public static Optional<UnitMapping> fromBean(MappingBean mappingBean) {
@@ -29,17 +31,15 @@ public class UnitMapping {
       return Optional.empty();
     }
     if (Ucum.validate(localUnit)) {
-      return Ucum.formalRepresentation(localUnit)
-          .map(r -> new UnitMapping(localUnit, r, BigDecimal.ONE));
+      UnitMapping mapping = new UnitMapping(localUnit, BigDecimal.ONE);
+      return Optional.of(mapping);
     }
     String ucumUnit = mappingBean.getUcumUnit();
     if (Helper.checkEmptyString(ucumUnit) || !Ucum.validate(ucumUnit)) {
       return Optional.empty();
     }
     Optional<BigDecimal> conversion = parseConversion(mappingBean.getConversion());
-    return conversion.flatMap(
-        bigDecimal ->
-            Ucum.formalRepresentation(ucumUnit).map(r -> new UnitMapping(ucumUnit, r, bigDecimal)));
+    return conversion.map(c -> new UnitMapping(ucumUnit, c));
   }
 
   private static Optional<BigDecimal> parseConversion(String conversion) {
@@ -53,10 +53,6 @@ public class UnitMapping {
     } catch (Exception e) {
       return Optional.empty();
     }
-  }
-
-  public String getUcumUnit() {
-    return ucumUnit;
   }
 
   public String getUcumCode() {
