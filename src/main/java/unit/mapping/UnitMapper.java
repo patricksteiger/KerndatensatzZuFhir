@@ -1,10 +1,10 @@
-package unit.convert;
+package unit.mapping;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import unit.convert.mapping.UnitMapping;
-import unit.convert.parse.MappingBean;
-import unit.convert.parse.ParseMappings;
+import unit.mapping.mapping.UnitMapping;
+import unit.mapping.parse.MappingBean;
+import unit.mapping.parse.ParseMappings;
 import unit.ucum.Ucum;
 
 import java.util.HashMap;
@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class UnitConverter {
+public class UnitMapper {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UnitConverter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UnitMapper.class);
   private static final boolean LOGGING_ACTIVATED = false;
 
   private static final Map<String, UnitMapping> mappings = generateMappings(ParseMappings.list());
 
-  private UnitConverter() {}
+  private UnitMapper() {}
 
   public static Optional<UnitMapping> getUcum(String unit) {
     // Automatically return UCUM-Units
