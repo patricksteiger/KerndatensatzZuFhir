@@ -185,7 +185,6 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return ParsedRatio.fromString(menge)
-        .toRatio()
         .orElse(this.LOGGER.error("getMedicationIngredientStrength", "wirkstoff_menge", menge));
   }
 
@@ -223,7 +222,6 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return ParsedRatio.fromString(wirkstaerke)
-        .toRatio()
         .orElse(this.LOGGER.error("getMedicationAmount", "arzneimittel_wirkstaerke", wirkstaerke));
   }
 
