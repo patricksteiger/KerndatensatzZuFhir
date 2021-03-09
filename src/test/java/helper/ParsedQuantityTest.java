@@ -1,8 +1,12 @@
 package helper;
 
+import constants.Constants;
+import org.hl7.fhir.r4.model.Quantity;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ParsedQuantityTest {
 
@@ -11,22 +15,15 @@ class ParsedQuantityTest {
     String value = "75";
     String unit = "mg";
     String toTest = getValueStr(value) + getUnitStr(unit);
-    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
-    assertEquals(value, parsed.getValue());
-    assertEquals(unit, parsed.getUnit());
+    Optional<Quantity> parsed = ParsedQuantity.fromString(toTest);
+    assertQuantity(value, unit, parsed);
   }
 
   @Test
   void testFromStringEmpty() {
-    ParsedQuantity parsed = ParsedQuantity.fromString(null);
-    assertEquals("", parsed.getValue());
-    assertEquals("", parsed.getUnit());
-    parsed = ParsedQuantity.fromString("");
-    assertEquals("", parsed.getValue());
-    assertEquals("", parsed.getUnit());
-    parsed = ParsedQuantity.fromString("   ");
-    assertEquals("", parsed.getValue());
-    assertEquals("", parsed.getUnit());
+    assertFalse(ParsedQuantity.fromString(null).isPresent());
+    assertFalse(ParsedQuantity.fromString("").isPresent());
+    assertFalse(ParsedQuantity.fromString("   ").isPresent());
   }
 
   @Test
@@ -34,9 +31,8 @@ class ParsedQuantityTest {
     String value = "75";
     String unit = "mg";
     String toTest = "  " + getValueStr(value) + "   " + getUnitStr(unit) + " ";
-    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
-    assertEquals(value, parsed.getValue());
-    assertEquals(unit, parsed.getUnit());
+    Optional<Quantity> parsed = ParsedQuantity.fromString(toTest);
+    assertQuantity(value, unit, parsed);
   }
 
   @Test
@@ -44,27 +40,29 @@ class ParsedQuantityTest {
     String value = "12.7";
     String unit = "g/ml";
     String toTest = getValueStr(value) + getUnitStr(unit);
-    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
-    assertEquals(value, parsed.getValue());
-    assertEquals(unit, parsed.getUnit());
+    Optional<Quantity> parsed = ParsedQuantity.fromString(toTest);
+    assertQuantity(value, unit, parsed);
   }
 
   @Test
   void testFromStringNoUnit() {
-    String value = "123";
-    String toTest = getValueStr(value);
-    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
-    assertEquals(value, parsed.getValue());
-    assertEquals("", parsed.getUnit());
+    String value = getValueStr("123");
+    Optional<Quantity> parsed = ParsedQuantity.fromString(value);
+    assertQuantity("123", null, parsed);
   }
 
   @Test
-  void TestFromStringNoValue() {
-    String unit = "g";
-    String toTest = getUnitStr(unit);
-    ParsedQuantity parsed = ParsedQuantity.fromString(toTest);
-    assertEquals("", parsed.getValue());
-    assertEquals(unit, parsed.getUnit());
+  void testFromStringNoValue() {
+    assertFalse(ParsedQuantity.fromString(getUnitStr("g")).isPresent());
+  }
+
+  private void assertQuantity(
+      String expectedValue, String expectedUnit, Optional<Quantity> actualQuantity) {
+    assertTrue(actualQuantity.isPresent());
+    Quantity quantity = actualQuantity.get();
+    assertEquals(expectedValue, quantity.getValueElement().getValueAsString());
+    assertEquals(expectedUnit, quantity.getCode());
+    assertEquals(Constants.QUANTITY_SYSTEM, quantity.getSystem());
   }
 
   private String getValueStr(String value) {

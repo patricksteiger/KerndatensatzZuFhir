@@ -169,16 +169,8 @@ public class FhirGenerator {
     return quantity;
   }
 
-  public static Quantity quantity(BigDecimal value, ParsedQuantity unit) {
-    return quantity(value, unit.getUnit(), unit.getSystem(), unit.getUcum());
-  }
-
   public static Quantity quantity(BigDecimal value, String unit, String system, String code) {
     return quantity(value, null, unit, system, code);
-  }
-
-  public static Quantity quantity(BigDecimal value, String unit) {
-    return quantity(value, unit, "", "");
   }
 
   public static BooleanType booleanType(boolean type) {

@@ -385,13 +385,10 @@ public class Laborbefund implements Datablock {
 
   public Quantity getObservationReferenceRangeLow() {
     String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
-    ParsedQuantity parsedQuantity = ParsedQuantity.fromString(lower);
-    String parsedValue = parsedQuantity.getValue();
-    if (Helper.checkEmptyString(parsedValue)) {
+    if (Helper.checkEmptyString(lower)) {
       return Constants.getEmptyValue();
     }
-    return parsedQuantity
-        .toQuantity()
+    return ParsedQuantity.fromString(lower)
         .orElse(
             this.LOGGER.error(
                 "getObservationReferenceRangeLow",
@@ -401,13 +398,10 @@ public class Laborbefund implements Datablock {
 
   public Quantity getObservationReferenceRangeHigh() {
     String higher = this.getLaboruntersuchung_referenzbereich_obergrenze();
-    ParsedQuantity parsedQuantity = ParsedQuantity.fromString(higher);
-    String parsedValue = parsedQuantity.getValue();
-    if (Helper.checkEmptyString(parsedValue)) {
+    if (Helper.checkEmptyString(higher)) {
       return Constants.getEmptyValue();
     }
-    return parsedQuantity
-        .toQuantity()
+    return ParsedQuantity.fromString(higher)
         .orElse(
             this.LOGGER.error(
                 "getObservationReferenceRangeHigh",
@@ -450,9 +444,7 @@ public class Laborbefund implements Datablock {
 
   public Quantity getObservationValueQuantity() {
     String ergebnis = this.getLaboruntersuchung_ergebnis();
-    ParsedQuantity parsedQuantity = ParsedQuantity.fromString(ergebnis);
-    return parsedQuantity
-        .toQuantity()
+    return ParsedQuantity.fromString(ergebnis)
         .orElse(this.LOGGER.error("getObservationValue", "laboruntersuchung_ergebnis", ergebnis));
   }
 
