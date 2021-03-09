@@ -19,20 +19,26 @@ public class UnitConverter {
   private UnitConverter() {}
 
   public static Optional<Quantity> fromLocalCode(String localCode, String value) {
+    if (Helper.checkEmptyString(value)) {
+      return Optional.empty();
+    }
     Optional<UnitMapping> mappingOptional = UnitMapper.getUcum(localCode);
     if (!mappingOptional.isPresent()) {
       return Optional.empty();
     }
     UnitMapping mapping = mappingOptional.get();
-    Optional<String> valueStr = convertValue(value, mapping.getConversion());
-    return valueStr.flatMap(val -> quantity(val, mapping));
+    if (UnitReducible.fromString(mapping.getUcumCode())) {
+      Optional<String> valueStr = convertValue(value, mapping.getConversion());
+      return valueStr.flatMap(val -> quantity(val, mapping));
+    } else {
+      return quantity(value, mapping);
+    }
   }
 
   private static Optional<String> convertValue(String value, BigDecimal conversion) {
     if (Helper.checkEmptyString(value)) {
       return Optional.empty();
     }
-    // TODO: Check if value is allowed to be reduced (Blutdruck, ...)
     String[] formula = value.split(FRACTION);
     if (formula.length == 1) {
       return simpleValueConversion(value, conversion);
