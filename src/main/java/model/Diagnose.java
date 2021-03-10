@@ -4,6 +4,7 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
+import enums.ClinicalStatus;
 import enums.ICD_Diagnosesicherheit;
 import enums.ICD_Seitenlokalisation;
 import enums.KBVBaseStageLife;
@@ -80,28 +81,16 @@ public class Diagnose implements Datablock {
   }
 
   public CodeableConcept getCode() {
-    String icdCode = this.getIcd_diagnosecode();
-    String alphaCode = this.getAlpha_diagnosecode();
-    String snomedCode = this.getSnomed_diagnosecode();
-    String orphanetCode = this.getOrphanet_diagnosecode();
-    String weitererCode = this.getWeitere_diagnosecode();
-    if (Helper.checkAllEmptyString(icdCode, alphaCode, snomedCode, orphanetCode, weitererCode)) {
+    Coding icd = this.getCodeIcd();
+    Coding alpha = this.getCodeAlpha();
+    Coding sct = this.getCodeSct();
+    Coding orphanet = this.getCodeOrphanet();
+    Coding weitere = this.getCodeWeitere();
+    if (Helper.checkAllNull(icd, alpha, sct, orphanet, weitere)) {
       return LOGGER.error("getCode", "There has to be at least 1 code");
     }
-    CodeableConcept code = new CodeableConcept();
-    // ICD-10-GM (optional)
-    code.addCoding(this.getCodeIcd());
-    // ALPHA-ID (optional)
-    code.addCoding(this.getCodeAlpha());
-    // SCT (optional)
-    code.addCoding(this.getCodeSct());
-    // ORPHANET (optional)
-    code.addCoding(this.getCodeOrphanet());
-    // Weitere Kodesysteme (optional)
-    code.addCoding(this.getCodeWeitere());
-    // Text (optional)
-    code.setText(this.getText());
-    return code;
+    return FhirGenerator.codeableConcept(icd, alpha, sct, orphanet, weitere)
+        .setText(this.getText());
   }
 
   public String getText() {
@@ -249,9 +238,9 @@ public class Diagnose implements Datablock {
   }
 
   public Date getRecordedDate() {
-    String dokumentationsdatum = this.getDokumentationsdatum();
-    return Helper.getDateFromISO(dokumentationsdatum)
-        .orElse(LOGGER.error("getRecordedDate", "dokumentationsdatum", dokumentationsdatum));
+    String datum = this.getDokumentationsdatum();
+    return Helper.getDateFromISO(datum)
+        .orElse(LOGGER.error("getRecordedDate", "dokumentationsdatum", datum));
   }
 
   public Type getOnset() {
@@ -331,10 +320,10 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.CONDITION_CLINICAL_STATUS;
-    String display = parsedCode.getDisplay();
-    Coding clinicalStatus = FhirGenerator.coding(code, system, display);
-    return FhirGenerator.codeableConcept(clinicalStatus);
+    return ClinicalStatus.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElse(this.LOGGER.error("getClinicalStatus", "klinischer_status", code));
   }
 
   public Meta getMeta() {
