@@ -147,7 +147,7 @@ public class Person implements Datablock {
     List<Address> addresses =
         Helper.listOf(this.getPatientAddressStrassenanschrift(), this.getPatientAddressPostfach());
     if (Helper.checkAllNull(addresses)) {
-      return LOGGER.error(
+      LOGGER.error(
           "getPatientAddresses", "At least 1 of Strassenaschrift and Postfach needs to be set!");
     }
     return addresses;
@@ -204,9 +204,6 @@ public class Person implements Datablock {
 
   public Date getPatientBirthDate() {
     String birthDate = this.getGeburtsdatum();
-    if (Helper.checkEmptyString(birthDate)) {
-      return LOGGER.emptyValue("getPatientBirthDate", "geburtsdatum");
-    }
     return Helper.getDateFromISO(birthDate)
         .orElse(LOGGER.error("getPatientBirthDate", "geburtsdatum", birthDate));
   }
@@ -241,50 +238,48 @@ public class Person implements Datablock {
   public HumanName getPatientName() {
     HumanName.NameUse use = HumanName.NameUse.OFFICIAL; /* Use has to be set! */
     List<Extension> family = this.getPatientNameFamily();
-    if (family.isEmpty()) {
-      return LOGGER.error("getPatientName", "family is required!");
-    }
     List<String> given = this.getPatientNameGiven();
-    if (given.isEmpty()) {
-      return LOGGER.error("getPatientName", "given is required!");
-    }
     List<Extension> artDesPrefix = this.getPatientNamePrefix();
     String prefix = this.getPraefix();
     return FhirGenerator.humanName(use, family, given, artDesPrefix, prefix);
   }
 
   public List<Extension> getPatientNameFamily() {
-    List<Extension> family = new ArrayList<>();
+    List<Extension> family = new ArrayList<>(3);
     if (Helper.checkNonEmptyString(this.getNamenszusatz())) {
       StringType zusatz = new StringType(this.getNamenszusatz());
       family.add(FhirGenerator.extension(ExtensionUrl.NAMENSZUSATZ, zusatz));
     }
     if (Helper.checkNonEmptyString(this.getNachname())) {
-      StringType nachname = new StringType(this.getNachname());
-      family.add(FhirGenerator.extension(ExtensionUrl.NACHNAME, nachname));
+      StringType nachnameType = new StringType(this.getNachname());
+      family.add(FhirGenerator.extension(ExtensionUrl.NACHNAME, nachnameType));
     }
     if (Helper.checkNonEmptyString(this.getVorsatzwort())) {
-      StringType vorsatzwort = new StringType(this.getVorsatzwort());
-      family.add(FhirGenerator.extension(ExtensionUrl.VORSATZWORT, vorsatzwort));
+      StringType vorsatzwortType = new StringType(this.getVorsatzwort());
+      family.add(FhirGenerator.extension(ExtensionUrl.VORSATZWORT, vorsatzwortType));
+    }
+    if (family.isEmpty()) {
+      return LOGGER.error("getPatientNameFamily", "family is required!");
     }
     return family;
   }
 
   public List<String> getPatientNameGiven() {
-    List<String> given = new ArrayList<>();
-    if (Helper.checkNonEmptyString(this.getVorname())) given.add(this.getVorname());
-    return given;
+    String name = this.getVorname();
+    if (Helper.checkEmptyString(name)) {
+      return LOGGER.error("getPatientNameGiven", "given is required!");
+    }
+    return Helper.listOf(name);
   }
 
   public List<Extension> getPatientNamePrefix() {
-    List<Extension> prefix = new ArrayList<>();
     ParsedCode parsedCode = ParsedCode.fromString(this.getArt_des_praefix());
     String code = parsedCode.getCode();
-    if (Helper.checkNonEmptyString(code)) {
-      StringType artDesPrefix = new StringType(code);
-      prefix.add(FhirGenerator.extension(ExtensionUrl.PREFIX, artDesPrefix));
+    if (Helper.checkEmptyString(code)) {
+      return Constants.getEmptyValue();
     }
-    return prefix;
+    StringType artDesPrefix = new StringType(code);
+    return Helper.listOf(FhirGenerator.extension(ExtensionUrl.PREFIX, artDesPrefix));
   }
 
   public Identifier getPatientPID() {
@@ -336,7 +331,7 @@ public class Person implements Datablock {
     String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
     IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
     Coding coding = FhirGenerator.coding(identifierTypeCode);
-    CodeableConcept identifierType = new CodeableConcept().addCoding(coding);
+    CodeableConcept identifierType = FhirGenerator.codeableConcept(coding);
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
     Identifier identifier =
         FhirGenerator.identifier(
