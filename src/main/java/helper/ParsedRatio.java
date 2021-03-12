@@ -21,12 +21,15 @@ public class ParsedRatio {
       return Optional.empty();
     }
     String[] splitValue = value.split(FRACTION);
-    String numeratorValue = splitValue.length > 0 ? splitValue[0] : "";
+    if (splitValue.length != 1 && splitValue.length != 2) {
+      return Optional.empty();
+    }
+    String numeratorValue = splitValue[0];
     Optional<Quantity> numerator = UnitConverter.fromLocalCode(splitUnit[0], numeratorValue);
     if (!numerator.isPresent()) {
       return Optional.empty();
     }
-    String denominatorValue = splitValue.length > 1 ? splitValue[1] : "1";
+    String denominatorValue = splitValue.length == 2 ? splitValue[1] : "1";
     Optional<Quantity> denominator = UnitConverter.fromLocalCode(splitUnit[1], denominatorValue);
     return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
   }

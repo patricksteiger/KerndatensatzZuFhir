@@ -25,6 +25,14 @@ class ParsedRatioTest {
   }
 
   @Test
+  void testInvalidValue() {
+    String value = getValueStr("1/2/3");
+    String unit = getUnitStr("L/g");
+    String code = value + " " + unit;
+    assertFalse(ParsedRatio.fromString(code).isPresent());
+  }
+
+  @Test
   void testBothNumAndDenom() {
     String value = "1/2";
     String unit = "g/l";
