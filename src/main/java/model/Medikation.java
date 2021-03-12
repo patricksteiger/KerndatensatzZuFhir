@@ -244,7 +244,7 @@ public class Medikation implements Datablock {
     }
     Coding code;
     // Generally system is expected to be AtcDE. Only Change if PZN is given explicitly.
-    if (parsedCode.getDisplay().equals(CodingSystem.PHARMA_ZENTRAL_NUMMER)) {
+    if (CodingSystem.PHARMA_ZENTRAL_NUMMER.equals(parsedCode.getSystem())) {
       code = this.getMedicationCodePharma();
     } else {
       code = this.getMedicationCodeAtcDE();
