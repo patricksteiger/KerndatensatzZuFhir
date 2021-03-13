@@ -31,9 +31,11 @@ public class UnitMapper {
    */
   public static Optional<UnitMapping> getUcum(String unit) {
     // Automatically return UCUM-Units
-    return Ucum.validate(unit)
-        ? UnitMapping.fromUcumUnit(unit)
-        : Optional.ofNullable(mappings.get(unit));
+    Optional<UnitMapping> mapping = UnitMapping.fromUcumUnit(unit);
+    if (!mapping.isPresent()) {
+      mapping = Optional.ofNullable(mappings.get(unit));
+    }
+    return mapping;
   }
 
   private static Map<String, UnitMapping> generateMappings(List<MappingBean> mappingsBeans) {
