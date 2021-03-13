@@ -5,6 +5,7 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/** @see "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT" */
 public enum ICD_Diagnosesicherheit implements Code {
   AUSGESCHLOSSEN("A", "ausgeschlossen"),
   GESICHERTE_DIAGNOSE("G", "gesicherte Diagnose"),
