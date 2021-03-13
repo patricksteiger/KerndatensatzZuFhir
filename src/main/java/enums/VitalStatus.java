@@ -3,6 +3,10 @@ package enums;
 import constants.CodingSystem;
 import interfaces.Code;
 
+/**
+ * @see
+ *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulPerson-ImplementationGuide/Terminologien"
+ */
 public enum VitalStatus implements Code {
   LEBENDIG("L", "Patient lebt"),
   VERSTORBEN("T", "Patient verstorben"),
