@@ -5,6 +5,7 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/** @see "https://applications.kbv.de/S_ICD_SEITENLOKALISATION_V1.00.xhtml" */
 public enum ICD_Seitenlokalisation implements Code {
   RECHTS("R", "rechts"),
   LINKS("L", "links"),
