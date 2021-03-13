@@ -6,6 +6,10 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/**
+ * @see
+ *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
+ */
 public enum DurchfuehrungsabsichtCode implements Code {
   THERAPEUTIC("262202000", "Therapeutic"),
   PALLIATIVE_INTENT("363676003", "Palliative intent"),
