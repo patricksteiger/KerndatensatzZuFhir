@@ -17,9 +17,6 @@ import java.util.Optional;
 
 public class Fall implements Datablock {
   private final Logger LOGGER = new Logger(Fall.class);
-  private final String EINRICHTUNGS_ENCOUNTER = "EinrichtungsEncounter";
-  private final String ABTEILUNGS_ENCOUNTER = "AbteilungsEncounter";
-  private final String VERSORGUNGSSTELLEN_ENCOUNTER = "VersorgungsstellenEncounter";
 
   @CsvBindByName private String patNr;
   // Einrichtungskontakt
