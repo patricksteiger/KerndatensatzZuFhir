@@ -6,6 +6,10 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/**
+ * @see
+ *     "https://art-decor.org/decor/services/RetrieveValueSet?prefix=mide-&id=2.16.840.1.113883.3.1937.777.24.11.1&effectiveDate=2018-06-13T13:05:22&version=&format=html&language=de-DE&seetype=live-services"
+ */
 public enum Diagnosesicherheit implements Code {
   SUSPECTED("415684004", "Suspected", ICD_Diagnosesicherheit.VERDACHT_AUF),
   DIAGNOSIS_OF_EXCLUSION(
