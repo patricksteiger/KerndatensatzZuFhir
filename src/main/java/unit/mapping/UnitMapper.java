@@ -21,13 +21,19 @@ public class UnitMapper {
 
   private UnitMapper() {}
 
+  /**
+   * Returns UnitMapping corresponding to given unit. If unit is already in UCUM-Format a conversion
+   * of UnitMapping is BigDecimal.ONE. Otherwise returns mapping according to ParseMappings.
+   *
+   * @param unit unit which UCUM-Format is needed.
+   * @return UCUM-Format mapping with conversion, or empty if unit is not in UCUM-Format and ha sno
+   *     mapping.
+   */
   public static Optional<UnitMapping> getUcum(String unit) {
     // Automatically return UCUM-Units
-    if (Ucum.validate(unit)) {
-      return UnitMapping.fromUcumUnit(unit);
-    }
-    UnitMapping mapping = mappings.get(unit);
-    return mapping != null ? Optional.of(mapping) : Optional.empty();
+    return Ucum.validate(unit)
+        ? UnitMapping.fromUcumUnit(unit)
+        : Optional.ofNullable(mappings.get(unit));
   }
 
   private static Map<String, UnitMapping> generateMappings(List<MappingBean> mappingsBeans) {
@@ -39,15 +45,19 @@ public class UnitMapper {
       if (mapping.isPresent()) {
         addMapping(mappings, bean.getLocalUnit(), mapping.get());
       } else if (LOGGING_ACTIVATED) {
-        LOGGER.warn(
-            "Couldn't generate mapping for unit on line {}. Local = \"{}\", Ucum = \"{}\", Conversion = \"{}\"",
-            line + 1,
-            bean.getLocalUnit(),
-            bean.getUcumUnit(),
-            bean.getConversion());
+        logFailedMapping(bean, line + 1);
       }
     }
     return mappings;
+  }
+
+  private static void logFailedMapping(MappingBean bean, int line) {
+    LOGGER.warn(
+        "Couldn't generate mapping for unit on line {}. Local = \"{}\", Ucum = \"{}\", Conversion = \"{}\"",
+        line + 1,
+        bean.getLocalUnit(),
+        bean.getUcumUnit(),
+        bean.getConversion());
   }
 
   private static void addMapping(
@@ -57,6 +67,7 @@ public class UnitMapper {
       return;
     }
     UnitMapping currentMapping = mappings.get(localUnit);
+    // Make sure to save shortest mapping
     if (currentMapping == null
         || currentMapping.getConversion().scale() > unitMapping.getConversion().scale()) {
       mappings.put(localUnit, unitMapping);
