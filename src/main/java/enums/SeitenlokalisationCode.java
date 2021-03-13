@@ -6,6 +6,10 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/**
+ * @see
+ *     "https://art-decor.org/art-decor/decor-valuesets--mide-?id=1.2.40.0.34.10.176&effectiveDate="
+ */
 public enum SeitenlokalisationCode implements Code {
   RECHTS("R", "rechts", CodingSystem.OPS_SEITENLOKALISATION),
   LINKS("L", "links", CodingSystem.OPS_SEITENLOKALISATION),
