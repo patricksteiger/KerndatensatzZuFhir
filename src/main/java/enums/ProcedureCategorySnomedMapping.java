@@ -6,6 +6,10 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/**
+ * @see
+ *     "https://simplifier.net/guide/MedizininformatikInitiative-ModulProzeduren-ImplementationGuide/Terminologien"
+ */
 public enum ProcedureCategorySnomedMapping implements Code {
   DIAGNOSTIC("103693007", "Diagnostic procedure", '1'),
   IMAGING("363679005", "Imaging", '3'),
