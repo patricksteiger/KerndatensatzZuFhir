@@ -16,6 +16,12 @@ public class UnitMapping {
     this.conversion = conversion;
   }
 
+  /**
+   * Checks if given unit is in UCUM-Format and returns simple mapping with conversion of 1.
+   *
+   * @param ucumUnit unit
+   * @return UnitMapping with conversion 1, if unit is not UCUM it returns empty
+   */
   public static Optional<UnitMapping> fromUcumUnit(String ucumUnit) {
     if (Ucum.validate(ucumUnit)) {
       UnitMapping mapping = new UnitMapping(ucumUnit, BigDecimal.ONE);
@@ -46,13 +52,8 @@ public class UnitMapping {
     if (Helper.checkEmptyString(conversion) || !conversion.startsWith("x*")) {
       return Optional.empty();
     }
-    try {
-      String number = conversion.substring(2);
-      BigDecimal result = new BigDecimal(number);
-      return Optional.of(result);
-    } catch (Exception e) {
-      return Optional.empty();
-    }
+    String number = conversion.substring(2);
+    return Helper.parseValue(number);
   }
 
   public String getUcumCode() {
