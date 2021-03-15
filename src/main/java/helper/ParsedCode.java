@@ -25,15 +25,18 @@ public class ParsedCode {
    * @return Parsed code, system and display
    */
   public static ParsedCode fromString(String str) {
-    List<String> words = Helper.splitCode(str);
-    String code = Helper.extractCode(words, "code=");
-    String system = Helper.extractCode(words, "system=");
-    String display = Helper.extractCode(words, "display=");
-    // Set code in case of simple format
-    if (Helper.checkAllEmptyString(code, system, display)) {
-      code = Helper.checkNonEmptyString(str) ? Helper.trimQuotes(str) : "";
+    if (Helper.checkEmptyString(str)) {
+      return new ParsedCode("", "", "");
+    } else if (!str.contains("code=") && !str.contains("system=") && !str.contains("display=")) {
+      String code = Helper.trimQuotes(str);
+      return new ParsedCode(code, "", "");
+    } else {
+      List<String> words = Helper.splitCode(str);
+      String code = Helper.extractCode(words, "code=");
+      String system = Helper.extractCode(words, "system=");
+      String display = Helper.extractCode(words, "display=");
+      return new ParsedCode(code, system, display);
     }
-    return new ParsedCode(code, system, display);
   }
 
   public String getCode() {
