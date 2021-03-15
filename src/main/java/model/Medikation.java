@@ -161,7 +161,7 @@ public class Medikation implements Datablock {
     return Behandlungsgrund.fromCode(behandlungsgrund)
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
-        .orElse(
+        .orElseGet(
             LOGGER.error(
                 "getMedicationAdministrationReasonCode", "behandlungsgrund", behandlungsgrund));
   }
@@ -172,7 +172,8 @@ public class Medikation implements Datablock {
     ingredient.addExtension(this.getMedicationIngredientExtension());
     CodeableConcept item = this.getMedicationIngredientItem();
     if (item == Constants.getEmptyValue()) {
-      return LOGGER.error("getMedicationIngredient", "Item needs to be set for Ingredient!");
+      return (Medication.MedicationIngredientComponent)
+          LOGGER.error("getMedicationIngredient", "Item needs to be set for Ingredient!").get();
     }
     ingredient.setItem(item);
     ingredient.setStrength(this.getMedicationIngredientStrength());
@@ -185,14 +186,15 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return ParsedRatio.fromString(menge)
-        .orElse(this.LOGGER.error("getMedicationIngredientStrength", "wirkstoff_menge", menge));
+        .orElseGet(this.LOGGER.error("getMedicationIngredientStrength", "wirkstoff_menge", menge));
   }
 
   public CodeableConcept getMedicationIngredientItem() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getWirkstoff_code_aktiv());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue("getMedicationIngredientItem", "wirkstoff_code_aktiv");
+      return (CodeableConcept)
+          LOGGER.emptyValue("getMedicationIngredientItem", "wirkstoff_code_aktiv").get();
     }
     String system = parsedCode.getSystem();
     String display = this.getWirkstoff_name_aktiv();
@@ -210,7 +212,7 @@ public class Medikation implements Datablock {
     Coding value =
         Wirkstofftyp.fromCode(code)
             .map(FhirGenerator::coding)
-            .orElse(
+            .orElseGet(
                 LOGGER.error("getMedicationIngredientExtension", "wirkstoff_code_allgemein", code));
     String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
     return FhirGenerator.extension(url, value);
@@ -222,7 +224,8 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return ParsedRatio.fromString(wirkstaerke)
-        .orElse(this.LOGGER.error("getMedicationAmount", "arzneimittel_wirkstaerke", wirkstaerke));
+        .orElseGet(
+            this.LOGGER.error("getMedicationAmount", "arzneimittel_wirkstaerke", wirkstaerke));
   }
 
   public CodeableConcept getMedicationForm() {
@@ -337,7 +340,7 @@ public class Medikation implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
     String code = parsedCode.getCode();
     return MedikationStatus.medicationAdministrationStatusFromCode(code)
-        .orElse(LOGGER.error("getMedicationAdministrationStatus", "status", code));
+        .orElseGet(LOGGER.error("getMedicationAdministrationStatus", "status", code));
   }
 
   public Reference getMedicationStatementInformationSource() {
@@ -354,7 +357,8 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(eintragsDatum)
-        .orElse(LOGGER.error("getMedicationStatementDateAsserted", "datum_eintrag", eintragsDatum));
+        .orElseGet(
+            LOGGER.error("getMedicationStatementDateAsserted", "datum_eintrag", eintragsDatum));
   }
 
   public Annotation getMedicationStatementNote() {
@@ -391,7 +395,10 @@ public class Medikation implements Datablock {
     }
     Optional<Quantity> quantity = ParsedQuantity.fromString(dosis);
     if (!quantity.isPresent()) {
-      return this.LOGGER.error("getMedicationStatementDosageDoseAndRate", "dosierung_dosis", dosis);
+      return (List<Dosage.DosageDoseAndRateComponent>)
+          this.LOGGER
+              .error("getMedicationStatementDosageDoseAndRate", "dosierung_dosis", dosis)
+              .get();
     }
     Quantity dose = quantity.get();
     Dosage.DosageDoseAndRateComponent doseAndRate = new Dosage.DosageDoseAndRateComponent();
@@ -414,7 +421,7 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(zeitpunkt)
-        .orElse(
+        .orElseGet(
             LOGGER.error(
                 "getMedicationStatementDosageTimingEvent", "dosierung_zeitpunkt", zeitpunkt));
   }
@@ -425,7 +432,8 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return Helper.getDateFromISO(phase)
-        .orElse(LOGGER.error("getMedicationStatementDosageTimingPhase", "dosierung_phase", phase));
+        .orElseGet(
+            LOGGER.error("getMedicationStatementDosageTimingPhase", "dosierung_phase", phase));
   }
 
   public Timing.TimingRepeatComponent getMedicationStatementDosageTimingRepeat() {
@@ -466,7 +474,7 @@ public class Medikation implements Datablock {
     }
     return Helper.booleanFromString(einnahmeBeiBedarf)
         .map(FhirGenerator::booleanType)
-        .orElse(
+        .orElseGet(
             LOGGER.error(
                 "getMedicationStatementDosageAsNeeded",
                 "dosierung_einnahme_bei_bedarf",
@@ -476,12 +484,13 @@ public class Medikation implements Datablock {
   public Type getMedicationStatementEffective() {
     String startzeitpunkt = this.getEinnahme_startzeitpunkt();
     if (Helper.checkEmptyString(startzeitpunkt)) {
-      return LOGGER.emptyValue("getMedicationStatementEffective", "einnahme_startzeitpunkt");
+      return (Type)
+          LOGGER.emptyValue("getMedicationStatementEffective", "einnahme_startzeitpunkt").get();
     }
     DateTimeType start =
         Helper.getDateFromISO(startzeitpunkt)
             .map(FhirGenerator::dateTimeType)
-            .orElse(
+            .orElseGet(
                 LOGGER.error(
                     "getMedicationStatementEffective", "einnahme_startzeitpunkt", startzeitpunkt));
     DateTimeType end = new DateTimeType();
@@ -489,7 +498,7 @@ public class Medikation implements Datablock {
     if (Helper.checkNonEmptyString(endzeitpunkt)) {
       Date endDate =
           Helper.getDateFromISO(endzeitpunkt)
-              .orElse(
+              .orElseGet(
                   LOGGER.error(
                       "getMedicationStatementEffective", "einnahme_endzeitpunkt", endzeitpunkt));
       end.setValue(endDate);
@@ -510,7 +519,7 @@ public class Medikation implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
     String code = parsedCode.getCode();
     return MedikationStatus.medicationStatementStatusFromCode(code)
-        .orElse(LOGGER.error("getMedicationStatementStatus", "status", code));
+        .orElseGet(LOGGER.error("getMedicationStatementStatus", "status", code));
   }
 
   public Identifier getMedicationStatementIdentifier() {

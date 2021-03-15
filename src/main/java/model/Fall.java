@@ -139,12 +139,15 @@ public class Fall implements Datablock {
   public Period getVersorgungsstellenEncounterPeriod() {
     String beginndatum = this.getVersorgungsstellenkontakt_beginndatum();
     if (Helper.checkEmptyString(beginndatum)) {
-      return LOGGER.emptyValue(
-          "getVersorgungsstellenEncounterPeriod", "versorgungsstellenkontakt_beginndatum");
+      return (Period)
+          LOGGER
+              .emptyValue(
+                  "getVersorgungsstellenEncounterPeriod", "versorgungsstellenkontakt_beginndatum")
+              .get();
     }
     Date start =
         Helper.getDateFromISO(beginndatum)
-            .orElse(
+            .orElseGet(
                 LOGGER.error(
                     "getVersorgungsstellenEncounterPeriod",
                     "versorgungsstellenkontakt_beginndatum",
@@ -153,7 +156,7 @@ public class Fall implements Datablock {
     if (Helper.checkNonEmptyString(enddatum)) {
       Date end =
           Helper.getDateFromISO(enddatum)
-              .orElse(
+              .orElseGet(
                   LOGGER.error(
                       "getVersorgungsstellenEncounterPeriod",
                       "versorgungsstellenkontakt_enddatum",
@@ -180,8 +183,10 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getVersorgungsstellenkontakt_klasse());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue(
-          "getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse");
+      return (Coding)
+          LOGGER
+              .emptyValue("getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse")
+              .get();
     }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
@@ -220,7 +225,7 @@ public class Fall implements Datablock {
     return Aufnahmeanlass.fromCode(code)
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
-        .orElse(
+        .orElseGet(
             LOGGER.error(
                 "getEinrichtungsEncounterAdmitSource", "einrichtungskontakt_aufnahmeanlass", code));
   }
@@ -234,7 +239,7 @@ public class Fall implements Datablock {
     return Entlassungsgrund.fromCode(code)
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
-        .orElse(
+        .orElseGet(
             LOGGER.error(
                 "getEinrichtungsEncounterDischargeDisposition",
                 "einrichtungskontakt_entlassungsgrund",
@@ -251,7 +256,7 @@ public class Fall implements Datablock {
     return Aufnahmegrund.fromCode(code)
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
-        .orElse(
+        .orElseGet(
             LOGGER.error(
                 "getEinrichtungsEncounterReasonCode",
                 "einrichtungskontakt_aufnahmegrund",
@@ -261,11 +266,14 @@ public class Fall implements Datablock {
   public Period getEinrichtungsEncounterPeriod() {
     String beginndatum = this.getEinrichtungskontakt_beginndatum();
     if (Helper.checkEmptyString(beginndatum)) {
-      return LOGGER.emptyValue("getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum");
+      return (Period)
+          LOGGER
+              .emptyValue("getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum")
+              .get();
     }
     Date start =
         Helper.getDateFromISO(beginndatum)
-            .orElse(
+            .orElseGet(
                 LOGGER.error(
                     "getEinrichtungsEncounterPeriod",
                     "einrichtungskontakt_beginndatum",
@@ -274,7 +282,7 @@ public class Fall implements Datablock {
     if (Helper.checkNonEmptyString(enddatum)) {
       Date end =
           Helper.getDateFromISO(enddatum)
-              .orElse(
+              .orElseGet(
                   LOGGER.error(
                       "getEinrichtungsEncounterPeriod", "einrichtungskontakt_enddatum", enddatum));
       return FhirGenerator.period(start, end);
@@ -310,7 +318,8 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_klasse());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue("getEinrichtungsEncounterClass", "einrichtungskontakt_klasse");
+      return (Coding)
+          LOGGER.emptyValue("getEinrichtungsEncounterClass", "einrichtungskontakt_klasse").get();
     }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
@@ -343,18 +352,19 @@ public class Fall implements Datablock {
   public Period getAbteilungsEncounterPeriod() {
     String beginndatum = this.getAbteilungskontakt_beginndatum();
     if (Helper.checkEmptyString(beginndatum)) {
-      return LOGGER.emptyValue("getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum");
+      return (Period)
+          LOGGER.emptyValue("getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum").get();
     }
     Date start =
         Helper.getDateFromISO(beginndatum)
-            .orElse(
+            .orElseGet(
                 LOGGER.error(
                     "getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum", beginndatum));
     String enddatum = this.getAbteilungskontakt_enddatum();
     if (Helper.checkNonEmptyString(enddatum)) {
       Date end =
           Helper.getDateFromISO(enddatum)
-              .orElse(
+              .orElseGet(
                   LOGGER.error(
                       "getAbteilungsEncounterPeriod", "abteilungskontakt_enddatum", enddatum));
       return FhirGenerator.period(start, end);
@@ -392,7 +402,7 @@ public class Fall implements Datablock {
     Coding fachabteilungsschluessel =
         abteilungFromCode
             .map(FhirGenerator::coding)
-            .orElse(
+            .orElseGet(
                 this.LOGGER.warn(
                     FhirGenerator.coding(abteilungsCode, system, display),
                     "getAbteilungsEncounterServiceType",
@@ -404,7 +414,8 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_klasse());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue("getAbteilungsEncounterClass", "abteilungskontakt_klasse");
+      return (Coding)
+          LOGGER.emptyValue("getAbteilungsEncounterClass", "abteilungskontakt_klasse").get();
     }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
