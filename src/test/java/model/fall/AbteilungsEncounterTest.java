@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static util.Asserter.*;
-import static util.Util.*;
+import static util.Util.expectedDateString;
+import static util.Util.getCodeDisplayStr;
 
 class AbteilungsEncounterTest {
   private Fall fall;
@@ -56,7 +57,9 @@ class AbteilungsEncounterTest {
   @Test
   void testServiceType() {
     // empty fachabteilungsschluessel [NO LOGGING]
-    assertEmptyCodeValue(fall::setAbteilungskontakt_fachabteilungsschluessel, fall::getAbteilungsEncounterServiceType);
+    assertEmptyCodeValue(
+        fall::setAbteilungskontakt_fachabteilungsschluessel,
+        fall::getAbteilungsEncounterServiceType);
     // invalid fachabteilungsschluessel
     String code = "invalid";
     String display = "invalid display";
