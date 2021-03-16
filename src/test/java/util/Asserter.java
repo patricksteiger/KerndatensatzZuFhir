@@ -7,10 +7,23 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Period;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static util.Util.getCodeStr;
 
 public class Asserter {
   private Asserter() {}
+
+  public static <T> void assertEmptyCodeValue(Consumer<String> setter, Supplier<T> getter) {
+    setter.accept("");
+    assertEmptyValue(getter.get());
+    setter.accept(null);
+    assertEmptyValue(getter.get());
+    setter.accept(getCodeStr(""));
+    assertEmptyValue(getter.get());
+  }
 
   public static void assertIdentifier(
       String expectedValue, String expectedSystem, Code expectedCode, Identifier identifier) {
