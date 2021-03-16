@@ -80,11 +80,8 @@ class EinrichtungsEncounterTest {
   @Test
   void testReasonCode() {
     // empty aufnahmegrund [NO LOGGING]
-    fall.setEinrichtungskontakt_aufnahmegrund("");
-    assertEmptyValue(fall.getEinrichtungsEncounterReasonCode());
-    String emptyCode = getCodeStr("");
-    fall.setEinrichtungskontakt_aufnahmegrund(emptyCode);
-    assertEmptyValue(fall.getEinrichtungsEncounterReasonCode());
+    assertEmptyCodeValue(
+        fall::setEinrichtungskontakt_aufnahmegrund, fall::getEinrichtungsEncounterReasonCode);
     // invalid aufnahmegrund
     String code = getCodeStr("invalid");
     fall.setEinrichtungskontakt_aufnahmegrund(code);
@@ -123,10 +120,9 @@ class EinrichtungsEncounterTest {
   @Test
   void testDischargeDisposition() {
     // empty entlassungsgrund [NO LOGGING]
-    fall.setEinrichtungskontakt_entlassungsgrund("");
-    assertEmptyValue(fall.getEinrichtungsEncounterDischargeDisposition());
-    fall.setEinrichtungskontakt_entlassungsgrund(null);
-    assertEmptyValue(fall.getEinrichtungsEncounterDischargeDisposition());
+    assertEmptyCodeValue(
+        fall::setEinrichtungskontakt_entlassungsgrund,
+        fall::getEinrichtungsEncounterDischargeDisposition);
     // invalid entlassungsgrund
     String entlassungsgrund = getCodeDisplayStr("invalid", "failed display");
     fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
@@ -142,12 +138,8 @@ class EinrichtungsEncounterTest {
   @Test
   void testAdmitSource() {
     // empty aufnahmeanlass [NO LOGGING]
-    fall.setEinrichtungskontakt_aufnahmeanlass("");
-    assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
-    fall.setEinrichtungskontakt_aufnahmeanlass(null);
-    assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
-    fall.setEinrichtungskontakt_aufnahmeanlass(getCodeStr(""));
-    assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
+    assertEmptyCodeValue(
+        fall::setEinrichtungskontakt_aufnahmeanlass, fall::getEinrichtungsEncounterAdmitSource);
     // invalid aufnahmeanlass
     String anlass = getCodeDisplayStr("invalid", "invalid display");
     fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
