@@ -1,16 +1,19 @@
 package model.fall;
 
 import constants.CodingSystem;
-import constants.Constants;
 import constants.IdentifierSystem;
 import enums.*;
-import interfaces.Code;
 import model.Fall;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Period;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static util.Asserter.*;
+import static util.Util.*;
 
 class EinrichtungsEncounterTest {
   private Fall fall;
@@ -176,81 +179,5 @@ class EinrichtungsEncounterTest {
     result = fall.getEinrichtungsEncounterHospitalization();
     assertTrue(result.hasAdmitSource());
     assertTrue(result.hasDischargeDisposition());
-  }
-
-  private void assertIdentifier(
-      String expectedValue, String expectedSystem, Code expectedCode, Identifier identifier) {
-    assertNonEmptyValue(identifier);
-    assertEquals(expectedValue, identifier.getValue());
-    assertEquals(expectedSystem, identifier.getSystem());
-    assertEquals(1, identifier.getType().getCoding().size());
-    assertCoding(expectedCode, identifier.getType().getCoding().get(0));
-  }
-
-  private void assertCodeableConcept(
-      String expectedCode,
-      String expectedSystem,
-      String expectedDisplay,
-      CodeableConcept codeableConcept) {
-    assertNonEmptyValue(codeableConcept);
-    assertEquals(1, codeableConcept.getCoding().size());
-    assertCoding(expectedCode, expectedSystem, expectedDisplay, codeableConcept.getCoding().get(0));
-  }
-
-  private void assertCodeableConcept(Code expectedCode, CodeableConcept codeableConcept) {
-    assertNonEmptyValue(codeableConcept);
-    assertEquals(1, codeableConcept.getCoding().size());
-    assertCoding(expectedCode, codeableConcept.getCoding().get(0));
-  }
-
-  private void assertCoding(Code expectedCode, Coding coding) {
-    assertEquals(expectedCode.getCode(), coding.getCode());
-    assertEquals(expectedCode.getSystem(), coding.getSystem());
-    assertEquals(expectedCode.getDisplay(), coding.getDisplay());
-  }
-
-  private void assertCoding(
-      String expectedCode, String expectedSystem, String expectedDisplay, Coding coding) {
-    assertEquals(expectedCode, coding.getCode());
-    assertEquals(expectedSystem, coding.getSystem());
-    assertEquals(expectedDisplay, coding.getDisplay());
-  }
-
-  private String getCodeDisplayStr(String code, String display) {
-    return getCodeStr(code) + " " + getDisplayStr(display);
-  }
-
-  private String getDisplayStr(String display) {
-    return "display=\"" + display + "\"";
-  }
-
-  private String getCodeStr(String code) {
-    return "code=\"" + code + "\"";
-  }
-
-  private String expectedDateString(String date) {
-    String[] numbers = date.split("-");
-    return numbers[2] + "." + numbers[1] + "." + numbers[0] + " 00:00:00";
-  }
-
-  private void assertPeriod(String expectedStart, String expectedEnd, Period period) {
-    if (expectedStart == Constants.getEmptyValue()) {
-      assertEquals(Constants.getEmptyValue(), period.getStart());
-    } else {
-      assertEquals(expectedStart, period.getStart().toLocaleString());
-    }
-    if (expectedEnd == Constants.getEmptyValue()) {
-      assertEquals(Constants.getEmptyValue(), period.getEnd());
-    } else {
-      assertEquals(expectedEnd, period.getEnd().toLocaleString());
-    }
-  }
-
-  private <T> void assertNonEmptyValue(T value) {
-    assertNotNull(value);
-  }
-
-  private <T> void assertEmptyValue(T value) {
-    assertNull(value);
   }
 }
