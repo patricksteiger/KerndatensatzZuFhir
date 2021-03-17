@@ -25,11 +25,28 @@
             <artifactId>org.hl7.fhir.r4</artifactId>
             <version>5.3.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.fhir/ucum -->
+        <dependency>
+            <groupId>org.fhir</groupId>
+            <artifactId>ucum</artifactId>
+            <version>1.0.3</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.0-alpha1</version>
+        </dependency>
+
+        <!-- TESTING -->
+
+
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.8.0</version>
+            <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
@@ -37,12 +54,6 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.7.1</version>
             <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.fhir/ucum -->
-        <dependency>
-        <groupId>org.fhir</groupId>
-        <artifactId>ucum</artifactId>
-        <version>1.0.3</version>
         </dependency>
     </dependencies>
 </project>
