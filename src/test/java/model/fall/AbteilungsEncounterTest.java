@@ -1,25 +1,50 @@
 package model.fall;
 
 import constants.CodingSystem;
+import constants.Constants;
 import constants.IdentifierSystem;
 import enums.Fachabteilung;
 import enums.IdentifierTypeCode;
+import helper.Logger;
 import model.Fall;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static util.Asserter.*;
 import static util.Util.expectedDateString;
 import static util.Util.getCodeDisplayStr;
 
 class AbteilungsEncounterTest {
+
   private Fall fall;
+  private Logger LOGGER;
+
+  static void setFinalStatic(Fall fall, Field field, Object newValue) throws Exception {
+    field.setAccessible(true);
+    Field modifiersField = Field.class.getDeclaredField("modifiers");
+    modifiersField.setAccessible(true);
+    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+    field.set(fall, newValue);
+  }
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws Exception {
+    LOGGER = Mockito.mock(Logger.class);
+    Mockito.when(LOGGER.emptyValue(any(), any())).thenReturn(Constants::getEmptyValue);
+    Mockito.when(LOGGER.error(any(), any())).thenReturn(Constants::getEmptyValue);
+    Mockito.when(LOGGER.error(any(), any(), any())).thenReturn(Constants::getEmptyValue);
+    Mockito.when(LOGGER.warn(any(), any(), any()))
+        .thenAnswer(i -> (Supplier) () -> i.getArgument(0));
     fall = new Fall();
+    setFinalStatic(fall, Fall.class.getDeclaredField("LOGGER"), LOGGER);
   }
 
   @Test
@@ -44,7 +69,8 @@ class AbteilungsEncounterTest {
   @Test
   void testClass() {
     // empty klasse
-    assertEmptyCodeValue(fall::setAbteilungskontakt_klasse, fall::getAbteilungsEncounterClass);
+    assertEmptyCodeValue(
+        LOGGER, fall::setAbteilungskontakt_klasse, fall::getAbteilungsEncounterClass);
     // non-empty klasse
     String code = "1a2b";
     String display = "correct display";
@@ -67,6 +93,7 @@ class AbteilungsEncounterTest {
     fall.setAbteilungskontakt_fachabteilungsschluessel(schluessel);
     CodeableConcept result = fall.getAbteilungsEncounterServiceType();
     assertCodeableConcept(code, CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL, display, result);
+    Mockito.verify(LOGGER, Mockito.times(1)).warn(any(), any(), any());
     // valid
     Fachabteilung fachabteilung = Fachabteilung.AUGENHEILKUNDE;
     code = fachabteilung.getCode();
@@ -95,10 +122,12 @@ class AbteilungsEncounterTest {
     // empty beginndatum
     fall.setAbteilungskontakt_beginndatum("");
     assertEmptyValue(fall.getAbteilungsEncounterPeriod());
+    Mockito.verify(LOGGER, Mockito.times(1)).emptyValue(any(), any());
     // invalid beginndatum
     fall.setAbteilungskontakt_beginndatum("invalid");
     Period result = fall.getAbteilungsEncounterPeriod();
     assertPeriod(null, null, result);
+    Mockito.verify(LOGGER, Mockito.times(1)).error(any(), any(), any());
     // valid beginndatum
     String startDate = "2021-02-20";
     fall.setAbteilungskontakt_beginndatum(startDate);
