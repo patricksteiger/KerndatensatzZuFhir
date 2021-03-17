@@ -1,7 +1,6 @@
 package model.fall;
 
 import constants.CodingSystem;
-import constants.Constants;
 import constants.IdentifierSystem;
 import enums.Fachabteilung;
 import enums.IdentifierTypeCode;
@@ -12,37 +11,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.function.Supplier;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static util.Asserter.*;
-import static util.Util.expectedDateString;
-import static util.Util.getCodeDisplayStr;
+import static util.Util.*;
 
 class AbteilungsEncounterTest {
 
   private Fall fall;
   private Logger LOGGER;
 
-  static void setFinalStatic(Fall fall, Field field, Object newValue) throws Exception {
-    field.setAccessible(true);
-    Field modifiersField = Field.class.getDeclaredField("modifiers");
-    modifiersField.setAccessible(true);
-    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-    field.set(fall, newValue);
-  }
-
   @BeforeEach
   void setUp() throws Exception {
     LOGGER = Mockito.mock(Logger.class);
-    Mockito.when(LOGGER.emptyValue(any(), any())).thenReturn(Constants::getEmptyValue);
-    Mockito.when(LOGGER.error(any(), any())).thenReturn(Constants::getEmptyValue);
-    Mockito.when(LOGGER.error(any(), any(), any())).thenReturn(Constants::getEmptyValue);
-    Mockito.when(LOGGER.warn(any(), any(), any()))
-        .thenAnswer(i -> (Supplier) () -> i.getArgument(0));
+    setUpLoggerMock(LOGGER);
     fall = new Fall();
     setFinalStatic(fall, Fall.class.getDeclaredField("LOGGER"), LOGGER);
   }
