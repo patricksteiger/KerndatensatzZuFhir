@@ -3,6 +3,7 @@ package model.fall;
 import constants.CodingSystem;
 import constants.IdentifierSystem;
 import enums.*;
+import helper.Logger;
 import model.Fall;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Encounter;
@@ -10,17 +11,23 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Period;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static util.Asserter.*;
 import static util.Util.*;
 
 class EinrichtungsEncounterTest {
   private Fall fall;
+  private Logger LOGGER;
 
   @BeforeEach
-  void setUp() {
+  void setUp() throws Exception {
+    LOGGER = Mockito.mock(Logger.class);
+    setUpLoggerMock(LOGGER);
     fall = new Fall();
+    setFinalStatic(fall, Fall.class.getDeclaredField(FALL_LOGGER_FIELD_NAME), LOGGER);
   }
 
   @Test
@@ -48,6 +55,7 @@ class EinrichtungsEncounterTest {
     String klasse = "";
     fall.setEinrichtungskontakt_klasse(klasse);
     assertEmptyValue(fall.getEinrichtungsEncounterClass());
+    Mockito.verify(LOGGER, Mockito.times(1)).emptyValue(any(), any());
     // non-empty klasse
     String code = "12345";
     String display = "very good klasse";
@@ -86,6 +94,7 @@ class EinrichtungsEncounterTest {
     String code = getCodeStr("invalid");
     fall.setEinrichtungskontakt_aufnahmegrund(code);
     assertEmptyValue(fall.getEinrichtungsEncounterReasonCode());
+    Mockito.verify(LOGGER, Mockito.times(1)).error(any(), any(), any());
     // valid aufnahmegrund
     Aufnahmegrund aufnahmegrund = Aufnahmegrund.G01;
     code = getCodeStr(aufnahmegrund.getCode());
@@ -99,6 +108,7 @@ class EinrichtungsEncounterTest {
     // beginndatum is required
     fall.setEinrichtungskontakt_beginndatum("");
     assertEmptyValue(fall.getEinrichtungsEncounterPeriod());
+    Mockito.verify(LOGGER, Mockito.times(1)).emptyValue(any(), any());
     // enddatum is optional
     String startDate = "2021-03-15";
     fall.setEinrichtungskontakt_beginndatum(startDate);
@@ -115,6 +125,7 @@ class EinrichtungsEncounterTest {
     fall.setEinrichtungskontakt_enddatum(endDate);
     result = fall.getEinrichtungsEncounterPeriod();
     assertEmptyValue(result);
+    Mockito.verify(LOGGER, Mockito.times(2)).emptyValue(any(), any());
   }
 
   @Test
@@ -127,6 +138,7 @@ class EinrichtungsEncounterTest {
     String entlassungsgrund = getCodeDisplayStr("invalid", "failed display");
     fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
     assertEmptyValue(fall.getEinrichtungsEncounterDischargeDisposition());
+    Mockito.verify(LOGGER, Mockito.times(1)).error(any(), any(), any());
     // valid entlassungsgrund
     Entlassungsgrund grund = Entlassungsgrund.G15;
     entlassungsgrund = getCodeDisplayStr(grund.getCode(), grund.getDisplay());
@@ -144,6 +156,7 @@ class EinrichtungsEncounterTest {
     String anlass = getCodeDisplayStr("invalid", "invalid display");
     fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
     assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
+    Mockito.verify(LOGGER, Mockito.times(1)).error(any(), any(), any());
     // valid aufnahmeanlass
     Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.NOTFALL;
     anlass = getCodeDisplayStr(aufnahmeanlass.getCode(), aufnahmeanlass.getDisplay());

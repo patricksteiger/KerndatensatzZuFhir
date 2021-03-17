@@ -26,7 +26,7 @@ class AbteilungsEncounterTest {
     LOGGER = Mockito.mock(Logger.class);
     setUpLoggerMock(LOGGER);
     fall = new Fall();
-    setFinalStatic(fall, Fall.class.getDeclaredField("LOGGER"), LOGGER);
+    setFinalStatic(fall, Fall.class.getDeclaredField(FALL_LOGGER_FIELD_NAME), LOGGER);
   }
 
   @Test

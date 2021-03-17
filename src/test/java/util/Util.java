@@ -12,6 +12,8 @@ import java.util.function.Supplier;
 import static org.mockito.ArgumentMatchers.any;
 
 public class Util {
+  public static final String FALL_LOGGER_FIELD_NAME = "LOGGER";
+
   private Util() {}
 
   public static String getCodeDisplayStr(String code, String display) {
