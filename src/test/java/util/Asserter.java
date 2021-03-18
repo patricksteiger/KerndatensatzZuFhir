@@ -1,19 +1,16 @@
 package util;
 
 import constants.Constants;
-import helper.Logger;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Period;
-import org.mockito.Mockito;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static util.Util.getCodeStr;
 
 public class Asserter {
@@ -26,12 +23,6 @@ public class Asserter {
     assertEmptyValue(getter.get());
     setter.accept(getCodeStr(""));
     assertEmptyValue(getter.get());
-  }
-
-  public static <T> void assertEmptyCodeValue(
-      Logger mockedLogger, Consumer<String> setter, Supplier<T> getter) {
-    assertEmptyCodeValue(setter, getter);
-    Mockito.verify(mockedLogger, Mockito.times(3)).emptyValue(any(), any());
   }
 
   public static void assertIdentifier(

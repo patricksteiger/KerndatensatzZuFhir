@@ -2,7 +2,6 @@ package util;
 
 import constants.Constants;
 import helper.Logger;
-import model.Fall;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
@@ -33,12 +32,13 @@ public class Util {
     return numbers[2] + "." + numbers[1] + "." + numbers[0] + " 00:00:00";
   }
 
-  public static void setFinalStatic(Fall fall, Field field, Object newValue) throws Exception {
+  public static void setMockLoggerField(Object obj, Object newValue) throws Exception {
+    Field field = obj.getClass().getDeclaredField(FALL_LOGGER_FIELD_NAME);
     field.setAccessible(true);
     Field modifiersField = Field.class.getDeclaredField("modifiers");
     modifiersField.setAccessible(true);
     modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-    field.set(fall, newValue);
+    field.set(obj, newValue);
   }
 
   public static void setUpLoggerMock(Logger mockedLogger) {

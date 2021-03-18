@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static util.Asserter.*;
 import static util.Util.*;
 
@@ -26,7 +25,7 @@ class AbteilungsEncounterTest {
     LOGGER = Mockito.mock(Logger.class);
     setUpLoggerMock(LOGGER);
     fall = new Fall();
-    setFinalStatic(fall, Fall.class.getDeclaredField(FALL_LOGGER_FIELD_NAME), LOGGER);
+    setMockLoggerField(fall, LOGGER);
   }
 
   @Test
@@ -51,8 +50,7 @@ class AbteilungsEncounterTest {
   @Test
   void testClass() {
     // empty klasse
-    assertEmptyCodeValue(
-        LOGGER, fall::setAbteilungskontakt_klasse, fall::getAbteilungsEncounterClass);
+    assertEmptyCodeValue(fall::setAbteilungskontakt_klasse, fall::getAbteilungsEncounterClass);
     // non-empty klasse
     String code = "1a2b";
     String display = "correct display";
@@ -75,7 +73,6 @@ class AbteilungsEncounterTest {
     fall.setAbteilungskontakt_fachabteilungsschluessel(schluessel);
     CodeableConcept result = fall.getAbteilungsEncounterServiceType();
     assertCodeableConcept(code, CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL, display, result);
-    Mockito.verify(LOGGER, Mockito.times(1)).warn(any(), any(), any());
     // valid
     Fachabteilung fachabteilung = Fachabteilung.AUGENHEILKUNDE;
     code = fachabteilung.getCode();
@@ -104,12 +101,10 @@ class AbteilungsEncounterTest {
     // empty beginndatum
     fall.setAbteilungskontakt_beginndatum("");
     assertEmptyValue(fall.getAbteilungsEncounterPeriod());
-    Mockito.verify(LOGGER, Mockito.times(1)).emptyValue(any(), any());
     // invalid beginndatum
     fall.setAbteilungskontakt_beginndatum("invalid");
     Period result = fall.getAbteilungsEncounterPeriod();
     assertPeriod(null, null, result);
-    Mockito.verify(LOGGER, Mockito.times(1)).error(any(), any(), any());
     // valid beginndatum
     String startDate = "2021-02-20";
     fall.setAbteilungskontakt_beginndatum(startDate);
