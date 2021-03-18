@@ -1,11 +1,13 @@
 package util;
 
 import constants.Constants;
+import helper.Helper;
 import helper.Logger;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Date;
 import java.util.function.Supplier;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -27,9 +29,8 @@ public class Util {
     return "code=\"" + code + "\"";
   }
 
-  public static String expectedDateString(String date) {
-    String[] numbers = date.split("-");
-    return numbers[2] + "." + numbers[1] + "." + numbers[0] + " 00:00:00";
+  public static Date expectedDateString(String date) {
+    return Helper.getDateFromISO(date).get();
   }
 
   public static void setMockLoggerField(Object obj, Object newValue) throws Exception {

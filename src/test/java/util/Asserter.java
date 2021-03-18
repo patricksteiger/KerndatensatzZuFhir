@@ -2,11 +2,10 @@ package util;
 
 import constants.Constants;
 import interfaces.Code;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -63,17 +62,34 @@ public class Asserter {
     assertEquals(expectedDisplay, coding.getDisplay());
   }
 
-  public static void assertPeriod(String expectedStart, String expectedEnd, Period period) {
+  public static void assertCoding(
+      String expectedCode, String expectedSystem, String expectedDisplay, List<Coding> codings) {
+    assertNotNull(codings);
+    for (Coding coding : codings) {
+      if (expectedCode.equals(coding.getCode())) {
+        assertCoding(expectedCode, expectedSystem, expectedDisplay, coding);
+        return;
+      }
+    }
+    fail("Codings does not contain code: " + expectedCode);
+  }
+
+  public static void assertPeriod(Date expectedStart, Date expectedEnd, Period period) {
     if (expectedStart == Constants.getEmptyValue()) {
       assertEquals(Constants.getEmptyValue(), period.getStart());
     } else {
-      assertEquals(expectedStart, period.getStart().toLocaleString());
+      assertEquals(expectedStart, period.getStart());
     }
     if (expectedEnd == Constants.getEmptyValue()) {
       assertEquals(Constants.getEmptyValue(), period.getEnd());
     } else {
-      assertEquals(expectedEnd, period.getEnd().toLocaleString());
+      assertEquals(expectedEnd, period.getEnd());
     }
+  }
+
+  public static void assertDateTimeType(Date date, DateTimeType dateTimeType) {
+    assertNonEmptyValue(dateTimeType);
+    assertEquals(date, dateTimeType.getValue());
   }
 
   public static <T> void assertEmptyValue(T value) {

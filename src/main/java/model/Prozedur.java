@@ -11,6 +11,7 @@ import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Prozedur implements Datablock {
   private final Logger LOGGER = new Logger(Prozedur.class);
@@ -63,7 +64,7 @@ public class Prozedur implements Datablock {
   public Reference getSubject() {
     String patientenNummer = this.getPatNr();
     if (Helper.checkEmptyString(patientenNummer)) {
-      return (Reference) LOGGER.error("getSubject", "patNr can't be empty!").get();
+      LOGGER.error("getSubject", "patNr can't be empty!").get();
     }
     Reference assignerRef = FhirHelper.getUKUAssignerReference();
     Identifier subjectId =
@@ -92,13 +93,12 @@ public class Prozedur implements Datablock {
   }
 
   public CodeableConcept getCode() {
-    if (Helper.checkAllEmptyString(
-        this.getSNOMED_Vollst_Prozedurenkode(), this.getOPS_Vollst_Prozedurenkode())) {
+    Coding snomed = this.getCodingSnomed();
+    Coding ops = this.getCodingOps();
+    if (Helper.checkAllNull(snomed, ops)) {
       return (CodeableConcept)
           LOGGER.error("getCode", "Either SNOMED- or OPS-Code need to be defined!").get();
     }
-    Coding snomed = this.getCodingSnomed();
-    Coding ops = this.getCodingOps();
     return FhirGenerator.codeableConcept(snomed, ops);
   }
 
@@ -123,12 +123,13 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    Coding value =
-        SeitenlokalisationCode.fromCode(code)
-            .map(FhirGenerator::coding)
-            .orElseGet(LOGGER.error("getSeitenlokalisation", "OPS_Seitenlokalisation", code));
+    Optional<Coding> value = SeitenlokalisationCode.fromCode(code).map(FhirGenerator::coding);
+    if (!value.isPresent()) {
+      return (Extension)
+          LOGGER.error("getSeitenlokalisation", "OPS_Seitenlokalisation", code).get();
+    }
     String url = ExtensionUrl.OPS_SEITENLOKALISATION;
-    return FhirGenerator.extension(url, value);
+    return FhirGenerator.extension(url, value.get());
   }
 
   public Coding getCodingSnomed() {
@@ -175,12 +176,12 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(dokuDatum) || dokuDatum.equals(this.getDurchfuehrungsdatum())) {
       return Constants.getEmptyValue();
     }
-    DateTimeType date =
-        Helper.getDateFromISO(dokuDatum)
-            .map(FhirGenerator::dateTimeType)
-            .orElseGet(LOGGER.error("getRecordedDate", "dokumentationsdatum", dokuDatum));
+    Optional<DateTimeType> date = Helper.getDateFromISO(dokuDatum).map(FhirGenerator::dateTimeType);
+    if (!date.isPresent()) {
+      return (Extension) LOGGER.error("getRecordedDate", "dokumentationsdatum", dokuDatum).get();
+    }
     String url = ExtensionUrl.RECORDED_DATE;
-    return FhirGenerator.extension(url, date);
+    return FhirGenerator.extension(url, date.get());
   }
 
   /**
@@ -192,13 +193,14 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(absichtCode)) {
       return Constants.getEmptyValue();
     }
-    Coding code =
-        DurchfuehrungsabsichtCode.fromCode(absichtCode)
-            .map(FhirGenerator::coding)
-            .orElseGet(
-                LOGGER.error("getDurchfuehrungsabsicht", "durchfuehrungsabsicht", absichtCode));
+    Optional<Coding> code =
+        DurchfuehrungsabsichtCode.fromCode(absichtCode).map(FhirGenerator::coding);
+    if (!code.isPresent()) {
+      return (Extension)
+          LOGGER.error("getDurchfuehrungsabsicht", "durchfuehrungsabsicht", absichtCode).get();
+    }
     String url = ExtensionUrl.DURCHFUEHRUNGSABSICHT;
-    return FhirGenerator.extension(url, code);
+    return FhirGenerator.extension(url, code.get());
   }
 
   public void setDurchfuehrungsabsicht(String durchfuehrungsabsicht) {
