@@ -17,7 +17,6 @@ import org.hl7.fhir.r4.model.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class Diagnose implements Datablock {
   private final Logger LOGGER = new Logger(Diagnose.class);
@@ -159,17 +158,16 @@ public class Diagnose implements Datablock {
 
   public Extension getCodeIcdSeitenlokalisation() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_seitenlokalisation());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String seitenCode = parsedCode.getCode();
+    if (Helper.checkEmptyString(seitenCode)) {
       return Constants.getEmptyValue();
     }
-    Optional<Coding> value = ICD_Seitenlokalisation.fromCode(code).map(FhirGenerator::coding);
-    if (!value.isPresent()) {
-      return (Extension)
-          LOGGER.error("getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", code).get();
-    }
     String url = ExtensionUrl.ICD_10_GM_SEITENLOKALISATION;
-    return FhirGenerator.extension(url, value.get());
+    return ICD_Seitenlokalisation.fromCode(seitenCode)
+        .map(FhirGenerator::coding)
+        .map(code -> FhirGenerator.extension(url, code))
+        .orElseGet(
+            LOGGER.error("getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", seitenCode));
   }
 
   public Extension getCodeIcdDiagnosesicherheit() {
@@ -178,14 +176,12 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(snomedCode)) {
       return Constants.getEmptyValue();
     }
-    Optional<Coding> value =
-        ICD_Diagnosesicherheit.fromSnomedCode(snomedCode).map(FhirGenerator::coding);
-    if (!value.isPresent()) {
-      return (Extension)
-          LOGGER.error("getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode).get();
-    }
     String url = ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT;
-    return FhirGenerator.extension(url, value.get());
+    return ICD_Diagnosesicherheit.fromSnomedCode(snomedCode)
+        .map(FhirGenerator::coding)
+        .map(code -> FhirGenerator.extension(url, code))
+        .orElseGet(
+            LOGGER.error("getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode));
   }
 
   public Coding getCodeAlpha() {
@@ -284,13 +280,12 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    CodeableConcept type =
-        KBVBaseStageLife.fromCode(code)
-            .map(FhirGenerator::coding)
-            .map(FhirGenerator::codeableConcept)
-            .orElseGet(LOGGER.error("getLebensphaseVon", "lebensphase_von", code));
     String url = ExtensionUrl.STAGE_LIFE;
-    return FhirGenerator.extension(url, type);
+    return KBVBaseStageLife.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .map(type -> FhirGenerator.extension(url, type))
+        .orElseGet(LOGGER.error("getLebensphaseVon", "lebensphase_von", code));
   }
 
   public Extension getLebensphaseBis() {
@@ -299,18 +294,20 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    CodeableConcept type =
-        KBVBaseStageLife.fromCode(code)
-            .map(FhirGenerator::coding)
-            .map(FhirGenerator::codeableConcept)
-            .orElseGet(LOGGER.error("getLebensphaseBis", "lebensphase_bis", code));
     String url = ExtensionUrl.STAGE_LIFE;
-    return FhirGenerator.extension(url, type);
+    return KBVBaseStageLife.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .map(type -> FhirGenerator.extension(url, type))
+        .orElseGet(LOGGER.error("getLebensphaseBis", "lebensphase_bis", code));
   }
 
   public CodeableConcept getBodySite() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle());
     String code = parsedCode.getCode();
+    if (Helper.checkEmptyString(code)) {
+      return Constants.getEmptyValue();
+    }
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     String display = parsedCode.getDisplay();
     Coding bodySite = FhirGenerator.coding(code, system, display);

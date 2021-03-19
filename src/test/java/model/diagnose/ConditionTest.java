@@ -2,11 +2,10 @@ package model.diagnose;
 
 import constants.CodingSystem;
 import constants.ExtensionUrl;
-import enums.Diagnosesicherheit;
-import enums.ICD_Diagnosesicherheit;
-import enums.ICD_Seitenlokalisation;
+import enums.*;
 import helper.Logger;
 import model.Diagnose;
+import org.hl7.fhir.r4.model.Annotation;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Extension;
@@ -216,5 +215,93 @@ class ConditionTest {
     assertEquals(2, codings.size());
     assertCoding(alphaCode, CodingSystem.ALPHA_ID_DIMDI, alphaDisplay, codings);
     assertCoding(snomedCode, CodingSystem.SNOMED_CLINICAL_TERMS, snomedDisplay, codings);
+  }
+
+  @Test
+  void testNote() {
+    // empty erlaeuterung [NO LOGGING]
+    diagnose.setDiagnoseerlaeuterung("");
+    assertEmptyValue(diagnose.getNote());
+    // non-empty erlaeuterung
+    String erlaeuterung = "some text";
+    diagnose.setDiagnoseerlaeuterung(erlaeuterung);
+    Annotation result = diagnose.getNote();
+    assertEquals(erlaeuterung, result.getText());
+  }
+
+  @Test
+  void testRecordedDate() {
+    // invalid datum
+    diagnose.setDokumentationsdatum("");
+    assertEmptyValue(diagnose.getRecordedDate());
+    diagnose.setDokumentationsdatum("invalid");
+    assertEmptyValue(diagnose.getRecordedDate());
+    // valid datum
+    String date = "2020-11-24";
+    diagnose.setDokumentationsdatum(date);
+    assertEquals(expectedDateString(date), diagnose.getRecordedDate());
+  }
+
+  @Test
+  void testLebensphaseVon() {
+    // empty von [NO LOGGING]
+    assertEmptyCodeValue(diagnose::setLebensphase_von, diagnose::getLebensphaseVon);
+    // invalid von
+    diagnose.setLebensphase_von("invalid");
+    assertEmptyValue(diagnose.getLebensphaseVon());
+    // valid von
+    KBVBaseStageLife vonStageLife = KBVBaseStageLife.INFANCY;
+    String vonCode = getCodeDisplayStr(vonStageLife);
+    diagnose.setLebensphase_von(vonCode);
+    Extension result = diagnose.getLebensphaseVon();
+    assertExtensionWithCodeableConcept(vonStageLife, ExtensionUrl.STAGE_LIFE, result);
+  }
+
+  @Test
+  void testLebensphaseBis() {
+    // empty bis [NO LOGGING]
+    assertEmptyCodeValue(diagnose::setLebensphase_bis, diagnose::getLebensphaseBis);
+    // invalid bis
+    diagnose.setLebensphase_bis("invalid");
+    assertEmptyValue(diagnose.getLebensphaseBis());
+    // valid bis
+    KBVBaseStageLife bisStageLife = KBVBaseStageLife.INFANCY;
+    String bisCode = getCodeDisplayStr(bisStageLife);
+    diagnose.setLebensphase_von(bisCode);
+    Extension result = diagnose.getLebensphaseVon();
+    assertExtensionWithCodeableConcept(bisStageLife, ExtensionUrl.STAGE_LIFE, result);
+  }
+
+  @Test
+  void testOnset() {
+    fail("Not implemented!");
+  }
+
+  @Test
+  void testBodySite() {
+    // empty koerperstelle [NO LOGGING]
+    assertEmptyCodeValue(diagnose::setKoerperstelle, diagnose::getBodySite);
+    // non-empty koerperstelle
+    String code = "4789231";
+    String display = "somewhere on the body";
+    String koerperstelle = getCodeDisplayStr(code, display);
+    diagnose.setKoerperstelle(koerperstelle);
+    CodeableConcept result = diagnose.getBodySite();
+    assertCodeableConcept(code, CodingSystem.SNOMED_CLINICAL_TERMS, display, result);
+  }
+
+  @Test
+  void testClinivalStatus() {
+    // empty status [NO LOGGING]
+    assertEmptyCodeValue(diagnose::setKlinischer_status, diagnose::getClinicalStatus);
+    // invalid status
+    diagnose.setKlinischer_status("invalid status");
+    assertEmptyValue(diagnose.getClinicalStatus());
+    // valid status
+    ClinicalStatus clinicalStatus = ClinicalStatus.ACTIVE;
+    String status = getCodeDisplayStr(clinicalStatus);
+    diagnose.setKlinischer_status(status);
+    CodeableConcept result = diagnose.getClinicalStatus();
+    assertCodeableConcept(clinicalStatus, result);
   }
 }

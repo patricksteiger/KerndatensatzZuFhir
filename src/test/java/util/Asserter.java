@@ -110,6 +110,16 @@ public class Asserter {
         extension);
   }
 
+  public static void assertExtensionWithCodeableConcept(
+      Code expectedCode, String expectedUrl, Extension extension) {
+    assertNonEmptyValue(extension);
+    assertEquals(expectedUrl, extension.getUrl());
+    assertTrue(extension.hasValue());
+    assertTrue(extension.getValue() instanceof CodeableConcept);
+    CodeableConcept value = (CodeableConcept) extension.getValue();
+    assertCodeableConcept(expectedCode, value);
+  }
+
   public static void assertDateTimeType(Date date, DateTimeType dateTimeType) {
     assertNonEmptyValue(dateTimeType);
     assertEquals(date, dateTimeType.getValue());
