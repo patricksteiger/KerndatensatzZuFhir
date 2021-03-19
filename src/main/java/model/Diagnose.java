@@ -17,6 +17,7 @@ import org.hl7.fhir.r4.model.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Diagnose implements Datablock {
   private final Logger LOGGER = new Logger(Diagnose.class);
@@ -159,16 +160,16 @@ public class Diagnose implements Datablock {
   public Extension getCodeIcdSeitenlokalisation() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_seitenlokalisation());
     String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(this.getIcd_seitenlokalisation())) {
+    if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    Coding value =
-        ICD_Seitenlokalisation.fromCode(code)
-            .map(FhirGenerator::coding)
-            .orElseGet(
-                LOGGER.error("getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", code));
+    Optional<Coding> value = ICD_Seitenlokalisation.fromCode(code).map(FhirGenerator::coding);
+    if (!value.isPresent()) {
+      return (Extension)
+          LOGGER.error("getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", code).get();
+    }
     String url = ExtensionUrl.ICD_10_GM_SEITENLOKALISATION;
-    return FhirGenerator.extension(url, value);
+    return FhirGenerator.extension(url, value.get());
   }
 
   public Extension getCodeIcdDiagnosesicherheit() {
@@ -177,13 +178,14 @@ public class Diagnose implements Datablock {
     if (Helper.checkEmptyString(snomedCode)) {
       return Constants.getEmptyValue();
     }
-    Coding value =
-        ICD_Diagnosesicherheit.fromSnomedCode(snomedCode)
-            .map(FhirGenerator::coding)
-            .orElseGet(
-                LOGGER.error("getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode));
+    Optional<Coding> value =
+        ICD_Diagnosesicherheit.fromSnomedCode(snomedCode).map(FhirGenerator::coding);
+    if (!value.isPresent()) {
+      return (Extension)
+          LOGGER.error("getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode).get();
+    }
     String url = ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT;
-    return FhirGenerator.extension(url, value);
+    return FhirGenerator.extension(url, value.get());
   }
 
   public Coding getCodeAlpha() {
