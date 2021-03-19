@@ -64,10 +64,7 @@ class ProcedureTest {
         getCodeDisplayStr(seitenlokalisationCode.getCode(), seitenlokalisationCode.getDisplay());
     prozedur.setOPS_Seitenlokalisation(seitenlokalisation);
     Extension result = prozedur.getSeitenlokalisation();
-    assertNonEmptyValue(result);
-    assertEquals(ExtensionUrl.OPS_SEITENLOKALISATION, result.getUrl());
-    assertTrue(result.getValue() instanceof Coding);
-    assertCoding(seitenlokalisationCode, (Coding) result.getValue());
+    assertExtensionWithCoding(seitenlokalisationCode, ExtensionUrl.OPS_SEITENLOKALISATION, result);
   }
 
   @Test
@@ -199,10 +196,7 @@ class ProcedureTest {
             durchfuehrungsabsichtCode.getCode(), durchfuehrungsabsichtCode.getDisplay());
     prozedur.setDurchfuehrungsabsicht(durchfuehrungsabsicht);
     Extension result = prozedur.getDurchfuehrungsabsicht();
-    assertNonEmptyValue(result);
-    assertEquals(ExtensionUrl.DURCHFUEHRUNGSABSICHT, result.getUrl());
-    assertTrue(result.hasValue());
-    assertTrue(result.getValue() instanceof Coding);
-    assertCoding(durchfuehrungsabsichtCode, (Coding) result.getValue());
+    assertExtensionWithCoding(
+        durchfuehrungsabsichtCode, ExtensionUrl.DURCHFUEHRUNGSABSICHT, result);
   }
 }

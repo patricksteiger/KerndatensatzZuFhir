@@ -87,6 +87,29 @@ public class Asserter {
     }
   }
 
+  public static void assertExtensionWithCoding(
+      String expectedCode,
+      String expectedSystem,
+      String expectedDisplay,
+      String expectedUrl,
+      Extension extension) {
+    assertNonEmptyValue(extension);
+    assertEquals(expectedUrl, extension.getUrl());
+    assertTrue(extension.hasValue());
+    assertTrue(extension.getValue() instanceof Coding);
+    assertCoding(expectedCode, expectedSystem, expectedDisplay, (Coding) extension.getValue());
+  }
+
+  public static void assertExtensionWithCoding(
+      Code expectedCode, String expectedUrl, Extension extension) {
+    assertExtensionWithCoding(
+        expectedCode.getCode(),
+        expectedCode.getSystem(),
+        expectedCode.getDisplay(),
+        expectedUrl,
+        extension);
+  }
+
   public static void assertDateTimeType(Date date, DateTimeType dateTimeType) {
     assertNonEmptyValue(dateTimeType);
     assertEquals(date, dateTimeType.getValue());
