@@ -3,6 +3,7 @@ package util;
 import constants.Constants;
 import helper.Helper;
 import helper.Logger;
+import interfaces.Code;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
@@ -19,6 +20,10 @@ public class Util {
 
   public static String getCodeDisplayStr(String code, String display) {
     return getCodeStr(code) + " " + getDisplayStr(display);
+  }
+
+  public static String getCodeDisplayStr(Code code) {
+    return getCodeDisplayStr(code.getCode(), code.getDisplay());
   }
 
   public static String getDisplayStr(String display) {

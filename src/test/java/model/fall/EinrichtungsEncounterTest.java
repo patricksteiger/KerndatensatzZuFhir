@@ -135,7 +135,7 @@ class EinrichtungsEncounterTest {
     assertEmptyValue(fall.getEinrichtungsEncounterDischargeDisposition());
     // valid entlassungsgrund
     Entlassungsgrund grund = Entlassungsgrund.G15;
-    entlassungsgrund = getCodeDisplayStr(grund.getCode(), grund.getDisplay());
+    entlassungsgrund = getCodeDisplayStr(grund);
     fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
     CodeableConcept result = fall.getEinrichtungsEncounterDischargeDisposition();
     assertCodeableConcept(grund, result);
@@ -152,7 +152,7 @@ class EinrichtungsEncounterTest {
     assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
     // valid aufnahmeanlass
     Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.NOTFALL;
-    anlass = getCodeDisplayStr(aufnahmeanlass.getCode(), aufnahmeanlass.getDisplay());
+    anlass = getCodeDisplayStr(aufnahmeanlass);
     fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
     CodeableConcept result = fall.getEinrichtungsEncounterAdmitSource();
     assertCodeableConcept(aufnahmeanlass, result);
@@ -170,10 +170,8 @@ class EinrichtungsEncounterTest {
     // valid aufnahmeanlass/entlassungsgrund
     Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.GEBURT;
     Entlassungsgrund entlassungsgrund = Entlassungsgrund.G011;
-    fall.setEinrichtungskontakt_aufnahmeanlass(
-        getCodeDisplayStr(aufnahmeanlass.getCode(), aufnahmeanlass.getDisplay()));
-    fall.setEinrichtungskontakt_entlassungsgrund(
-        getCodeDisplayStr(entlassungsgrund.getCode(), entlassungsgrund.getDisplay()));
+    fall.setEinrichtungskontakt_aufnahmeanlass(getCodeDisplayStr(aufnahmeanlass));
+    fall.setEinrichtungskontakt_entlassungsgrund(getCodeDisplayStr(entlassungsgrund));
     result = fall.getEinrichtungsEncounterHospitalization();
     assertTrue(result.hasAdmitSource());
     assertTrue(result.hasDischargeDisposition());
