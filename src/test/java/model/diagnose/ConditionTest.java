@@ -5,10 +5,7 @@ import constants.ExtensionUrl;
 import enums.*;
 import helper.Logger;
 import model.Diagnose;
-import org.hl7.fhir.r4.model.Annotation;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -274,7 +271,45 @@ class ConditionTest {
 
   @Test
   void testOnset() {
-    fail("Not implemented!");
+    // empty values [NO LOGGING]
+    diagnose.setZeitraum_bis("");
+    diagnose.setZeitraum_von("");
+    diagnose.setLebensphase_von("");
+    diagnose.setLebensphase_bis("");
+    assertEmptyValue(diagnose.getOnset());
+    // only lebensphase_von
+    KBVBaseStageLife vonStageLife = KBVBaseStageLife.NEONATAL;
+    String lebensphaseVon = getCodeDisplayStr(vonStageLife);
+    diagnose.setLebensphase_von(lebensphaseVon);
+    Type result = diagnose.getOnset();
+    assertNonEmptyValue(result);
+    assertTrue(result instanceof DateTimeType);
+    assertFalse(((DateTimeType) result).hasValue());
+    assertEquals(1, result.getExtension().size());
+    assertTrue(result.hasExtension(ExtensionUrl.STAGE_LIFE));
+    // only zeitraum_von and lebensphase_von is set
+    String startDate = "2021-01-16";
+    diagnose.setZeitraum_von(startDate);
+    result = diagnose.getOnset();
+    assertNonEmptyValue(result);
+    assertTrue(result instanceof DateTimeType);
+    assertEquals(expectedDateString(startDate), ((DateTimeType) result).getValue());
+    assertEquals(1, result.getExtension().size());
+    assertTrue(result.hasExtension(ExtensionUrl.STAGE_LIFE));
+    // also zeitraum_bis is set
+    String endDate = "2021-02-07";
+    diagnose.setZeitraum_bis(endDate);
+    result = diagnose.getOnset();
+    assertNonEmptyValue(result);
+    assertTrue(result instanceof Period);
+    Period period = (Period) result;
+    assertTrue(period.hasStart());
+    assertEquals(expectedDateString(startDate), period.getStart());
+    assertEquals(1, period.getStartElement().getExtension().size());
+    assertTrue(period.getStartElement().hasExtension(ExtensionUrl.STAGE_LIFE));
+    assertTrue(period.hasEnd());
+    assertEquals(expectedDateString(endDate), period.getEnd());
+    assertFalse(period.getEndElement().hasExtension());
   }
 
   @Test
