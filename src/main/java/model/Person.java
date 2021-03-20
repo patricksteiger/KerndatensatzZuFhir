@@ -4,6 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
+import enums.MIICoreLocations;
 import enums.VersichertenCode;
 import enums.VitalStatus;
 import helper.*;
@@ -128,10 +129,7 @@ public class Person implements Datablock {
     List<Identifier> identifiers =
         Helper.listOf(this.getPatientGKV(), this.getPatientPKV(), this.getPatientPID());
     if (Helper.checkAllNull(identifiers)) {
-      return (List<Identifier>)
-          LOGGER
-              .error("getPatientIdentifiers", "At least 1 of GKV, PKV or PID has to be set!")
-              .get();
+      LOGGER.error("getPatientIdentifiers", "At least 1 of GKV, PKV or PID has to be set!").get();
     }
     return identifiers;
   }
@@ -299,10 +297,19 @@ public class Person implements Datablock {
     IdentifierTypeCode code = IdentifierTypeCode.MR;
     Coding pidCoding = FhirGenerator.coding(code);
     CodeableConcept type = FhirGenerator.codeableConcept(pidCoding);
+    // TODO: Is system of PID correct?
     String system = IdentifierSystem.PID;
-    Reference assignerRef = this.getPatientOrganizationReference();
+    Reference assignerRef = this.getPIDAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
     return FhirGenerator.identifier(value, system, type, assignerRef, use);
+  }
+
+  // TODO: Could be IKNR or CORE-LOCATION?
+  public Reference getPIDAssignerReference() {
+    MIICoreLocations ulm = MIICoreLocations.UKU;
+    String system = IdentifierSystem.CORE_LOCATIONS;
+    Identifier identifier = FhirGenerator.identifier(ulm.name(), system);
+    return FhirGenerator.reference(identifier, ulm.toString());
   }
 
   public Identifier getPatientGKV() {
@@ -314,9 +321,17 @@ public class Person implements Datablock {
     Coding gkvCoding = FhirGenerator.coding(gkv);
     CodeableConcept type = FhirGenerator.codeableConcept(gkvCoding);
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
-    Reference assignerRef = this.getPatientOrganizationReference();
+    Reference assignerRef = this.getGKVAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
     return FhirGenerator.identifier(value, system, type, assignerRef, use);
+  }
+
+  public Reference getGKVAssignerReference() {
+    Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
+    String system = IdentifierSystem.IKNR;
+    String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
+    Identifier identifier = FhirGenerator.identifier(identifierValue, system, use);
+    return FhirGenerator.reference(identifier);
   }
 
   public Identifier getPatientPKV() {
@@ -324,28 +339,15 @@ public class Person implements Datablock {
     if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
+    // TODO: Is PKV System always empty?
+    String system = Constants.getEmptyValue();
     VersichertenCode pkv = VersichertenCode.PKV;
     Coding pkvCoding = FhirGenerator.coding(pkv);
-    CodeableConcept type = new CodeableConcept().addCoding(pkvCoding);
-    Reference assignerRef = this.getPatientOrganizationReference();
+    CodeableConcept type = FhirGenerator.codeableConcept(pkvCoding);
+    // TODO: What is assignerRef of PKV? Example only display: "Signal Iduna"
+    Reference assignerRef = Constants.getEmptyValue();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
     return FhirGenerator.identifier(value, system, type, assignerRef, use);
-  }
-
-  public Reference getPatientOrganizationReference() {
-    String type = ReferenceType.ORGANIZATION;
-    // Identifier
-    Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
-    String system = IdentifierSystem.ORGANIZATION_REFERENCE_ID;
-    IdentifierTypeCode identifierTypeCode = IdentifierTypeCode.XX;
-    Coding coding = FhirGenerator.coding(identifierTypeCode);
-    CodeableConcept identifierType = FhirGenerator.codeableConcept(coding);
-    String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
-    Identifier identifier =
-        FhirGenerator.identifier(
-            identifierValue, system, identifierType, Constants.getEmptyValue(), use);
-    return FhirGenerator.reference(type, identifier);
   }
 
   public Meta getResearchSubjectMeta() {
