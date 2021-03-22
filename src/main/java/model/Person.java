@@ -14,6 +14,7 @@ import org.hl7.fhir.r4.model.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Person implements Datablock {
   private final Logger LOGGER = new Logger(Person.class);
@@ -168,7 +169,7 @@ public class Person implements Datablock {
           LOGGER
               .error(
                   "getPatientAddressStrassenanschrift",
-                  "All values for line, city, postalCode and countryy have to be set!")
+                  "All values for line, city, postalCode and country have to be set!")
               .get();
     }
     return FhirGenerator.address(type, line, city, postalCode, country);
@@ -196,12 +197,16 @@ public class Person implements Datablock {
 
   public Type getPatientDeceased() {
     String todeszeitpunkt = this.getTodeszeitpunkt();
-    String verstorben = this.getPatient_verstorben();
     if (Helper.checkNonEmptyString(todeszeitpunkt)) {
-      return Helper.getDateFromISO(todeszeitpunkt)
-          .map(FhirGenerator::dateTimeType)
-          .orElseGet(LOGGER.error("getPatientDeceased", "todeszeitpunkt", todeszeitpunkt));
-    } else if (Helper.checkNonEmptyString(verstorben)) {
+      Optional<DateTimeType> t =
+          Helper.getDateFromISO(todeszeitpunkt).map(FhirGenerator::dateTimeType);
+      if (t.isPresent()) {
+        return t.get();
+      }
+      LOGGER.error("getPatientDeceased", "todeszeitpunkt", todeszeitpunkt).get();
+    }
+    String verstorben = this.getPatient_verstorben();
+    if (Helper.checkNonEmptyString(verstorben)) {
       return Helper.booleanFromString(verstorben)
           .map(FhirGenerator::booleanType)
           .orElseGet(LOGGER.error("getPatientDeceased", "patient_verstorben", verstorben));
@@ -219,7 +224,8 @@ public class Person implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAdmininistratives_geschlecht());
     String gender = parsedCode.getCode();
     if (Helper.checkEmptyString(gender)) {
-      return Constants.getEmptyValue();
+      return (Enumerations.AdministrativeGender)
+          LOGGER.emptyValue("getPatientGender", "admininistratives_geschlecht").get();
     }
     return FhirHelper.getGenderMapping(gender);
   }
@@ -330,6 +336,12 @@ public class Person implements Datablock {
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
     String system = IdentifierSystem.IKNR;
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
+    if (Helper.checkEmptyString(identifierValue)) {
+      return (Reference)
+          LOGGER
+              .emptyValue("getGKVAssignerReference", "institutionskennzeichen_krankenkasse")
+              .get();
+    }
     Identifier identifier = FhirGenerator.identifier(identifierValue, system, use);
     return FhirGenerator.reference(identifier);
   }

@@ -48,10 +48,10 @@ public class Helper {
    */
   public static Optional<Boolean> booleanFromString(String s) {
     if ("1".equals(s) || "true".equalsIgnoreCase(s)) {
-      return Optional.of(true);
+      return Optional.of(Boolean.TRUE);
     }
     if ("0".equals(s) || "false".equalsIgnoreCase(s)) {
-      return Optional.of(false);
+      return Optional.of(Boolean.FALSE);
     }
     return Optional.empty();
   }

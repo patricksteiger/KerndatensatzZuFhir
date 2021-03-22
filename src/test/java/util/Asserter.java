@@ -33,6 +33,17 @@ public class Asserter {
     assertCoding(expectedCode, identifier.getType().getCoding().get(0));
   }
 
+  public static void assertIdentifier(
+      String expectedValue,
+      String expectedSystem,
+      Identifier.IdentifierUse expectedUse,
+      Identifier identifier) {
+    assertNonEmptyValue(identifier);
+    assertEquals(expectedValue, identifier.getValue());
+    assertEquals(expectedSystem, identifier.getSystem());
+    assertEquals(expectedUse, identifier.getUse());
+  }
+
   public static void assertCodeableConcept(
       String expectedCode,
       String expectedSystem,
@@ -129,7 +140,17 @@ public class Asserter {
     assertNull(value);
   }
 
+  public static <T> void assertAllEmptyValue(List<T> values) {
+    assertNonEmptyValue(values);
+    values.forEach(Asserter::assertEmptyValue);
+  }
+
   public static <T> void assertNonEmptyValue(T value) {
     assertNotNull(value);
+  }
+
+  public static <T> void assertAllNonEmptyValue(List<T> values) {
+    assertNonEmptyValue(values);
+    values.forEach(Asserter::assertNonEmptyValue);
   }
 }
