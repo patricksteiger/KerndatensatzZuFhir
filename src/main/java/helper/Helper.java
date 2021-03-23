@@ -9,6 +9,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Helper {
@@ -116,6 +117,26 @@ public class Helper {
   @SafeVarargs
   public static <T> List<T> listOf(T... values) {
     return Arrays.asList(values);
+  }
+
+  /**
+   * Splits the given name into multiple names. Splits by spaces. Name without spaces result in it
+   * being the only element in the list.
+   *
+   * @param name Name to plit into multiple names
+   * @return List containing all single names
+   */
+  public static List<String> splitNames(String name) {
+    if (Helper.checkEmptyString(name)) {
+      return Helper.listOf();
+    }
+    return Helper.listOf(name.trim().split("[ ]+"));
+  }
+
+  public static <T, R> List<R> listMap(List<T> list, Function<T, R> mapper) {
+    List<R> result = new ArrayList<>(list.size());
+    list.forEach(e -> result.add(mapper.apply(e)));
+    return result;
   }
 
   public static <T> boolean checkAllNull(List<T> list) {

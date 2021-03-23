@@ -111,13 +111,13 @@ public class FhirGenerator {
   }
 
   public static HumanName humanName(
-      StringType family, StringType given, StringType prefix, HumanName.NameUse use) {
+      StringType family, List<StringType> given, StringType prefix, HumanName.NameUse use) {
     HumanName humanName = new HumanName();
     if (family != null) {
       humanName.setFamilyElement(family);
     }
     if (given != null) {
-      humanName.setGiven(Helper.listOf(given));
+      humanName.setGiven(given);
     }
     if (prefix != null) {
       humanName.setPrefix(Helper.listOf(prefix));

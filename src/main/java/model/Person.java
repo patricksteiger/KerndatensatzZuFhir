@@ -240,7 +240,7 @@ public class Person implements Datablock {
 
   public HumanName getPatientName() {
     StringType family = this.getPatientNameFamily();
-    StringType given = this.getPatientNameGiven();
+    List<StringType> given = this.getPatientNameGiven();
     StringType prefix = this.getPatientNamePrefix();
     HumanName.NameUse use = HumanName.NameUse.OFFICIAL;
     return FhirGenerator.humanName(family, given, prefix, use);
@@ -264,7 +264,8 @@ public class Person implements Datablock {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.NAMENSZUSATZ;
-    return FhirGenerator.extension(url, new StringType(namensZusatz));
+    StringType type = new StringType(namensZusatz);
+    return FhirGenerator.extension(url, type);
   }
 
   public Extension getPatientNameFamilyNachname() {
@@ -273,7 +274,8 @@ public class Person implements Datablock {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.NACHNAME;
-    return FhirGenerator.extension(url, new StringType(nachName));
+    StringType type = new StringType(nachName);
+    return FhirGenerator.extension(url, type);
   }
 
   public Extension getPatientNameFamilyVorsatzwort() {
@@ -282,15 +284,18 @@ public class Person implements Datablock {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.VORSATZWORT;
-    return FhirGenerator.extension(url, new StringType(vorsatzWort));
+    StringType type = new StringType(vorsatzWort);
+    return FhirGenerator.extension(url, type);
   }
 
-  public StringType getPatientNameGiven() {
-    String name = this.getVorname();
-    if (Helper.checkEmptyString(name)) {
-      return (StringType) LOGGER.error("getPatientNameGiven", "given is required!").get();
+  // TODO: Do we have to split vorname into several names? E.g.: "Maja Julia"
+  public List<StringType> getPatientNameGiven() {
+    String vorName = this.getVorname();
+    if (Helper.checkEmptyString(vorName)) {
+      return (List<StringType>) LOGGER.error("getPatientNameGiven", "given is required!").get();
     }
-    return new StringType(name);
+    List<String> names = Helper.splitNames(vorName);
+    return Helper.listMap(names, StringType::new);
   }
 
   public StringType getPatientNamePrefix() {
@@ -310,7 +315,8 @@ public class Person implements Datablock {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.PREFIX;
-    return FhirGenerator.extension(url, new CodeType(code));
+    CodeType type = new CodeType(code);
+    return FhirGenerator.extension(url, type);
   }
 
   public Identifier getPatientPID() {
