@@ -111,35 +111,25 @@ public class FhirGenerator {
   }
 
   public static HumanName humanName(
-      HumanName.NameUse use,
-      String text,
-      List<Extension> family,
-      List<String> given,
-      List<Extension> artDesPrefix,
-      List<String> prefix,
-      List<String> suffix) {
-    HumanName name = new HumanName();
-    if (use != null) name.setUse(use);
-    if (Helper.checkNonEmptyString(text)) name.setText(text);
-    Helper.forFilterEach(family, Objects::nonNull, name::addExtension);
-    Helper.forFilterEach(given, Helper::checkNonEmptyString, name::addGiven);
-    Helper.forFilterEach(artDesPrefix, Objects::nonNull, name::addExtension);
-    Helper.forFilterEach(prefix, Helper::checkNonEmptyString, name::addPrefix);
-    Helper.forFilterEach(suffix, Helper::checkNonEmptyString, name::addSuffix);
-    return name;
+      StringType family, StringType given, StringType prefix, HumanName.NameUse use) {
+    HumanName humanName = new HumanName();
+    if (family != null) {
+      humanName.setFamilyElement(family);
+    }
+    if (given != null) {
+      humanName.setGiven(Helper.listOf(given));
+    }
+    if (prefix != null) {
+      humanName.setPrefix(Helper.listOf(prefix));
+    }
+    if (use != null) {
+      humanName.setUse(use);
+    }
+    return humanName;
   }
 
-  public static HumanName humanName(
-      HumanName.NameUse use,
-      List<Extension> family,
-      List<String> given,
-      List<Extension> artDesPrefix,
-      String prefix) {
-    return humanName(use, "", family, given, artDesPrefix, Helper.listOf(prefix), null);
-  }
-
-  public static HumanName humanName(HumanName.NameUse use, List<Extension> family) {
-    return humanName(use, family, null, null, "");
+  public static HumanName humanName(StringType family, HumanName.NameUse use) {
+    return humanName(family, null, null, use);
   }
 
   public static Ratio ratio(Quantity numerator, Quantity denominator) {

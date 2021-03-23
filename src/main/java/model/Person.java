@@ -11,7 +11,6 @@ import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -231,68 +230,87 @@ public class Person implements Datablock {
   }
 
   public HumanName getPatientGeburtsName() {
-    if (Helper.checkEmptyString(this.getGeburtsname())) {
+    String geburtsName = this.getGeburtsname();
+    if (Helper.checkEmptyString(geburtsName)) {
       return Constants.getEmptyValue();
     }
     HumanName.NameUse use = HumanName.NameUse.MAIDEN;
-    List<Extension> family = this.getPatientNameMaidenFamily();
-    return FhirGenerator.humanName(use, family);
-  }
-
-  public List<Extension> getPatientNameMaidenFamily() {
-    List<Extension> family = new ArrayList<>();
-    if (Helper.checkNonEmptyString(this.getGeburtsname())) {
-      StringType nachname = new StringType(this.getGeburtsname());
-      family.add(FhirGenerator.extension(ExtensionUrl.NACHNAME, nachname));
-    }
-    return family;
+    return FhirGenerator.humanName(new StringType(geburtsName), use);
   }
 
   public HumanName getPatientName() {
-    HumanName.NameUse use = HumanName.NameUse.OFFICIAL; /* Use has to be set! */
-    List<Extension> family = this.getPatientNameFamily();
-    List<String> given = this.getPatientNameGiven();
-    List<Extension> artDesPrefix = this.getPatientNamePrefix();
-    String prefix = this.getPraefix();
-    return FhirGenerator.humanName(use, family, given, artDesPrefix, prefix);
+    StringType family = this.getPatientNameFamily();
+    StringType given = this.getPatientNameGiven();
+    StringType prefix = this.getPatientNamePrefix();
+    HumanName.NameUse use = HumanName.NameUse.OFFICIAL;
+    return FhirGenerator.humanName(family, given, prefix, use);
   }
 
-  public List<Extension> getPatientNameFamily() {
-    List<Extension> family = new ArrayList<>(3);
-    if (Helper.checkNonEmptyString(this.getNamenszusatz())) {
-      StringType zusatz = new StringType(this.getNamenszusatz());
-      family.add(FhirGenerator.extension(ExtensionUrl.NAMENSZUSATZ, zusatz));
+  public StringType getPatientNameFamily() {
+    String familyName = this.getFamilienname();
+    if (Helper.checkEmptyString(familyName)) {
+      return (StringType) LOGGER.emptyValue("getPatientNameFamily", "familienname").get();
     }
-    if (Helper.checkNonEmptyString(this.getNachname())) {
-      StringType nachnameType = new StringType(this.getNachname());
-      family.add(FhirGenerator.extension(ExtensionUrl.NACHNAME, nachnameType));
-    }
-    if (Helper.checkNonEmptyString(this.getVorsatzwort())) {
-      StringType vorsatzwortType = new StringType(this.getVorsatzwort());
-      family.add(FhirGenerator.extension(ExtensionUrl.VORSATZWORT, vorsatzwortType));
-    }
-    if (family.isEmpty()) {
-      return (List<Extension>) LOGGER.error("getPatientNameFamily", "family is required!").get();
-    }
+    StringType family = new StringType(familyName);
+    family.addExtension(this.getPatientNameFamilyNamenszusatz());
+    family.addExtension(this.getPatientNameFamilyNachname());
+    family.addExtension(this.getPatientNameFamilyVorsatzwort());
     return family;
   }
 
-  public List<String> getPatientNameGiven() {
-    String name = this.getVorname();
-    if (Helper.checkEmptyString(name)) {
-      return (List<String>) LOGGER.error("getPatientNameGiven", "given is required!").get();
+  public Extension getPatientNameFamilyNamenszusatz() {
+    String namensZusatz = this.getNamenszusatz();
+    if (Helper.checkEmptyString(namensZusatz)) {
+      return Constants.getEmptyValue();
     }
-    return Helper.listOf(name);
+    String url = ExtensionUrl.NAMENSZUSATZ;
+    return FhirGenerator.extension(url, new StringType(namensZusatz));
   }
 
-  public List<Extension> getPatientNamePrefix() {
+  public Extension getPatientNameFamilyNachname() {
+    String nachName = this.getNachname();
+    if (Helper.checkEmptyString(nachName)) {
+      return Constants.getEmptyValue();
+    }
+    String url = ExtensionUrl.NACHNAME;
+    return FhirGenerator.extension(url, new StringType(nachName));
+  }
+
+  public Extension getPatientNameFamilyVorsatzwort() {
+    String vorsatzWort = this.getVorsatzwort();
+    if (Helper.checkEmptyString(vorsatzWort)) {
+      return Constants.getEmptyValue();
+    }
+    String url = ExtensionUrl.VORSATZWORT;
+    return FhirGenerator.extension(url, new StringType(vorsatzWort));
+  }
+
+  public StringType getPatientNameGiven() {
+    String name = this.getVorname();
+    if (Helper.checkEmptyString(name)) {
+      return (StringType) LOGGER.error("getPatientNameGiven", "given is required!").get();
+    }
+    return new StringType(name);
+  }
+
+  public StringType getPatientNamePrefix() {
+    String praefix = this.getPraefix();
+    if (Helper.checkEmptyString(praefix)) {
+      return Constants.getEmptyValue();
+    }
+    StringType prefix = new StringType(praefix);
+    prefix.addExtension(this.getPatientNamePrefixQualifier());
+    return prefix;
+  }
+
+  public Extension getPatientNamePrefixQualifier() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArt_des_praefix());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    StringType artDesPrefix = new StringType(code);
-    return Helper.listOf(FhirGenerator.extension(ExtensionUrl.PREFIX, artDesPrefix));
+    String url = ExtensionUrl.PREFIX;
+    return FhirGenerator.extension(url, new CodeType(code));
   }
 
   public Identifier getPatientPID() {
