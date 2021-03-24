@@ -88,12 +88,16 @@ public class FhirGenerator {
     return identifier;
   }
 
+  public static Identifier identifier(String value, String system, CodeableConcept type) {
+    return identifier(value, system, type, null);
+  }
+
   public static Identifier identifier(String value, String system, Identifier.IdentifierUse use) {
     return identifier(value, system, null, null, use);
   }
 
   public static Identifier identifier(String value, String system, Coding coding) {
-    CodeableConcept codeableConcept = new CodeableConcept().addCoding(coding);
+    CodeableConcept codeableConcept = codeableConcept(coding);
     return identifier(value, system, codeableConcept, null);
   }
 

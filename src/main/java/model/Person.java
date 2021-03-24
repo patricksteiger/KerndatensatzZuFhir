@@ -414,22 +414,20 @@ public class Person implements Datablock {
 
   public Period getResearchSubjectPeriod() {
     String beginn = this.getTeilnahme_beginn();
-    if (Helper.checkEmptyString(beginn)) {
-      return (Period) LOGGER.emptyValue("getResearchSubjectPeriod", "teilnahme_beginn").get();
+    Optional<Date> start = Helper.getDateFromISO(beginn);
+    if (!start.isPresent()) {
+      return (Period) LOGGER.error("getResearchSubjectPeriod", "teilnahme_beginn", beginn).get();
     }
-    Date start =
-        Helper.getDateFromISO(beginn)
-            .orElseGet(LOGGER.error("getResearchSubjectPeriod", "teilnahme_beginn", beginn));
     String ende = this.getTeilnahme_ende();
     if (Helper.checkNonEmptyString(ende)) {
-      Date end =
-          Helper.getDateFromISO(ende)
-              .orElseGet(LOGGER.error("getResearchSubjectPeriod", "teilnahme_ende", ende));
-      return FhirGenerator.period(start, end);
+      return Helper.getDateFromISO(ende)
+          .map(date -> FhirGenerator.period(start.get(), date))
+          .orElseGet(LOGGER.error("getResearchSubjectPeriod", "teilnahme_ende", ende));
     }
-    return FhirGenerator.period(start);
+    return FhirGenerator.period(start.get());
   }
 
+  // TODO: What is valueset of teilnahme_status?
   public ResearchSubject.ResearchSubjectStatus getResearchSubjectStatus() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getTeilnahme_status());
     String code = parsedCode.getCode();
@@ -451,13 +449,12 @@ public class Person implements Datablock {
                   "getResearchSubjectSubjectIdentificationCode", "subjekt_identifizierungscode")
               .get();
     }
+    // TODO: Is system for SubjectIdentificationCode correct?
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
-    IdentifierTypeCode code = IdentifierTypeCode.RI;
+    IdentifierTypeCode code = IdentifierTypeCode.ANON;
     Coding coding = FhirGenerator.coding(code);
     CodeableConcept type = FhirGenerator.codeableConcept(coding);
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
-    return FhirGenerator.identifier(value, system, type, assignerRef, use);
+    return FhirGenerator.identifier(value, system, type);
   }
 
   public Meta getObservationMeta() {
