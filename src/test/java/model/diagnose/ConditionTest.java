@@ -18,11 +18,10 @@ import static util.Util.*;
 
 class ConditionTest {
   private Diagnose diagnose;
-  private Logger LOGGER;
 
   @BeforeEach
   public void setUp() throws Exception {
-    LOGGER = Mockito.mock(Logger.class);
+    Logger LOGGER = Mockito.mock(Logger.class);
     setUpLoggerMock(LOGGER);
     diagnose = new Diagnose();
     setMockLoggerField(diagnose, LOGGER);
@@ -326,7 +325,7 @@ class ConditionTest {
   }
 
   @Test
-  void testClinivalStatus() {
+  void testClinicalStatus() {
     // empty status [NO LOGGING]
     assertEmptyCodeValue(diagnose::setKlinischer_status, diagnose::getClinicalStatus);
     // invalid status

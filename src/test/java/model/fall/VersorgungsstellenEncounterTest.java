@@ -16,11 +16,10 @@ import static util.Util.*;
 
 class VersorgungsstellenEncounterTest {
   private Fall fall;
-  private Logger LOGGER;
 
   @BeforeEach
   void setUp() throws Exception {
-    LOGGER = Mockito.mock(Logger.class);
+    Logger LOGGER = Mockito.mock(Logger.class);
     setUpLoggerMock(LOGGER);
     fall = new Fall();
     setMockLoggerField(fall, LOGGER);

@@ -20,11 +20,10 @@ import static util.Util.*;
 
 class ProcedureTest {
   private Prozedur prozedur;
-  private Logger LOGGER;
 
   @BeforeEach
   public void setUp() throws Exception {
-    LOGGER = Mockito.mock(Logger.class);
+    Logger LOGGER = Mockito.mock(Logger.class);
     setUpLoggerMock(LOGGER);
     prozedur = new Prozedur();
     setMockLoggerField(prozedur, LOGGER);
