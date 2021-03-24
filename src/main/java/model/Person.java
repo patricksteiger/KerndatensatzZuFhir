@@ -73,7 +73,7 @@ public class Person implements Datablock {
     // Name
     patient.addName(this.getPatientName());
     // Geburtsname
-    patient.addName(this.getPatientGeburtsName());
+    patient.addName(this.getPatientGeburtsname());
     // Administratives Geschlecht, returns UNKNOWN if gender isn't set
     patient.setGender(this.getPatientGender());
     // Geburtsdatum
@@ -229,13 +229,14 @@ public class Person implements Datablock {
     return FhirHelper.getGenderMapping(gender);
   }
 
-  public HumanName getPatientGeburtsName() {
+  public HumanName getPatientGeburtsname() {
     String geburtsName = this.getGeburtsname();
     if (Helper.checkEmptyString(geburtsName)) {
       return Constants.getEmptyValue();
     }
     HumanName.NameUse use = HumanName.NameUse.MAIDEN;
-    return FhirGenerator.humanName(new StringType(geburtsName), use);
+    StringType family = new StringType(geburtsName);
+    return FhirGenerator.humanName(family, use);
   }
 
   public HumanName getPatientName() {

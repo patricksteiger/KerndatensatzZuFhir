@@ -1,6 +1,7 @@
 package util;
 
 import constants.Constants;
+import helper.Helper;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
 
@@ -131,9 +132,54 @@ public class Asserter {
     assertCodeableConcept(expectedCode, value);
   }
 
+  public static void assertExtensionWithStringType(
+      String expectedValue, String expectedUrl, Extension extension) {
+    assertNonEmptyValue(extension);
+    assertEquals(expectedUrl, extension.getUrl());
+    assertTrue(extension.hasValue());
+    assertTrue(extension.getValue() instanceof StringType);
+    StringType value = (StringType) extension.getValue();
+    assertEquals(expectedValue, value.getValue());
+  }
+
   public static void assertDateTimeType(Date date, DateTimeType dateTimeType) {
     assertNonEmptyValue(dateTimeType);
     assertEquals(date, dateTimeType.getValue());
+  }
+
+  public static void assertHumanName(
+      String expectedFamily,
+      List<String> expectedGiven,
+      String expectedPrefix,
+      HumanName.NameUse expectedUse,
+      HumanName humanName) {
+    assertNonEmptyValue(humanName);
+    assertEquals(expectedFamily, humanName.getFamily());
+    if (expectedGiven == Constants.getEmptyValue()) {
+      assertEquals(Helper.listOf(), humanName.getGiven());
+    } else {
+      List<StringType> given = humanName.getGiven();
+      assertNonEmptyValue(given);
+      assertEquals(expectedGiven, Helper.listMap(given, StringType::getValue));
+    }
+    if (expectedPrefix == Constants.getEmptyValue()) {
+      assertEquals(Helper.listOf(), humanName.getPrefix());
+    } else {
+      List<StringType> prefix = humanName.getPrefix();
+      assertNonEmptyValue(prefix);
+      assertEquals(Helper.listOf(expectedPrefix), Helper.listMap(prefix, StringType::getValue));
+    }
+    assertEquals(expectedUse, humanName.getUse());
+  }
+
+  public static void assertHumanName(
+      String expectedFamily, HumanName.NameUse expectedUse, HumanName humanName) {
+    assertHumanName(
+        expectedFamily,
+        Constants.getEmptyValue(),
+        Constants.getEmptyValue(),
+        expectedUse,
+        humanName);
   }
 
   public static <T> void assertEmptyValue(T value) {

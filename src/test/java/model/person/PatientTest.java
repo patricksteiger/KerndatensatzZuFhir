@@ -1,15 +1,19 @@
 package model.person;
 
+import constants.ExtensionUrl;
 import constants.IdentifierSystem;
 import enums.IdentifierTypeCode;
 import enums.MIICoreLocations;
 import enums.VersichertenCode;
+import helper.Helper;
 import helper.Logger;
 import model.Person;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static util.Asserter.*;
@@ -227,5 +231,148 @@ class PatientTest {
     String geschlecht = "M";
     person.setAdmininistratives_geschlecht(geschlecht);
     assertEquals(Enumerations.AdministrativeGender.MALE, person.getPatientGender());
+  }
+
+  @Test
+  void testGeburtsname() {
+    // empty geburtsname [NO LOGGING]
+    person.setGeburtsname("");
+    assertEmptyValue(person.getPatientGeburtsname());
+    // non empty
+    String geburtsname = "Clemens";
+    person.setGeburtsname(geburtsname);
+    HumanName result = person.getPatientGeburtsname();
+    assertHumanName(geburtsname, HumanName.NameUse.MAIDEN, result);
+  }
+
+  @Test
+  void testNameFamilyNamenszusatz() {
+    // empty namenszusatz [NO LOGGING]
+    person.setNamenszusatz("");
+    assertEmptyValue(person.getPatientNameFamilyNamenszusatz());
+    // non-empty namenszusatz
+    String namenszusatz = "RA";
+    person.setNamenszusatz(namenszusatz);
+    Extension result = person.getPatientNameFamilyNamenszusatz();
+    assertExtensionWithStringType(namenszusatz, ExtensionUrl.NAMENSZUSATZ, result);
+  }
+
+  @Test
+  void testNameFamilyNachname() {
+    // empty nachnahme [NO LOGGING]
+    person.setNachname("");
+    assertEmptyValue(person.getPatientNameFamilyNachname());
+    // non-empty nachname
+    String nachname = "Van-der-Dussen";
+    person.setNachname(nachname);
+    Extension result = person.getPatientNameFamilyNachname();
+    assertExtensionWithStringType(nachname, ExtensionUrl.NACHNAME, result);
+  }
+
+  @Test
+  void testNameFamilyVorsatzwort() {
+    // empty vorsatzwort [NO LOGGING]
+    person.setVorsatzwort("");
+    assertEmptyValue(person.getPatientNameFamilyVorsatzwort());
+    // non-empty vorsatzwort
+    String vorsatzwort = "bei der";
+    person.setVorsatzwort(vorsatzwort);
+    Extension result = person.getPatientNameFamilyVorsatzwort();
+    assertExtensionWithStringType(vorsatzwort, ExtensionUrl.VORSATZWORT, result);
+  }
+
+  @Test
+  void testNameFamily() {
+    // empty familienname
+    person.setVorsatzwort("");
+    assertEmptyValue(person.getPatientNameFamily());
+    // non-empty familienname
+    String familienname = "Van-der-Dussen";
+    person.setFamilienname(familienname);
+    StringType result = person.getPatientNameFamily();
+    assertNonEmptyValue(result);
+    assertEquals(familienname, result.getValue());
+    assertFalse(result.hasExtension());
+    // non-empty familienname and nachname
+    person.setFamilienname(familienname);
+    person.setNachname(familienname);
+    result = person.getPatientNameFamily();
+    assertNonEmptyValue(result);
+    assertEquals(familienname, result.getValue());
+    assertEquals(1, result.getExtension().size());
+    assertTrue(result.hasExtension(ExtensionUrl.NACHNAME));
+  }
+
+  @Test
+  void testNameGiven() {
+    // empty vorname
+    person.setVorname("");
+    assertEmptyValue(person.getPatientNameGiven());
+    // non-empty vorname
+    String firstName = "Maja", secondName = "Julia";
+    String vorname = firstName + " " + secondName;
+    person.setVorname(vorname);
+    List<StringType> result = person.getPatientNameGiven();
+    assertNonEmptyValue(result);
+    assertEquals(2, result.size());
+    assertEquals(firstName, result.get(0).getValue());
+    assertEquals(secondName, result.get(1).getValue());
+  }
+
+  @Test
+  void testNamePrefixQualifier() {
+    // empty artDesPraefix [NO LOGGING]
+    assertEmptyCodeValue(person::setArt_des_praefix, person::getPatientNamePrefixQualifier);
+    // non-empty artDesPraefix
+    String artDesPraefix = "AC";
+    String code = getCodeStr(artDesPraefix);
+    person.setArt_des_praefix(code);
+    Extension result = person.getPatientNamePrefixQualifier();
+    assertNonEmptyValue(result);
+    assertEquals(ExtensionUrl.PREFIX, result.getUrl());
+    assertTrue(result.hasValue());
+    assertTrue(result.getValue() instanceof CodeType);
+    CodeType type = (CodeType) result.getValue();
+    assertEquals(artDesPraefix, type.getCode());
+  }
+
+  @Test
+  void testNamePrefix() {
+    // empty praefix [NO LOGGING]
+    person.setPraefix("");
+    assertEmptyValue(person.getPatientNamePrefix());
+    // non-empty praefix
+    String praefix = "Prof. Dr. med.";
+    person.setPraefix(praefix);
+    StringType result = person.getPatientNamePrefix();
+    assertNonEmptyValue(result);
+    assertEquals(praefix, result.getValue());
+    assertFalse(result.hasExtension());
+    // non-empty praefix and artDesPraefix
+    person.setPraefix(praefix);
+    String artDesPraefix = "AC";
+    person.setArt_des_praefix(artDesPraefix);
+    result = person.getPatientNamePrefix();
+    assertNonEmptyValue(result);
+    assertEquals(praefix, result.getValue());
+    assertEquals(1, result.getExtension().size());
+    assertTrue(result.hasExtension(ExtensionUrl.PREFIX));
+  }
+
+  @Test
+  void testName() {
+    String familienname = "Van-der-Dussel";
+    person.setFamilienname(familienname);
+    String firstName = "Maja", secondName = "Julia", vorname = firstName + "  " + secondName;
+    person.setVorname(vorname);
+    String praefix = "Prof. Dr. med.";
+    person.setPraefix(praefix);
+    HumanName result = person.getPatientName();
+    assertHumanName(
+        familienname,
+        Helper.listOf(firstName, secondName),
+        praefix,
+        HumanName.NameUse.OFFICIAL,
+        result);
   }
 }
