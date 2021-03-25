@@ -26,6 +26,7 @@ public class UnitConverter {
     if (!mappingOptional.isPresent()) {
       return Optional.empty();
     }
+    // TODO: How to react to unity-Unit? Currently doesn't set a value in Quantity!
     UnitMapping mapping = mappingOptional.get();
     if (UnitReducible.fromString(mapping.getUcumCode())) {
       return convertValue(value, mapping.getConversion()).flatMap(val -> quantity(val, mapping));
