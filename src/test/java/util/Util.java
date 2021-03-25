@@ -18,6 +18,18 @@ public class Util {
 
   private Util() {}
 
+  public static String getValueStr(String value) {
+    return "value=\"" + value + "\"";
+  }
+
+  public static String getUnitStr(String unit) {
+    return "unit=\"" + unit + "\"";
+  }
+
+  public static String getValueUnitStr(String value, String unit) {
+    return getValueStr(value) + " " + getUnitStr(unit);
+  }
+
   public static String getCodeDisplayStr(String code, String display) {
     return getCodeStr(code) + " " + getDisplayStr(display);
   }
