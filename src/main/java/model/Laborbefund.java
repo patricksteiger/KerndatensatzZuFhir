@@ -269,30 +269,25 @@ public class Laborbefund implements Datablock {
   }
 
   public DateTimeType getDiagnosticReportEffective() {
-    Date date;
     String abnahmezeitpunkt = this.getProbenmaterial_abnahmezeitpunkt();
+    // Abnahmezeitpunkt is general value needed
     if (Helper.checkNonEmptyString(abnahmezeitpunkt)) {
-      date =
-          Helper.getDateFromISO(abnahmezeitpunkt)
-              .orElseGet(
-                  LOGGER.error(
-                      "getDiagnosticReportEffective",
-                      "probenmaterial_abnahmezeitpunkt",
-                      abnahmezeitpunkt));
-    } else {
+      return Helper.getDateFromISO(abnahmezeitpunkt)
+          .map(FhirGenerator::dateTimeType)
+          .orElseGet(
+              LOGGER.error(
+                  "getDiagnosticReportEffective",
+                  "probenmaterial_abnahmezeitpunkt",
+                  abnahmezeitpunkt));
+    } else { // Laboreingangszeitpunkt is set if Abnahmezeitpunkt isn't present
       String laboreingangszeitpunkt = this.getProbenmaterial_laboreingangszeitpunkt();
-      date =
-          Helper.getDateFromISO(laboreingangszeitpunkt)
-              .orElseGet(
-                  LOGGER.error(
-                      "getDiagnosticReportEffective",
-                      "probenmaterial_laboreingangszeitpunkt",
-                      laboreingangszeitpunkt));
+      return Helper.getDateFromISO(laboreingangszeitpunkt)
+          .map(FhirGenerator::dateTimeType)
+          .orElseGet(
+              LOGGER.error(
+                  "getDiagnosticReportEffective",
+                  "Abnahmezeitpunkt or Laboreingangszeitpunkt have to be set!"));
     }
-    if (date == Constants.getEmptyValue()) {
-      return Constants.getEmptyValue();
-    }
-    return FhirGenerator.dateTimeType(date);
   }
 
   public Reference getDiagnosticReportSubject() {
