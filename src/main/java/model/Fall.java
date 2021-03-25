@@ -138,33 +138,27 @@ public class Fall implements Datablock {
 
   public Period getVersorgungsstellenEncounterPeriod() {
     String beginndatum = this.getVersorgungsstellenkontakt_beginndatum();
-    if (Helper.checkEmptyString(beginndatum)) {
+    Optional<Date> start = Helper.getDateFromISO(beginndatum);
+    if (!start.isPresent()) {
       return (Period)
           LOGGER
-              .emptyValue(
-                  "getVersorgungsstellenEncounterPeriod", "versorgungsstellenkontakt_beginndatum")
+              .error(
+                  "getVersorgungsstellenEncounterPeriod",
+                  "versorgungsstellenkontakt_beginndatum",
+                  beginndatum)
               .get();
     }
-    Date start =
-        Helper.getDateFromISO(beginndatum)
-            .orElseGet(
-                LOGGER.error(
-                    "getVersorgungsstellenEncounterPeriod",
-                    "versorgungsstellenkontakt_beginndatum",
-                    beginndatum));
     String enddatum = this.getVersorgungsstellenkontakt_enddatum();
     if (Helper.checkNonEmptyString(enddatum)) {
-      Date end =
-          Helper.getDateFromISO(enddatum)
-              .orElseGet(
-                  LOGGER.error(
-                      "getVersorgungsstellenEncounterPeriod",
-                      "versorgungsstellenkontakt_enddatum",
-                      enddatum));
-      return FhirGenerator.period(start, end);
-    } else {
-      return FhirGenerator.period(start);
+      return Helper.getDateFromISO(enddatum)
+          .map(end -> FhirGenerator.period(start.get(), end))
+          .orElseGet(
+              LOGGER.error(
+                  "getVersorgungsstellenEncounterPeriod",
+                  "versorgungsstellenkontakt_enddatum",
+                  enddatum));
     }
+    return FhirGenerator.period(start.get());
   }
 
   public CodeableConcept getVersorgungsstellenEncounterType() {
@@ -265,30 +259,23 @@ public class Fall implements Datablock {
 
   public Period getEinrichtungsEncounterPeriod() {
     String beginndatum = this.getEinrichtungskontakt_beginndatum();
-    if (Helper.checkEmptyString(beginndatum)) {
+    Optional<Date> start = Helper.getDateFromISO(beginndatum);
+    if (!start.isPresent()) {
       return (Period)
           LOGGER
-              .emptyValue("getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum")
+              .error(
+                  "getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum", beginndatum)
               .get();
     }
-    Date start =
-        Helper.getDateFromISO(beginndatum)
-            .orElseGet(
-                LOGGER.error(
-                    "getEinrichtungsEncounterPeriod",
-                    "einrichtungskontakt_beginndatum",
-                    beginndatum));
     String enddatum = this.getEinrichtungskontakt_enddatum();
     if (Helper.checkNonEmptyString(enddatum)) {
-      Date end =
-          Helper.getDateFromISO(enddatum)
-              .orElseGet(
-                  LOGGER.error(
-                      "getEinrichtungsEncounterPeriod", "einrichtungskontakt_enddatum", enddatum));
-      return FhirGenerator.period(start, end);
-    } else {
-      return FhirGenerator.period(start);
+      return Helper.getDateFromISO(enddatum)
+          .map(end -> FhirGenerator.period(start.get(), end))
+          .orElseGet(
+              LOGGER.error(
+                  "getEinrichtungsEncounterPeriod", "einrichtungskontakt_enddatum", enddatum));
     }
+    return FhirGenerator.period(start.get());
   }
 
   public Reference getEinrichtungsEncounterSubject() {
@@ -351,26 +338,21 @@ public class Fall implements Datablock {
 
   public Period getAbteilungsEncounterPeriod() {
     String beginndatum = this.getAbteilungskontakt_beginndatum();
-    if (Helper.checkEmptyString(beginndatum)) {
+    Optional<Date> start = Helper.getDateFromISO(beginndatum);
+    if (!start.isPresent()) {
       return (Period)
-          LOGGER.emptyValue("getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum").get();
+          LOGGER
+              .error("getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum", beginndatum)
+              .get();
     }
-    Date start =
-        Helper.getDateFromISO(beginndatum)
-            .orElseGet(
-                LOGGER.error(
-                    "getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum", beginndatum));
     String enddatum = this.getAbteilungskontakt_enddatum();
     if (Helper.checkNonEmptyString(enddatum)) {
-      Date end =
-          Helper.getDateFromISO(enddatum)
-              .orElseGet(
-                  LOGGER.error(
-                      "getAbteilungsEncounterPeriod", "abteilungskontakt_enddatum", enddatum));
-      return FhirGenerator.period(start, end);
-    } else {
-      return FhirGenerator.period(start);
+      return Helper.getDateFromISO(enddatum)
+          .map(end -> FhirGenerator.period(start.get(), end))
+          .orElseGet(
+              LOGGER.error("getAbteilungsEncounterPeriod", "abteilungskontakt_enddatum", enddatum));
     }
+    return FhirGenerator.period(start.get());
   }
 
   public CodeableConcept getAbteilungsEncounterType() {

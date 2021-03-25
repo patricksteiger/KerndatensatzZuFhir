@@ -79,12 +79,11 @@ class VersorgungsstellenEncounterTest {
     assertEmptyValue(fall.getVersorgungsstellenEncounterPeriod());
     // invalid beginndatum
     fall.setVersorgungsstellenkontakt_beginndatum("invalid");
-    Period result = fall.getVersorgungsstellenEncounterPeriod();
-    assertPeriod(null, null, result);
+    assertEmptyValue(fall.getVersorgungsstellenEncounterPeriod());
     // valid beginndatum
     String startDate = "2021-02-04";
     fall.setVersorgungsstellenkontakt_beginndatum(startDate);
-    result = fall.getVersorgungsstellenEncounterPeriod();
+    Period result = fall.getVersorgungsstellenEncounterPeriod();
     assertPeriod(expectedDateString(startDate), null, result);
     // valid enddatum
     String endDate = "2021-03-04";

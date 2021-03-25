@@ -102,12 +102,11 @@ class AbteilungsEncounterTest {
     assertEmptyValue(fall.getAbteilungsEncounterPeriod());
     // invalid beginndatum
     fall.setAbteilungskontakt_beginndatum("invalid");
-    Period result = fall.getAbteilungsEncounterPeriod();
-    assertPeriod(null, null, result);
+    assertEmptyValue(fall.getAbteilungsEncounterPeriod());
     // valid beginndatum
     String startDate = "2021-02-20";
     fall.setAbteilungskontakt_beginndatum(startDate);
-    result = fall.getAbteilungsEncounterPeriod();
+    Period result = fall.getAbteilungsEncounterPeriod();
     assertPeriod(expectedDateString(startDate), null, result);
     // valid enddatum
     String endDate = "2021-02-23";
