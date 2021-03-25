@@ -45,6 +45,21 @@ public class Asserter {
     assertEquals(expectedUse, identifier.getUse());
   }
 
+  public static void assertIdentifier(
+      String expectedValue, String expectedSystem, Identifier identifier) {
+    assertNonEmptyValue(identifier);
+    assertEquals(expectedValue, identifier.getValue());
+    assertEquals(expectedSystem, identifier.getSystem());
+  }
+
+  public static void assertReference(
+      String expectedType, String expectedValue, String expectedSystem, Reference reference) {
+    assertNonEmptyValue(reference);
+    assertEquals(expectedType, reference.getType());
+    assertTrue(reference.hasIdentifier());
+    assertIdentifier(expectedValue, expectedSystem, reference.getIdentifier());
+  }
+
   public static void assertCodeableConcept(
       String expectedCode,
       String expectedSystem,
@@ -55,6 +70,11 @@ public class Asserter {
     assertCoding(expectedCode, expectedSystem, expectedDisplay, codeableConcept.getCoding().get(0));
   }
 
+  public static void assertCodeableConcept(
+      String expectedCode, String expectedSystem, CodeableConcept codeableConcept) {
+    assertCodeableConcept(expectedCode, expectedSystem, null, codeableConcept);
+  }
+
   public static void assertCodeableConcept(Code expectedCode, CodeableConcept codeableConcept) {
     assertNonEmptyValue(codeableConcept);
     assertEquals(1, codeableConcept.getCoding().size());
@@ -62,6 +82,7 @@ public class Asserter {
   }
 
   public static void assertCoding(Code expectedCode, Coding coding) {
+    assertNonEmptyValue(coding);
     assertEquals(expectedCode.getCode(), coding.getCode());
     assertEquals(expectedCode.getSystem(), coding.getSystem());
     assertEquals(expectedCode.getDisplay(), coding.getDisplay());
@@ -69,9 +90,16 @@ public class Asserter {
 
   public static void assertCoding(
       String expectedCode, String expectedSystem, String expectedDisplay, Coding coding) {
+    assertNonEmptyValue(coding);
     assertEquals(expectedCode, coding.getCode());
     assertEquals(expectedSystem, coding.getSystem());
     assertEquals(expectedDisplay, coding.getDisplay());
+  }
+
+  public static void assertCoding(String expectedCode, String expectedSystem, Coding coding) {
+    assertNonEmptyValue(coding);
+    assertEquals(expectedCode, coding.getCode());
+    assertEquals(expectedSystem, coding.getSystem());
   }
 
   public static void assertCoding(
