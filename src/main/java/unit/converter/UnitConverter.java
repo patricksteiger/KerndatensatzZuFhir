@@ -28,17 +28,13 @@ public class UnitConverter {
     }
     UnitMapping mapping = mappingOptional.get();
     if (UnitReducible.fromString(mapping.getUcumCode())) {
-      Optional<String> valueStr = convertValue(value, mapping.getConversion());
-      return valueStr.flatMap(val -> quantity(val, mapping));
+      return convertValue(value, mapping.getConversion()).flatMap(val -> quantity(val, mapping));
     } else {
       return quantity(value, mapping);
     }
   }
 
-  private static Optional<String> convertValue(String value, BigDecimal conversion) {
-    if (Helper.checkEmptyString(value)) {
-      return Optional.empty();
-    }
+  private static Optional<BigDecimal> convertValue(String value, BigDecimal conversion) {
     String[] formula = value.split(FRACTION);
     if (formula.length == 1) {
       return simpleValueConversion(value, conversion);
@@ -49,7 +45,7 @@ public class UnitConverter {
     }
   }
 
-  private static Optional<String> fractionConversion(
+  private static Optional<BigDecimal> fractionConversion(
       String numerator, String denominator, BigDecimal conversion) {
     Optional<BigDecimal> numeratorOptional = Helper.parseValue(numerator);
     Optional<BigDecimal> denominatorOptional = Helper.parseValue(denominator);
@@ -58,7 +54,7 @@ public class UnitConverter {
     }
     BigDecimal num = numeratorOptional.get();
     BigDecimal den = denominatorOptional.get();
-    return safeDiv(num, den).map(x -> x.multiply(conversion)).map(BigDecimal::toString);
+    return safeDiv(num, den).map(x -> x.multiply(conversion));
   }
 
   private static Optional<BigDecimal> safeDiv(BigDecimal numerator, BigDecimal denominator) {
@@ -70,15 +66,20 @@ public class UnitConverter {
     }
   }
 
-  private static Optional<String> simpleValueConversion(String value, BigDecimal conversion) {
+  private static Optional<BigDecimal> simpleValueConversion(String value, BigDecimal conversion) {
     Optional<BigDecimal> number = Helper.parseValue(value);
-    return number.map(n -> n.multiply(conversion).toString());
+    return number.map(n -> n.multiply(conversion));
+  }
+
+  private static Optional<Quantity> quantity(BigDecimal value, UnitMapping mapping) {
+    String code = mapping.getUcumCode();
+    return Ucum.formalRepresentation(code)
+        .map(unit -> FhirGenerator.quantity(value, unit, Constants.QUANTITY_SYSTEM, code));
   }
 
   private static Optional<Quantity> quantity(String value, UnitMapping mapping) {
     String code = mapping.getUcumCode();
-    Optional<String> unitOptional = Ucum.formalRepresentation(code);
-    return unitOptional.map(
-        unit -> FhirGenerator.quantity(value, unit, Constants.QUANTITY_SYSTEM, code));
+    return Ucum.formalRepresentation(code)
+        .map(unit -> FhirGenerator.quantity(value, unit, Constants.QUANTITY_SYSTEM, code));
   }
 }
