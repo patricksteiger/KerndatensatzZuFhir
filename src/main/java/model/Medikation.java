@@ -327,7 +327,7 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
+    String system = IdentifierSystem.EMPTY;
     return FhirGenerator.identifier(value, system);
   }
 
@@ -527,7 +527,7 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    String system = Constants.EMPTY_IDENTIFIER_SYSTEM;
+    String system = IdentifierSystem.EMPTY;
     return FhirGenerator.identifier(value, system);
   }
 

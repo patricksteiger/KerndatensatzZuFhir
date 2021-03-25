@@ -1,6 +1,7 @@
 package constants;
 
 public class IdentifierSystem {
+  public static final String EMPTY = "";
   public static final String LOCAL_PID = "http://uniklinik-ulm.de/fhir/NamingSystem/pid";
   public static final String VERSICHERTEN_ID_GKV = "http://fhir.de/NamingSystem/gkv/kvid-10";
   public static final String IKNR = "http://fhir.de/NamingSystem/arge-ik/iknr";
