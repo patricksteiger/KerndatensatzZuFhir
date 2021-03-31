@@ -5,6 +5,7 @@ import constants.Constants;
 import constants.*;
 import enums.IdentifierTypeCode;
 import enums.Laborbereich;
+import enums.ReferenceRangeMeaning;
 import enums.SemiQuantitativesLaborergebnis;
 import helper.*;
 import interfaces.Datablock;
@@ -373,10 +374,12 @@ public class Laborbefund implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.REFERENCE_RANGE_MEANING;
-    String display = parsedCode.getDisplay();
-    Coding coding = FhirGenerator.coding(code, system, display);
-    return FhirGenerator.codeableConcept(coding);
+    return ReferenceRangeMeaning.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElseGet(
+            LOGGER.error(
+                "getObservationReferenceRangeType", "laboruntersuchung_referenzbereich_typ", code));
   }
 
   public Quantity getObservationReferenceRangeLow() {

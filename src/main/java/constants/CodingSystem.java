@@ -22,7 +22,7 @@ public class CodingSystem {
       "http://terminology.hl7.org/CodeSystem/observation-category";
   public static final String LABORGRUPPEN_CODE = "urn:oid:1.2.40.0.34.5.11";
   public static final String REFERENCE_RANGE_MEANING =
-      "http://hl7.org/fhir/ValueSet/referencerange-meaning";
+      "http://terminology.hl7.org/CodeSystem/referencerange-meaning";
   public static final String ENCOUNTER_CLASS_DE =
       "https://www.medizininformatik-initiative.de/fhir/core/ValueSet/EncounterClassDE";
   public static final String FALL_KONTAKTEBENE =
