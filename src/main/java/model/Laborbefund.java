@@ -429,8 +429,10 @@ public class Laborbefund implements Datablock {
   }
 
   public Type getObservationValue() {
-    CodeableConcept code = this.getObservationValueCodeableConcept();
-    return (code == Constants.getEmptyValue()) ? this.getObservationValueQuantity() : code;
+    CodeableConcept semiQuantitative = this.getObservationValueCodeableConcept();
+    return semiQuantitative == Constants.getEmptyValue()
+        ? this.getObservationValueQuantity()
+        : semiQuantitative;
   }
 
   public CodeableConcept getObservationValueCodeableConcept() {
@@ -438,14 +440,19 @@ public class Laborbefund implements Datablock {
     return SemiQuantitativesLaborergebnis.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
-        .orElseGet(Constants.getEmptyValue());
+        .orElse(Constants.getEmptyValue());
   }
 
   public Quantity getObservationValueQuantity() {
     String ergebnis = this.getLaboruntersuchung_ergebnis();
+    // ergebnis is treated as required here, because if both ValueCodeableConcept and this is empty
+    // an error would be missed, since Value is required and 1 has to be set. Therefore
+    // ValueCodeableConcept needs to be checked first.
     return ParsedQuantity.fromString(ergebnis)
         .orElseGet(
-            this.LOGGER.error("getObservationValue", "laboruntersuchung_ergebnis", ergebnis));
+            this.LOGGER.error(
+                "getObservationValue",
+                "laboruntersuchung_ergebnis has to be a semi-quantitative or whole quantity!"));
   }
 
   public Date getObservationIssued() {
