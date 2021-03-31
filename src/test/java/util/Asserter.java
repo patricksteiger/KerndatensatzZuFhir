@@ -224,6 +224,11 @@ public class Asserter {
     assertEquals(expectedUnit, quantity.getUnit());
   }
 
+  public static void assertAnnotation(String expectedText, Annotation annotation) {
+    assertNonEmptyValue(annotation);
+    assertEquals(expectedText, annotation.getText());
+  }
+
   public static <T> void assertEmptyValue(T value) {
     assertNull(value);
   }

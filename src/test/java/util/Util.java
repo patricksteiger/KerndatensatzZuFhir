@@ -30,6 +30,14 @@ public class Util {
     return getValueStr(value) + " " + getUnitStr(unit);
   }
 
+  public static String getSystemStr(String system) {
+    return "system=\"" + system + "\"";
+  }
+
+  public static String getCodeDisplaySystemStr(String code, String display, String system) {
+    return getCodeDisplayStr(code, display) + " " + getSystemStr(system);
+  }
+
   public static String getCodeDisplayStr(String code, String display) {
     return getCodeStr(code) + " " + getDisplayStr(display);
   }
