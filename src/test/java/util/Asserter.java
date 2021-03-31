@@ -5,6 +5,7 @@ import helper.Helper;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -208,6 +209,19 @@ public class Asserter {
         Constants.getEmptyValue(),
         expectedUse,
         humanName);
+  }
+
+  public static void assertQuantity(
+      BigDecimal expectedValue,
+      String expectedCode,
+      String expectedSystem,
+      String expectedUnit,
+      Quantity quantity) {
+    assertNonEmptyValue(quantity);
+    assertEquals(expectedValue, quantity.getValue());
+    assertEquals(expectedCode, quantity.getCode());
+    assertEquals(expectedSystem, quantity.getSystem());
+    assertEquals(expectedUnit, quantity.getUnit());
   }
 
   public static <T> void assertEmptyValue(T value) {
