@@ -22,7 +22,9 @@ public class UnitConverter {
     if (Helper.checkEmptyString(value)) {
       return Optional.empty();
     }
-    Optional<UnitMapping> mappingOptional = UnitMapper.getUcum(localCode);
+    // No unit is represented with "1".
+    String localUnit = Helper.checkEmptyString(localCode) ? "1" : localCode;
+    Optional<UnitMapping> mappingOptional = UnitMapper.getUcum(localUnit);
     if (!mappingOptional.isPresent()) {
       return Optional.empty();
     }
