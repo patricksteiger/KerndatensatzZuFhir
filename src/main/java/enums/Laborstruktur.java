@@ -6,6 +6,10 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/**
+ * @see
+ *     "https://art-decor.org/decor/services/RetrieveValueSet?prefix=mide-&id=1.2.40.0.34.10.47&effectiveDate=2018-01-18T00:00:00&version=&format=html&language=de-DE&seetype=live-services"
+ */
 public enum Laborstruktur implements Code {
   ALLGEMEINER_LABORBEFUND("1", "Allgemeiner Laborbefund"),
   PROBENINFORMATION("10", "Probeninformation"),
