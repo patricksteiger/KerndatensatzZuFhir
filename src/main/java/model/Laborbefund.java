@@ -179,15 +179,9 @@ public class Laborbefund implements Datablock {
     return FhirGenerator.identifier(value, system, placerv2);
   }
 
+  // Reference is only set if it links to an existing Specimen-Resource. This can't be known here.
   public Reference getServiceRequestSpecimen() {
-    String id = this.getLaboranforderung_probenmaterial_identifikation();
-    if (Helper.checkEmptyString(id)) {
-      return Constants.getEmptyValue();
-    }
-    String type = ReferenceType.SPECIMEN;
-    String system = IdentifierSystem.EMPTY;
-    Identifier identifier = FhirGenerator.identifier(id, system);
-    return FhirGenerator.reference(type, identifier);
+    return Constants.getEmptyValue();
   }
 
   public Date getServiceRequestAuthoredOn() {
@@ -535,6 +529,8 @@ public class Laborbefund implements Datablock {
     return FhirGenerator.coding(code, system);
   }
 
+  // TODO: status von https://terminology.hl7.org/2.1.0/CodeSystem-v3-ActStatus.html oder doch
+  // gleich observationstatus?
   public Observation.ObservationStatus getObservationStatus() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_status());
     String code = parsedCode.getCode();

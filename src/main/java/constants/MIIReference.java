@@ -15,6 +15,8 @@ public class MIIReference {
   public static final String MII_SERVICE_REQUEST = SERVICE_REQUEST + "MII-ServiceRequest";
   private static final String MEDICATION = "Medication/";
   public static final String REF_MEDICATION = MEDICATION + "Reference-Medication";
+  private static final String SPECIMEN = "Specimen/";
+  public static final String REF_SPECIMEN = SPECIMEN + "Specimen";
 
   private MIIReference() {}
 }
