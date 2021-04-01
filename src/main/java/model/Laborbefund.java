@@ -3,10 +3,7 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
-import enums.IdentifierTypeCode;
-import enums.Laborbereich;
-import enums.ReferenceRangeMeaning;
-import enums.SemiQuantitativesLaborergebnis;
+import enums.*;
 import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
@@ -484,7 +481,7 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaborparameter_bezeichnung());
+    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_code());
     String codingCode = parsedCode.getCode();
     if (Helper.checkEmptyString(codingCode)) {
       return (CodeableConcept)
@@ -493,7 +490,7 @@ public class Laborbefund implements Datablock {
     String system = CodingSystem.LOINC;
     String display = parsedCode.getDisplay();
     Coding code = FhirGenerator.coding(codingCode, system, display);
-    return FhirGenerator.codeableConcept(code);
+    return FhirGenerator.codeableConcept(code).setText(this.getLaborparameter_bezeichnung());
   }
 
   public CodeableConcept getObservationCategory() {
@@ -510,9 +507,9 @@ public class Laborbefund implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.LABORGRUPPEN_CODE;
-    String display = parsedGruppe.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    return Laborstruktur.fromCode(code)
+        .map(FhirGenerator::coding)
+        .orElseGet(LOGGER.error("getObservationCategoryGruppen", "laborgruppe_code", code));
   }
 
   public Coding getObservationCategoryBereich() {
