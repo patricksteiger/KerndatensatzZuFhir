@@ -1,8 +1,10 @@
 package model.laborbefund;
 
+import constants.CodingCode;
+import constants.CodingSystem;
 import constants.Constants;
-import enums.ReferenceRangeMeaning;
-import enums.SemiQuantitativesLaborergebnis;
+import constants.IdentifierSystem;
+import enums.*;
 import helper.Logger;
 import model.Laborbefund;
 import org.hl7.fhir.r4.model.*;
@@ -12,7 +14,7 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static util.Asserter.*;
 import static util.Util.*;
 
@@ -169,5 +171,119 @@ class ObservationTest {
     assertNonEmptyValue(result);
     assertTrue(result instanceof Quantity);
     assertQuantity(new BigDecimal(value), "1", Constants.QUANTITY_SYSTEM, "1", (Quantity) result);
+  }
+
+  @Test
+  void testIssued() {
+    // empty datum [NO LOGGING]
+    laborbefund.setLaboruntersuchung_dokumentationsdatum("");
+    assertEmptyValue(laborbefund.getObservationIssued());
+    // invalid datum
+    laborbefund.setLaboruntersuchung_dokumentationsdatum("invalid date");
+    assertEmptyValue(laborbefund.getObservationIssued());
+    // valid datum
+    String datum = "2013-08-24";
+    laborbefund.setLaboruntersuchung_dokumentationsdatum(datum);
+    assertEquals(expectedDateString(datum), laborbefund.getObservationIssued());
+  }
+
+  @Test
+  void testEffective() {
+    // invalid datum
+    laborbefund.setLaboruntersuchung_untersuchungszeitpunkt("invalid date");
+    assertEmptyValue(laborbefund.getObservationEffective());
+    // valid datum
+    String datum = "2013-08-24T10:13:27";
+    laborbefund.setLaboruntersuchung_untersuchungszeitpunkt(datum);
+    DateTimeType result = laborbefund.getObservationEffective();
+    assertDateTimeType(expectedDateString(datum), result);
+  }
+
+  @Test
+  void testCode() {
+    // empty/invalid code
+    assertEmptyCodeValue(laborbefund::setLaboruntersuchung_code, laborbefund::getObservationCode);
+    // valid code, empty text
+    String code = "20570-8", display = "Hematocrit [Volume Fraction] of Blood";
+    laborbefund.setLaboruntersuchung_code(getCodeDisplayStr(code, display));
+    CodeableConcept result = laborbefund.getObservationCode();
+    assertCodeableConcept(code, CodingSystem.LOINC, display, result);
+    assertFalse(result.hasText());
+    // valid code and text
+    laborbefund.setLaboruntersuchung_code(getCodeDisplayStr(code, display));
+    String bezeichnung = "some text";
+    laborbefund.setLaborparameter_bezeichnung(bezeichnung);
+    result = laborbefund.getObservationCode();
+    assertCodeableConcept(code, CodingSystem.LOINC, display, result);
+    assertEquals(bezeichnung, result.getText());
+  }
+
+  @Test
+  void testCategoryLoinc() {
+    // fixed values
+    Coding result = laborbefund.getObservationCategoryLoinc();
+    assertCoding(CodingCode.LOINC_LAB, CodingSystem.LOINC, result);
+  }
+
+  @Test
+  void testCategoryCategory() {
+    // fixed values
+    Coding result = laborbefund.getObservationCategoryCategory();
+    assertCoding(CodingCode.LABORATORY, CodingSystem.OBSERVATION_CATEGORY_TERMINOLOGY, result);
+  }
+
+  @Test
+  void testCategoryBereich() {
+    // empty code [NO LOGGING]
+    assertEmptyCodeValue(
+        laborbefund::setLaborbereich_code, laborbefund::getObservationCategoryBereich);
+    // invalid code
+    laborbefund.setLaborbereich_code("invalid code");
+    assertEmptyValue(laborbefund.getObservationCategoryBereich());
+    // valid code
+    Laborbereich code = Laborbereich.CELL_MARKER;
+    laborbefund.setLaborbereich_code(getCodeStr(code.getCode()));
+    Coding result = laborbefund.getObservationCategoryBereich();
+    assertCoding(code, result);
+  }
+
+  @Test
+  void testCategoryGruppen() {
+    // empty code [NO LOGGING]
+    assertEmptyCodeValue(
+        laborbefund::setLaborgruppe_code, laborbefund::getObservationCategoryGruppen);
+    // invalid code
+    laborbefund.setLaborgruppe_code("invalid code");
+    assertEmptyValue(laborbefund.getObservationCategoryGruppen());
+    // valid code
+    Laborstruktur code = Laborstruktur.ZYTOLOGIE;
+    laborbefund.setLaborgruppe_code(getCodeStr(code.getCode()));
+    Coding result = laborbefund.getObservationCategoryGruppen();
+    assertCoding(code, result);
+  }
+
+  @Test
+  void testStatus() {
+    // invalid status
+    laborbefund.setLaboruntersuchung_status("invalid status");
+    assertEmptyValue(laborbefund.getObservationStatus());
+    // valid status
+    Observation.ObservationStatus status = Observation.ObservationStatus.FINAL;
+    laborbefund.setLaboruntersuchung_status(getCodeStr(status.toCode()));
+    Observation.ObservationStatus result = laborbefund.getObservationStatus();
+    assertEquals(status, result);
+  }
+
+  @Test
+  void testIdentifier() {
+    // empty id
+    laborbefund.setLaboruntersuchung_identifikation("");
+    assertEmptyValue(laborbefund.getObservationIdentifier());
+    // non-empty id
+    String id = "59826-8_1234567890";
+    laborbefund.setLaboruntersuchung_identifikation(id);
+    Identifier result = laborbefund.getObservationIdentifier();
+    assertIdentifier(id, IdentifierSystem.EMPTY, result);
+    assertCodeableConcept(IdentifierTypeCode.OBI, result.getType());
   }
 }
