@@ -34,6 +34,10 @@ public class Util {
     return "system=\"" + system + "\"";
   }
 
+  public static String getCodeSystemStr(String code, String system) {
+    return getCodeStr(code) + " " + getSystemStr(system);
+  }
+
   public static String getCodeDisplaySystemStr(String code, String display, String system) {
     return getCodeDisplayStr(code, display) + " " + getSystemStr(system);
   }
