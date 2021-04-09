@@ -69,6 +69,13 @@ public class FhirGenerator {
     return period;
   }
 
+  public static Period period(DateTimeType start, DateTimeType end) {
+    Period period = new Period();
+    period.setStartElement(start);
+    period.setEndElement(end);
+    return period;
+  }
+
   public static Period period(Date start) {
     return period(start, null);
   }

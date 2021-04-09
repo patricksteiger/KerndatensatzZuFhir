@@ -484,28 +484,25 @@ public class Medikation implements Datablock {
 
   public Type getMedicationStatementEffective() {
     String startzeitpunkt = this.getEinnahme_startzeitpunkt();
-    if (Helper.checkEmptyString(startzeitpunkt)) {
+    Optional<DateTimeType> start =
+        Helper.getDateFromISO(startzeitpunkt).map(FhirGenerator::dateTimeType);
+    if (!start.isPresent()) {
       return (Type)
-          LOGGER.emptyValue("getMedicationStatementEffective", "einnahme_startzeitpunkt").get();
+          LOGGER
+              .error("getMedicationStatementEffective", "einnahme_startzeitpunkt", startzeitpunkt)
+              .get();
     }
-    DateTimeType start =
-        Helper.getDateFromISO(startzeitpunkt)
-            .map(FhirGenerator::dateTimeType)
-            .orElseGet(
-                LOGGER.error(
-                    "getMedicationStatementEffective", "einnahme_startzeitpunkt", startzeitpunkt));
-    DateTimeType end = new DateTimeType();
     String endzeitpunkt = this.getEinnahme_endzeitpunkt();
-    if (Helper.checkNonEmptyString(endzeitpunkt)) {
-      Date endDate =
-          Helper.getDateFromISO(endzeitpunkt)
-              .orElseGet(
-                  LOGGER.error(
-                      "getMedicationStatementEffective", "einnahme_endzeitpunkt", endzeitpunkt));
-      end.setValue(endDate);
+    // Return only DateTimeType if end is not set
+    if (Helper.checkEmptyString(endzeitpunkt)) {
+      return start.get();
     }
-    // Return period if both start and end got set. Otherwise only return start.
-    return end.hasValue() ? new Period().setStartElement(start).setEndElement(end) : start;
+    // Return Period if both start and end are set
+    return Helper.getDateFromISO(endzeitpunkt)
+        .map(FhirGenerator::dateTimeType)
+        .map(end -> FhirGenerator.period(start.get(), end))
+        .orElseGet(
+            LOGGER.error("getMedicationStatementEffective", "einnahme_endzeitpunkt", endzeitpunkt));
   }
 
   public Reference getMedicationStatementBasedOn() {
