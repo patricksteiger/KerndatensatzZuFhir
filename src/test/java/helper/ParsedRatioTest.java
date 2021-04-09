@@ -20,7 +20,7 @@ class ParsedRatioTest {
   void testInvalidUnit() {
     String code1 = getValueStr("1/2");
     assertFalse(ParsedRatio.fromString(code1).isPresent());
-    String code2 = getValueStr("1/2") + " " + getUnitStr("g");
+    String code2 = getValueStr("1/2") + " " + getUnitStr("/g");
     assertFalse(ParsedRatio.fromString(code2).isPresent());
   }
 

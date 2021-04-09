@@ -17,11 +17,11 @@ public class ParsedRatio {
     String value = Helper.extractCode(words, "value=");
     String unit = Helper.extractCode(words, "unit=");
     String[] splitUnit = unit.split(FRACTION);
-    if (splitUnit.length != 2) {
+    if (splitUnit.length < 1 || splitUnit.length > 2 || Helper.checkAnyEmptyString(splitUnit)) {
       return Optional.empty();
     }
     String[] splitValue = value.split(FRACTION);
-    if (splitValue.length != 1 && splitValue.length != 2) {
+    if (splitValue.length < 1 || splitValue.length > 2 || Helper.checkAnyEmptyString(splitValue)) {
       return Optional.empty();
     }
     String numeratorValue = splitValue[0];
@@ -33,7 +33,8 @@ public class ParsedRatio {
     if (Helper.isZero(denominatorValue)) {
       return Optional.empty();
     }
-    Optional<Quantity> denominator = UnitConverter.fromLocalCode(splitUnit[1], denominatorValue);
+    String denominatorUnit = splitUnit.length == 2 ? splitUnit[1].trim() : "1";
+    Optional<Quantity> denominator = UnitConverter.fromLocalCode(denominatorUnit, denominatorValue);
     return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
   }
 }
