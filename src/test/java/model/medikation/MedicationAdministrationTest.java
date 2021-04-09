@@ -1,7 +1,9 @@
 package model.medikation;
 
+import enums.Behandlungsgrund;
 import helper.Logger;
 import model.Medikation;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.MedicationAdministration;
 import org.hl7.fhir.r4.model.Reference;
@@ -76,5 +78,19 @@ class MedicationAdministrationTest {
     MedicationAdministration.MedicationAdministrationStatus result =
         medikation.getMedicationAdministrationStatus();
     assertEquals(MedicationAdministration.MedicationAdministrationStatus.COMPLETED, result);
+  }
+
+  @Test
+  void testReasonCode() {
+    // empty grund
+    assertEmptyCodeValue(
+        medikation::setBehandlungsgrund, medikation::getMedicationAdministrationReasonCode);
+    // invalid grund [LOGGING]
+    medikation.setBehandlungsgrund("invalid reason");
+    assertEmptyValue(medikation.getMedicationAdministrationReasonCode());
+    // valid grund
+    medikation.setBehandlungsgrund("b");
+    CodeableConcept result = medikation.getMedicationAdministrationReasonCode();
+    assertCodeableConcept(Behandlungsgrund.GIVEN_AS_ORDERED, result);
   }
 }
