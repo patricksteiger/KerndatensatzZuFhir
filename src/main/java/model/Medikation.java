@@ -241,7 +241,8 @@ public class Medikation implements Datablock {
 
   public CodeableConcept getMedicationCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
-    if (Helper.checkEmptyString(parsedCode.getCode())) {
+    String text = this.getMedicationCodeText();
+    if (Helper.checkEmptyString(parsedCode.getCode()) && Helper.checkEmptyString(text)) {
       return Constants.getEmptyValue();
     }
     Coding code;
@@ -251,7 +252,7 @@ public class Medikation implements Datablock {
     } else {
       code = this.getMedicationCodeAtcDE();
     }
-    return FhirGenerator.codeableConcept(code).setText(this.getMedicationCodeText());
+    return FhirGenerator.codeableConcept(code).setText(text);
   }
 
   public String getMedicationCodeText() {
