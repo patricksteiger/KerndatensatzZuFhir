@@ -209,13 +209,12 @@ public class Medikation implements Datablock {
     if (Helper.checkEmptyString(code)) {
       return Constants.getEmptyValue();
     }
-    Coding value =
-        Wirkstofftyp.fromCode(code)
-            .map(FhirGenerator::coding)
-            .orElseGet(
-                LOGGER.error("getMedicationIngredientExtension", "wirkstoff_code_allgemein", code));
     String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
-    return FhirGenerator.extension(url, value);
+    return Wirkstofftyp.fromCode(code)
+        .map(FhirGenerator::coding)
+        .map(type -> FhirGenerator.extension(url, type))
+        .orElseGet(
+            LOGGER.error("getMedicationIngredientExtension", "wirkstoff_code_allgemein", code));
   }
 
   public Ratio getMedicationAmount() {
