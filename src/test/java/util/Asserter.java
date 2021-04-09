@@ -4,6 +4,7 @@ import constants.Constants;
 import helper.Helper;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
+import unit.ucum.Ucum;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -227,6 +228,27 @@ public class Asserter {
     assertEquals(expectedCode, quantity.getCode());
     assertEquals(expectedSystem, quantity.getSystem());
     assertEquals(expectedUnit, quantity.getUnit());
+  }
+
+  public static void assertRatio(
+      BigDecimal expectedNumeratorValue,
+      String expectedNumeratorUnit,
+      BigDecimal expectedDenominatorValue,
+      String expectedDenominatorUnit,
+      Ratio ratio) {
+    assertNonEmptyValue(ratio);
+    assertQuantity(
+        expectedNumeratorValue,
+        expectedNumeratorUnit,
+        Constants.QUANTITY_SYSTEM,
+        Ucum.formalRepresentation(expectedNumeratorUnit).get(),
+        ratio.getNumerator());
+    assertQuantity(
+        expectedDenominatorValue,
+        expectedDenominatorUnit,
+        Constants.QUANTITY_SYSTEM,
+        Ucum.formalRepresentation(expectedDenominatorUnit).get(),
+        ratio.getDenominator());
   }
 
   public static void assertAnnotation(String expectedText, Annotation annotation) {
