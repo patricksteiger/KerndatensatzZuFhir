@@ -29,7 +29,10 @@ public class ParsedRatio {
     if (!numerator.isPresent()) {
       return Optional.empty();
     }
-    String denominatorValue = splitValue.length == 2 ? splitValue[1] : "1";
+    String denominatorValue = splitValue.length == 2 ? splitValue[1].trim() : "1";
+    if (Helper.isZero(denominatorValue)) {
+      return Optional.empty();
+    }
     Optional<Quantity> denominator = UnitConverter.fromLocalCode(splitUnit[1], denominatorValue);
     return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
   }

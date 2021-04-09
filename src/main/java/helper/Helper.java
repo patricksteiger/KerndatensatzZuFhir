@@ -41,6 +41,25 @@ public class Helper {
   }
 
   /**
+   * Checks if a string only contains '0' and '.'.
+   *
+   * @param s
+   * @return true if s only contains character equal to '0' and '.'
+   */
+  public static boolean isZero(String s) {
+    if (Helper.checkEmptyString(s)) {
+      return true;
+    }
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (c != '0' && c != '.') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * Parses boolean from String. s must be 0, false, 1 or true. false and true are checked
    * case-insensitively.
    *
