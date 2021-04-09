@@ -4,7 +4,9 @@ import constants.IdentifierSystem;
 import enums.IdentifierTypeCode;
 import helper.Logger;
 import model.Laborbefund;
+import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.ServiceRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,8 +14,7 @@ import org.mockito.Mockito;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static util.Asserter.assertEmptyValue;
-import static util.Asserter.assertIdentifier;
+import static util.Asserter.*;
 import static util.Util.*;
 
 class ServiceRequestTest {
@@ -55,5 +56,55 @@ class ServiceRequestTest {
     laborbefund.setLaboranforderung_anforderungsdatum(date);
     Date result = laborbefund.getServiceRequestAuthoredOn();
     assertEquals(expectedDateString(date), result);
+  }
+
+  @Test
+  void testCodeText() {
+    // empty text
+    laborbefund.setLaboranforderung_laborparameter_bezeichnung("");
+    assertEmptyValue(laborbefund.getServiceRequestCodeText());
+    // non-empty text
+    String text = "code text";
+    laborbefund.setLaboranforderung_laborparameter_bezeichnung(text);
+    assertEquals(text, laborbefund.getServiceRequestCodeText());
+  }
+
+  @Test
+  void testCode() {
+    // empty code [LOGGING]
+    assertEmptyCodeValue(
+        laborbefund::setLaboranforderung_laborparameter_code, laborbefund::getServiceRequestCode);
+    // non-empty, with text
+    String code = "GroßesBlutbild",
+        system = "http://diz.mii.de/fhir/CodeSystem/LabTests",
+        display = "großes Blutbild";
+    String labor = getCodeDisplaySystemStr(code, display, system);
+    laborbefund.setLaboranforderung_laborparameter_code(labor);
+    String text = "some text";
+    laborbefund.setLaboranforderung_laborparameter_bezeichnung(text);
+    CodeableConcept result = laborbefund.getServiceRequestCode();
+    assertCodeableConcept(code, system, display, result);
+    assertEquals(text, result.getText());
+  }
+
+  @Test
+  void testCategory() {
+    // fixed value
+    CodeableConcept result = laborbefund.getServiceRequestCategory();
+    assertCodeableConcept(
+        "laboratory", "http://terminology.hl7.org/CodeSystem/observation-category", null, result);
+  }
+
+  @Test
+  void testIntent() {
+    // fixed value
+    assertEquals(ServiceRequest.ServiceRequestIntent.ORDER, laborbefund.getServiceRequestIntent());
+  }
+
+  @Test
+  void testStatus() {
+    // fixed value
+    assertEquals(
+        ServiceRequest.ServiceRequestStatus.COMPLETED, laborbefund.getServiceRequestStatus());
   }
 }
