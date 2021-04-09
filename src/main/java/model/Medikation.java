@@ -331,6 +331,7 @@ public class Medikation implements Datablock {
     return FhirGenerator.identifier(value, system);
   }
 
+  // TODO: Administration or Statement effective?
   public Type getMedicationAdministrationEffective() {
     return this.getMedicationStatementEffective();
   }

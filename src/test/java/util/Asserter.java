@@ -61,6 +61,11 @@ public class Asserter {
     assertIdentifier(expectedValue, expectedSystem, reference.getIdentifier());
   }
 
+  public static void assertReference(String expectedReference, Reference reference) {
+    assertNonEmptyValue(reference);
+    assertEquals(expectedReference, reference.getReference());
+  }
+
   public static void assertCodeableConcept(
       String expectedCode,
       String expectedSystem,
