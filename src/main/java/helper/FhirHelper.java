@@ -2,10 +2,8 @@ package helper;
 
 import constants.IdentifierSystem;
 import enums.MIICoreLocations;
-import org.hl7.fhir.r4.model.DiagnosticReport;
-import org.hl7.fhir.r4.model.Enumerations;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.*;
+import unit.converter.UnitConverter;
 
 import java.util.Optional;
 
@@ -28,6 +26,20 @@ public class FhirHelper {
       }
     }
     return Optional.empty();
+  }
+
+  public static Optional<Ratio> generateRatioFromFractions(
+      ValueAndUnitFraction valueAndUnitFraction) {
+    Optional<Quantity> numerator =
+        UnitConverter.fromLocalCode(
+            valueAndUnitFraction.getUnitNumerator(), valueAndUnitFraction.getValueNumerator());
+    if (!numerator.isPresent()) {
+      return Optional.empty();
+    }
+    Optional<Quantity> denominator =
+        UnitConverter.fromLocalCode(
+            valueAndUnitFraction.getUnitDenominator(), valueAndUnitFraction.getValueDenominator());
+    return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
   }
 
   // TODO: Implement changes to "divers"-gender when finalized
