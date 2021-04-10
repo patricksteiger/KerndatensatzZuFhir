@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static util.Util.getValueUnitStr;
 
 class ParsedRatioTest {
   @Test
@@ -25,11 +26,19 @@ class ParsedRatioTest {
   }
 
   @Test
+  void testDenominatorValueZero() {
+    String unit = "mmol/L";
+    assertFalse(ParsedRatio.fromString(getValueUnitStr("2/0", unit)).isPresent());
+    assertFalse(ParsedRatio.fromString(getValueUnitStr("2/00", unit)).isPresent());
+    assertFalse(ParsedRatio.fromString(getValueUnitStr("2/0.0", unit)).isPresent());
+  }
+
+  @Test
   void testInvalidValue() {
-    String value = getValueStr("1/2/3");
-    String unit = getUnitStr("L/g");
-    String code = value + " " + unit;
-    assertFalse(ParsedRatio.fromString(code).isPresent());
+    String unit = "L/g";
+    assertFalse(ParsedRatio.fromString(getValueUnitStr("1/2/3", unit)).isPresent());
+    assertFalse(ParsedRatio.fromString(getValueUnitStr("/3", unit)).isPresent());
+    assertFalse(ParsedRatio.fromString(getValueUnitStr("", unit)).isPresent());
   }
 
   @Test
