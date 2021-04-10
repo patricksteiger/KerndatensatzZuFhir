@@ -140,20 +140,17 @@ public class Fall implements Datablock {
     String beginndatum = this.getVersorgungsstellenkontakt_beginndatum();
     Optional<Date> start = Helper.getDateFromISO(beginndatum);
     if (!start.isPresent()) {
-      return (Period)
-          LOGGER
-              .error(
-                  "getVersorgungsstellenEncounterPeriod",
-                  "versorgungsstellenkontakt_beginndatum",
-                  beginndatum)
-              .get();
+      return LOGGER.error(
+          "getVersorgungsstellenEncounterPeriod",
+          "versorgungsstellenkontakt_beginndatum",
+          beginndatum);
     }
     String enddatum = this.getVersorgungsstellenkontakt_enddatum();
     if (Helper.checkNonEmptyString(enddatum)) {
       return Helper.getDateFromISO(enddatum)
           .map(end -> FhirGenerator.period(start.get(), end))
           .orElseGet(
-              LOGGER.error(
+              LOGGER.errorSupplier(
                   "getVersorgungsstellenEncounterPeriod",
                   "versorgungsstellenkontakt_enddatum",
                   enddatum));
@@ -177,10 +174,8 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getVersorgungsstellenkontakt_klasse());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return (Coding)
-          LOGGER
-              .emptyValue("getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse")
-              .get();
+      return LOGGER.emptyValue(
+          "getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse");
     }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
@@ -220,7 +215,7 @@ public class Fall implements Datablock {
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
-            LOGGER.error(
+            LOGGER.errorSupplier(
                 "getEinrichtungsEncounterAdmitSource", "einrichtungskontakt_aufnahmeanlass", code));
   }
 
@@ -234,7 +229,7 @@ public class Fall implements Datablock {
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
-            LOGGER.error(
+            LOGGER.errorSupplier(
                 "getEinrichtungsEncounterDischargeDisposition",
                 "einrichtungskontakt_entlassungsgrund",
                 code));
@@ -251,7 +246,7 @@ public class Fall implements Datablock {
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
-            LOGGER.error(
+            LOGGER.errorSupplier(
                 "getEinrichtungsEncounterReasonCode",
                 "einrichtungskontakt_aufnahmegrund",
                 aufnahmegrund));
@@ -263,7 +258,7 @@ public class Fall implements Datablock {
     if (!start.isPresent()) {
       return (Period)
           LOGGER
-              .error(
+              .errorSupplier(
                   "getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum", beginndatum)
               .get();
     }
@@ -272,7 +267,7 @@ public class Fall implements Datablock {
       return Helper.getDateFromISO(enddatum)
           .map(end -> FhirGenerator.period(start.get(), end))
           .orElseGet(
-              LOGGER.error(
+              LOGGER.errorSupplier(
                   "getEinrichtungsEncounterPeriod", "einrichtungskontakt_enddatum", enddatum));
     }
     return FhirGenerator.period(start.get());
@@ -305,8 +300,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_klasse());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return (Coding)
-          LOGGER.emptyValue("getEinrichtungsEncounterClass", "einrichtungskontakt_klasse").get();
+      return LOGGER.emptyValue("getEinrichtungsEncounterClass", "einrichtungskontakt_klasse");
     }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();
@@ -340,17 +334,16 @@ public class Fall implements Datablock {
     String beginndatum = this.getAbteilungskontakt_beginndatum();
     Optional<Date> start = Helper.getDateFromISO(beginndatum);
     if (!start.isPresent()) {
-      return (Period)
-          LOGGER
-              .error("getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum", beginndatum)
-              .get();
+      return LOGGER.error(
+          "getAbteilungsEncounterPeriod", "abteilungskontakt_beginndatum", beginndatum);
     }
     String enddatum = this.getAbteilungskontakt_enddatum();
     if (Helper.checkNonEmptyString(enddatum)) {
       return Helper.getDateFromISO(enddatum)
           .map(end -> FhirGenerator.period(start.get(), end))
           .orElseGet(
-              LOGGER.error("getAbteilungsEncounterPeriod", "abteilungskontakt_enddatum", enddatum));
+              LOGGER.errorSupplier(
+                  "getAbteilungsEncounterPeriod", "abteilungskontakt_enddatum", enddatum));
     }
     return FhirGenerator.period(start.get());
   }
@@ -385,7 +378,7 @@ public class Fall implements Datablock {
         abteilungFromCode
             .map(FhirGenerator::coding)
             .orElseGet(
-                this.LOGGER.warn(
+                LOGGER.warningSupplier(
                     FhirGenerator.coding(abteilungsCode, system, display),
                     "getAbteilungsEncounterServiceType",
                     "Fachabteilungsschlüssel could be wrong: " + abteilungsCode));
@@ -396,8 +389,7 @@ public class Fall implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_klasse());
     String code = parsedCode.getCode();
     if (Helper.checkEmptyString(code)) {
-      return (Coding)
-          LOGGER.emptyValue("getAbteilungsEncounterClass", "abteilungskontakt_klasse").get();
+      return LOGGER.emptyValue("getAbteilungsEncounterClass", "abteilungskontakt_klasse");
     }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
     String display = parsedCode.getDisplay();

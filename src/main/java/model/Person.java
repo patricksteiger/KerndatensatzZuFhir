@@ -129,7 +129,7 @@ public class Person implements Datablock {
     List<Identifier> identifiers =
         Helper.listOf(this.getPatientGKV(), this.getPatientPKV(), this.getPatientPID());
     if (Helper.checkAllNull(identifiers)) {
-      LOGGER.error("getPatientIdentifiers", "At least 1 of GKV, PKV or PID has to be set!").get();
+      LOGGER.error("getPatientIdentifiers", "At least 1 of GKV, PKV or PID has to be set!");
     }
     return identifiers;
   }
@@ -164,12 +164,9 @@ public class Person implements Datablock {
       return Constants.getEmptyValue();
     }
     if (Helper.checkAnyEmptyString(line, city, postalCode, country)) {
-      return (Address)
-          LOGGER
-              .error(
-                  "getPatientAddressStrassenanschrift",
-                  "All values for line, city, postalCode and country have to be set!")
-              .get();
+      return LOGGER.error(
+          "getPatientAddressStrassenanschrift",
+          "All values for line, city, postalCode and country have to be set!");
     }
     return FhirGenerator.address(type, line, city, postalCode, country);
   }
@@ -184,12 +181,9 @@ public class Person implements Datablock {
       return Constants.getEmptyValue();
     }
     if (Helper.checkAnyEmptyString(line, city, postalCode, country)) {
-      return (Address)
-          LOGGER
-              .error(
-                  "getPatientAddressPostfach",
-                  "All values for line, city, postalCode and country have to be set!")
-              .get();
+      return LOGGER.error(
+          "getPatientAddressPostfach",
+          "All values for line, city, postalCode and country have to be set!");
     }
     return FhirGenerator.address(type, line, city, postalCode, country);
   }
@@ -202,13 +196,13 @@ public class Person implements Datablock {
       if (t.isPresent()) {
         return t.get();
       }
-      LOGGER.error("getPatientDeceased", "todeszeitpunkt", todeszeitpunkt).get();
+      LOGGER.error("getPatientDeceased", "todeszeitpunkt", todeszeitpunkt);
     }
     String verstorben = this.getPatient_verstorben();
     if (Helper.checkNonEmptyString(verstorben)) {
       return Helper.booleanFromString(verstorben)
           .map(FhirGenerator::booleanType)
-          .orElseGet(LOGGER.error("getPatientDeceased", "patient_verstorben", verstorben));
+          .orElseGet(LOGGER.errorSupplier("getPatientDeceased", "patient_verstorben", verstorben));
     }
     return Constants.getEmptyValue();
   }
@@ -216,15 +210,14 @@ public class Person implements Datablock {
   public Date getPatientBirthDate() {
     String birthDate = this.getGeburtsdatum();
     return Helper.getDateFromISO(birthDate)
-        .orElseGet(LOGGER.error("getPatientBirthDate", "geburtsdatum", birthDate));
+        .orElseGet(LOGGER.errorSupplier("getPatientBirthDate", "geburtsdatum", birthDate));
   }
 
   public Enumerations.AdministrativeGender getPatientGender() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAdmininistratives_geschlecht());
     String gender = parsedCode.getCode();
     if (Helper.checkEmptyString(gender)) {
-      return (Enumerations.AdministrativeGender)
-          LOGGER.emptyValue("getPatientGender", "admininistratives_geschlecht").get();
+      return LOGGER.emptyValue("getPatientGender", "admininistratives_geschlecht");
     }
     return FhirHelper.getGenderMapping(gender);
   }
@@ -250,7 +243,7 @@ public class Person implements Datablock {
   public StringType getPatientNameFamily() {
     String familyName = this.getFamilienname();
     if (Helper.checkEmptyString(familyName)) {
-      return (StringType) LOGGER.emptyValue("getPatientNameFamily", "familienname").get();
+      return LOGGER.emptyValue("getPatientNameFamily", "familienname");
     }
     StringType family = new StringType(familyName);
     family.addExtension(this.getPatientNameFamilyNamenszusatz());
@@ -293,7 +286,7 @@ public class Person implements Datablock {
   public List<StringType> getPatientNameGiven() {
     String vorName = this.getVorname();
     if (Helper.checkEmptyString(vorName)) {
-      return (List<StringType>) LOGGER.error("getPatientNameGiven", "given is required!").get();
+      return LOGGER.error("getPatientNameGiven", "given is required!");
     }
     List<String> names = Helper.splitNames(vorName);
     return Helper.listMap(names, StringType::new);
@@ -362,10 +355,7 @@ public class Person implements Datablock {
     String system = IdentifierSystem.IKNR;
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
     if (Helper.checkEmptyString(identifierValue)) {
-      return (Reference)
-          LOGGER
-              .emptyValue("getGKVAssignerReference", "institutionskennzeichen_krankenkasse")
-              .get();
+      return LOGGER.emptyValue("getGKVAssignerReference", "institutionskennzeichen_krankenkasse");
     }
     Identifier identifier = FhirGenerator.identifier(identifierValue, system, use);
     return FhirGenerator.reference(identifier);
@@ -416,13 +406,13 @@ public class Person implements Datablock {
     String beginn = this.getTeilnahme_beginn();
     Optional<Date> start = Helper.getDateFromISO(beginn);
     if (!start.isPresent()) {
-      return (Period) LOGGER.error("getResearchSubjectPeriod", "teilnahme_beginn", beginn).get();
+      return LOGGER.error("getResearchSubjectPeriod", "teilnahme_beginn", beginn);
     }
     String ende = this.getTeilnahme_ende();
     if (Helper.checkNonEmptyString(ende)) {
       return Helper.getDateFromISO(ende)
           .map(date -> FhirGenerator.period(start.get(), date))
-          .orElseGet(LOGGER.error("getResearchSubjectPeriod", "teilnahme_ende", ende));
+          .orElseGet(LOGGER.errorSupplier("getResearchSubjectPeriod", "teilnahme_ende", ende));
     }
     return FhirGenerator.period(start.get());
   }
@@ -434,8 +424,7 @@ public class Person implements Datablock {
     try {
       return ResearchSubject.ResearchSubjectStatus.fromCode(code);
     } catch (Exception e) {
-      return (ResearchSubject.ResearchSubjectStatus)
-          LOGGER.error("getResearchSubjectStatus", "teilnahme_status", code).get();
+      return LOGGER.error("getResearchSubjectStatus", "teilnahme_status", code);
     }
   }
 
@@ -443,11 +432,8 @@ public class Person implements Datablock {
     ParsedCode parsedCode = ParsedCode.fromString(this.getSubjekt_identifizierungscode());
     String value = parsedCode.getCode();
     if (Helper.checkEmptyString(value)) {
-      return (Identifier)
-          LOGGER
-              .emptyValue(
-                  "getResearchSubjectSubjectIdentificationCode", "subjekt_identifizierungscode")
-              .get();
+      return LOGGER.emptyValue(
+          "getResearchSubjectSubjectIdentificationCode", "subjekt_identifizierungscode");
     }
     // TODO: Is system for SubjectIdentificationCode correct?
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
@@ -485,7 +471,8 @@ public class Person implements Datablock {
     String zeitpunkt = this.getLetzter_lebendzeitpunkt();
     return Helper.getDateFromISO(zeitpunkt)
         .map(FhirGenerator::dateTimeType)
-        .orElseGet(LOGGER.error("getObservationEffective", "letzter_lebendzeitpunkt", zeitpunkt));
+        .orElseGet(
+            LOGGER.errorSupplier("getObservationEffective", "letzter_lebendzeitpunkt", zeitpunkt));
   }
 
   public CodeableConcept getObservationCode() {

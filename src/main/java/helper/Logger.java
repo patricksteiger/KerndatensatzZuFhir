@@ -6,58 +6,55 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Supplier;
 
+import static helper.Formatter.*;
+
 public class Logger {
 
-  private static final String ERROR_IN_MEITHOD = "An error occurred in method: {}\n";
-  private final org.slf4j.Logger SL4J_LOGGER;
-  private long errorCounter;
+  private final org.slf4j.Logger sljLogger;
 
   public <T extends Datablock> Logger(Class<T> datablockClass) {
-    this.SL4J_LOGGER = LoggerFactory.getLogger(datablockClass);
-    this.errorCounter = 0L;
+    this.sljLogger = LoggerFactory.getLogger(datablockClass);
   }
 
-  public <T> Supplier<T> error(String method, String valueName, String value) {
-    return () -> {
-      countError();
-      this.SL4J_LOGGER.error(
-          ERROR_IN_MEITHOD + "Datablock-Value \"{}\", invalid value: \"{}\".\n",
-          method,
-          valueName,
-          value);
-      return Constants.getEmptyValue();
-    };
+  public <T> T error(String method, String valueName, String value) {
+    return printError(formatError(method, valueName, value));
   }
 
-  public <T> Supplier<T> error(String method, String message) {
-    return () -> {
-      countError();
-      this.SL4J_LOGGER.error(ERROR_IN_MEITHOD + "Message: {}", method, message);
-      return Constants.getEmptyValue();
-    };
+  public <T> Supplier<T> errorSupplier(String method, String valueName, String value) {
+    return () -> error(method, valueName, value);
   }
 
-  public <T> Supplier<T> emptyValue(String method, String value) {
-    return () -> {
-      countError();
-      this.SL4J_LOGGER.error(
-          ERROR_IN_MEITHOD + "Datablock-Value \"{}\" has to have a value!\n", method, value);
-      return Constants.getEmptyValue();
-    };
+  public <T> T error(String method, String message) {
+    return printError(formatError(method, message));
   }
 
-  public <T> Supplier<T> warn(T value, String method, String message) {
-    return () -> {
-      this.SL4J_LOGGER.warn("A warning occured in method: {}\n" + "Message: {}\n", method, message);
-      return value;
-    };
+  public <T> Supplier<T> errorSupplier(String method, String message) {
+    return () -> error(method, message);
   }
 
-  private void countError() {
-    this.errorCounter++;
+  public <T> T emptyValue(String method, String value) {
+    return printError(formatEmptyValue(method, value));
   }
 
-  public long getErrorCount() {
-    return errorCounter;
+  public <T> Supplier<T> emptyValueSupplier(String method, String value) {
+    return () -> emptyValue(method, value);
+  }
+
+  public <T> T warning(T value, String method, String message) {
+    return printWarning(value, formatWarning(method, message));
+  }
+
+  public <T> Supplier<T> warningSupplier(T value, String method, String message) {
+    return () -> warning(value, method, message);
+  }
+
+  public <T> T printError(String message) {
+    this.sljLogger.error(message);
+    return Constants.getEmptyValue();
+  }
+
+  public <T> T printWarning(T value, String message) {
+    this.sljLogger.warn(message);
+    return value;
   }
 }

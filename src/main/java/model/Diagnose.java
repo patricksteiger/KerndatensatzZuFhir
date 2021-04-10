@@ -87,7 +87,7 @@ public class Diagnose implements Datablock {
     Coding orphanet = this.getCodeOrphanet();
     Coding weitere = this.getCodeWeitere();
     if (Helper.checkAllNull(icd, alpha, sct, orphanet, weitere)) {
-      return (CodeableConcept) LOGGER.error("getCode", "There has to be at least 1 code").get();
+      return LOGGER.error("getCode", "There has to be at least 1 code");
     }
     return FhirGenerator.codeableConcept(icd, alpha, sct, orphanet, weitere)
         .setText(this.getText());
@@ -167,7 +167,8 @@ public class Diagnose implements Datablock {
         .map(FhirGenerator::coding)
         .map(code -> FhirGenerator.extension(url, code))
         .orElseGet(
-            LOGGER.error("getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", seitenCode));
+            LOGGER.errorSupplier(
+                "getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", seitenCode));
   }
 
   public Extension getCodeIcdDiagnosesicherheit() {
@@ -181,7 +182,8 @@ public class Diagnose implements Datablock {
         .map(FhirGenerator::coding)
         .map(code -> FhirGenerator.extension(url, code))
         .orElseGet(
-            LOGGER.error("getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode));
+            LOGGER.errorSupplier(
+                "getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode));
   }
 
   public Coding getCodeAlpha() {
@@ -239,7 +241,7 @@ public class Diagnose implements Datablock {
   public Date getRecordedDate() {
     String datum = this.getDokumentationsdatum();
     return Helper.getDateFromISO(datum)
-        .orElseGet(LOGGER.error("getRecordedDate", "dokumentationsdatum", datum));
+        .orElseGet(LOGGER.errorSupplier("getRecordedDate", "dokumentationsdatum", datum));
   }
 
   public Type getOnset() {
@@ -255,7 +257,7 @@ public class Diagnose implements Datablock {
       start.setPrecision(TemporalPrecisionEnum.SECOND);
       Date startDate =
           Helper.getDateFromISO(zeitraumVon)
-              .orElseGet(LOGGER.error("getOnset", "zeitraum_von", zeitraumVon));
+              .orElseGet(LOGGER.errorSupplier("getOnset", "zeitraum_von", zeitraumVon));
       start.setValue(startDate);
     }
     start.addExtension(this.getLebensphaseVon());
@@ -264,7 +266,7 @@ public class Diagnose implements Datablock {
       end.setPrecision(TemporalPrecisionEnum.SECOND);
       Date endDate =
           Helper.getDateFromISO(zeitraumBis)
-              .orElseGet(LOGGER.error("getOnset", "zeitraum_bis", zeitraumBis));
+              .orElseGet(LOGGER.errorSupplier("getOnset", "zeitraum_bis", zeitraumBis));
       end.setValue(endDate);
     }
     end.addExtension(this.getLebensphaseBis());
@@ -285,7 +287,7 @@ public class Diagnose implements Datablock {
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .map(type -> FhirGenerator.extension(url, type))
-        .orElseGet(LOGGER.error("getLebensphaseVon", "lebensphase_von", code));
+        .orElseGet(LOGGER.errorSupplier("getLebensphaseVon", "lebensphase_von", code));
   }
 
   public Extension getLebensphaseBis() {
@@ -299,7 +301,7 @@ public class Diagnose implements Datablock {
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .map(type -> FhirGenerator.extension(url, type))
-        .orElseGet(LOGGER.error("getLebensphaseBis", "lebensphase_bis", code));
+        .orElseGet(LOGGER.errorSupplier("getLebensphaseBis", "lebensphase_bis", code));
   }
 
   public CodeableConcept getBodySite() {
@@ -323,7 +325,7 @@ public class Diagnose implements Datablock {
     return ClinicalStatus.fromCode(code)
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
-        .orElseGet(this.LOGGER.error("getClinicalStatus", "klinischer_status", code));
+        .orElseGet(LOGGER.errorSupplier("getClinicalStatus", "klinischer_status", code));
   }
 
   public Meta getMeta() {

@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import static org.mockito.ArgumentMatchers.any;
 
 public class Util {
-  public static final String FALL_LOGGER_FIELD_NAME = "LOGGER";
+  public static final String LOGGER_FIELD_NAME = "LOGGER";
 
   private Util() {}
 
@@ -63,7 +63,7 @@ public class Util {
   }
 
   public static void setMockLoggerField(Object obj, Object newValue) throws Exception {
-    Field field = obj.getClass().getDeclaredField(FALL_LOGGER_FIELD_NAME);
+    Field field = obj.getClass().getDeclaredField(LOGGER_FIELD_NAME);
     field.setAccessible(true);
     Field modifiersField = Field.class.getDeclaredField("modifiers");
     modifiersField.setAccessible(true);
@@ -72,10 +72,17 @@ public class Util {
   }
 
   public static void setUpLoggerMock(Logger mockedLogger) {
-    Mockito.when(mockedLogger.emptyValue(any(), any())).thenReturn(Constants::getEmptyValue);
-    Mockito.when(mockedLogger.error(any(), any())).thenReturn(Constants::getEmptyValue);
-    Mockito.when(mockedLogger.error(any(), any(), any())).thenReturn(Constants::getEmptyValue);
-    Mockito.when(mockedLogger.warn(any(), any(), any()))
+    Mockito.when(mockedLogger.emptyValue(any(), any())).thenReturn(Constants.getEmptyValue());
+    Mockito.when(mockedLogger.error(any(), any())).thenReturn(Constants.getEmptyValue());
+    Mockito.when(mockedLogger.error(any(), any(), any())).thenReturn(Constants.getEmptyValue());
+    Mockito.when(mockedLogger.warning(any(), any(), any()))
+        .thenAnswer(i -> (Supplier) () -> i.getArgument(0));
+    Mockito.when(mockedLogger.emptyValueSupplier(any(), any()))
+        .thenReturn(Constants::getEmptyValue);
+    Mockito.when(mockedLogger.errorSupplier(any(), any())).thenReturn(Constants::getEmptyValue);
+    Mockito.when(mockedLogger.errorSupplier(any(), any(), any()))
+        .thenReturn(Constants::getEmptyValue);
+    Mockito.when(mockedLogger.warningSupplier(any(), any(), any()))
         .thenAnswer(i -> (Supplier) () -> i.getArgument(0));
   }
 }
