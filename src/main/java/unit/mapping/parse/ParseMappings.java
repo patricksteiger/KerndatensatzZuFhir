@@ -14,19 +14,19 @@ import java.util.List;
 public class ParseMappings {
   private static final String MAPPINGS_PATH = "src/main/resources/ULM-LOINC_Mapping_Checklist.csv";
   private static final char SEPARATOR = ';';
-  private static List<MappingBean> mappings;
-
-  static {
-    try {
-      mappings = parseMappings();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
+  private static List<MappingBean> mappings = null;
 
   private ParseMappings() {}
 
   public static List<MappingBean> list() {
+    if (mappings == null) {
+      try {
+        mappings = parseMappings();
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new IllegalArgumentException("Couldn't parse Mapping Checklist!");
+      }
+    }
     return mappings;
   }
 

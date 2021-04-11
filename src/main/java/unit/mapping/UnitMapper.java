@@ -17,7 +17,7 @@ public class UnitMapper {
   private static final Logger LOGGER = LoggerFactory.getLogger(UnitMapper.class);
   private static final boolean LOGGING_ACTIVATED = false;
 
-  private static final Map<String, UnitMapping> mappings = generateMappings(ParseMappings.list());
+  private static Map<String, UnitMapping> mappings = null;
 
   private UnitMapper() {}
 
@@ -32,10 +32,14 @@ public class UnitMapper {
   public static Optional<UnitMapping> getUcum(String unit) {
     // Automatically return UCUM-Units
     Optional<UnitMapping> mapping = UnitMapping.fromUcumUnit(unit);
-    if (!mapping.isPresent()) {
-      mapping = Optional.ofNullable(mappings.get(unit));
+    return mapping.isPresent() ? mapping : Optional.ofNullable(getMapping(unit));
+  }
+
+  private static UnitMapping getMapping(String unit) {
+    if (mappings == null) {
+      mappings = generateMappings(ParseMappings.list());
     }
-    return mapping;
+    return mappings.get(unit);
   }
 
   private static Map<String, UnitMapping> generateMappings(List<MappingBean> mappingsBeans) {
