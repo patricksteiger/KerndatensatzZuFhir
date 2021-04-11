@@ -85,8 +85,7 @@ public class Helper {
    * @param consumer Consumer to consume elements
    * @param <T> Any type
    */
-  public static <T> void forFilterEach(
-      List<T> list, Predicate<T> predicate, Consumer<? super T> consumer) {
+  public static <T> void filterForEach(List<T> list, Predicate<T> predicate, Consumer<T> consumer) {
     if (list == null) {
       return;
     }
@@ -94,6 +93,18 @@ public class Helper {
       if (predicate.test(elem)) {
         consumer.accept(elem);
       }
+    }
+  }
+
+  public static OptionalInt parseInt(String number) {
+    if (Helper.checkEmptyString(number)) {
+      return OptionalInt.empty();
+    }
+    try {
+      int n = Integer.parseInt(number);
+      return OptionalInt.of(n);
+    } catch (Exception e) {
+      return OptionalInt.empty();
     }
   }
 

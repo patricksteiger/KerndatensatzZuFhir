@@ -20,26 +20,21 @@ public class FhirGenerator {
       List<Coding> securities,
       List<Coding> tags) {
     Meta meta = new Meta();
-    if (Helper.checkNonEmptyString(source)) meta.setSource(source);
-    if (Helper.checkNonEmptyString(versionId)) meta.setVersionId(versionId);
-    Helper.forFilterEach(profiles, Helper::checkNonEmptyString, meta::addProfile);
-    Helper.forFilterEach(securities, Objects::nonNull, meta::addSecurity);
-    Helper.forFilterEach(tags, Objects::nonNull, meta::addTag);
+    meta.setSource(source);
+    meta.setVersionId(versionId);
+    Helper.filterForEach(profiles, Helper::checkNonEmptyString, meta::addProfile);
+    Helper.filterForEach(securities, Objects::nonNull, meta::addSecurity);
+    Helper.filterForEach(tags, Objects::nonNull, meta::addTag);
     meta.setLastUpdated(new Date());
     return meta;
   }
 
   public static Meta meta(String profile, String source, String versionId) {
-    return meta(Helper.listOf(profile), source, versionId, Helper.listOf(), Helper.listOf());
+    return meta(Helper.listOf(profile), source, versionId, null, null);
   }
 
   public static Coding coding(String code, String system, String display, String version) {
-    Coding coding = new Coding();
-    coding.setCode(code);
-    coding.setSystem(system);
-    if (Helper.checkNonEmptyString(display)) coding.setDisplay(display);
-    if (Helper.checkNonEmptyString(version)) coding.setVersion(version);
-    return coding;
+    return new Coding().setCode(code).setSystem(system).setDisplay(display).setVersion(version);
   }
 
   public static Coding coding(String code, String system, String display) {
@@ -63,17 +58,11 @@ public class FhirGenerator {
   }
 
   public static Period period(Date start, Date end) {
-    Period period = new Period();
-    if (start != null) period.setStart(start);
-    if (end != null) period.setEnd(end);
-    return period;
+    return new Period().setStart(start).setEnd(end);
   }
 
   public static Period period(DateTimeType start, DateTimeType end) {
-    Period period = new Period();
-    period.setStartElement(start);
-    period.setEndElement(end);
-    return period;
+    return new Period().setStartElement(start).setEndElement(end);
   }
 
   public static Period period(Date start) {
@@ -86,13 +75,12 @@ public class FhirGenerator {
       CodeableConcept type,
       Reference assignerRef,
       Identifier.IdentifierUse use) {
-    Identifier identifier = new Identifier();
-    if (Helper.checkNonEmptyString(value)) identifier.setValue(value);
-    if (Helper.checkNonEmptyString(system)) identifier.setSystem(system);
-    if (type != null) identifier.setType(type);
-    if (assignerRef != null) identifier.setAssigner(assignerRef);
-    if (use != null) identifier.setUse(use);
-    return identifier;
+    return new Identifier()
+        .setValue(value)
+        .setSystem(system)
+        .setType(type)
+        .setAssigner(assignerRef)
+        .setUse(use);
   }
 
   public static Identifier identifier(String value, String system, CodeableConcept type) {
@@ -123,20 +111,11 @@ public class FhirGenerator {
 
   public static HumanName humanName(
       StringType family, List<StringType> given, StringType prefix, HumanName.NameUse use) {
-    HumanName humanName = new HumanName();
-    if (family != null) {
-      humanName.setFamilyElement(family);
-    }
-    if (given != null) {
-      humanName.setGiven(given);
-    }
-    if (prefix != null) {
-      humanName.setPrefix(Helper.listOf(prefix));
-    }
-    if (use != null) {
-      humanName.setUse(use);
-    }
-    return humanName;
+    return new HumanName()
+        .setFamilyElement(family)
+        .setGiven(given)
+        .setPrefix(prefix != null ? Helper.listOf(prefix) : null)
+        .setUse(use);
   }
 
   public static HumanName humanName(StringType family, HumanName.NameUse use) {
@@ -153,25 +132,24 @@ public class FhirGenerator {
       String unit,
       String system,
       String code) {
-    Quantity quantity = new Quantity();
-    if (value != null) quantity.setValue(value);
-    if (comparator != null) quantity.setComparator(comparator);
-    if (Helper.checkNonEmptyString(unit)) quantity.setUnit(unit);
-    if (Helper.checkNonEmptyString(system)) quantity.setSystem(system);
-    if (Helper.checkNonEmptyString(code)) quantity.setCode(code);
-    return quantity;
+    return new Quantity()
+        .setValue(value)
+        .setComparator(comparator)
+        .setUnit(unit)
+        .setSystem(system)
+        .setCode(code);
   }
 
   public static Quantity quantity(String value, String unit, String system, String code) {
-    Quantity quantity = new Quantity();
+    DecimalType decimalType = null;
     if (Helper.checkNonEmptyString(value)) {
-      DecimalType decimalType = new DecimalType().setRepresentation(value);
-      quantity.setValueElement(decimalType);
+      decimalType = new DecimalType().setRepresentation(value);
     }
-    if (Helper.checkNonEmptyString(unit)) quantity.setUnit(unit);
-    if (Helper.checkNonEmptyString(system)) quantity.setSystem(system);
-    if (Helper.checkNonEmptyString(code)) quantity.setCode(code);
-    return quantity;
+    return new Quantity()
+        .setUnit(unit)
+        .setSystem(system)
+        .setCode(code)
+        .setValueElement(decimalType);
   }
 
   public static Quantity quantity(BigDecimal value, String unit, String system, String code) {
@@ -184,12 +162,11 @@ public class FhirGenerator {
 
   public static Reference reference(
       String ref, String type, Identifier identifier, String display) {
-    Reference reference = new Reference();
-    if (Helper.checkNonEmptyString(ref)) reference.setReference(ref);
-    if (Helper.checkNonEmptyString(type)) reference.setType(type);
-    if (identifier != null) reference.setIdentifier(identifier);
-    if (Helper.checkNonEmptyString(display)) reference.setDisplay(display);
-    return reference;
+    return new Reference()
+        .setReference(ref)
+        .setType(type)
+        .setIdentifier(identifier)
+        .setDisplay(display);
   }
 
   public static Reference reference(String ref) {
@@ -209,10 +186,7 @@ public class FhirGenerator {
   }
 
   public static Extension extension(String url, Type value) {
-    Extension extension = new Extension();
-    extension.setUrl(url);
-    extension.setValue(value);
-    return extension;
+    return new Extension().setUrl(url).setValue(value);
   }
 
   public static Address address(
@@ -225,16 +199,17 @@ public class FhirGenerator {
       String state,
       String postalCode,
       String country) {
-    Address address = new Address();
-    if (use != null) address.setUse(use);
-    if (type != null) address.setType(type);
-    if (Helper.checkNonEmptyString(text)) address.setText(text);
-    Helper.forFilterEach(line, Helper::checkNonEmptyString, address::addLine);
-    if (Helper.checkNonEmptyString(city)) address.setCity(city);
-    if (Helper.checkNonEmptyString(district)) address.setDistrict(district);
-    if (Helper.checkNonEmptyString(state)) address.setState(state);
-    if (Helper.checkNonEmptyString(postalCode)) address.setPostalCode(postalCode);
-    if (Helper.checkNonEmptyString(country)) address.setCountry(country);
+    Address address =
+        new Address()
+            .setUse(use)
+            .setType(type)
+            .setText(text)
+            .setCity(city)
+            .setDistrict(district)
+            .setState(state)
+            .setPostalCode(postalCode)
+            .setCountry(country);
+    Helper.filterForEach(line, Helper::checkNonEmptyString, address::addLine);
     return address;
   }
 
@@ -293,23 +268,22 @@ public class FhirGenerator {
       Ratio maxDosePerPeriod,
       SimpleQuantity maxDosePerAdministration,
       SimpleQuantity maxDosePerLifeTime) {
-    Dosage dosage = new Dosage();
-    if (Helper.checkNonEmptyString(sequence)) dosage.setSequence(Integer.parseInt(sequence));
-    if (Helper.checkNonEmptyString(text)) dosage.setText(text);
-    Helper.forFilterEach(
+    Dosage dosage =
+        new Dosage()
+            .setText(text)
+            .setPatientInstruction(patientInstruction)
+            .setTiming(timing)
+            .setAsNeeded(asNeeded)
+            .setSite(site)
+            .setRoute(route)
+            .setMethod(method)
+            .setMaxDosePerPeriod(maxDosePerPeriod)
+            .setMaxDosePerAdministration(maxDosePerAdministration)
+            .setMaxDosePerLifetime(maxDosePerLifeTime);
+    Helper.parseInt(sequence).ifPresent(dosage::setSequence);
+    Helper.filterForEach(
         additionalInstructions, Objects::nonNull, dosage::addAdditionalInstruction);
-    if (Helper.checkNonEmptyString(patientInstruction))
-      dosage.setPatientInstruction(patientInstruction);
-    if (timing != null) dosage.setTiming(timing);
-    if (asNeeded != null) dosage.setAsNeeded(asNeeded);
-    if (site != null) dosage.setSite(site);
-    if (route != null) dosage.setRoute(route);
-    if (method != null) dosage.setMethod(method);
-    Helper.forFilterEach(doseAndRate, Objects::nonNull, dosage::addDoseAndRate);
-    if (maxDosePerPeriod != null) dosage.setMaxDosePerPeriod(maxDosePerPeriod);
-    if (maxDosePerAdministration != null)
-      dosage.setMaxDosePerAdministration(maxDosePerAdministration);
-    if (maxDosePerLifeTime != null) dosage.setMaxDosePerLifetime(maxDosePerLifeTime);
+    Helper.filterForEach(doseAndRate, Objects::nonNull, dosage::addDoseAndRate);
     return dosage;
   }
 
