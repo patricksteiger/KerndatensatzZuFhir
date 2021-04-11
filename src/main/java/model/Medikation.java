@@ -171,7 +171,7 @@ public class Medikation implements Datablock {
         new Medication.MedicationIngredientComponent();
     ingredient.addExtension(this.getMedicationIngredientExtension());
     CodeableConcept item = this.getMedicationIngredientItem();
-    if (item == Constants.getEmptyValue()) {
+    if (Constants.isEmptyValue(item)) {
       return LOGGER.error("getMedicationIngredient", "Item needs to be set for Ingredient!");
     }
     ingredient.setItem(item);
@@ -302,7 +302,7 @@ public class Medikation implements Datablock {
     String text = this.getMedicationAdministrationDosageText();
     // Dosage is not yet structurally defined. Only text is set currently.
     // CodeableConcept route = this.getMedicationAdministrationDosageRoute();
-    if (Helper.checkEmptyString(text) /*&& route == Constants.getEmptyValue()*/) {
+    if (Helper.checkEmptyString(text) /*&& Constants.isEmptyValue(route)*/) {
       return Constants.getEmptyValue();
     }
     return new MedicationAdministration.MedicationAdministrationDosageComponent().setText(text);

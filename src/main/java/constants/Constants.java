@@ -20,4 +20,15 @@ public class Constants {
   public static <T> T getEmptyValue() {
     return null;
   }
+
+  /**
+   * Checks whether given value represents empty value.
+   *
+   * @param value Any value
+   * @param <T> Any type
+   * @return true if value is empty, false otherwise
+   */
+  public static <T> boolean isEmptyValue(T value) {
+    return value == null;
+  }
 }

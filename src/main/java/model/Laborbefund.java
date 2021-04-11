@@ -421,7 +421,7 @@ public class Laborbefund implements Datablock {
 
   public Type getObservationValue() {
     CodeableConcept semiQuantitative = this.getObservationValueCodeableConcept();
-    return semiQuantitative == Constants.getEmptyValue()
+    return Constants.isEmptyValue(semiQuantitative)
         ? this.getObservationValueQuantity()
         : semiQuantitative;
   }
