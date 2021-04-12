@@ -21,7 +21,7 @@ class MedicationTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    Logger LOGGER = Mockito.mock(Logger.class);
+    Logger LOGGER = Mockito.mock(Logger.class, Mockito.CALLS_REAL_METHODS);
     setUpLoggerMock(LOGGER);
     medikation = new Medikation();
     setMockLoggerField(medikation, LOGGER);

@@ -23,7 +23,7 @@ class ProcedureTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    Logger LOGGER = Mockito.mock(Logger.class);
+    Logger LOGGER = Mockito.mock(Logger.class, Mockito.CALLS_REAL_METHODS);
     setUpLoggerMock(LOGGER);
     prozedur = new Prozedur();
     setMockLoggerField(prozedur, LOGGER);

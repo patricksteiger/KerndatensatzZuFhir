@@ -40,12 +40,12 @@ public class Logger {
     return () -> emptyValue(method, value);
   }
 
-  public <T> T warning(Supplier<T> value, String method, String message) {
-    return printWarning(value.get(), formatWarning(method, message));
+  public <T> T warning(T value, String method, String message) {
+    return printWarning(value, formatWarning(method, message));
   }
 
   public <T> Supplier<T> warningSupplier(Supplier<T> value, String method, String message) {
-    return () -> warning(value, method, message);
+    return () -> warning(value.get(), method, message);
   }
 
   public <T> T printError(String message) {

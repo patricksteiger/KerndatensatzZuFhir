@@ -4,14 +4,16 @@ import constants.Constants;
 import helper.Helper;
 import helper.Logger;
 import interfaces.Code;
-import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Date;
-import java.util.function.Supplier;
 
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 
 public class Util {
   public static final String LOGGER_FIELD_NAME = "LOGGER";
@@ -72,17 +74,11 @@ public class Util {
   }
 
   public static void setUpLoggerMock(Logger mockedLogger) {
-    Mockito.when(mockedLogger.emptyValue(any(), any())).thenReturn(Constants.getEmptyValue());
-    Mockito.when(mockedLogger.error(any(), any())).thenReturn(Constants.getEmptyValue());
-    Mockito.when(mockedLogger.error(any(), any(), any())).thenReturn(Constants.getEmptyValue());
-    Mockito.when(mockedLogger.warning(any(), any(), any()))
-        .thenAnswer(i -> (Supplier) () -> i.getArgument(0));
-    Mockito.when(mockedLogger.emptyValueSupplier(any(), any()))
-        .thenReturn(Constants::getEmptyValue);
-    Mockito.when(mockedLogger.errorSupplier(any(), any())).thenReturn(Constants::getEmptyValue);
-    Mockito.when(mockedLogger.errorSupplier(any(), any(), any()))
-        .thenReturn(Constants::getEmptyValue);
-    Mockito.when(mockedLogger.warningSupplier(any(), any(), any()))
-        .thenAnswer(i -> (Supplier) () -> i.getArgument(0));
+    doReturn(Constants.getEmptyValue()).when(mockedLogger).emptyValue(anyString(), anyString());
+    doReturn(Constants.getEmptyValue()).when(mockedLogger).error(anyString(), anyString());
+    doReturn(Constants.getEmptyValue())
+        .when(mockedLogger)
+        .error(anyString(), anyString(), anyString());
+    doAnswer(returnsFirstArg()).when(mockedLogger).warning(any(), anyString(), anyString());
   }
 }

@@ -2,6 +2,7 @@ package util;
 
 import constants.Constants;
 import helper.Helper;
+import helper.Logger;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
 import unit.ucum.Ucum;
@@ -13,6 +14,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static util.Util.getCodeStr;
 
 public class Asserter {
@@ -249,6 +254,22 @@ public class Asserter {
         Constants.QUANTITY_SYSTEM,
         Ucum.formalRepresentation(expectedDenominatorUnit).get(),
         ratio.getDenominator());
+  }
+
+  public static void assertLoggerHasCalledError3(Logger logger, int times) {
+    verify(logger, times(times)).error(anyString(), anyString(), anyString());
+  }
+
+  public static void assertLoggerHasCalledError2(Logger logger, int times) {
+    verify(logger, times(times)).error(anyString(), anyString());
+  }
+
+  public static void assertLoggerHasCalledEmptyValue(Logger logger, int times) {
+    verify(logger, times(times)).emptyValue(anyString(), anyString());
+  }
+
+  public static void assertLoggerHasCalledWarning(Logger logger, int times) {
+    verify(logger, times(times)).warning(any(), anyString(), anyString());
   }
 
   public static void assertAnnotation(String expectedText, Annotation annotation) {

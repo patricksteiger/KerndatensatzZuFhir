@@ -22,7 +22,7 @@ class EinrichtungsEncounterTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    Logger LOGGER = Mockito.mock(Logger.class);
+    Logger LOGGER = Mockito.mock(Logger.class, Mockito.CALLS_REAL_METHODS);
     setUpLoggerMock(LOGGER);
     fall = new Fall();
     setMockLoggerField(fall, LOGGER);
