@@ -20,7 +20,7 @@ import static util.Util.*;
 
 class ConditionTest {
   private static Logger LOGGER;
-  private static Diagnose diagnose;
+  private Diagnose diagnose;
 
   @BeforeAll
   static void init() {

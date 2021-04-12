@@ -7,22 +7,29 @@ import enums.IdentifierTypeCode;
 import helper.Logger;
 import model.Fall;
 import org.hl7.fhir.r4.model.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.clearInvocations;
 import static util.Asserter.*;
 import static util.Util.*;
 
 class AbteilungsEncounterTest {
-
+  private static Logger LOGGER;
   private Fall fall;
 
-  @BeforeEach
-  void setUp() throws Exception {
-    Logger LOGGER = Mockito.mock(Logger.class, Mockito.CALLS_REAL_METHODS);
+  @BeforeAll
+  static void init() {
+    LOGGER = Mockito.mock(Logger.class, Mockito.CALLS_REAL_METHODS);
     setUpLoggerMock(LOGGER);
+  }
+
+  @BeforeEach
+  public void setUp() throws Exception {
+    clearInvocations(LOGGER);
     fall = new Fall();
     setMockLoggerField(fall, LOGGER);
   }

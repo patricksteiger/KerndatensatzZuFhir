@@ -6,6 +6,7 @@ import enums.Wirkstofftyp;
 import helper.Logger;
 import model.Medikation;
 import org.hl7.fhir.r4.model.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,16 +14,23 @@ import org.mockito.Mockito;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.clearInvocations;
 import static util.Asserter.*;
 import static util.Util.*;
 
 class MedicationTest {
+  private static Logger LOGGER;
   private Medikation medikation;
+
+  @BeforeAll
+  static void init() {
+    LOGGER = Mockito.mock(Logger.class, Mockito.CALLS_REAL_METHODS);
+    setUpLoggerMock(LOGGER);
+  }
 
   @BeforeEach
   public void setUp() throws Exception {
-    Logger LOGGER = Mockito.mock(Logger.class, Mockito.CALLS_REAL_METHODS);
-    setUpLoggerMock(LOGGER);
+    clearInvocations(LOGGER);
     medikation = new Medikation();
     setMockLoggerField(medikation, LOGGER);
   }
