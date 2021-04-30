@@ -200,13 +200,10 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getServiceRequestCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboranforderung_laborparameter_code());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    if (parsedCode.hasEmptyCode()) {
       return LOGGER.emptyValue("getServiceRequestCode", "laboranforderung_laborparameter_code");
     }
-    String system = parsedCode.getSystem();
-    String display = parsedCode.getDisplay();
-    Coding coding = FhirGenerator.coding(code, system, display);
+    Coding coding = FhirGenerator.coding(parsedCode);
     String text = this.getServiceRequestCodeText();
     return FhirGenerator.codeableConcept(coding).setText(text);
   }
@@ -298,17 +295,15 @@ public class Laborbefund implements Datablock {
   }
 
   public DiagnosticReport.DiagnosticReportStatus getDiagnosticReportStatus() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
-    String code = parsedCode.getCode();
-    return FhirHelper.getDiagnosticReportStatusFromString(code)
+    String code = this.getStatus();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    return FhirHelper.getDiagnosticReportStatusFromString(parsedCode.getCode())
         .orElseGet(LOGGER.errorSupplier("getDiagnosticReportStatus", "status", code));
   }
 
   public CodeableConcept getDiagnosticReportCategory() {
-    CodeableConcept category = new CodeableConcept();
-    category.addCoding(this.getDiagnosticReportLoincLab());
-    category.addCoding(this.getDiagnosticReportServiceSection());
-    return category;
+    return FhirGenerator.codeableConcept(
+        this.getDiagnosticReportLoincLab(), this.getDiagnosticReportServiceSection());
   }
 
   public Coding getDiagnosticReportLoincLab() {
@@ -360,12 +355,12 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationReferenceRangeType() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_referenzbereich_typ());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getLaboruntersuchung_referenzbereich_typ();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return ReferenceRangeMeaning.fromCode(code)
+    return ReferenceRangeMeaning.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
@@ -401,13 +396,10 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getObservationMethod() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_untersuchungsmethode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = parsedCode.getSystem();
-    String display = parsedCode.getDisplay();
-    Coding method = FhirGenerator.coding(code, system, display);
+    Coding method = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(method);
   }
 
@@ -475,14 +467,12 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_code());
-    String codingCode = parsedCode.getCode();
-    if (Helper.checkEmptyString(codingCode)) {
+    String system = CodingSystem.LOINC;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_code(), system);
+    if (parsedCode.hasEmptyCode()) {
       return LOGGER.emptyValue("getObservationCode", "laborparameter_bezeichnung");
     }
-    String system = CodingSystem.LOINC;
-    String display = parsedCode.getDisplay();
-    Coding code = FhirGenerator.coding(codingCode, system, display);
+    Coding code = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(code).setText(this.getLaborparameter_bezeichnung());
   }
 
@@ -495,23 +485,23 @@ public class Laborbefund implements Datablock {
   }
 
   public Coding getObservationCategoryGruppen() {
-    ParsedCode parsedGruppe = ParsedCode.fromString(this.getLaborgruppe_code());
-    String code = parsedGruppe.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getLaborgruppe_code();
+    ParsedCode parsedGruppe = ParsedCode.fromString(code);
+    if (parsedGruppe.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return Laborstruktur.fromCode(code)
+    return Laborstruktur.fromCode(parsedGruppe.getCode())
         .map(FhirGenerator::coding)
         .orElseGet(LOGGER.errorSupplier("getObservationCategoryGruppen", "laborgruppe_code", code));
   }
 
   public Coding getObservationCategoryBereich() {
-    ParsedCode parsedBereich = ParsedCode.fromString(this.getLaborbereich_code());
-    String code = parsedBereich.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getLaborbereich_code();
+    ParsedCode parsedBereich = ParsedCode.fromString(code);
+    if (parsedBereich.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return Laborbereich.fromCode(code)
+    return Laborbereich.fromCode(parsedBereich.getCode())
         .map(FhirGenerator::coding)
         .orElseGet(
             LOGGER.errorSupplier("getObservationCategoryBereich", "laborbereich_code", code));
@@ -532,14 +522,10 @@ public class Laborbefund implements Datablock {
   // TODO: status von https://terminology.hl7.org/2.1.0/CodeSystem-v3-ActStatus.html oder doch
   // gleich observationstatus?
   public Observation.ObservationStatus getObservationStatus() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_status());
-    String code = parsedCode.getCode();
-    try {
-      return Observation.ObservationStatus.fromCode(code);
-    } catch (Exception e) {
-      return (Observation.ObservationStatus)
-          LOGGER.errorSupplier("getObservationStatus", "laboruntersuchung_status", code).get();
-    }
+    String code = this.getLaboruntersuchung_status();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    return FhirHelper.getObservationStatusFromString(parsedCode.getCode())
+        .orElseGet(LOGGER.errorSupplier("getObservationStatus", "laboruntersuchung_status", code));
   }
 
   public Identifier getObservationIdentifier() {

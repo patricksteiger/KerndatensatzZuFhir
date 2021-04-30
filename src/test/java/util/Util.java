@@ -76,9 +76,7 @@ public class Util {
   public static void setUpLoggerMock(Logger mockedLogger) {
     doReturn(Constants.getEmptyValue()).when(mockedLogger).emptyValue(anyString(), anyString());
     doReturn(Constants.getEmptyValue()).when(mockedLogger).error(anyString(), anyString());
-    doReturn(Constants.getEmptyValue())
-        .when(mockedLogger)
-        .error(anyString(), anyString(), anyString());
+    doReturn(Constants.getEmptyValue()).when(mockedLogger).error(anyString(), anyString(), any());
     doAnswer(returnsFirstArg()).when(mockedLogger).warning(any(), anyString(), anyString());
   }
 }

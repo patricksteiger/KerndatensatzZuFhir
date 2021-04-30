@@ -2,6 +2,7 @@ package helper;
 
 import constants.IdentifierSystem;
 import enums.MIICoreLocations;
+import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r4.model.*;
 import unit.converter.UnitConverter;
 
@@ -26,6 +27,14 @@ public class FhirHelper {
       }
     }
     return Optional.empty();
+  }
+
+  public static Optional<Observation.ObservationStatus> getObservationStatusFromString(String str) {
+    try {
+      return Optional.ofNullable(Observation.ObservationStatus.fromCode(str));
+    } catch (FHIRException e) {
+      return Optional.empty();
+    }
   }
 
   public static Optional<Ratio> generateRatioFromFractions(

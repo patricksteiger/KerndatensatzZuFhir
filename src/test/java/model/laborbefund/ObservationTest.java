@@ -92,7 +92,7 @@ class ObservationTest {
     // empty untergrenze, obergrenze, typ [NO LOGGING]
     laborbefund.setLaboruntersuchung_referenzbereich_untergrenze("");
     laborbefund.setLaboruntersuchung_referenzbereich_obergrenze("");
-    laborbefund.setLaboruntersuchung_referenzbereich_typ("");
+    laborbefund.setLaboruntersuchung_referenzbereich_typ(null);
     assertEmptyValue(laborbefund.getObservationReferenceRange());
     // non-empty untergrenze, obergrenze, typ [NO LOGGING]
     String untergrenze = "71";
