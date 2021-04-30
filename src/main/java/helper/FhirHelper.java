@@ -37,6 +37,15 @@ public class FhirHelper {
     }
   }
 
+  public static Optional<ResearchSubject.ResearchSubjectStatus> getResearchSubjectStatusFromString(
+      String str) {
+    try {
+      return Optional.ofNullable(ResearchSubject.ResearchSubjectStatus.fromCode(str));
+    } catch (FHIRException e) {
+      return Optional.empty();
+    }
+  }
+
   public static Optional<Ratio> generateRatioFromFractions(
       ValueAndUnitFraction valueAndUnitFraction) {
     Optional<Quantity> numerator =

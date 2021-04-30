@@ -215,11 +215,9 @@ public class Person implements Datablock {
 
   public Enumerations.AdministrativeGender getPatientGender() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAdmininistratives_geschlecht());
-    String gender = parsedCode.getCode();
-    if (Helper.checkEmptyString(gender)) {
-      return LOGGER.emptyValue("getPatientGender", "admininistratives_geschlecht");
-    }
-    return FhirHelper.getGenderMapping(gender);
+    return parsedCode.hasEmptyCode()
+        ? LOGGER.emptyValue("getPatientGender", "admininistratives_geschlecht")
+        : FhirHelper.getGenderMapping(parsedCode.getCode());
   }
 
   public HumanName getPatientGeburtsname() {
@@ -304,12 +302,11 @@ public class Person implements Datablock {
 
   public Extension getPatientNamePrefixQualifier() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArt_des_praefix());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.PREFIX;
-    CodeType type = new CodeType(code);
+    CodeType type = new CodeType(parsedCode.getCode());
     return FhirGenerator.extension(url, type);
   }
 
@@ -419,19 +416,15 @@ public class Person implements Datablock {
 
   // TODO: What is valueset of teilnahme_status?
   public ResearchSubject.ResearchSubjectStatus getResearchSubjectStatus() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getTeilnahme_status());
-    String code = parsedCode.getCode();
-    try {
-      return ResearchSubject.ResearchSubjectStatus.fromCode(code);
-    } catch (Exception e) {
-      return LOGGER.error("getResearchSubjectStatus", "teilnahme_status", code);
-    }
+    String code = this.getTeilnahme_status();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    return FhirHelper.getResearchSubjectStatusFromString(parsedCode.getCode())
+        .orElseGet(LOGGER.errorSupplier("getResearchSubjectStatus", "teilnahme_status", code));
   }
 
   public Identifier getResearchSubjectSubjectIdentificationCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getSubjekt_identifizierungscode());
-    String value = parsedCode.getCode();
-    if (Helper.checkEmptyString(value)) {
+    if (parsedCode.hasEmptyCode()) {
       return LOGGER.emptyValue(
           "getResearchSubjectSubjectIdentificationCode", "subjekt_identifizierungscode");
     }
@@ -440,7 +433,7 @@ public class Person implements Datablock {
     IdentifierTypeCode code = IdentifierTypeCode.ANON;
     Coding coding = FhirGenerator.coding(code);
     CodeableConcept type = FhirGenerator.codeableConcept(coding);
-    return FhirGenerator.identifier(value, system, type);
+    return FhirGenerator.identifier(parsedCode.getCode(), system, type);
   }
 
   public Meta getObservationMeta() {
