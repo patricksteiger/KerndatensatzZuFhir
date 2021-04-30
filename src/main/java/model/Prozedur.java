@@ -81,12 +81,12 @@ public class Prozedur implements Datablock {
 
   /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/81934/" */
   public CodeableConcept getCategory() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getOPS_Vollst_Prozedurenkode());
-    String ops = parsedCode.getCode();
-    if (Helper.checkEmptyString(ops)) {
+    String ops = this.getOPS_Vollst_Prozedurenkode();
+    ParsedCode parsedCode = ParsedCode.fromString(ops);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return ProcedureCategorySnomedMapping.fromOpsCode(ops)
+    return ProcedureCategorySnomedMapping.fromOpsCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(LOGGER.errorSupplier("getCategory", "OPS_Vollst_Prozedurenkode", ops));
@@ -102,43 +102,35 @@ public class Prozedur implements Datablock {
   }
 
   public Coding getCodingOps() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getOPS_Vollst_Prozedurenkode());
-    String opsCode = parsedCode.getCode();
-    if (Helper.checkEmptyString(opsCode)) {
+    String system = CodingSystem.OPS_DIMDI;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getOPS_Vollst_Prozedurenkode(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.OPS_DIMDI;
-    String display = parsedCode.getDisplay();
     String version = Constants.VERSION_2020;
-    Coding ops = FhirGenerator.coding(opsCode, system, display, version);
+    Coding ops = FhirGenerator.coding(parsedCode, version);
     ops.addExtension(this.getSeitenlokalisation());
     return ops;
   }
 
   /** @see "https://simplifier.net/basisprofil-de-r4/extension-seitenlokalisation" */
   public Extension getSeitenlokalisation() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getOPS_Seitenlokalisation());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getOPS_Seitenlokalisation();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    Optional<Coding> value = SeitenlokalisationCode.fromCode(code).map(FhirGenerator::coding);
-    if (!value.isPresent()) {
-      return LOGGER.error("getSeitenlokalisation", "OPS_Seitenlokalisation", code);
-    }
     String url = ExtensionUrl.OPS_SEITENLOKALISATION;
-    return FhirGenerator.extension(url, value.get());
+    return SeitenlokalisationCode.fromCode(parsedCode.getCode())
+        .map(FhirGenerator::coding)
+        .map(c -> FhirGenerator.extension(url, c))
+        .orElseGet(LOGGER.errorSupplier("getSeitenlokalisation", "OPS_Seitenlokalisation", code));
   }
 
   public Coding getCodingSnomed() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getSNOMED_Vollst_Prozedurenkode());
-    String snomed = parsedCode.getCode();
-    if (Helper.checkEmptyString(snomed)) {
-      return Constants.getEmptyValue();
-    }
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(snomed, system, display);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getSNOMED_Vollst_Prozedurenkode(), system);
+    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
   }
 
   public DateTimeType getPerformed() {
@@ -150,14 +142,12 @@ public class Prozedur implements Datablock {
 
   /** @see "https://simplifier.net/packages/hl7.fhir.r4.core/4.0.1/files/80349/" */
   public CodeableConcept getBodySite() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    String display = parsedCode.getDisplay();
-    Coding coding = FhirGenerator.coding(code, system, display);
+    Coding coding = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(coding);
   }
 
@@ -186,18 +176,16 @@ public class Prozedur implements Datablock {
    * @see "https://simplifier.net/medizininformatikinitiative-modulprozeduren/durchfuehrungsabsicht"
    */
   public Extension getDurchfuehrungsabsicht() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getKernDurchfuehrungsabsicht());
-    String absichtCode = parsedCode.getCode();
-    if (Helper.checkEmptyString(absichtCode)) {
+    String code = this.getKernDurchfuehrungsabsicht();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    Optional<Coding> code =
-        DurchfuehrungsabsichtCode.fromCode(absichtCode).map(FhirGenerator::coding);
-    if (!code.isPresent()) {
-      return LOGGER.error("getDurchfuehrungsabsicht", "durchfuehrungsabsicht", absichtCode);
-    }
     String url = ExtensionUrl.DURCHFUEHRUNGSABSICHT;
-    return FhirGenerator.extension(url, code.get());
+    return DurchfuehrungsabsichtCode.fromCode(parsedCode.getCode())
+        .map(FhirGenerator::coding)
+        .map(c -> FhirGenerator.extension(url, c))
+        .orElseGet(LOGGER.errorSupplier("getDurchfuehrungsabsicht", "durchfuehrungsabsicht", code));
   }
 
   public void setDurchfuehrungsabsicht(String durchfuehrungsabsicht) {
