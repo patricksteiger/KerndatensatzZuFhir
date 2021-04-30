@@ -159,27 +159,24 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getVersorgungsstellenEncounterType() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getVersorgungsstellenkontakt_ebene());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.FALL_KONTAKTEBENE;
+    ParsedCode parsedCode =
+        ParsedCode.fromString(this.getVersorgungsstellenkontakt_ebene(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.FALL_KONTAKTEBENE;
-    String display = parsedCode.getDisplay();
-    Coding kontaktebene = FhirGenerator.coding(code, system, display);
+    Coding kontaktebene = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(kontaktebene);
   }
 
   public Coding getVersorgungsstellenEncounterClass() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getVersorgungsstellenkontakt_klasse());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue(
-          "getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse");
-    }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    ParsedCode parsedCode =
+        ParsedCode.fromString(this.getVersorgungsstellenkontakt_klasse(), system);
+    return parsedCode.hasEmptyCode()
+        ? LOGGER.emptyValue(
+            "getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse")
+        : FhirGenerator.coding(parsedCode);
   }
 
   public Encounter.EncounterStatus getVersorgungsstellenEncounterStatus() {
@@ -206,12 +203,12 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getEinrichtungsEncounterAdmitSource() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_aufnahmeanlass());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getEinrichtungskontakt_aufnahmeanlass();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return Aufnahmeanlass.fromCode(code)
+    return Aufnahmeanlass.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
@@ -220,12 +217,12 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getEinrichtungsEncounterDischargeDisposition() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_entlassungsgrund());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getEinrichtungskontakt_entlassungsgrund();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return Entlassungsgrund.fromCode(code)
+    return Entlassungsgrund.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
@@ -238,11 +235,10 @@ public class Fall implements Datablock {
   public CodeableConcept getEinrichtungsEncounterReasonCode() {
     String aufnahmegrund = this.getEinrichtungskontakt_aufnahmegrund();
     ParsedCode parsedCode = ParsedCode.fromString(aufnahmegrund);
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return Aufnahmegrund.fromCode(code)
+    return Aufnahmegrund.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
@@ -285,26 +281,21 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getEinrichtungsEncounterType() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_ebene());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.FALL_KONTAKTEBENE;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_ebene(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.FALL_KONTAKTEBENE;
-    String display = parsedCode.getDisplay();
-    Coding kontaktebene = FhirGenerator.coding(code, system, display);
+    Coding kontaktebene = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(kontaktebene);
   }
 
   public Coding getEinrichtungsEncounterClass() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_klasse());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue("getEinrichtungsEncounterClass", "einrichtungskontakt_klasse");
-    }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_klasse(), system);
+    return parsedCode.hasEmptyCode()
+        ? LOGGER.emptyValue("getEinrichtungsEncounterClass", "einrichtungskontakt_klasse")
+        : FhirGenerator.coding(parsedCode);
   }
 
   public Encounter.EncounterStatus getEinrichtungsEncounterStatus() {
@@ -349,14 +340,12 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getAbteilungsEncounterType() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_ebene());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.FALL_KONTAKTEBENE;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_ebene(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.FALL_KONTAKTEBENE;
-    String display = parsedCode.getDisplay();
-    Coding kontaktebene = FhirGenerator.coding(code, system, display);
+    Coding kontaktebene = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(kontaktebene);
   }
 
@@ -365,35 +354,28 @@ public class Fall implements Datablock {
   }
 
   public CodeableConcept getAbteilungsEncounterServiceType() {
-    ParsedCode parsedCode =
-        ParsedCode.fromString(this.getAbteilungskontakt_fachabteilungsschluessel());
-    String abteilungsCode = parsedCode.getCode();
-    if (Helper.checkEmptyString(abteilungsCode)) {
+    String system = CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL;
+    String abteilungsCode = this.getAbteilungskontakt_fachabteilungsschluessel();
+    ParsedCode parsedCode = ParsedCode.fromString(abteilungsCode, system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL;
-    String display = parsedCode.getDisplay();
-    Optional<Fachabteilung> abteilungFromCode = Fachabteilung.fromCode(abteilungsCode);
-    Coding fachabteilungsschluessel =
-        abteilungFromCode
-            .map(FhirGenerator::coding)
-            .orElseGet(
-                LOGGER.warningSupplier(
-                    () -> FhirGenerator.coding(abteilungsCode, system, display),
-                    "getAbteilungsEncounterServiceType",
-                    "Fachabteilungsschlüssel could be wrong: " + abteilungsCode));
-    return FhirGenerator.codeableConcept(fachabteilungsschluessel);
+    return Fachabteilung.fromCode(parsedCode.getCode())
+        .map(FhirGenerator::coding)
+        .map(FhirGenerator::codeableConcept)
+        .orElseGet(
+            LOGGER.warningSupplier(
+                () -> FhirGenerator.codeableConcept(FhirGenerator.coding(parsedCode)),
+                "getAbteilungsEncounterServiceType",
+                "Fachabteilungsschlüssel could be wrong: " + abteilungsCode));
   }
 
   public Coding getAbteilungsEncounterClass() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_klasse());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue("getAbteilungsEncounterClass", "abteilungskontakt_klasse");
-    }
     String system = CodingSystem.ENCOUNTER_CLASS_DE;
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_klasse(), system);
+    return parsedCode.hasEmptyCode()
+        ? LOGGER.emptyValue("getAbteilungsEncounterClass", "abteilungskontakt_klasse")
+        : FhirGenerator.coding(parsedCode);
   }
 
   public Encounter.EncounterStatus getAbteilungsEncounterStatus() {
