@@ -153,17 +153,17 @@ public class Medikation implements Datablock {
   }
   // TODO: How does Behandlungsgrund look like?
   public CodeableConcept getMedicationAdministrationReasonCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getBehandlungsgrund());
-    String behandlungsgrund = parsedCode.getCode();
-    if (Helper.checkEmptyString(behandlungsgrund)) {
+    String code = this.getBehandlungsgrund();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return Behandlungsgrund.fromCode(behandlungsgrund)
+    return Behandlungsgrund.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
             LOGGER.errorSupplier(
-                "getMedicationAdministrationReasonCode", "behandlungsgrund", behandlungsgrund));
+                "getMedicationAdministrationReasonCode", "behandlungsgrund", code));
   }
 
   public Medication.MedicationIngredientComponent getMedicationIngredient() {
@@ -203,13 +203,13 @@ public class Medikation implements Datablock {
   }
 
   public Extension getMedicationIngredientExtension() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getWirkstoff_code_allgemein());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getWirkstoff_code_allgemein();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
-    return Wirkstofftyp.fromCode(code)
+    return Wirkstofftyp.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(type -> FhirGenerator.extension(url, type))
         .orElseGet(
@@ -228,21 +228,19 @@ public class Medikation implements Datablock {
   }
 
   public CodeableConcept getMedicationForm() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getDarreichungsform());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.EDQM_STANDARD;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getDarreichungsform(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.EDQM_STANDARD;
-    String display = parsedCode.getDisplay();
-    Coding edqm = FhirGenerator.coding(code, system, display);
+    Coding edqm = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(edqm);
   }
 
   public CodeableConcept getMedicationCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
     String text = this.getMedicationCodeText();
-    if (Helper.checkEmptyString(parsedCode.getCode()) && Helper.checkEmptyString(text)) {
+    if (parsedCode.hasEmptyCode() && Helper.checkEmptyString(text)) {
       return Constants.getEmptyValue();
     }
     Coding code;
@@ -261,28 +259,26 @@ public class Medikation implements Datablock {
 
   public Coding getMedicationCodeAtcDE() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String system = CodingSystem.ATC_DIMDI;
     String parsedDisplay = parsedCode.getDisplay();
     String display =
         (Helper.checkEmptyString(parsedDisplay)) ? this.getArzneimittel_name() : parsedDisplay;
-    return FhirGenerator.coding(code, system, display);
+    return FhirGenerator.coding(parsedCode.getCode(), system, display);
   }
 
   public Coding getMedicationCodePharma() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String system = CodingSystem.PHARMA_ZENTRAL_NUMMER;
     String parsedDisplay = parsedCode.getDisplay();
     String display =
         (Helper.checkEmptyString(parsedDisplay)) ? this.getArzneimittel_name() : parsedDisplay;
-    return FhirGenerator.coding(code, system, display);
+    return FhirGenerator.coding(parsedCode.getCode(), system, display);
   }
 
   public Reference getMedicationAdministrationRequest() {
@@ -338,9 +334,9 @@ public class Medikation implements Datablock {
 
   public MedicationAdministration.MedicationAdministrationStatus
       getMedicationAdministrationStatus() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
-    String code = parsedCode.getCode();
-    return MedikationStatus.medicationAdministrationStatusFromCode(code)
+    String code = this.getStatus();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    return MedikationStatus.medicationAdministrationStatusFromCode(parsedCode.getCode())
         .orElseGet(LOGGER.errorSupplier("getMedicationAdministrationStatus", "status", code));
   }
 
@@ -438,8 +434,7 @@ public class Medikation implements Datablock {
 
   public Timing.TimingRepeatComponent getMedicationStatementDosageTimingRepeat() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_ereignis());
-    String ereignis = parsedCode.getCode();
-    if (Helper.checkEmptyString(ereignis)) {
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     Timing.TimingRepeatComponent repeat = new Timing.TimingRepeatComponent();
@@ -456,14 +451,11 @@ public class Medikation implements Datablock {
 
   public CodeableConcept getMedicationStatementDosageRoute() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_art_der_anwendung());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     // CodeSystem can be SNOMED or EDQM
-    String system = parsedCode.getSystem();
-    String display = parsedCode.getDisplay();
-    Coding coding = FhirGenerator.coding(code, system, display);
+    Coding coding = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(coding);
   }
 
@@ -512,9 +504,9 @@ public class Medikation implements Datablock {
   }
 
   public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getStatus());
-    String code = parsedCode.getCode();
-    return MedikationStatus.medicationStatementStatusFromCode(code)
+    String code = this.getStatus();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    return MedikationStatus.medicationStatementStatusFromCode(parsedCode.getCode())
         .orElseGet(LOGGER.errorSupplier("getMedicationStatementStatus", "status", code));
   }
 
