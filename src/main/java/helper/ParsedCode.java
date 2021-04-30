@@ -1,8 +1,11 @@
 package helper;
 
-import java.util.List;
+import interfaces.Code;
 
-public class ParsedCode {
+import java.util.List;
+import java.util.Objects;
+
+public class ParsedCode implements Code {
   private final String code;
   private final String system;
   private final String display;
@@ -39,6 +42,27 @@ public class ParsedCode {
     }
   }
 
+  /**
+   * Same as "fromString"-method, but always sets system to given system.
+   *
+   * @param str
+   * @param system
+   * @return
+   */
+  public static ParsedCode fromString(String str, String system) {
+    if (Helper.checkEmptyString(str)) {
+      return new ParsedCode("", system, "");
+    } else if (!str.contains("code=") && !str.contains("system=") && !str.contains("display=")) {
+      String code = Helper.trimQuotes(str);
+      return new ParsedCode(code, system, "");
+    } else {
+      List<String> words = Helper.splitCode(str);
+      String code = Helper.extractCode(words, "code=");
+      String display = Helper.extractCode(words, "display=");
+      return new ParsedCode(code, system, display);
+    }
+  }
+
   public String getCode() {
     return code;
   }
@@ -51,7 +75,26 @@ public class ParsedCode {
     return display;
   }
 
+  public boolean hasEmptyCode() {
+    return Helper.checkEmptyString(code);
+  }
+
   public boolean hasDisplay() {
     return Helper.checkNonEmptyString(display);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ParsedCode that = (ParsedCode) o;
+    return getCode().equals(that.getCode())
+        && getSystem().equals(that.getSystem())
+        && getDisplay().equals(that.getDisplay());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getCode(), getSystem(), getDisplay());
   }
 }

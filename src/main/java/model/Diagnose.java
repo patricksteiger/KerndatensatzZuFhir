@@ -98,14 +98,12 @@ public class Diagnose implements Datablock {
   }
 
   public Coding getCodeIcd() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_diagnosecode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_diagnosecode(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.ICD_10_GM_DIMDI;
-    String display = parsedCode.getDisplay();
-    Coding icd = FhirGenerator.coding(code, system, display);
+    Coding icd = FhirGenerator.coding(parsedCode);
     icd.addExtension(this.getCodeIcdDiagnosesicherheit());
     icd.addExtension(this.getCodeIcdSeitenlokalisation());
     icd.addExtension(this.getCodeIcdAusrufezeichen());
@@ -115,55 +113,49 @@ public class Diagnose implements Datablock {
   }
 
   public Extension getCodeIcdPrimaercode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_primaercode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_primaercode(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.ICD_10_GM_DIMDI;
-    String display = parsedCode.getDisplay();
     String version = Constants.VERSION_2020;
-    Coding value = FhirGenerator.coding(code, system, display, version);
+    Coding value = FhirGenerator.coding(parsedCode, version);
     String url = ExtensionUrl.ICD_10_GM_PRIMAERCODE;
     return FhirGenerator.extension(url, value);
   }
 
   public Extension getCodeIcdManifestationscode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_manifestationscode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_manifestationscode(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.ICD_10_GM_DIMDI;
-    String display = parsedCode.getDisplay();
     String version = Constants.VERSION_2020;
-    Coding value = FhirGenerator.coding(code, system, display, version);
+    Coding value = FhirGenerator.coding(parsedCode, version);
     String url = ExtensionUrl.ICD_10_GM_MANIFESTATIONSCODE;
     return FhirGenerator.extension(url, value);
   }
 
   public Extension getCodeIcdAusrufezeichen() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_ausrufezeichencode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.ICD_10_GM_DIMDI;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_ausrufezeichencode(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.ICD_10_GM_DIMDI;
-    String display = parsedCode.getDisplay();
     String version = Constants.VERSION_2020;
-    Coding value = FhirGenerator.coding(code, system, display, version);
+    Coding value = FhirGenerator.coding(parsedCode, version);
     String url = ExtensionUrl.ICD_10_GM_AUSRUFEZEICHEN;
     return FhirGenerator.extension(url, value);
   }
 
   public Extension getCodeIcdSeitenlokalisation() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_seitenlokalisation());
-    String seitenCode = parsedCode.getCode();
-    if (Helper.checkEmptyString(seitenCode)) {
+    String seitenCode = this.getIcd_seitenlokalisation();
+    ParsedCode parsedCode = ParsedCode.fromString(seitenCode);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.ICD_10_GM_SEITENLOKALISATION;
-    return ICD_Seitenlokalisation.fromCode(seitenCode)
+    return ICD_Seitenlokalisation.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(code -> FhirGenerator.extension(url, code))
         .orElseGet(
@@ -172,13 +164,13 @@ public class Diagnose implements Datablock {
   }
 
   public Extension getCodeIcdDiagnosesicherheit() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_diagnosesicherheit());
-    String snomedCode = parsedCode.getCode();
-    if (Helper.checkEmptyString(snomedCode)) {
+    String snomedCode = this.getIcd_diagnosesicherheit();
+    ParsedCode parsedCode = ParsedCode.fromString(snomedCode);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT;
-    return ICD_Diagnosesicherheit.fromSnomedCode(snomedCode)
+    return ICD_Diagnosesicherheit.fromSnomedCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(code -> FhirGenerator.extension(url, code))
         .orElseGet(
@@ -187,47 +179,26 @@ public class Diagnose implements Datablock {
   }
 
   public Coding getCodeAlpha() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getAlpha_diagnosecode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return Constants.getEmptyValue();
-    }
     String system = CodingSystem.ALPHA_ID_DIMDI;
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getAlpha_diagnosecode(), system);
+    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
   }
 
   public Coding getCodeSct() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getSnomed_diagnosecode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return Constants.getEmptyValue();
-    }
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getSnomed_diagnosecode(), system);
+    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
   }
 
   public Coding getCodeOrphanet() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getOrphanet_diagnosecode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return Constants.getEmptyValue();
-    }
     String system = CodingSystem.ORPHANET;
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getOrphanet_diagnosecode(), system);
+    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
   }
 
   public Coding getCodeWeitere() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getWeitere_diagnosecode());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return Constants.getEmptyValue();
-    }
-    String system = parsedCode.getSystem();
-    String display = parsedCode.getDisplay();
-    return FhirGenerator.coding(code, system, display);
+    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
   }
 
   public Annotation getNote() {
@@ -277,13 +248,13 @@ public class Diagnose implements Datablock {
   }
 
   public Extension getLebensphaseVon() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLebensphase_von());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getLebensphase_von();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.STAGE_LIFE;
-    return KBVBaseStageLife.fromCode(code)
+    return KBVBaseStageLife.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .map(type -> FhirGenerator.extension(url, type))
@@ -291,13 +262,13 @@ public class Diagnose implements Datablock {
   }
 
   public Extension getLebensphaseBis() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLebensphase_bis());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getLebensphase_bis();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
     String url = ExtensionUrl.STAGE_LIFE;
-    return KBVBaseStageLife.fromCode(code)
+    return KBVBaseStageLife.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .map(type -> FhirGenerator.extension(url, type))
@@ -305,24 +276,22 @@ public class Diagnose implements Datablock {
   }
 
   public CodeableConcept getBodySite() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
+    ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle(), system);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    String display = parsedCode.getDisplay();
-    Coding bodySite = FhirGenerator.coding(code, system, display);
+    Coding bodySite = FhirGenerator.coding(parsedCode);
     return FhirGenerator.codeableConcept(bodySite);
   }
 
   public CodeableConcept getClinicalStatus() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getKlinischer_status());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
+    String code = this.getKlinischer_status();
+    ParsedCode parsedCode = ParsedCode.fromString(code);
+    if (parsedCode.hasEmptyCode()) {
       return Constants.getEmptyValue();
     }
-    return ClinicalStatus.fromCode(code)
+    return ClinicalStatus.fromCode(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(LOGGER.errorSupplier("getClinicalStatus", "klinischer_status", code));

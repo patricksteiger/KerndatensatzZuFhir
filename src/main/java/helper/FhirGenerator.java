@@ -37,6 +37,10 @@ public class FhirGenerator {
     return new Coding().setCode(code).setSystem(system).setDisplay(display).setVersion(version);
   }
 
+  public static Coding coding(Code code, String version) {
+    return coding(code.getCode(), code.getSystem(), code.getDisplay(), version);
+  }
+
   public static Coding coding(String code, String system, String display) {
     return coding(code, system, display, "");
   }
