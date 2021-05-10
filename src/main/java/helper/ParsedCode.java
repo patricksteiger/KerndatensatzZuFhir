@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class ParsedCode implements Code {
+  public static final String CODE_PREFIX = "code=";
+  public static final String SYSTEM_PREFIX = "system=";
+  public static final String DISPLAY_PREFIX = "display=";
+
   private final String code;
   private final String system;
   private final String display;
@@ -30,20 +34,20 @@ public class ParsedCode implements Code {
   public static ParsedCode fromString(String str) {
     if (Helper.checkEmptyString(str)) {
       return new ParsedCode("", "", "");
-    } else if (!str.contains("code=") && !str.contains("system=") && !str.contains("display=")) {
+    }
+    if (isSimpleFormattedCode(str)) {
       String code = Helper.trimQuotes(str);
       return new ParsedCode(code, "", "");
-    } else {
-      List<String> words = Helper.splitCode(str);
-      String code = Helper.extractCode(words, "code=");
-      String system = Helper.extractCode(words, "system=");
-      String display = Helper.extractCode(words, "display=");
-      return new ParsedCode(code, system, display);
     }
+    List<String> words = Helper.splitCode(str);
+    String code = Helper.extractCode(words, CODE_PREFIX);
+    String system = Helper.extractCode(words, SYSTEM_PREFIX);
+    String display = Helper.extractCode(words, DISPLAY_PREFIX);
+    return new ParsedCode(code, system, display);
   }
 
   /**
-   * Same as "fromString"-method, but always sets system to given system.
+   * Same as "fromString"-method only expecting 1 String, but always sets system to given system.
    *
    * @param str
    * @param system
@@ -52,15 +56,21 @@ public class ParsedCode implements Code {
   public static ParsedCode fromString(String str, String system) {
     if (Helper.checkEmptyString(str)) {
       return new ParsedCode("", system, "");
-    } else if (!str.contains("code=") && !str.contains("system=") && !str.contains("display=")) {
+    }
+    if (isSimpleFormattedCode(str)) {
       String code = Helper.trimQuotes(str);
       return new ParsedCode(code, system, "");
-    } else {
-      List<String> words = Helper.splitCode(str);
-      String code = Helper.extractCode(words, "code=");
-      String display = Helper.extractCode(words, "display=");
-      return new ParsedCode(code, system, display);
     }
+    List<String> words = Helper.splitCode(str);
+    String code = Helper.extractCode(words, CODE_PREFIX);
+    String display = Helper.extractCode(words, DISPLAY_PREFIX);
+    return new ParsedCode(code, system, display);
+  }
+
+  private static boolean isSimpleFormattedCode(String code) {
+    return !code.contains(CODE_PREFIX)
+        && !code.contains(SYSTEM_PREFIX)
+        && !code.contains(DISPLAY_PREFIX);
   }
 
   public String getCode() {
