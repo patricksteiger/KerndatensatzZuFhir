@@ -252,11 +252,8 @@ public class Fall implements Datablock {
     String beginndatum = this.getEinrichtungskontakt_beginndatum();
     Optional<Date> start = Helper.getDateFromISO(beginndatum);
     if (!start.isPresent()) {
-      return (Period)
-          LOGGER
-              .errorSupplier(
-                  "getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum", beginndatum)
-              .get();
+      return LOGGER.error(
+          "getEinrichtungsEncounterPeriod", "einrichtungskontakt_beginndatum", beginndatum);
     }
     String enddatum = this.getEinrichtungskontakt_enddatum();
     if (Helper.checkNonEmptyString(enddatum)) {

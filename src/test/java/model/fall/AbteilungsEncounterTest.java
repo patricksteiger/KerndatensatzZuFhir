@@ -36,7 +36,7 @@ class AbteilungsEncounterTest {
 
   @Test
   void testIdentifier() {
-    // empty aufnahmenummer [NO LOGGING]
+    // empty aufnahmenummer
     fall.setAbteilungskontakt_aufnahmenummer("");
     assertEmptyValue(fall.getAbteilungsEncounterIdentifier());
     fall.setAbteilungskontakt_aufnahmenummer(null);
@@ -57,6 +57,7 @@ class AbteilungsEncounterTest {
   void testClass() {
     // empty klasse
     assertEmptyCodeValue(fall::setAbteilungskontakt_klasse, fall::getAbteilungsEncounterClass);
+    assertLoggerHasCalledEmptyValue(LOGGER, 3);
     // non-empty klasse
     String code = "1a2b";
     String display = "correct display";
@@ -64,14 +65,16 @@ class AbteilungsEncounterTest {
     fall.setAbteilungskontakt_klasse(klasse);
     Coding result = fall.getAbteilungsEncounterClass();
     assertCoding(code, CodingSystem.ENCOUNTER_CLASS_DE, display, result);
+    assertLoggerHasCalledEmptyValue(LOGGER, 3);
   }
 
   @Test
   void testServiceType() {
-    // empty fachabteilungsschluessel [NO LOGGING]
+    // empty fachabteilungsschluessel
     assertEmptyCodeValue(
         fall::setAbteilungskontakt_fachabteilungsschluessel,
         fall::getAbteilungsEncounterServiceType);
+    assertLoggerHasCalledWarning(LOGGER, 0);
     // invalid fachabteilungsschluessel
     String code = "invalid";
     String display = "invalid display";
@@ -79,6 +82,7 @@ class AbteilungsEncounterTest {
     fall.setAbteilungskontakt_fachabteilungsschluessel(schluessel);
     CodeableConcept result = fall.getAbteilungsEncounterServiceType();
     assertCodeableConcept(code, CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL, display, result);
+    assertLoggerHasCalledWarning(LOGGER, 1);
     // valid
     Fachabteilung fachabteilung = Fachabteilung.AUGENHEILKUNDE;
     code = fachabteilung.getCode();
@@ -87,11 +91,12 @@ class AbteilungsEncounterTest {
     fall.setAbteilungskontakt_fachabteilungsschluessel(schluessel);
     result = fall.getAbteilungsEncounterServiceType();
     assertCodeableConcept(fachabteilung, result);
+    assertLoggerHasCalledWarning(LOGGER, 1);
   }
 
   @Test
   void testType() {
-    // empty ebene [NO LOGGING]
+    // empty ebene
     assertEmptyCodeValue(fall::setAbteilungskontakt_ebene, fall::getAbteilungsEncounterType);
     // non-empty ebene
     String code = "1a2c";
@@ -107,18 +112,22 @@ class AbteilungsEncounterTest {
     // empty beginndatum
     fall.setAbteilungskontakt_beginndatum("");
     assertEmptyValue(fall.getAbteilungsEncounterPeriod());
+    assertLoggerHasCalledError3(LOGGER, 1);
     // invalid beginndatum
     fall.setAbteilungskontakt_beginndatum("invalid");
     assertEmptyValue(fall.getAbteilungsEncounterPeriod());
+    assertLoggerHasCalledError3(LOGGER, 2);
     // valid beginndatum
     String startDate = "2021-02-20";
     fall.setAbteilungskontakt_beginndatum(startDate);
     Period result = fall.getAbteilungsEncounterPeriod();
     assertPeriod(expectedDateString(startDate), null, result);
+    assertLoggerHasCalledError3(LOGGER, 2);
     // valid enddatum
     String endDate = "2021-02-23";
     fall.setAbteilungskontakt_enddatum(endDate);
     result = fall.getAbteilungsEncounterPeriod();
     assertPeriod(expectedDateString(startDate), expectedDateString(endDate), result);
+    assertLoggerHasCalledError3(LOGGER, 2);
   }
 }
