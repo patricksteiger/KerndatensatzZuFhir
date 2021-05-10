@@ -17,7 +17,7 @@ public class UnitMapper {
   private static final Logger LOGGER = LoggerFactory.getLogger(UnitMapper.class);
   private static final boolean LOGGING_ACTIVATED = false;
 
-  private static Map<String, UnitMapping> mappings = null;
+  private static final Map<String, UnitMapping> mappings = generateMappings(ParseMappings.list());
 
   private UnitMapper() {}
 
@@ -36,9 +36,6 @@ public class UnitMapper {
   }
 
   private static UnitMapping getMapping(String unit) {
-    if (mappings == null) {
-      mappings = generateMappings(ParseMappings.list());
-    }
     return mappings.get(unit);
   }
 

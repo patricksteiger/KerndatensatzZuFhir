@@ -5,35 +5,32 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class ParseMappings {
   private static final String MAPPINGS_PATH = "src/main/resources/ULM-LOINC_Mapping_Checklist.csv";
   private static final char SEPARATOR = ';';
-  private static List<MappingBean> mappings = null;
+  private static final List<MappingBean> mappings;
+
+  static {
+    try {
+      mappings = parseMappings();
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new IllegalArgumentException("Couldn't parse Mapping Checklist!");
+    }
+  }
 
   private ParseMappings() {}
 
   public static List<MappingBean> list() {
-    if (mappings == null) {
-      try {
-        mappings = parseMappings();
-      } catch (IOException e) {
-        e.printStackTrace();
-        throw new IllegalArgumentException("Couldn't parse Mapping Checklist!");
-      }
-    }
     return mappings;
   }
 
   private static List<MappingBean> parseMappings() throws IOException {
-    BufferedReader br =
-        Files.newBufferedReader(
-            Paths.get(ParseMappings.MAPPINGS_PATH), StandardCharsets.ISO_8859_1);
+    BufferedReader br = new BufferedReader(new FileReader(MAPPINGS_PATH));
     ColumnPositionMappingStrategy<MappingBean> headerStrategy =
         new ColumnPositionMappingStrategy<>();
     headerStrategy.setType(MappingBean.class);
