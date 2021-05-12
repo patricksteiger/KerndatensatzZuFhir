@@ -315,9 +315,8 @@ public class Person implements Datablock {
     if (Helper.checkEmptyString(value)) {
       return Constants.getEmptyValue();
     }
-    IdentifierTypeCode code = IdentifierTypeCode.MR;
-    Coding pidCoding = FhirGenerator.coding(code);
-    CodeableConcept type = FhirGenerator.codeableConcept(pidCoding);
+    IdentifierTypeCode mr = IdentifierTypeCode.MR;
+    CodeableConcept type = FhirGenerator.codeableConcept(mr);
     // TODO: Is system of PID correct?
     String system = IdentifierSystem.PID;
     Reference assignerRef = this.getPIDAssignerReference();
@@ -339,8 +338,7 @@ public class Person implements Datablock {
       return Constants.getEmptyValue();
     }
     VersichertenCode gkv = VersichertenCode.GKV;
-    Coding gkvCoding = FhirGenerator.coding(gkv);
-    CodeableConcept type = FhirGenerator.codeableConcept(gkvCoding);
+    CodeableConcept type = FhirGenerator.codeableConcept(gkv);
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     Reference assignerRef = this.getGKVAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
@@ -366,8 +364,7 @@ public class Person implements Datablock {
     // TODO: Is PKV System always empty?
     String system = Constants.getEmptyValue();
     VersichertenCode pkv = VersichertenCode.PKV;
-    Coding pkvCoding = FhirGenerator.coding(pkv);
-    CodeableConcept type = FhirGenerator.codeableConcept(pkvCoding);
+    CodeableConcept type = FhirGenerator.codeableConcept(pkv);
     // TODO: What is assignerRef of PKV? Example only display: "Signal Iduna"
     Reference assignerRef = Constants.getEmptyValue();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
@@ -430,9 +427,8 @@ public class Person implements Datablock {
     }
     // TODO: Is system for SubjectIdentificationCode correct?
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
-    IdentifierTypeCode code = IdentifierTypeCode.ANON;
-    Coding coding = FhirGenerator.coding(code);
-    CodeableConcept type = FhirGenerator.codeableConcept(coding);
+    IdentifierTypeCode anon = IdentifierTypeCode.ANON;
+    CodeableConcept type = FhirGenerator.codeableConcept(anon);
     return FhirGenerator.identifier(parsedCode.getCode(), system, type);
   }
 

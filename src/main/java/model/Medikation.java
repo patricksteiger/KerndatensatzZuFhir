@@ -230,11 +230,9 @@ public class Medikation implements Datablock {
   public CodeableConcept getMedicationForm() {
     String system = CodingSystem.EDQM_STANDARD;
     ParsedCode parsedCode = ParsedCode.fromString(this.getDarreichungsform(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding edqm = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(edqm);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public CodeableConcept getMedicationCode() {
@@ -450,13 +448,11 @@ public class Medikation implements Datablock {
   }
 
   public CodeableConcept getMedicationStatementDosageRoute() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_art_der_anwendung());
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
     // CodeSystem can be SNOMED or EDQM
-    Coding coding = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(coding);
+    ParsedCode parsedCode = ParsedCode.fromString(this.getDosierung_art_der_anwendung());
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public Type getMedicationStatementDosageAsNeeded() {

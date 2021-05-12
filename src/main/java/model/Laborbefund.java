@@ -200,12 +200,10 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getServiceRequestCode() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboranforderung_laborparameter_code());
-    if (parsedCode.hasEmptyCode()) {
-      return LOGGER.emptyValue("getServiceRequestCode", "laboranforderung_laborparameter_code");
-    }
-    Coding coding = FhirGenerator.coding(parsedCode);
     String text = this.getServiceRequestCodeText();
-    return FhirGenerator.codeableConcept(coding).setText(text);
+    return parsedCode.hasEmptyCode()
+        ? LOGGER.emptyValue("getServiceRequestCode", "laboranforderung_laborparameter_code")
+        : FhirGenerator.codeableConcept(parsedCode).setText(text);
   }
 
   public String getServiceRequestCodeText() {
@@ -325,8 +323,7 @@ public class Laborbefund implements Datablock {
     }
     String system = IdentifierSystem.EMPTY;
     IdentifierTypeCode fill = IdentifierTypeCode.FILL;
-    Coding coding = FhirGenerator.coding(fill);
-    CodeableConcept type = FhirGenerator.codeableConcept(coding);
+    CodeableConcept type = FhirGenerator.codeableConcept(fill);
     String ref = MIIReference.MII_ORGANIZATION;
     Reference assignerRef = FhirGenerator.reference(ref);
     return FhirGenerator.identifier(value, system, type, assignerRef);
@@ -396,11 +393,9 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getObservationMethod() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_untersuchungsmethode());
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding method = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(method);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public Annotation getObservationNote() {
@@ -469,11 +464,10 @@ public class Laborbefund implements Datablock {
   public CodeableConcept getObservationCode() {
     String system = CodingSystem.LOINC;
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_code(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return LOGGER.emptyValue("getObservationCode", "laborparameter_bezeichnung");
-    }
-    Coding code = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(code).setText(this.getLaborparameter_bezeichnung());
+    String text = this.getLaborparameter_bezeichnung();
+    return parsedCode.hasEmptyCode()
+        ? LOGGER.emptyValue("getObservationCode", "laborparameter_bezeichnung")
+        : FhirGenerator.codeableConcept(parsedCode).setText(text);
   }
 
   public CodeableConcept getObservationCategory() {
@@ -536,9 +530,8 @@ public class Laborbefund implements Datablock {
               .emptyValueSupplier("getObservationIdentifier", "laboruntersuchung_identifikation")
               .get();
     }
-    IdentifierTypeCode codingCode = IdentifierTypeCode.OBI;
-    Coding observationInstanceV2 = FhirGenerator.coding(codingCode);
-    CodeableConcept type = FhirGenerator.codeableConcept(observationInstanceV2);
+    IdentifierTypeCode obi = IdentifierTypeCode.OBI;
+    CodeableConcept type = FhirGenerator.codeableConcept(obi);
     String system = IdentifierSystem.EMPTY;
     String ref = MIIReference.MII_ORGANIZATION;
     Reference assignerRef = FhirGenerator.reference(ref);

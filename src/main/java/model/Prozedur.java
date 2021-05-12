@@ -95,10 +95,9 @@ public class Prozedur implements Datablock {
   public CodeableConcept getCode() {
     Coding snomed = this.getCodingSnomed();
     Coding ops = this.getCodingOps();
-    if (Helper.checkAllNull(snomed, ops)) {
-      return LOGGER.error("getCode", "Either SNOMED- or OPS-Code need to be defined!");
-    }
-    return FhirGenerator.codeableConcept(snomed, ops);
+    return Helper.checkAllNull(snomed, ops)
+        ? LOGGER.error("getCode", "Either SNOMED- or OPS-Code need to be defined!")
+        : FhirGenerator.codeableConcept(snomed, ops);
   }
 
   public Coding getCodingOps() {
@@ -144,11 +143,9 @@ public class Prozedur implements Datablock {
   public CodeableConcept getBodySite() {
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding coding = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(coding);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public Annotation getNote() {
