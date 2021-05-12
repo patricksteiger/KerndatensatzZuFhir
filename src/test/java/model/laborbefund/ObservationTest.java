@@ -142,7 +142,7 @@ class ObservationTest {
     laborbefund.setLaboruntersuchung_ergebnis("invalid result");
     assertEmptyValue(laborbefund.getObservationValueCodeableConcept());
     // valid ergebnis
-    SemiQuantitativesLaborergebnis ergebnis = SemiQuantitativesLaborergebnis.ONE_PLUS;
+    SemiQuantitativesLaborergebnis ergebnis = SemiQuantitativesLaborergebnis.ONE_OF_THREE;
     laborbefund.setLaboruntersuchung_ergebnis(getCodeStr(ergebnis.getCode()));
     CodeableConcept result = laborbefund.getObservationValueCodeableConcept();
     assertCodeableConcept(ergebnis, result);
@@ -166,7 +166,7 @@ class ObservationTest {
     laborbefund.setLaboruntersuchung_ergebnis("invalid result");
     assertEmptyValue(laborbefund.getObservationValue());
     // semi-quantitatives ergebnis
-    SemiQuantitativesLaborergebnis semiErgebnis = SemiQuantitativesLaborergebnis.FOUR_PLUS;
+    SemiQuantitativesLaborergebnis semiErgebnis = SemiQuantitativesLaborergebnis.FOUR_OF_FOUR;
     laborbefund.setLaboruntersuchung_ergebnis(getCodeStr(semiErgebnis.getCode()));
     Type result = laborbefund.getObservationValue();
     assertNonEmptyValue(result);
