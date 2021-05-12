@@ -278,11 +278,9 @@ public class Diagnose implements Datablock {
   public CodeableConcept getBodySite() {
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
     ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding bodySite = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(bodySite);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public CodeableConcept getClinicalStatus() {
