@@ -61,6 +61,11 @@ public class FhirGenerator {
     return codeableConcept;
   }
 
+  public static CodeableConcept codeableConcept(Code code) {
+    Coding coding = coding(code);
+    return codeableConcept(coding);
+  }
+
   public static Period period(Date start, Date end) {
     return new Period().setStart(start).setEnd(end);
   }

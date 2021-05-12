@@ -162,11 +162,9 @@ public class Fall implements Datablock {
     String system = CodingSystem.FALL_KONTAKTEBENE;
     ParsedCode parsedCode =
         ParsedCode.fromString(this.getVersorgungsstellenkontakt_ebene(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding kontaktebene = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(kontaktebene);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public Coding getVersorgungsstellenEncounterClass() {
@@ -273,18 +271,15 @@ public class Fall implements Datablock {
 
   public CodeableConcept getEinrichtungsEncounterServiceType() {
     Fachabteilung abteilung = Fachabteilung.INNERE_MEDIZIN;
-    Coding fachabteilungsschluessel = FhirGenerator.coding(abteilung);
-    return FhirGenerator.codeableConcept(fachabteilungsschluessel);
+    return FhirGenerator.codeableConcept(abteilung);
   }
 
   public CodeableConcept getEinrichtungsEncounterType() {
     String system = CodingSystem.FALL_KONTAKTEBENE;
     ParsedCode parsedCode = ParsedCode.fromString(this.getEinrichtungskontakt_ebene(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding kontaktebene = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(kontaktebene);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public Coding getEinrichtungsEncounterClass() {
@@ -339,11 +334,9 @@ public class Fall implements Datablock {
   public CodeableConcept getAbteilungsEncounterType() {
     String system = CodingSystem.FALL_KONTAKTEBENE;
     ParsedCode parsedCode = ParsedCode.fromString(this.getAbteilungskontakt_ebene(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding kontaktebene = FhirGenerator.coding(parsedCode);
-    return FhirGenerator.codeableConcept(kontaktebene);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
   }
 
   public Reference getAbteilungsEncounterSubject() {
