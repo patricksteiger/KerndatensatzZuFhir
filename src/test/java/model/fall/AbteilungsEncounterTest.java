@@ -4,6 +4,7 @@ import constants.CodingSystem;
 import constants.IdentifierSystem;
 import enums.Fachabteilung;
 import enums.IdentifierTypeCode;
+import enums.Kontaktebene;
 import helper.Logger;
 import model.Fall;
 import org.hl7.fhir.r4.model.*;
@@ -99,12 +100,11 @@ class AbteilungsEncounterTest {
     // empty ebene
     assertEmptyCodeValue(fall::setAbteilungskontakt_ebene, fall::getAbteilungsEncounterType);
     // non-empty ebene
-    String code = "1a2c";
-    String display = "display";
-    String ebene = getCodeDisplayStr(code, display);
+    String code = "abteilungskontakt";
+    String ebene = getCodeStr(code);
     fall.setAbteilungskontakt_ebene(ebene);
     CodeableConcept result = fall.getAbteilungsEncounterType();
-    assertCodeableConcept(code, CodingSystem.FALL_KONTAKTEBENE, display, result);
+    assertCodeableConcept(Kontaktebene.ABTEILUNG, result);
   }
 
   @Test

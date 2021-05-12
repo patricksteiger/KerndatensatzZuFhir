@@ -79,12 +79,11 @@ class EinrichtungsEncounterTest {
     fall.setEinrichtungskontakt_ebene(ebene);
     assertEmptyValue(fall.getEinrichtungsEncounterType());
     // non-empty ebene
-    String code = "1a2b";
-    String display = "test display";
-    ebene = getCodeDisplayStr(code, display);
+    String code = "einrichtungskontakt";
+    ebene = getCodeStr(code);
     fall.setEinrichtungskontakt_ebene(ebene);
-    assertCodeableConcept(
-        code, CodingSystem.FALL_KONTAKTEBENE, display, fall.getEinrichtungsEncounterType());
+    CodeableConcept result = fall.getEinrichtungsEncounterType();
+    assertCodeableConcept(Kontaktebene.EINRICHTUNG, result);
   }
 
   @Test

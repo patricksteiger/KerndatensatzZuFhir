@@ -3,6 +3,7 @@ package model.fall;
 import constants.CodingSystem;
 import constants.IdentifierSystem;
 import enums.IdentifierTypeCode;
+import enums.Kontaktebene;
 import helper.Logger;
 import model.Fall;
 import org.hl7.fhir.r4.model.*;
@@ -74,12 +75,11 @@ class VersorgungsstellenEncounterTest {
     assertEmptyCodeValue(
         fall::setVersorgungsstellenkontakt_ebene, fall::getVersorgungsstellenEncounterType);
     // non-empty ebene
-    String code = "423gjh";
-    String display = "correct display";
-    String ebene = getCodeDisplayStr(code, display);
+    String code = "versorgungsstellenkontakt";
+    String ebene = getCodeStr(code);
     fall.setVersorgungsstellenkontakt_ebene(ebene);
     CodeableConcept result = fall.getVersorgungsstellenEncounterType();
-    assertCodeableConcept(code, CodingSystem.FALL_KONTAKTEBENE, display, result);
+    assertCodeableConcept(Kontaktebene.VERSORGUNGSSTELLE, result);
   }
 
   @Test
