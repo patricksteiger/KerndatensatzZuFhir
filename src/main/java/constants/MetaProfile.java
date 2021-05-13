@@ -3,7 +3,7 @@ package constants;
 public class MetaProfile {
   // Fall
   public static final String FALL_ENCOUNTER =
-      "https://www.medizininformatik-initiative.de/fhir/core/StructureDefinition/Encounter/KontaktGesundheitseinrichtung";
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung";
   // Diagnose
   public static final String DIAGNOSE_CONDITION =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose";
@@ -16,7 +16,7 @@ public class MetaProfile {
       "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/MedicationStatement";
   // Prozedur
   public static final String PROZEDUR_PROCEDURE =
-      "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose";
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Procedure";
   // Person
   public static final String PERSON_PATIENT =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient";
