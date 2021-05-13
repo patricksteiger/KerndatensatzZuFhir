@@ -130,7 +130,7 @@ public class Laborbefund implements Datablock {
     observation.setIssued(this.getObservationIssued());
     // Value
     observation.setValue(this.getObservationValue());
-    // Interpretation
+    // Interpretation (optional)
     observation.addInterpretation(this.getObservationInterpretation());
     // Note (optional)
     observation.addNote(this.getObservationNote());
