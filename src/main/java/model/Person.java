@@ -415,7 +415,7 @@ public class Person implements Datablock {
   public ResearchSubject.ResearchSubjectStatus getResearchSubjectStatus() {
     String code = this.getTeilnahme_status();
     ParsedCode parsedCode = ParsedCode.fromString(code);
-    return FhirHelper.getResearchSubjectStatusFromString(parsedCode.getCode())
+    return FhirHelper.getResearchSubjectStatusFromCode(parsedCode.getCode())
         .orElseGet(LOGGER.errorSupplier("getResearchSubjectStatus", "teilnahme_status", code));
   }
 

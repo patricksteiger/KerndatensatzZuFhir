@@ -29,18 +29,18 @@ public class FhirHelper {
     return Optional.empty();
   }
 
-  public static Optional<Observation.ObservationStatus> getObservationStatusFromString(String str) {
+  public static Optional<Observation.ObservationStatus> getObservationStatusFromCode(String code) {
     try {
-      return Optional.ofNullable(Observation.ObservationStatus.fromCode(str));
+      return Optional.ofNullable(Observation.ObservationStatus.fromCode(code));
     } catch (FHIRException e) {
       return Optional.empty();
     }
   }
 
-  public static Optional<ResearchSubject.ResearchSubjectStatus> getResearchSubjectStatusFromString(
-      String str) {
+  public static Optional<ResearchSubject.ResearchSubjectStatus> getResearchSubjectStatusFromCode(
+      String code) {
     try {
-      return Optional.ofNullable(ResearchSubject.ResearchSubjectStatus.fromCode(str));
+      return Optional.ofNullable(ResearchSubject.ResearchSubjectStatus.fromCode(code));
     } catch (FHIRException e) {
       return Optional.empty();
     }

@@ -527,12 +527,10 @@ public class Laborbefund implements Datablock {
     return FhirGenerator.coding(code, system);
   }
 
-  // TODO: status von https://terminology.hl7.org/2.1.0/CodeSystem-v3-ActStatus.html oder doch
-  // gleich observationstatus?
   public Observation.ObservationStatus getObservationStatus() {
     String code = this.getLaboruntersuchung_status();
     ParsedCode parsedCode = ParsedCode.fromString(code);
-    return FhirHelper.getObservationStatusFromString(parsedCode.getCode())
+    return FhirHelper.getObservationStatusFromCode(parsedCode.getCode())
         .orElseGet(LOGGER.errorSupplier("getObservationStatus", "laboruntersuchung_status", code));
   }
 
