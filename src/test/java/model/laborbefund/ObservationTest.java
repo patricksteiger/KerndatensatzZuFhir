@@ -126,7 +126,7 @@ class ObservationTest {
 
   @Test
   void testNote() {
-    // empty kommentar [NO LOGGING]
+    // empty kommentar
     laborbefund.setLaboruntersuchung_kommentar("");
     assertEmptyValue(laborbefund.getObservationNote());
     // non-empty kommentar
@@ -137,8 +137,27 @@ class ObservationTest {
   }
 
   @Test
+  void testInterpretation() {
+    // empty interpretation
+    assertEmptyCodeValue(
+        laborbefund::setLaboruntersuchung_bewertung, laborbefund::getObservationInterpretation);
+    // invalid interpretation
+    laborbefund.setLaboruntersuchung_bewertung(getCodeStr("invalid interpretation"));
+    assertEmptyValue(laborbefund.getObservationInterpretation());
+    // valid interpretation
+    String interpretation = "N";
+    laborbefund.setLaboruntersuchung_bewertung(getCodeStr(interpretation));
+    CodeableConcept result = laborbefund.getObservationInterpretation();
+    assertCodeableConcept(
+        interpretation,
+        "http://hl7.org/fhir/ValueSet/observation-interpretation",
+        "Normal",
+        result);
+  }
+
+  @Test
   void testValueCodeableConcept() {
-    // invalid ergebnis [NO LOGGING]
+    // invalid ergebnis
     laborbefund.setLaboruntersuchung_ergebnis("invalid result");
     assertEmptyValue(laborbefund.getObservationValueCodeableConcept());
     // valid ergebnis

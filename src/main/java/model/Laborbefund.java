@@ -130,6 +130,8 @@ public class Laborbefund implements Datablock {
     observation.setIssued(this.getObservationIssued());
     // Value
     observation.setValue(this.getObservationValue());
+    // Interpretation
+    observation.addInterpretation(this.getObservationInterpretation());
     // Note (optional)
     observation.addNote(this.getObservationNote());
     // Method (optional)
@@ -405,6 +407,19 @@ public class Laborbefund implements Datablock {
     return new Annotation().setText(kommentar);
   }
 
+  public CodeableConcept getObservationInterpretation() {
+    String interpretation = this.getLaboruntersuchung_bewertung();
+    ParsedCode parsedCode = ParsedCode.fromString(interpretation);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    return ObservationInterpretation.fromCode(parsedCode.getCode())
+        .map(FhirGenerator::codeableConcept)
+        .orElseGet(
+            LOGGER.errorSupplier(
+                "getObservationInterpretation", "laboruntersuchung_bewertung", interpretation));
+  }
+
   public Type getObservationValue() {
     CodeableConcept semiQuantitative = this.getObservationValueCodeableConcept();
     return Constants.isEmptyValue(semiQuantitative)
@@ -444,6 +459,7 @@ public class Laborbefund implements Datablock {
                 dokumentationsdatum));
   }
 
+  // TODO: Add Extension with Specimen or laboratory datetime
   public DateTimeType getObservationEffective() {
     String untersuchungszeitpunkt = this.getLaboruntersuchung_untersuchungszeitpunkt();
     return Helper.getDateFromISO(untersuchungszeitpunkt)

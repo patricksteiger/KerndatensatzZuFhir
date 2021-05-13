@@ -49,4 +49,6 @@ public class CodingSystem {
       "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT";
   public static final String BEHANDLUNGSGRUND =
       "http://terminology.hl7.org/CodeSystem/reason-medication-given";
+  public static final String OBSERVATION_INTERPRETATION =
+      "http://hl7.org/fhir/ValueSet/observation-interpretation";
 }
