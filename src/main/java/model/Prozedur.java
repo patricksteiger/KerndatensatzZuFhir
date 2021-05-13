@@ -87,7 +87,6 @@ public class Prozedur implements Datablock {
       return Constants.getEmptyValue();
     }
     return ProcedureCategorySnomedMapping.fromOpsCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(LOGGER.errorSupplier("getCategory", "OPS_Vollst_Prozedurenkode", ops));
   }

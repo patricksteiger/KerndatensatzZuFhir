@@ -159,7 +159,6 @@ public class Medikation implements Datablock {
       return Constants.getEmptyValue();
     }
     return Behandlungsgrund.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
             LOGGER.errorSupplier(

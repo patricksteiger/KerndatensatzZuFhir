@@ -211,7 +211,6 @@ public class Fall implements Datablock {
       return Constants.getEmptyValue();
     }
     return Aufnahmeanlass.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
             LOGGER.errorSupplier(
@@ -225,7 +224,6 @@ public class Fall implements Datablock {
       return Constants.getEmptyValue();
     }
     return Entlassungsgrund.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
             LOGGER.errorSupplier(
@@ -241,7 +239,6 @@ public class Fall implements Datablock {
       return Constants.getEmptyValue();
     }
     return Aufnahmegrund.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
             LOGGER.errorSupplier(
@@ -364,7 +361,6 @@ public class Fall implements Datablock {
       return Constants.getEmptyValue();
     }
     return Fachabteilung.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
             LOGGER.warningSupplier(

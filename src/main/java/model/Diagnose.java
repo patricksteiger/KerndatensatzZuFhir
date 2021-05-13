@@ -255,7 +255,6 @@ public class Diagnose implements Datablock {
     }
     String url = ExtensionUrl.STAGE_LIFE;
     return KBVBaseStageLife.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .map(type -> FhirGenerator.extension(url, type))
         .orElseGet(LOGGER.errorSupplier("getLebensphaseVon", "lebensphase_von", code));
@@ -269,7 +268,6 @@ public class Diagnose implements Datablock {
     }
     String url = ExtensionUrl.STAGE_LIFE;
     return KBVBaseStageLife.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .map(type -> FhirGenerator.extension(url, type))
         .orElseGet(LOGGER.errorSupplier("getLebensphaseBis", "lebensphase_bis", code));
@@ -290,7 +288,6 @@ public class Diagnose implements Datablock {
       return Constants.getEmptyValue();
     }
     return ClinicalStatus.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(LOGGER.errorSupplier("getClinicalStatus", "klinischer_status", code));
   }

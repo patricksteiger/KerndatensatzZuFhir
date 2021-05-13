@@ -358,7 +358,6 @@ public class Laborbefund implements Datablock {
       return Constants.getEmptyValue();
     }
     return ReferenceRangeMeaning.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElseGet(
             LOGGER.errorSupplier(
@@ -416,7 +415,6 @@ public class Laborbefund implements Datablock {
   public CodeableConcept getObservationValueCodeableConcept() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_ergebnis());
     return SemiQuantitativesLaborergebnis.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
         .map(FhirGenerator::codeableConcept)
         .orElse(Constants.getEmptyValue());
   }
