@@ -537,10 +537,7 @@ public class Laborbefund implements Datablock {
   public Identifier getObservationIdentifier() {
     String value = this.getLaboruntersuchung_identifikation();
     if (Helper.checkEmptyString(value)) {
-      return (Identifier)
-          LOGGER
-              .emptyValueSupplier("getObservationIdentifier", "laboruntersuchung_identifikation")
-              .get();
+      return LOGGER.emptyValue("getObservationIdentifier", "laboruntersuchung_identifikation");
     }
     IdentifierTypeCode obi = IdentifierTypeCode.OBI;
     CodeableConcept type = FhirGenerator.codeableConcept(obi);
