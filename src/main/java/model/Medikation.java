@@ -226,6 +226,7 @@ public class Medikation implements Datablock {
             LOGGER.errorSupplier("getMedicationAmount", "arzneimittel_wirkstaerke", wirkstaerke));
   }
 
+  // TODO: https://simplifier.net/packages/hl7.fhir.uv.ips/1.0.0/files/244204
   public CodeableConcept getMedicationForm() {
     String system = CodingSystem.EDQM_STANDARD;
     ParsedCode parsedCode = ParsedCode.fromString(this.getDarreichungsform(), system);
@@ -242,7 +243,7 @@ public class Medikation implements Datablock {
     }
     Coding code;
     // Generally system is expected to be AtcDE. Only Change if PZN is given explicitly.
-    if (CodingSystem.PHARMA_ZENTRAL_NUMMER.equals(parsedCode.getSystem())) {
+    if (parsedCode.getSystem().equals(CodingSystem.PHARMA_ZENTRAL_NUMMER)) {
       code = this.getMedicationCodePharma();
     } else {
       code = this.getMedicationCodeAtcDE();
