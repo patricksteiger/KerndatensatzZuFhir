@@ -11,7 +11,6 @@ import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.List;
-import java.util.Optional;
 
 public class Prozedur implements Datablock {
   private final Logger LOGGER = new Logger(Prozedur.class);
@@ -160,12 +159,11 @@ public class Prozedur implements Datablock {
     if (Helper.checkEmptyString(dokuDatum) || dokuDatum.equals(this.getDurchfuehrungsdatum())) {
       return Constants.getEmptyValue();
     }
-    Optional<DateTimeType> date = Helper.getDateFromISO(dokuDatum).map(FhirGenerator::dateTimeType);
-    if (!date.isPresent()) {
-      return LOGGER.error("getRecordedDate", "dokumentationsdatum", dokuDatum);
-    }
     String url = ExtensionUrl.RECORDED_DATE;
-    return FhirGenerator.extension(url, date.get());
+    return Helper.getDateFromISO(dokuDatum)
+        .map(FhirGenerator::dateTimeType)
+        .map(date -> FhirGenerator.extension(url, date))
+        .orElseGet(LOGGER.errorSupplier("getRecordedDate", "dokumentationsdatum", dokuDatum));
   }
 
   /**

@@ -4,6 +4,7 @@ import constants.IdentifierSystem;
 import enums.MIICoreLocations;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.codesystems.AdministrativeGenderEnumFactory;
 import unit.converter.UnitConverter;
 
 import java.util.Optional;
@@ -61,10 +62,12 @@ public class FhirHelper {
   }
 
   // TODO: Implement changes to "divers"-gender when finalized
+  // https://wiki.hl7.de/index.php?title=Geschlecht#administratives_Geschlecht
   public static Enumerations.AdministrativeGender getGenderMapping(String gender) {
     if ("f".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.FEMALE;
     if ("m".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.MALE;
     if ("un".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.OTHER;
+    //new Enumeration(new AdministrativeGenderEnumFactory()).setValue(Enumerations.AdministrativeGender.OTHER).addExtension()
     return Enumerations.AdministrativeGender.UNKNOWN;
   }
 
