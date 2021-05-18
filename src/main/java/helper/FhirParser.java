@@ -1,12 +1,11 @@
 package helper;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import constants.Constants;
 import interfaces.Code;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.Extension;
+import org.hl7.fhir.r4.model.*;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -22,6 +21,11 @@ public class FhirParser {
 
   public static Coding optionalCodingFromSystem(String kerndatensatzValue, String codeSystem) {
     return optionalFhirFromSystem(kerndatensatzValue, codeSystem, FhirGenerator::coding);
+  }
+
+  public static Coding optionalCoding(String kerndatensatzValue) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
   }
 
   public static CodeableConcept optionalCodeFromSystem(
@@ -64,6 +68,28 @@ public class FhirParser {
         fhirCode -> FhirGenerator.extension(extensionUrl, FhirGenerator.coding(fhirCode)));
   }
 
+  public static <T extends Code> Extension optionalExtensionWithCodeFromValueSet(
+      String kerndatensatzValue,
+      String extensionUrl,
+      Function<String, Optional<T>> mapToFhirCodeFromValueSet,
+      LoggingData loggingData) {
+    return optionalFhirFromValueSet(
+        kerndatensatzValue,
+        mapToFhirCodeFromValueSet,
+        loggingData,
+        fhirCode -> FhirGenerator.extension(extensionUrl, FhirGenerator.codeableConcept(fhirCode)));
+  }
+
+  public static Extension optionalExtensionWithCoding(
+      String kerndatensatzValue, String codeSystem, String codeVersion, String extensionUrl) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    Coding coding = FhirGenerator.coding(parsedCode, codeVersion);
+    return FhirGenerator.extension(extensionUrl, coding);
+  }
+
   public static Coding optionalCodeFromSystemWithVersionAndExtension(
       String kerndatensatzValue, String codeSystem, String codeVersion, Extension extension) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
@@ -87,6 +113,39 @@ public class FhirParser {
     return Helper.getDateFromISO(date)
         .map(FhirGenerator::dateTimeType)
         .orElseGet(getLoggingSupplier(loggingData, date));
+  }
+
+  public static DateTimeType dateTimeTypeWithExtension(
+      String date, LoggingData loggingData, Extension extension) {
+    DateTimeType result = new DateTimeType();
+    if (Helper.checkNonEmptyString(date)) {
+      result.setPrecision(TemporalPrecisionEnum.SECOND);
+      Date resultDate =
+          Helper.getDateFromISO(date).orElseGet(getLoggingSupplier(loggingData, date));
+      result.setValue(resultDate);
+    }
+    result.addExtension(extension);
+    return result;
+  }
+
+  public static Type optionalDateTimeTypeOrPeriod(DateTimeType start, DateTimeType end) {
+    boolean emptyStart = FhirHelper.emptyDateTimeType(start);
+    boolean emptyEnd = FhirHelper.emptyDateTimeType(end);
+    if (emptyStart && emptyEnd) {
+      return Constants.getEmptyValue();
+    }
+    return emptyEnd ? start : new Period().setStartElement(start).setEndElement(end);
+  }
+
+  public static Date date(String date, LoggingData loggingData) {
+    return Helper.getDateFromISO(date).orElseGet(getLoggingSupplier(loggingData, date));
+  }
+
+  public static Annotation optionalAnnotation(String text) {
+    if (Helper.checkEmptyString(text)) {
+      return Constants.getEmptyValue();
+    }
+    return new Annotation().setText(text);
   }
 
   private static <T, R> Supplier<T> getLoggingSupplier(LoggingData loggingData, String value) {

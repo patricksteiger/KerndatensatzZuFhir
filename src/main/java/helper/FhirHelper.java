@@ -60,6 +60,10 @@ public class FhirHelper {
     return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
   }
 
+  public static boolean emptyDateTimeType(DateTimeType dateTimeType) {
+    return !dateTimeType.hasValue() && !dateTimeType.hasExtension();
+  }
+
   // TODO: Implement changes to "divers"-gender when finalized
   // https://wiki.hl7.de/index.php?title=Geschlecht#administratives_Geschlecht
   public static Enumerations.AdministrativeGender getGenderMapping(String gender) {
