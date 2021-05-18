@@ -7,7 +7,10 @@ import enums.ClinicalStatus;
 import enums.ICD_Diagnosesicherheit;
 import enums.ICD_Seitenlokalisation;
 import enums.KBVBaseStageLife;
-import helper.*;
+import helper.FhirGenerator;
+import helper.Helper;
+import helper.Logger;
+import helper.LoggingData;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
@@ -96,18 +99,16 @@ public class Diagnose implements Datablock {
   }
 
   public Coding getCodeIcd() {
+    String code = this.getIcd_diagnosecode();
     String system = CodingSystem.ICD_10_GM_DIMDI;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_diagnosecode(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    Coding icd = FhirGenerator.coding(parsedCode);
-    icd.addExtension(this.getCodeIcdDiagnosesicherheit());
-    icd.addExtension(this.getCodeIcdSeitenlokalisation());
-    icd.addExtension(this.getCodeIcdAusrufezeichen());
-    icd.addExtension(this.getCodeIcdManifestationscode());
-    icd.addExtension(this.getCodeIcdPrimaercode());
-    return icd;
+    List<Extension> extensions =
+        Helper.listOf(
+            this.getCodeIcdDiagnosesicherheit(),
+            this.getCodeIcdSeitenlokalisation(),
+            this.getCodeIcdAusrufezeichen(),
+            this.getCodeIcdManifestationscode(),
+            this.getCodeIcdPrimaercode());
+    return optionalCodingFromSystemWithExtensions(code, system, extensions);
   }
 
   public Extension getCodeIcdPrimaercode() {
