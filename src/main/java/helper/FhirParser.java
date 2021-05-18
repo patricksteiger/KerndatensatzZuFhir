@@ -6,6 +6,7 @@ import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -26,6 +27,19 @@ public class FhirParser {
   public static Coding optionalCoding(String kerndatensatzValue) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
+  }
+
+  public static Coding optionalCodingFromSystemWithExtensions(
+      String kerndatensatzValue, String codeSystem, List<Extension> extensions) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    Coding coding = FhirGenerator.coding(parsedCode);
+    for (Extension extension : extensions) {
+      coding.addExtension(extension);
+    }
+    return coding;
   }
 
   public static CodeableConcept optionalCodeFromSystem(
