@@ -1,6 +1,5 @@
 package model;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
@@ -8,15 +7,14 @@ import enums.ClinicalStatus;
 import enums.ICD_Diagnosesicherheit;
 import enums.ICD_Seitenlokalisation;
 import enums.KBVBaseStageLife;
-import helper.FhirGenerator;
-import helper.Helper;
-import helper.Logger;
-import helper.ParsedCode;
+import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 
 import java.util.Date;
 import java.util.List;
+
+import static helper.FhirParser.*;
 
 public class Diagnose implements Datablock {
   private final Logger LOGGER = new Logger(Diagnose.class);
@@ -113,183 +111,115 @@ public class Diagnose implements Datablock {
   }
 
   public Extension getCodeIcdPrimaercode() {
+    String icd = this.getIcd_primaercode();
     String system = CodingSystem.ICD_10_GM_DIMDI;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_primaercode(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
     String version = Constants.VERSION_2020;
-    Coding value = FhirGenerator.coding(parsedCode, version);
     String url = ExtensionUrl.ICD_10_GM_PRIMAERCODE;
-    return FhirGenerator.extension(url, value);
+    return optionalExtensionWithCoding(icd, system, version, url);
   }
 
   public Extension getCodeIcdManifestationscode() {
+    String code = this.getIcd_manifestationscode();
     String system = CodingSystem.ICD_10_GM_DIMDI;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_manifestationscode(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
     String version = Constants.VERSION_2020;
-    Coding value = FhirGenerator.coding(parsedCode, version);
     String url = ExtensionUrl.ICD_10_GM_MANIFESTATIONSCODE;
-    return FhirGenerator.extension(url, value);
+    return optionalExtensionWithCoding(code, system, version, url);
   }
 
   public Extension getCodeIcdAusrufezeichen() {
+    String code = this.getIcd_ausrufezeichencode();
     String system = CodingSystem.ICD_10_GM_DIMDI;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getIcd_ausrufezeichencode(), system);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
     String version = Constants.VERSION_2020;
-    Coding value = FhirGenerator.coding(parsedCode, version);
     String url = ExtensionUrl.ICD_10_GM_AUSRUFEZEICHEN;
-    return FhirGenerator.extension(url, value);
+    return optionalExtensionWithCoding(code, system, version, url);
   }
 
   public Extension getCodeIcdSeitenlokalisation() {
-    String seitenCode = this.getIcd_seitenlokalisation();
-    ParsedCode parsedCode = ParsedCode.fromString(seitenCode);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
+    String code = this.getIcd_seitenlokalisation();
     String url = ExtensionUrl.ICD_10_GM_SEITENLOKALISATION;
-    return ICD_Seitenlokalisation.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
-        .map(code -> FhirGenerator.extension(url, code))
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getCodeIcdSeitenlokalisation", "icd_seitenlokalisation", seitenCode));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getCodeIcdSeitenlokalisation", "icd_seitenlokalisation");
+    return optionalExtensionWithCodingFromValueSet(
+        code, url, ICD_Seitenlokalisation::fromCode, data);
   }
 
   public Extension getCodeIcdDiagnosesicherheit() {
-    String snomedCode = this.getIcd_diagnosesicherheit();
-    ParsedCode parsedCode = ParsedCode.fromString(snomedCode);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
+    String code = this.getIcd_diagnosesicherheit();
     String url = ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT;
-    return ICD_Diagnosesicherheit.fromSnomedCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
-        .map(code -> FhirGenerator.extension(url, code))
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit", snomedCode));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getCodeIcdDiagnosesicherheit", "icd_diagnosesicherheit");
+    return optionalExtensionWithCodingFromValueSet(
+        code, url, ICD_Diagnosesicherheit::fromSnomedCode, data);
   }
 
   public Coding getCodeAlpha() {
+    String alpha = this.getAlpha_diagnosecode();
     String system = CodingSystem.ALPHA_ID_DIMDI;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getAlpha_diagnosecode(), system);
-    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
+    return optionalCodingFromSystem(alpha, system);
   }
 
   public Coding getCodeSct() {
+    String snomed = this.getSnomed_diagnosecode();
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getSnomed_diagnosecode(), system);
-    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
+    return optionalCodingFromSystem(snomed, system);
   }
 
   public Coding getCodeOrphanet() {
+    String orphanet = this.getOrphanet_diagnosecode();
     String system = CodingSystem.ORPHANET;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getOrphanet_diagnosecode(), system);
-    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
+    return optionalCodingFromSystem(orphanet, system);
   }
 
   public Coding getCodeWeitere() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getWeitere_diagnosecode());
-    return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
+    String code = this.getWeitere_diagnosecode();
+    return optionalCoding(code);
   }
 
   public Annotation getNote() {
     String erlaeuterung = this.getDiagnoseerlaeuterung();
-    if (Helper.checkEmptyString(erlaeuterung)) {
-      return Constants.getEmptyValue();
-    }
-    return new Annotation().setText(erlaeuterung);
+    return optionalAnnotation(erlaeuterung);
   }
 
   public Date getRecordedDate() {
     String datum = this.getDokumentationsdatum();
-    return Helper.getDateFromISO(datum)
-        .orElseGet(LOGGER.errorSupplier("getRecordedDate", "dokumentationsdatum", datum));
+    LoggingData data = LoggingData.of(LOGGER, "getRecordedDate", "dokumentationsdatum");
+    return date(datum, data);
   }
 
   public Type getOnset() {
     String zeitraumVon = this.getZeitraum_von();
+    LoggingData startData = LoggingData.of(LOGGER, "getOnset", "zeitraum_von");
+    DateTimeType start = dateTimeTypeWithExtension(zeitraumVon, startData, getLebensphaseVon());
     String zeitraumBis = this.getZeitraum_bis();
-    String lebensphaseVon = this.getLebensphase_von();
-    String lebensphaseBis = this.getLebensphase_bis();
-    if (Helper.checkAllEmptyString(zeitraumVon, zeitraumBis, lebensphaseVon, lebensphaseBis)) {
-      return Constants.getEmptyValue();
-    }
-    DateTimeType start = new DateTimeType();
-    if (Helper.checkNonEmptyString(zeitraumVon)) {
-      start.setPrecision(TemporalPrecisionEnum.SECOND);
-      Date startDate =
-          Helper.getDateFromISO(zeitraumVon)
-              .orElseGet(LOGGER.errorSupplier("getOnset", "zeitraum_von", zeitraumVon));
-      start.setValue(startDate);
-    }
-    start.addExtension(this.getLebensphaseVon());
-    DateTimeType end = new DateTimeType();
-    if (Helper.checkNonEmptyString(zeitraumBis)) {
-      end.setPrecision(TemporalPrecisionEnum.SECOND);
-      Date endDate =
-          Helper.getDateFromISO(zeitraumBis)
-              .orElseGet(LOGGER.errorSupplier("getOnset", "zeitraum_bis", zeitraumBis));
-      end.setValue(endDate);
-    }
-    end.addExtension(this.getLebensphaseBis());
-    // Return DateTimeType if only start has been set. Otherwise return Period.
-    return !end.hasValue() && !end.hasExtension()
-        ? start
-        : new Period().setStartElement(start).setEndElement(end);
+    LoggingData endData = LoggingData.of(LOGGER, "getOnset", "zeitraum_bis");
+    DateTimeType end = dateTimeTypeWithExtension(zeitraumBis, endData, getLebensphaseBis());
+    return optionalDateTimeTypeOrPeriod(start, end);
   }
 
   public Extension getLebensphaseVon() {
     String code = this.getLebensphase_von();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
     String url = ExtensionUrl.STAGE_LIFE;
-    return KBVBaseStageLife.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::codeableConcept)
-        .map(type -> FhirGenerator.extension(url, type))
-        .orElseGet(LOGGER.errorSupplier("getLebensphaseVon", "lebensphase_von", code));
+    LoggingData data = LoggingData.of(LOGGER, "getLebensphaseVon", "lebensphase_von");
+    return optionalExtensionWithCodeFromValueSet(code, url, KBVBaseStageLife::fromCode, data);
   }
 
   public Extension getLebensphaseBis() {
     String code = this.getLebensphase_bis();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
     String url = ExtensionUrl.STAGE_LIFE;
-    return KBVBaseStageLife.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::codeableConcept)
-        .map(type -> FhirGenerator.extension(url, type))
-        .orElseGet(LOGGER.errorSupplier("getLebensphaseBis", "lebensphase_bis", code));
+    LoggingData data = LoggingData.of(LOGGER, "getLebensphaseBis", "lebensphase_bis");
+    return optionalExtensionWithCodeFromValueSet(code, url, KBVBaseStageLife::fromCode, data);
   }
 
   public CodeableConcept getBodySite() {
+    String code = this.getKoerperstelle();
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getKoerperstelle(), system);
-    return parsedCode.hasEmptyCode()
-        ? Constants.getEmptyValue()
-        : FhirGenerator.codeableConcept(parsedCode);
+    return optionalCodeFromSystem(code, system);
   }
 
   public CodeableConcept getClinicalStatus() {
-    String code = this.getKlinischer_status();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    return ClinicalStatus.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::codeableConcept)
-        .orElseGet(LOGGER.errorSupplier("getClinicalStatus", "klinischer_status", code));
+    String status = this.getKlinischer_status();
+    LoggingData data = LoggingData.of(LOGGER, "getClinicalStatus", "klinischer_status");
+    return optionalCodeFromValueSet(status, ClinicalStatus::fromCode, data);
   }
 
   public Meta getMeta() {
