@@ -61,7 +61,6 @@ class EinrichtungsEncounterTest {
     String klasse = "";
     fall.setEinrichtungskontakt_klasse(klasse);
     assertEmptyValue(fall.getEinrichtungsEncounterClass());
-    assertLoggerHasCalledEmptyValue(LOGGER, 1);
     // non-empty klasse
     String code = "12345";
     String display = "very good klasse";
@@ -69,7 +68,6 @@ class EinrichtungsEncounterTest {
     fall.setEinrichtungskontakt_klasse(klasse);
     assertCoding(
         code, CodingSystem.ENCOUNTER_CLASS_DE, display, fall.getEinrichtungsEncounterClass());
-    assertLoggerHasCalledEmptyValue(LOGGER, 1);
   }
 
   @Test
@@ -96,19 +94,16 @@ class EinrichtungsEncounterTest {
     // empty aufnahmegrund
     assertEmptyCodeValue(
         fall::setEinrichtungskontakt_aufnahmegrund, fall::getEinrichtungsEncounterReasonCode);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid aufnahmegrund
     String code = getCodeStr("invalid");
     fall.setEinrichtungskontakt_aufnahmegrund(code);
     assertEmptyValue(fall.getEinrichtungsEncounterReasonCode());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid aufnahmegrund
     Aufnahmegrund aufnahmegrund = Aufnahmegrund.G01;
     code = getCodeStr(aufnahmegrund.getCode());
     fall.setEinrichtungskontakt_aufnahmegrund(code);
     CodeableConcept result = fall.getEinrichtungsEncounterReasonCode();
     assertCodeableConcept(aufnahmegrund, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 
   @Test
@@ -116,26 +111,22 @@ class EinrichtungsEncounterTest {
     // beginndatum is required
     fall.setEinrichtungskontakt_beginndatum("");
     assertEmptyValue(fall.getEinrichtungsEncounterPeriod());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // enddatum is optional
     String startDate = "2021-03-15";
     fall.setEinrichtungskontakt_beginndatum(startDate);
     Period result = fall.getEinrichtungsEncounterPeriod();
     assertPeriod(expectedDateString(startDate), null, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
     // both are set
     fall.setEinrichtungskontakt_beginndatum(startDate);
     String endDate = "2021-04-17";
     fall.setEinrichtungskontakt_enddatum(endDate);
     result = fall.getEinrichtungsEncounterPeriod();
     assertPeriod(expectedDateString(startDate), expectedDateString(endDate), result);
-    assertLoggerHasCalledError3(LOGGER, 1);
     // beginndatum is required, even if enddatum is set
     fall.setEinrichtungskontakt_beginndatum("");
     fall.setEinrichtungskontakt_enddatum(endDate);
     result = fall.getEinrichtungsEncounterPeriod();
     assertEmptyValue(result);
-    assertLoggerHasCalledError3(LOGGER, 2);
   }
 
   @Test
@@ -144,19 +135,16 @@ class EinrichtungsEncounterTest {
     assertEmptyCodeValue(
         fall::setEinrichtungskontakt_entlassungsgrund,
         fall::getEinrichtungsEncounterDischargeDisposition);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid entlassungsgrund
     String entlassungsgrund = getCodeDisplayStr("invalid", "failed display");
     fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
     assertEmptyValue(fall.getEinrichtungsEncounterDischargeDisposition());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid entlassungsgrund
     Entlassungsgrund grund = Entlassungsgrund.G15;
     entlassungsgrund = getCodeDisplayStr(grund);
     fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
     CodeableConcept result = fall.getEinrichtungsEncounterDischargeDisposition();
     assertCodeableConcept(grund, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 
   @Test
@@ -164,19 +152,16 @@ class EinrichtungsEncounterTest {
     // empty aufnahmeanlass
     assertEmptyCodeValue(
         fall::setEinrichtungskontakt_aufnahmeanlass, fall::getEinrichtungsEncounterAdmitSource);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid aufnahmeanlass
     String anlass = getCodeDisplayStr("invalid", "invalid display");
     fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
     assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid aufnahmeanlass
     Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.NOTFALL;
     anlass = getCodeDisplayStr(aufnahmeanlass);
     fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
     CodeableConcept result = fall.getEinrichtungsEncounterAdmitSource();
     assertCodeableConcept(aufnahmeanlass, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 
   @Test

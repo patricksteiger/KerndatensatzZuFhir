@@ -58,7 +58,6 @@ class VersorgungsstellenEncounterTest {
     // empty klasse
     assertEmptyCodeValue(
         fall::setVersorgungsstellenkontakt_klasse, fall::getVersorgungsstellenEncounterClass);
-    assertLoggerHasCalledEmptyValue(LOGGER, 3);
     // non-empty klasse
     String code = "1a2c";
     String display = "display";
@@ -66,7 +65,6 @@ class VersorgungsstellenEncounterTest {
     fall.setVersorgungsstellenkontakt_klasse(klasse);
     Coding result = fall.getVersorgungsstellenEncounterClass();
     assertCoding(code, CodingSystem.ENCOUNTER_CLASS_DE, display, result);
-    assertLoggerHasCalledEmptyValue(LOGGER, 3);
   }
 
   @Test
@@ -87,22 +85,18 @@ class VersorgungsstellenEncounterTest {
     // empty beginndatum
     fall.setVersorgungsstellenkontakt_beginndatum("");
     assertEmptyValue(fall.getVersorgungsstellenEncounterPeriod());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // invalid beginndatum
     fall.setVersorgungsstellenkontakt_beginndatum("invalid");
     assertEmptyValue(fall.getVersorgungsstellenEncounterPeriod());
-    assertLoggerHasCalledError3(LOGGER, 2);
     // valid beginndatum
     String startDate = "2021-02-04";
     fall.setVersorgungsstellenkontakt_beginndatum(startDate);
     Period result = fall.getVersorgungsstellenEncounterPeriod();
     assertPeriod(expectedDateString(startDate), null, result);
-    assertLoggerHasCalledError3(LOGGER, 2);
     // valid enddatum
     String endDate = "2021-03-04";
     fall.setVersorgungsstellenkontakt_enddatum(endDate);
     result = fall.getVersorgungsstellenEncounterPeriod();
     assertPeriod(expectedDateString(startDate), expectedDateString(endDate), result);
-    assertLoggerHasCalledError3(LOGGER, 2);
   }
 }

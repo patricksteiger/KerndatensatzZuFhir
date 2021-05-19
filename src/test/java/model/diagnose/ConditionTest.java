@@ -40,11 +40,9 @@ class ConditionTest {
     // empty diagnosesicherheit
     assertEmptyCodeValue(
         diagnose::setIcd_diagnosesicherheit, diagnose::getCodeIcdDiagnosesicherheit);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid diagnosesicherheit [LOGGING]
     diagnose.setIcd_diagnosesicherheit("invalid");
     assertEmptyValue(diagnose.getCodeIcdDiagnosesicherheit());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid diagnosesicherheit
     Diagnosesicherheit diagnosesicherheitCode = Diagnosesicherheit.SUSPECTED;
     String diagnosesicherheit = getCodeDisplayStr(diagnosesicherheitCode);
@@ -53,7 +51,6 @@ class ConditionTest {
     ICD_Diagnosesicherheit icdDiagnosesicherheitCode = diagnosesicherheitCode.getIcdMapping();
     assertExtensionWithCoding(
         icdDiagnosesicherheitCode, ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 
   @Test
@@ -61,11 +58,9 @@ class ConditionTest {
     // empty seitenlokalisation
     assertEmptyCodeValue(
         diagnose::setIcd_seitenlokalisation, diagnose::getCodeIcdSeitenlokalisation);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid seitenlokalisation [LOGGING]
     diagnose.setIcd_seitenlokalisation("invalid");
     assertEmptyValue(diagnose.getCodeIcdSeitenlokalisation());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid seitenlokalisation
     ICD_Seitenlokalisation icdSeitenlokalisation = ICD_Seitenlokalisation.BEIDSEITIG;
     String seitenlokalisation = getCodeDisplayStr(icdSeitenlokalisation);
@@ -73,7 +68,6 @@ class ConditionTest {
     Extension result = diagnose.getCodeIcdSeitenlokalisation();
     assertExtensionWithCoding(
         icdSeitenlokalisation, ExtensionUrl.ICD_10_GM_SEITENLOKALISATION, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 
   @Test
@@ -244,51 +238,42 @@ class ConditionTest {
     // invalid datum
     diagnose.setDokumentationsdatum("");
     assertEmptyValue(diagnose.getRecordedDate());
-    assertLoggerHasCalledError3(LOGGER, 1);
     diagnose.setDokumentationsdatum("invalid");
     assertEmptyValue(diagnose.getRecordedDate());
-    assertLoggerHasCalledError3(LOGGER, 2);
     // valid datum
     String date = "2020-11-24";
     diagnose.setDokumentationsdatum(date);
     assertEquals(expectedDateString(date), diagnose.getRecordedDate());
-    assertLoggerHasCalledError3(LOGGER, 2);
   }
 
   @Test
   void testLebensphaseVon() {
     // empty von
     assertEmptyCodeValue(diagnose::setLebensphase_von, diagnose::getLebensphaseVon);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid von
     diagnose.setLebensphase_von("invalid");
     assertEmptyValue(diagnose.getLebensphaseVon());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid von
     KBVBaseStageLife vonStageLife = KBVBaseStageLife.INFANCY;
     String vonCode = getCodeDisplayStr(vonStageLife);
     diagnose.setLebensphase_von(vonCode);
     Extension result = diagnose.getLebensphaseVon();
     assertExtensionWithCodeableConcept(vonStageLife, ExtensionUrl.STAGE_LIFE, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 
   @Test
   void testLebensphaseBis() {
     // empty bis
     assertEmptyCodeValue(diagnose::setLebensphase_bis, diagnose::getLebensphaseBis);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid bis
     diagnose.setLebensphase_bis("invalid");
     assertEmptyValue(diagnose.getLebensphaseBis());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid bis
     KBVBaseStageLife bisStageLife = KBVBaseStageLife.INFANCY;
     String bisCode = getCodeDisplayStr(bisStageLife);
     diagnose.setLebensphase_von(bisCode);
     Extension result = diagnose.getLebensphaseVon();
     assertExtensionWithCodeableConcept(bisStageLife, ExtensionUrl.STAGE_LIFE, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 
   @Test
@@ -299,7 +284,6 @@ class ConditionTest {
     diagnose.setLebensphase_von("");
     diagnose.setLebensphase_bis("");
     assertEmptyValue(diagnose.getOnset());
-    assertLoggerHasCalledError3(LOGGER, 0);
     // only lebensphase_von
     KBVBaseStageLife vonStageLife = KBVBaseStageLife.NEONATAL;
     String lebensphaseVon = getCodeDisplayStr(vonStageLife);
@@ -310,7 +294,6 @@ class ConditionTest {
     assertFalse(((DateTimeType) result).hasValue());
     assertTrue(result.hasExtension(ExtensionUrl.STAGE_LIFE));
     assertEquals(1, result.getExtension().size());
-    assertLoggerHasCalledError3(LOGGER, 0);
     // only zeitraum_von and lebensphase_von is set
     String startDate = "2021-01-16";
     diagnose.setZeitraum_von(startDate);
@@ -320,7 +303,6 @@ class ConditionTest {
     assertEquals(expectedDateString(startDate), ((DateTimeType) result).getValue());
     assertTrue(result.hasExtension(ExtensionUrl.STAGE_LIFE));
     assertEquals(1, result.getExtension().size());
-    assertLoggerHasCalledError3(LOGGER, 0);
     // also zeitraum_bis is set
     String endDate = "2021-02-07";
     diagnose.setZeitraum_bis(endDate);
@@ -335,7 +317,6 @@ class ConditionTest {
     assertTrue(period.hasEnd());
     assertEquals(expectedDateString(endDate), period.getEnd());
     assertFalse(period.getEndElement().hasExtension());
-    assertLoggerHasCalledError3(LOGGER, 0);
   }
 
   @Test
@@ -355,17 +336,14 @@ class ConditionTest {
   void testClinicalStatus() {
     // empty status
     assertEmptyCodeValue(diagnose::setKlinischer_status, diagnose::getClinicalStatus);
-    assertLoggerHasCalledError3(LOGGER, 0);
     // invalid status
     diagnose.setKlinischer_status("invalid status");
     assertEmptyValue(diagnose.getClinicalStatus());
-    assertLoggerHasCalledError3(LOGGER, 1);
     // valid status
     ClinicalStatus clinicalStatus = ClinicalStatus.ACTIVE;
     String status = getCodeDisplayStr(clinicalStatus);
     diagnose.setKlinischer_status(status);
     CodeableConcept result = diagnose.getClinicalStatus();
     assertCodeableConcept(clinicalStatus, result);
-    assertLoggerHasCalledError3(LOGGER, 1);
   }
 }
