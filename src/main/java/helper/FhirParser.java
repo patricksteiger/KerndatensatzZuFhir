@@ -104,7 +104,7 @@ public class FhirParser {
     return FhirGenerator.extension(extensionUrl, coding);
   }
 
-  public static Coding optionalCodeFromSystemWithVersionAndExtension(
+  public static Coding optionalCodingFromSystemWithVersionAndExtension(
       String kerndatensatzValue, String codeSystem, String codeVersion, Extension extension) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
     if (parsedCode.hasEmptyCode()) {

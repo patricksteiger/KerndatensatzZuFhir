@@ -101,7 +101,7 @@ public class Prozedur implements Datablock {
     String system = CodingSystem.OPS_DIMDI;
     String version = Constants.VERSION_2020;
     Extension seite = this.getSeitenlokalisation();
-    return optionalCodeFromSystemWithVersionAndExtension(ops, system, version, seite);
+    return optionalCodingFromSystemWithVersionAndExtension(ops, system, version, seite);
   }
 
   /** @see "https://simplifier.net/basisprofil-de-r4/extension-seitenlokalisation" */
