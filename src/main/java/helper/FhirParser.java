@@ -2,6 +2,7 @@ package helper;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import constants.Constants;
+import constants.IdentifierSystem;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
 
@@ -50,6 +51,30 @@ public class FhirParser {
     return coding;
   }
 
+  public static CodeableConcept codeWithOptionalText(
+      String kerndatensatzValue, String text, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return parsedCode.hasEmptyCode()
+        ? log(loggingData, kerndatensatzValue)
+        : FhirGenerator.codeableConcept(parsedCode).setText(text);
+  }
+
+  public static CodeableConcept optionalCode(String kerndatensatzValue) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return parsedCode.hasEmptyCode()
+        ? Constants.getEmptyValue()
+        : FhirGenerator.codeableConcept(parsedCode);
+  }
+
+  public static <T extends Code> CodeableConcept optionalCodeFromValueSet(
+      String kerndatensatzValue, Function<String, Optional<T>> mapToFhirCodeFromValueSet) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return mapToFhirCodeFromValueSet
+        .apply(parsedCode.getCode())
+        .map(FhirGenerator::codeableConcept)
+        .orElse(Constants.getEmptyValue());
+  }
+
   public static CodeableConcept optionalCodeFromSystem(
       String kerndatensatzValue, String codeSystem) {
     return optionalFhirFromSystem(kerndatensatzValue, codeSystem, FhirGenerator::codeableConcept);
@@ -93,6 +118,14 @@ public class FhirParser {
       LoggingData loggingData) {
     return optionalFhirFromValueSet(
         kerndatensatzValue, mapToFhirCodeFromValueSet, loggingData, FhirGenerator::codeableConcept);
+  }
+
+  public static CodeableConcept codeFromSystemWithOptionalText(
+      String kerndatensatzValue, String codeSystem, String text, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
+    return parsedCode.hasEmptyCode()
+        ? log(loggingData, kerndatensatzValue)
+        : FhirGenerator.codeableConcept(parsedCode).setText(text);
   }
 
   public static <T extends Code> Extension optionalExtensionWithCodingFromValueSet(
@@ -140,6 +173,20 @@ public class FhirParser {
     return coding;
   }
 
+  public static <T extends Code> Coding optionalCodingFromValueSet(
+      String kerndatensatzValue,
+      Function<String, Optional<T>> mapToFhirCodeFromValueSet,
+      LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    return mapToFhirCodeFromValueSet
+        .apply(parsedCode.getCode())
+        .map(FhirGenerator::coding)
+        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
   public static Extension extensionWithDateTimeType(
       String date, String extensionUrl, LoggingData loggingData) {
     return Helper.getDateFromISO(date)
@@ -155,6 +202,47 @@ public class FhirParser {
     }
     Coding coding = FhirGenerator.coding(code);
     return FhirGenerator.identifier(kerndatensatzValue, identifierSystem, coding);
+  }
+
+  public static Identifier identifierWithCoding(
+      String kerndatensatzValue, Code code, LoggingData loggingData) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return log(loggingData, kerndatensatzValue);
+    }
+    Coding coding = FhirGenerator.coding(code);
+    return FhirGenerator.identifier(kerndatensatzValue, IdentifierSystem.EMPTY, coding);
+  }
+
+  public static Identifier identifierWithCodeAndReference(
+      String kerndatensatzValue, Code code, String reference, LoggingData loggingData) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return log(loggingData, kerndatensatzValue);
+    }
+    CodeableConcept codeableConcept = FhirGenerator.codeableConcept(code);
+    Reference assignerRef = FhirGenerator.reference(reference);
+    return FhirGenerator.identifier(
+        kerndatensatzValue, IdentifierSystem.EMPTY, codeableConcept, assignerRef);
+  }
+
+  public static Reference optionalReferenceWithIdentifier(String type, String identifierId) {
+    if (Helper.checkEmptyString(identifierId)) {
+      return Constants.getEmptyValue();
+    }
+    Identifier identifier = FhirGenerator.identifier(identifierId, IdentifierSystem.EMPTY);
+    return FhirGenerator.reference(type, identifier);
+  }
+
+  public static Quantity quantity(String kerndatensatzValue, LoggingData loggingData) {
+    return ParsedQuantity.fromString(kerndatensatzValue)
+        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
+  public static Quantity optionalQuantity(String kerndatensatzValue, LoggingData loggingData) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return Constants.getEmptyValue();
+    }
+    return ParsedQuantity.fromString(kerndatensatzValue)
+        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static DateTimeType dateTimeType(String date, LoggingData loggingData) {
@@ -187,6 +275,13 @@ public class FhirParser {
 
   public static Date date(String date, LoggingData loggingData) {
     return Helper.getDateFromISO(date).orElseGet(getLoggingSupplier(loggingData, date));
+  }
+
+  public static Date optionalDate(String date, LoggingData loggingData) {
+    if (Helper.checkEmptyString(date)) {
+      return Constants.getEmptyValue();
+    }
+    return date(date, loggingData);
   }
 
   public static Period periodWithOptionalEnd(
