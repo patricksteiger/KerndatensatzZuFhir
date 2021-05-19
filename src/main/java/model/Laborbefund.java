@@ -11,6 +11,8 @@ import org.hl7.fhir.r4.model.*;
 import java.util.Date;
 import java.util.List;
 
+import static helper.FhirParser.*;
+
 public class Laborbefund implements Datablock {
   private final Logger LOGGER = new Logger(Laborbefund.class);
   @CsvBindByName private String patNr;
@@ -172,13 +174,9 @@ public class Laborbefund implements Datablock {
 
   public Identifier getServiceRequestIdentifier() {
     String value = this.getIdentifikation();
-    if (Helper.checkEmptyString(value)) {
-      return LOGGER.emptyValue("getServiceRequestIdentifier", "identifikation");
-    }
     IdentifierTypeCode plac = IdentifierTypeCode.PLAC;
-    Coding placerv2 = FhirGenerator.coding(plac);
-    String system = IdentifierSystem.EMPTY;
-    return FhirGenerator.identifier(value, system, placerv2);
+    LoggingData data = LoggingData.of(LOGGER, "getServiceRequestIdentifier", "identifikation");
+    return identifierWithCoding(value, plac, data);
   }
 
   // Reference is only set if it links to an existing Specimen-Resource. This can't be known here.
@@ -188,12 +186,9 @@ public class Laborbefund implements Datablock {
 
   public Date getServiceRequestAuthoredOn() {
     String anforderungsdatum = this.getLaboranforderung_anforderungsdatum();
-    return Helper.getDateFromISO(anforderungsdatum)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getServiceRequestAuthoredOn",
-                "laboranforderung_anforderungsdatum",
-                anforderungsdatum));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getServiceRequestAuthoredOn", "laboranforderung_anforderungsdatum");
+    return date(anforderungsdatum, data);
   }
 
   public Reference getServiceRequestSubject() {
@@ -201,11 +196,11 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getServiceRequestCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboranforderung_laborparameter_code());
+    String code = this.getLaboranforderung_laborparameter_code();
     String text = this.getServiceRequestCodeText();
-    return parsedCode.hasEmptyCode()
-        ? LOGGER.emptyValue("getServiceRequestCode", "laboranforderung_laborparameter_code")
-        : FhirGenerator.codeableConcept(parsedCode).setText(text);
+    LoggingData data =
+        LoggingData.of(LOGGER, "getServiceRequestCode", "laboranforderung_laborparameter_code");
+    return codeWithOptionalText(code, text, data);
   }
 
   public String getServiceRequestCodeText() {
@@ -239,43 +234,30 @@ public class Laborbefund implements Datablock {
   }
 
   public Reference getDiagnosticReportSpecimen() {
-    String id = this.getProbenmaterial_identifikation();
-    if (Helper.checkEmptyString(id)) {
-      return Constants.getEmptyValue();
-    }
     String type = ReferenceType.SPECIMEN;
-    String system = IdentifierSystem.EMPTY;
-    Identifier identifier = FhirGenerator.identifier(id, system);
-    return FhirGenerator.reference(type, identifier);
+    String id = this.getProbenmaterial_identifikation();
+    return optionalReferenceWithIdentifier(type, id);
   }
 
   public Date getDiagnosticReportIssued() {
     String dokumentationsdatum = this.getDokumentationsdatum();
-    return Helper.getDateFromISO(dokumentationsdatum)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getDiagnosticReportIssued", "dokumentationsdatum", dokumentationsdatum));
+    LoggingData data = LoggingData.of(LOGGER, "getDiagnosticReportIssued", "dokumentationsdatum");
+    return date(dokumentationsdatum, data);
   }
 
   public DateTimeType getDiagnosticReportEffective() {
     String abnahmezeitpunkt = this.getProbenmaterial_abnahmezeitpunkt();
     // Abnahmezeitpunkt is general value needed
     if (Helper.checkNonEmptyString(abnahmezeitpunkt)) {
-      return Helper.getDateFromISO(abnahmezeitpunkt)
-          .map(FhirGenerator::dateTimeType)
-          .orElseGet(
-              LOGGER.errorSupplier(
-                  "getDiagnosticReportEffective",
-                  "probenmaterial_abnahmezeitpunkt",
-                  abnahmezeitpunkt));
+      LoggingData data =
+          LoggingData.of(LOGGER, "getDiagnosticReportEffective", "probenmaterial_abnahmezeitpunkt");
+      return dateTimeType(abnahmezeitpunkt, data);
     } else { // Laboreingangszeitpunkt is set if Abnahmezeitpunkt isn't present
       String laboreingangszeitpunkt = this.getProbenmaterial_laboreingangszeitpunkt();
-      return Helper.getDateFromISO(laboreingangszeitpunkt)
-          .map(FhirGenerator::dateTimeType)
-          .orElseGet(
-              LOGGER.errorSupplier(
-                  "getDiagnosticReportEffective",
-                  "Abnahmezeitpunkt or Laboreingangszeitpunkt have to be set!"));
+      LoggingData data =
+          LoggingData.of(
+              LOGGER, "getDiagnosticReportEffective", "probenmaterial_laboreingangszeitpunkt");
+      return dateTimeType(laboreingangszeitpunkt, data);
     }
   }
 
@@ -320,15 +302,10 @@ public class Laborbefund implements Datablock {
 
   public Identifier getDiagnosticReportBefund() {
     String value = this.getIdentifikation();
-    if (Helper.checkEmptyString(value)) {
-      return LOGGER.emptyValue("getDiagnosticReportBefund", "identifikation");
-    }
-    String system = IdentifierSystem.EMPTY;
     IdentifierTypeCode fill = IdentifierTypeCode.FILL;
-    CodeableConcept type = FhirGenerator.codeableConcept(fill);
     String ref = MIIReference.MII_ORGANIZATION;
-    Reference assignerRef = FhirGenerator.reference(ref);
-    return FhirGenerator.identifier(value, system, type, assignerRef);
+    LoggingData data = LoggingData.of(LOGGER, "getDiagnosticReportBefund", "identifikation");
+    return identifierWithCodeAndReference(value, fill, ref, data);
   }
 
   public Meta getDiagnosticReportMeta() {
@@ -355,69 +332,47 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getObservationReferenceRangeType() {
     String code = this.getLaboruntersuchung_referenzbereich_typ();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    return ReferenceRangeMeaning.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::codeableConcept)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getObservationReferenceRangeType", "laboruntersuchung_referenzbereich_typ", code));
+    LoggingData data =
+        LoggingData.of(
+            LOGGER, "getObservationReferenceRangeType", "laboruntersuchung_referenzbereich_typ");
+    return optionalCodeFromValueSet(code, ReferenceRangeMeaning::fromCode, data);
   }
 
   public Quantity getObservationReferenceRangeLow() {
     String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
-    if (Helper.checkEmptyString(lower)) {
-      return Constants.getEmptyValue();
-    }
-    return ParsedQuantity.fromString(lower)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getObservationReferenceRangeLow",
-                "laboruntersuchung_referenzbereich_untergrenze",
-                lower));
+    LoggingData data =
+        LoggingData.of(
+            LOGGER,
+            "getObservationReferenceRangeLow",
+            "laboruntersuchung_referenzbereich_untergrenze");
+    return optionalQuantity(lower, data);
   }
 
   public Quantity getObservationReferenceRangeHigh() {
     String higher = this.getLaboruntersuchung_referenzbereich_obergrenze();
-    if (Helper.checkEmptyString(higher)) {
-      return Constants.getEmptyValue();
-    }
-    return ParsedQuantity.fromString(higher)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getObservationReferenceRangeHigh",
-                "laboruntersuchung_referenzbereich_obergrenze",
-                higher));
+    LoggingData data =
+        LoggingData.of(
+            LOGGER,
+            "getObservationReferenceRangeHigh",
+            "laboruntersuchung_referenzbereich_obergrenze");
+    return optionalQuantity(higher, data);
   }
 
   public CodeableConcept getObservationMethod() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_untersuchungsmethode());
-    return parsedCode.hasEmptyCode()
-        ? Constants.getEmptyValue()
-        : FhirGenerator.codeableConcept(parsedCode);
+    String code = this.getLaboruntersuchung_untersuchungsmethode();
+    return optionalCode(code);
   }
 
   public Annotation getObservationNote() {
     String kommentar = this.getLaboruntersuchung_kommentar();
-    if (Helper.checkEmptyString(kommentar)) {
-      return Constants.getEmptyValue();
-    }
-    return new Annotation().setText(kommentar);
+    return optionalAnnotation(kommentar);
   }
 
   public CodeableConcept getObservationInterpretation() {
     String interpretation = this.getLaboruntersuchung_bewertung();
-    ParsedCode parsedCode = ParsedCode.fromString(interpretation);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    return ObservationInterpretation.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::codeableConcept)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getObservationInterpretation", "laboruntersuchung_bewertung", interpretation));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getObservationInterpretation", "laboruntersuchung_bewertung");
+    return optionalCodeFromValueSet(interpretation, ObservationInterpretation::fromCode, data);
   }
 
   public Type getObservationValue() {
@@ -428,47 +383,33 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationValueCodeableConcept() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_ergebnis());
-    return SemiQuantitativesLaborergebnis.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::codeableConcept)
-        .orElse(Constants.getEmptyValue());
+    String code = this.getLaboruntersuchung_ergebnis();
+    return optionalCodeFromValueSet(code, SemiQuantitativesLaborergebnis::fromCode);
   }
 
   public Quantity getObservationValueQuantity() {
     String ergebnis = this.getLaboruntersuchung_ergebnis();
+    LoggingData data = LoggingData.of(LOGGER, "getObservationValue", "laboruntersuchung_ergebnis");
     // ergebnis is treated as required here, because if both ValueCodeableConcept and this is empty
     // an error would be missed, since Value is required and 1 has to be set. Therefore
     // ValueCodeableConcept needs to be checked first.
-    return ParsedQuantity.fromString(ergebnis)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getObservationValue",
-                "laboruntersuchung_ergebnis has to be a semi-quantitative or whole quantity!"));
+    return quantity(ergebnis, data);
   }
 
   public Date getObservationIssued() {
     String dokumentationsdatum = this.getLaboruntersuchung_dokumentationsdatum();
-    if (Helper.checkEmptyString(dokumentationsdatum)) {
-      return Constants.getEmptyValue();
-    }
-    return Helper.getDateFromISO(dokumentationsdatum)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getObservationIssued",
-                "laboruntersuchung_dokumentationsdatum",
-                dokumentationsdatum));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getObservationIssued", "laboruntersuchung_dokumentationsdatum");
+    return optionalDate(dokumentationsdatum, data);
   }
 
   // TODO: Add Extension with Specimen or laboratory datetime
   public DateTimeType getObservationEffective() {
     String untersuchungszeitpunkt = this.getLaboruntersuchung_untersuchungszeitpunkt();
-    return Helper.getDateFromISO(untersuchungszeitpunkt)
-        .map(FhirGenerator::dateTimeType)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getObservationEffective",
-                "laboruntersuchung_untersuchungszeitpunkt",
-                untersuchungszeitpunkt));
+    LoggingData data =
+        LoggingData.of(
+            LOGGER, "getObservationEffective", "laboruntersuchung_untersuchungszeitpunkt");
+    return dateTimeType(untersuchungszeitpunkt, data);
   }
 
   public Reference getObservationSubject() {
@@ -476,12 +417,11 @@ public class Laborbefund implements Datablock {
   }
 
   public CodeableConcept getObservationCode() {
+    String code = this.getLaboruntersuchung_code();
     String system = CodingSystem.LOINC;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getLaboruntersuchung_code(), system);
     String text = this.getLaborparameter_bezeichnung();
-    return parsedCode.hasEmptyCode()
-        ? LOGGER.emptyValue("getObservationCode", "laborparameter_bezeichnung")
-        : FhirGenerator.codeableConcept(parsedCode).setText(text);
+    LoggingData data = LoggingData.of(LOGGER, "getObservationCode", "laborparameter_bezeichnung");
+    return codeFromSystemWithOptionalText(code, system, text, data);
   }
 
   public CodeableConcept getObservationCategory() {
@@ -494,25 +434,14 @@ public class Laborbefund implements Datablock {
 
   public Coding getObservationCategoryGruppen() {
     String code = this.getLaborgruppe_code();
-    ParsedCode parsedGruppe = ParsedCode.fromString(code);
-    if (parsedGruppe.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    return Laborstruktur.fromCode(parsedGruppe.getCode())
-        .map(FhirGenerator::coding)
-        .orElseGet(LOGGER.errorSupplier("getObservationCategoryGruppen", "laborgruppe_code", code));
+    LoggingData data = LoggingData.of(LOGGER, "getObservationCategoryGruppen", "laborgruppe_code");
+    return optionalCodingFromValueSet(code, Laborstruktur::fromCode, data);
   }
 
   public Coding getObservationCategoryBereich() {
     String code = this.getLaborbereich_code();
-    ParsedCode parsedBereich = ParsedCode.fromString(code);
-    if (parsedBereich.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    return Laborbereich.fromCode(parsedBereich.getCode())
-        .map(FhirGenerator::coding)
-        .orElseGet(
-            LOGGER.errorSupplier("getObservationCategoryBereich", "laborbereich_code", code));
+    LoggingData data = LoggingData.of(LOGGER, "getObservationCategoryBereich", "laborbereich_code");
+    return optionalCodingFromValueSet(code, Laborbereich::fromCode, data);
   }
 
   public Coding getObservationCategoryCategory() {
@@ -536,15 +465,11 @@ public class Laborbefund implements Datablock {
 
   public Identifier getObservationIdentifier() {
     String value = this.getLaboruntersuchung_identifikation();
-    if (Helper.checkEmptyString(value)) {
-      return LOGGER.emptyValue("getObservationIdentifier", "laboruntersuchung_identifikation");
-    }
     IdentifierTypeCode obi = IdentifierTypeCode.OBI;
-    CodeableConcept type = FhirGenerator.codeableConcept(obi);
-    String system = IdentifierSystem.EMPTY;
     String ref = MIIReference.MII_ORGANIZATION;
-    Reference assignerRef = FhirGenerator.reference(ref);
-    return FhirGenerator.identifier(value, system, type, assignerRef);
+    LoggingData data =
+        LoggingData.of(LOGGER, "getObservationIdentifier", "laboruntersuchung_identifikation");
+    return identifierWithCodeAndReference(value, obi, ref, data);
   }
 
   public Meta getObservationMeta() {
