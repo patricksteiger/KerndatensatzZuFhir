@@ -24,6 +24,14 @@ public class FhirParser {
     return optionalFhirFromSystem(kerndatensatzValue, codeSystem, FhirGenerator::coding);
   }
 
+  public static Coding codingFromSystem(
+      String kerndatensatzValue, String codeSystem, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
+    return parsedCode.hasEmptyCode()
+        ? log(loggingData, kerndatensatzValue)
+        : FhirGenerator.coding(parsedCode);
+  }
+
   public static Coding optionalCoding(String kerndatensatzValue) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);
@@ -45,6 +53,23 @@ public class FhirParser {
   public static CodeableConcept optionalCodeFromSystem(
       String kerndatensatzValue, String codeSystem) {
     return optionalFhirFromSystem(kerndatensatzValue, codeSystem, FhirGenerator::codeableConcept);
+  }
+
+  public static <T extends Code> CodeableConcept optionalCodeFromValueSetOrSystem(
+      String kerndatensatzValue,
+      String codeSystem,
+      Function<String, Optional<T>> mapToFhirCodeFromValueSet,
+      LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    return mapToFhirCodeFromValueSet
+        .apply(parsedCode.getCode())
+        .map(FhirGenerator::codeableConcept)
+        .orElseGet(
+            getWarningSupplier(
+                () -> FhirGenerator.codeableConcept(parsedCode), loggingData, kerndatensatzValue));
   }
 
   private static <T extends Code, R> R optionalFhirFromValueSet(
@@ -123,6 +148,15 @@ public class FhirParser {
         .orElseGet(getLoggingSupplier(loggingData, date));
   }
 
+  public static Identifier optionalIdentifierFromSystemWithCoding(
+      String kerndatensatzValue, String identifierSystem, Code code) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return Constants.getEmptyValue();
+    }
+    Coding coding = FhirGenerator.coding(code);
+    return FhirGenerator.identifier(kerndatensatzValue, identifierSystem, coding);
+  }
+
   public static DateTimeType dateTimeType(String date, LoggingData loggingData) {
     return Helper.getDateFromISO(date)
         .map(FhirGenerator::dateTimeType)
@@ -155,6 +189,22 @@ public class FhirParser {
     return Helper.getDateFromISO(date).orElseGet(getLoggingSupplier(loggingData, date));
   }
 
+  public static Period periodWithOptionalEnd(
+      String startDate, String endDate, LoggingData loggingDataStart, LoggingData loggingDataEnd) {
+    Date start = date(startDate, loggingDataStart);
+    if (Constants.isEmptyValue(start)) {
+      return Constants.getEmptyValue();
+    }
+    if (Helper.checkEmptyString(endDate)) {
+      return FhirGenerator.period(start);
+    }
+    Date end = date(endDate, loggingDataEnd);
+    if (Constants.isEmptyValue(end)) {
+      return Constants.getEmptyValue();
+    }
+    return FhirGenerator.period(start, end);
+  }
+
   public static Annotation optionalAnnotation(String text) {
     if (Helper.checkEmptyString(text)) {
       return Constants.getEmptyValue();
@@ -162,7 +212,17 @@ public class FhirParser {
     return new Annotation().setText(text);
   }
 
-  private static <T, R> Supplier<T> getLoggingSupplier(LoggingData loggingData, String value) {
+  private static <T> T log(LoggingData loggingData, String value) {
+    return loggingData.LOGGER.error(loggingData.METHOD_NAME, loggingData.VALUE_NAME, value);
+  }
+
+  private static <T> Supplier<T> getLoggingSupplier(LoggingData loggingData, String value) {
     return loggingData.LOGGER.errorSupplier(loggingData.METHOD_NAME, loggingData.VALUE_NAME, value);
+  }
+
+  private static <T> Supplier<T> getWarningSupplier(
+      Supplier<T> returnValue, LoggingData loggingData, String value) {
+    return loggingData.LOGGER.warningSupplier(
+        returnValue, loggingData.METHOD_NAME, "Value could be outside of ValueSet: " + value);
   }
 }
