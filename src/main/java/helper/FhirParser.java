@@ -30,7 +30,7 @@ public class FhirParser {
       String kerndatensatzValue, String codeSystem, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
     return parsedCode.hasEmptyCode()
-        ? log(loggingData, kerndatensatzValue)
+        ? logMethodValue(loggingData, kerndatensatzValue)
         : FhirGenerator.coding(parsedCode);
   }
 
@@ -56,7 +56,7 @@ public class FhirParser {
       String kerndatensatzValue, String text, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return parsedCode.hasEmptyCode()
-        ? log(loggingData, kerndatensatzValue)
+        ? logMethodValue(loggingData, kerndatensatzValue)
         : FhirGenerator.codeableConcept(parsedCode).setText(text);
   }
 
@@ -110,7 +110,7 @@ public class FhirParser {
     return mapToFhirCodeFromValueSet
         .apply(parsedCode.getCode())
         .map(mapper)
-        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static <T extends Code> CodeableConcept optionalCodeFromValueSet(
@@ -135,7 +135,7 @@ public class FhirParser {
       String kerndatensatzValue, String codeSystem, String text, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
     return parsedCode.hasEmptyCode()
-        ? log(loggingData, kerndatensatzValue)
+        ? logMethodValue(loggingData, kerndatensatzValue)
         : FhirGenerator.codeableConcept(parsedCode).setText(text);
   }
 
@@ -143,7 +143,7 @@ public class FhirParser {
       String kerndatensatzValue, String defaultDisplay, LoggingData data) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     if (parsedCode.hasEmptyCode()) {
-      return log(data, kerndatensatzValue);
+      return logMethodValue(data, kerndatensatzValue);
     }
     String display = parsedCode.hasDisplay() ? parsedCode.getDisplay() : defaultDisplay;
     Coding coding = FhirGenerator.coding(parsedCode.getCode(), parsedCode.getSystem(), display);
@@ -216,7 +216,7 @@ public class FhirParser {
     return mapToFhirCodeFromValueSet
         .apply(parsedCode.getCode())
         .map(FhirGenerator::coding)
-        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static Extension extensionWithDateTimeType(
@@ -224,7 +224,7 @@ public class FhirParser {
     return Helper.getDateFromISO(date)
         .map(FhirGenerator::dateTimeType)
         .map(dateTime -> FhirGenerator.extension(extensionUrl, dateTime))
-        .orElseGet(getLoggingSupplier(loggingData, date));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, date));
   }
 
   public static Identifier optionalIdentifierFromSystemWithCoding(
@@ -245,7 +245,7 @@ public class FhirParser {
   public static Identifier identifierWithCoding(
       String kerndatensatzValue, Code code, LoggingData loggingData) {
     if (Helper.checkEmptyString(kerndatensatzValue)) {
-      return log(loggingData, kerndatensatzValue);
+      return logMethodValue(loggingData, kerndatensatzValue);
     }
     Coding coding = FhirGenerator.coding(code);
     return FhirGenerator.identifier(kerndatensatzValue, IdentifierSystem.EMPTY, coding);
@@ -254,7 +254,7 @@ public class FhirParser {
   public static Identifier identifierWithCodeAndReference(
       String kerndatensatzValue, Code code, String reference, LoggingData loggingData) {
     if (Helper.checkEmptyString(kerndatensatzValue)) {
-      return log(loggingData, kerndatensatzValue);
+      return logMethodValue(loggingData, kerndatensatzValue);
     }
     CodeableConcept codeableConcept = FhirGenerator.codeableConcept(code);
     Reference assignerRef = FhirGenerator.reference(reference);
@@ -278,7 +278,7 @@ public class FhirParser {
 
   public static Quantity quantity(String kerndatensatzValue, LoggingData loggingData) {
     return ParsedQuantity.fromString(kerndatensatzValue)
-        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static Quantity optionalQuantity(String kerndatensatzValue, LoggingData loggingData) {
@@ -286,7 +286,7 @@ public class FhirParser {
       return Constants.getEmptyValue();
     }
     return ParsedQuantity.fromString(kerndatensatzValue)
-        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static Ratio optionalRatio(String kerndatensatzValue, LoggingData loggingData) {
@@ -294,27 +294,27 @@ public class FhirParser {
       return Constants.getEmptyValue();
     }
     return ParsedRatio.fromString(kerndatensatzValue)
-        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static MedicationAdministration.MedicationAdministrationStatus
       medicationAdministrationStatus(String kerndatensatzValue, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return MedikationStatus.medicationAdministrationStatusFromCode(parsedCode.getCode())
-        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static MedicationStatement.MedicationStatementStatus medicationStatementStatus(
       String kerndatensatzValue, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return MedikationStatus.medicationStatementStatusFromCode(parsedCode.getCode())
-        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
   public static DateTimeType dateTimeType(String date, LoggingData loggingData) {
     return Helper.getDateFromISO(date)
         .map(FhirGenerator::dateTimeType)
-        .orElseGet(getLoggingSupplier(loggingData, date));
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, date));
   }
 
   public static DateTimeType dateTimeTypeWithExtension(
@@ -323,7 +323,7 @@ public class FhirParser {
     if (Helper.checkNonEmptyString(date)) {
       result.setPrecision(TemporalPrecisionEnum.SECOND);
       Date resultDate =
-          Helper.getDateFromISO(date).orElseGet(getLoggingSupplier(loggingData, date));
+          Helper.getDateFromISO(date).orElseGet(getMethodValueLoggingSupplier(loggingData, date));
       result.setValue(resultDate);
     }
     result.addExtension(extension);
@@ -351,8 +351,26 @@ public class FhirParser {
     return FhirGenerator.period(startType, endType);
   }
 
+  public static Type optionalDateTimeTypeOrBooleanType(
+      String kernDatum, String kernBool, LoggingData datumData, LoggingData boolData) {
+    if (Helper.checkNonEmptyString(kernDatum)) {
+      Optional<DateTimeType> date =
+          Helper.getDateFromISO(kernDatum).map(FhirGenerator::dateTimeType);
+      if (date.isPresent()) {
+        return date.get();
+      }
+      logMethodValue(datumData, kernDatum);
+    }
+    if (Helper.checkNonEmptyString(kernBool)) {
+      return Helper.booleanFromString(kernBool)
+          .map(FhirGenerator::booleanType)
+          .orElseGet(getMethodValueLoggingSupplier(boolData, kernBool));
+    }
+    return Constants.getEmptyValue();
+  }
+
   public static Date date(String date, LoggingData loggingData) {
-    return Helper.getDateFromISO(date).orElseGet(getLoggingSupplier(loggingData, date));
+    return Helper.getDateFromISO(date).orElseGet(getMethodValueLoggingSupplier(loggingData, date));
   }
 
   public static Date optionalDate(String date, LoggingData loggingData) {
@@ -385,12 +403,33 @@ public class FhirParser {
     return new Annotation().setText(text);
   }
 
-  private static <T> T log(LoggingData loggingData, String value) {
+  public static Address optionalAddress(
+      String line,
+      String city,
+      String postalCode,
+      String country,
+      Address.AddressType type,
+      LoggingData loggingData) {
+    if (Helper.checkAllEmptyString(line, city, postalCode, country)) {
+      return Constants.getEmptyValue();
+    }
+    if (Helper.checkAnyEmptyString(line, city, postalCode, country)) {
+      return logMethodMessage(loggingData);
+    }
+    return FhirGenerator.address(type, line, city, postalCode, country);
+  }
+
+  private static <T> T logMethodValue(LoggingData loggingData, String value) {
     return loggingData.LOGGER.error(loggingData.METHOD_NAME, loggingData.VALUE_NAME, value);
   }
 
-  private static <T> Supplier<T> getLoggingSupplier(LoggingData loggingData, String value) {
+  private static <T> Supplier<T> getMethodValueLoggingSupplier(
+      LoggingData loggingData, String value) {
     return loggingData.LOGGER.errorSupplier(loggingData.METHOD_NAME, loggingData.VALUE_NAME, value);
+  }
+
+  private static <T> T logMethodMessage(LoggingData loggingData) {
+    return loggingData.LOGGER.error(loggingData.METHOD_NAME, loggingData.MESSAGE);
   }
 
   private static <T> Supplier<T> getWarningSupplier(
