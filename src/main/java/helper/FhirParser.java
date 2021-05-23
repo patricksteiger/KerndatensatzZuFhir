@@ -3,6 +3,7 @@ package helper;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import constants.Constants;
 import constants.IdentifierSystem;
+import enums.MedikationStatus;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
 
@@ -120,12 +121,43 @@ public class FhirParser {
         kerndatensatzValue, mapToFhirCodeFromValueSet, loggingData, FhirGenerator::codeableConcept);
   }
 
+  public static CodeableConcept optionalCodeWithCodingAndOptionalText(
+      String kerndatensatzValue, String text, Function<ParsedCode, Coding> codingChooser) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    if (parsedCode.hasEmptyCode() && Helper.checkEmptyString(text)) {
+      return Constants.getEmptyValue();
+    }
+    Coding coding = codingChooser.apply(parsedCode);
+    return FhirGenerator.codeableConcept(coding).setText(text);
+  }
+
   public static CodeableConcept codeFromSystemWithOptionalText(
       String kerndatensatzValue, String codeSystem, String text, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
     return parsedCode.hasEmptyCode()
         ? log(loggingData, kerndatensatzValue)
         : FhirGenerator.codeableConcept(parsedCode).setText(text);
+  }
+
+  public static CodeableConcept codeWithDefaultDisplay(
+      String kerndatensatzValue, String defaultDisplay, LoggingData data) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    if (parsedCode.hasEmptyCode()) {
+      return log(data, kerndatensatzValue);
+    }
+    String display = parsedCode.hasDisplay() ? parsedCode.getDisplay() : defaultDisplay;
+    Coding coding = FhirGenerator.coding(parsedCode.getCode(), parsedCode.getSystem(), display);
+    return FhirGenerator.codeableConcept(coding);
+  }
+
+  public static Coding optionalCodingFromSystemWithDefaultDisplay(
+      String kerndatensatzValue, String system, String defaultDisplay) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, system);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    String display = parsedCode.hasDisplay() ? parsedCode.getDisplay() : defaultDisplay;
+    return FhirGenerator.coding(parsedCode.getCode(), parsedCode.getSystem(), display);
   }
 
   public static <T extends Code> Extension optionalExtensionWithCodingFromValueSet(
@@ -204,6 +236,12 @@ public class FhirParser {
     return FhirGenerator.identifier(kerndatensatzValue, identifierSystem, coding);
   }
 
+  public static Identifier optionalIdentifier(String id) {
+    return Helper.checkEmptyString(id)
+        ? Constants.getEmptyValue()
+        : FhirGenerator.identifier(id, IdentifierSystem.EMPTY);
+  }
+
   public static Identifier identifierWithCoding(
       String kerndatensatzValue, Code code, LoggingData loggingData) {
     if (Helper.checkEmptyString(kerndatensatzValue)) {
@@ -232,6 +270,12 @@ public class FhirParser {
     return FhirGenerator.reference(type, identifier);
   }
 
+  public static Reference optionalReference(String ref) {
+    return Helper.checkNonEmptyString(ref)
+        ? FhirGenerator.reference(ref)
+        : Constants.getEmptyValue();
+  }
+
   public static Quantity quantity(String kerndatensatzValue, LoggingData loggingData) {
     return ParsedQuantity.fromString(kerndatensatzValue)
         .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
@@ -242,6 +286,28 @@ public class FhirParser {
       return Constants.getEmptyValue();
     }
     return ParsedQuantity.fromString(kerndatensatzValue)
+        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
+  public static Ratio optionalRatio(String kerndatensatzValue, LoggingData loggingData) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return Constants.getEmptyValue();
+    }
+    return ParsedRatio.fromString(kerndatensatzValue)
+        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
+  public static MedicationAdministration.MedicationAdministrationStatus
+      medicationAdministrationStatus(String kerndatensatzValue, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return MedikationStatus.medicationAdministrationStatusFromCode(parsedCode.getCode())
+        .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
+  public static MedicationStatement.MedicationStatementStatus medicationStatementStatus(
+      String kerndatensatzValue, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return MedikationStatus.medicationStatementStatusFromCode(parsedCode.getCode())
         .orElseGet(getLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
@@ -271,6 +337,18 @@ public class FhirParser {
       return Constants.getEmptyValue();
     }
     return emptyEnd ? start : new Period().setStartElement(start).setEndElement(end);
+  }
+
+  public static Type dateTimeTypeOrPeriod(
+      String start, String end, LoggingData startData, LoggingData endData) {
+    if (Helper.checkEmptyString(end)) {
+      return dateTimeType(start, startData);
+    }
+    DateTimeType startType = dateTimeType(start, startData), endType = dateTimeType(end, endData);
+    if (Constants.isEmptyValue(startType) || Constants.isEmptyValue(endType)) {
+      return Constants.getEmptyValue();
+    }
+    return FhirGenerator.period(startType, endType);
   }
 
   public static Date date(String date, LoggingData loggingData) {
