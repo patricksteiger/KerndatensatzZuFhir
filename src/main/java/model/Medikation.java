@@ -4,7 +4,6 @@ import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
 import enums.Behandlungsgrund;
-import enums.MedikationStatus;
 import enums.Wirkstofftyp;
 import helper.*;
 import interfaces.Datablock;
@@ -13,6 +12,9 @@ import org.hl7.fhir.r4.model.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+
+import static helper.FhirParser.*;
 
 public class Medikation implements Datablock {
   private final Logger LOGGER = new Logger(Medikation.class);
@@ -154,15 +156,9 @@ public class Medikation implements Datablock {
   // TODO: How does Behandlungsgrund look like?
   public CodeableConcept getMedicationAdministrationReasonCode() {
     String code = this.getBehandlungsgrund();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
-    return Behandlungsgrund.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::codeableConcept)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getMedicationAdministrationReasonCode", "behandlungsgrund", code));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getMedicationAdministrationReasonCode", "behandlungsgrund");
+    return optionalCodeFromValueSet(code, Behandlungsgrund::fromCode, data);
   }
 
   public Medication.MedicationIngredientComponent getMedicationIngredient() {
@@ -180,75 +176,49 @@ public class Medikation implements Datablock {
 
   public Ratio getMedicationIngredientStrength() {
     String menge = this.getWirkstoff_menge();
-    if (Helper.checkEmptyString(menge)) {
-      return Constants.getEmptyValue();
-    }
-    return ParsedRatio.fromString(menge)
-        .orElseGet(
-            LOGGER.errorSupplier("getMedicationIngredientStrength", "wirkstoff_menge", menge));
+    LoggingData data = LoggingData.of(LOGGER, "getMedicationIngredientStrength", "wirkstoff_menge");
+    return optionalRatio(menge, data);
   }
 
   public CodeableConcept getMedicationIngredientItem() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getWirkstoff_code_aktiv());
-    String code = parsedCode.getCode();
-    if (Helper.checkEmptyString(code)) {
-      return LOGGER.emptyValue("getMedicationIngredientItem", "wirkstoff_code_aktiv");
-    }
-    String system = parsedCode.getSystem();
+    String code = this.getWirkstoff_code_aktiv();
     String display = this.getWirkstoff_name_aktiv();
-    if (parsedCode.hasDisplay()) display = parsedCode.getDisplay();
-    Coding coding = FhirGenerator.coding(code, system, display);
-    return FhirGenerator.codeableConcept(coding);
+    LoggingData data =
+        LoggingData.of(LOGGER, "getMedicationIngredientItem", "wirkstoff_code_aktiv");
+    return codeWithDefaultDisplay(code, display, data);
   }
 
   public Extension getMedicationIngredientExtension() {
     String code = this.getWirkstoff_code_allgemein();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
     String url = ExtensionUrl.MEDIKATION_WIRKSTOFFTYP;
-    return Wirkstofftyp.fromCode(parsedCode.getCode())
-        .map(FhirGenerator::coding)
-        .map(type -> FhirGenerator.extension(url, type))
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getMedicationIngredientExtension", "wirkstoff_code_allgemein", code));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getMedicationIngredientExtension", "wirkstoff_code_allgemein");
+    return optionalExtensionWithCodingFromValueSet(code, url, Wirkstofftyp::fromCode, data);
   }
 
   public Ratio getMedicationAmount() {
     String wirkstaerke = this.getArzneimittel_wirkstaerke();
-    if (Helper.checkEmptyString(wirkstaerke)) {
-      return Constants.getEmptyValue();
-    }
-    return ParsedRatio.fromString(wirkstaerke)
-        .orElseGet(
-            LOGGER.errorSupplier("getMedicationAmount", "arzneimittel_wirkstaerke", wirkstaerke));
+    LoggingData data = LoggingData.of(LOGGER, "getMedicationAmount", "arzneimittel_wirkstaerke");
+    return optionalRatio(wirkstaerke, data);
   }
 
   // TODO: https://simplifier.net/packages/hl7.fhir.uv.ips/1.0.0/files/244204
   public CodeableConcept getMedicationForm() {
+    String code = this.getDarreichungsform();
     String system = CodingSystem.EDQM_STANDARD;
-    ParsedCode parsedCode = ParsedCode.fromString(this.getDarreichungsform(), system);
-    return parsedCode.hasEmptyCode()
-        ? Constants.getEmptyValue()
-        : FhirGenerator.codeableConcept(parsedCode);
+    return optionalCodeFromSystem(code, system);
   }
 
   public CodeableConcept getMedicationCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
+    String code = this.getArzneimittel_code();
     String text = this.getMedicationCodeText();
-    if (parsedCode.hasEmptyCode() && Helper.checkEmptyString(text)) {
-      return Constants.getEmptyValue();
-    }
-    Coding code;
     // Generally system is expected to be AtcDE. Only Change if PZN is given explicitly.
-    if (parsedCode.getSystem().equals(CodingSystem.PHARMA_ZENTRAL_NUMMER)) {
-      code = this.getMedicationCodePharma();
-    } else {
-      code = this.getMedicationCodeAtcDE();
-    }
-    return FhirGenerator.codeableConcept(code).setText(text);
+    Function<ParsedCode, Coding> chooser =
+        parsedCode ->
+            parsedCode.getSystem().equals(CodingSystem.PHARMA_ZENTRAL_NUMMER)
+                ? this.getMedicationCodePharma()
+                : this.getMedicationCodeAtcDE();
+    return optionalCodeWithCodingAndOptionalText(code, text, chooser);
   }
 
   public String getMedicationCodeText() {
@@ -256,35 +226,22 @@ public class Medikation implements Datablock {
   }
 
   public Coding getMedicationCodeAtcDE() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
+    String code = this.getArzneimittel_code();
     String system = CodingSystem.ATC_DIMDI;
-    String parsedDisplay = parsedCode.getDisplay();
-    String display =
-        (Helper.checkEmptyString(parsedDisplay)) ? this.getArzneimittel_name() : parsedDisplay;
-    return FhirGenerator.coding(parsedCode.getCode(), system, display);
+    String display = this.getArzneimittel_name();
+    return optionalCodingFromSystemWithDefaultDisplay(code, system, display);
   }
 
   public Coding getMedicationCodePharma() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getArzneimittel_code());
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
+    String code = this.getArzneimittel_code();
     String system = CodingSystem.PHARMA_ZENTRAL_NUMMER;
-    String parsedDisplay = parsedCode.getDisplay();
-    String display =
-        (Helper.checkEmptyString(parsedDisplay)) ? this.getArzneimittel_name() : parsedDisplay;
-    return FhirGenerator.coding(parsedCode.getCode(), system, display);
+    String display = this.getArzneimittel_name();
+    return optionalCodingFromSystemWithDefaultDisplay(code, system, display);
   }
 
   public Reference getMedicationAdministrationRequest() {
     String verordnung = this.getBezug_verordnung();
-    if (Helper.checkEmptyString(verordnung)) {
-      return Constants.getEmptyValue();
-    }
-    return FhirGenerator.reference(verordnung);
+    return optionalReference(verordnung);
   }
 
   public Annotation getMedicationAdministrationNote() {
@@ -317,12 +274,8 @@ public class Medikation implements Datablock {
   }
 
   public Identifier getMedicationAdministrationIdentifier() {
-    String value = this.getIdentifikation();
-    if (Helper.checkEmptyString(value)) {
-      return Constants.getEmptyValue();
-    }
-    String system = IdentifierSystem.EMPTY;
-    return FhirGenerator.identifier(value, system);
+    String id = this.getIdentifikation();
+    return optionalIdentifier(id);
   }
 
   // TODO: Administration or Statement effective?
@@ -333,36 +286,24 @@ public class Medikation implements Datablock {
   public MedicationAdministration.MedicationAdministrationStatus
       getMedicationAdministrationStatus() {
     String code = this.getStatus();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    return MedikationStatus.medicationAdministrationStatusFromCode(parsedCode.getCode())
-        .orElseGet(LOGGER.errorSupplier("getMedicationAdministrationStatus", "status", code));
+    LoggingData data = LoggingData.of(LOGGER, "getMedicationAdministrationStatus", "status");
+    return medicationAdministrationStatus(code, data);
   }
 
   public Reference getMedicationStatementInformationSource() {
     String ref = this.getOrganisationsname();
-    if (Helper.checkEmptyString(ref)) {
-      return Constants.getEmptyValue();
-    }
-    return FhirGenerator.reference(ref);
+    return optionalReference(ref);
   }
 
   public Date getMedicationStatementDateAsserted() {
     String eintragsDatum = this.getDatum_eintrag();
-    if (Helper.checkEmptyString(eintragsDatum)) {
-      return Constants.getEmptyValue();
-    }
-    return Helper.getDateFromISO(eintragsDatum)
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getMedicationStatementDateAsserted", "datum_eintrag", eintragsDatum));
+    LoggingData data =
+        LoggingData.of(LOGGER, "getMedicationStatementDateAsserted", "datum_eintrag");
+    return optionalDate(eintragsDatum, data);
   }
 
   public Annotation getMedicationStatementNote() {
-    String hinweis = this.getHinweis();
-    if (Helper.checkEmptyString(hinweis)) {
-      return Constants.getEmptyValue();
-    }
-    return new Annotation().setText(hinweis);
+    return optionalAnnotation(getHinweis());
   }
 
   // Dosage is currently not structurally defined. Only text is set.
@@ -471,56 +412,33 @@ public class Medikation implements Datablock {
 
   public Type getMedicationStatementEffective() {
     String startzeitpunkt = this.getEinnahme_startzeitpunkt();
-    Optional<DateTimeType> start =
-        Helper.getDateFromISO(startzeitpunkt).map(FhirGenerator::dateTimeType);
-    if (!start.isPresent()) {
-      return LOGGER.error(
-          "getMedicationStatementEffective", "einnahme_startzeitpunkt", startzeitpunkt);
-    }
+    LoggingData startdata =
+        LoggingData.of(LOGGER, "getMedicationStatementEffective", "einnahme_startzeitpunkt");
     String endzeitpunkt = this.getEinnahme_endzeitpunkt();
-    // Return only DateTimeType if end is not set
-    if (Helper.checkEmptyString(endzeitpunkt)) {
-      return start.get();
-    }
-    // Return Period if both start and end are set
-    return Helper.getDateFromISO(endzeitpunkt)
-        .map(FhirGenerator::dateTimeType)
-        .map(end -> FhirGenerator.period(start.get(), end))
-        .orElseGet(
-            LOGGER.errorSupplier(
-                "getMedicationStatementEffective", "einnahme_endzeitpunkt", endzeitpunkt));
+    LoggingData endData =
+        LoggingData.of(LOGGER, "getMedicationStatementEffective", "einnahme_endzeitpunkt");
+    return dateTimeTypeOrPeriod(startzeitpunkt, endzeitpunkt, startdata, endData);
   }
 
   public Reference getMedicationStatementBasedOn() {
     String verordnung = this.getBezug_verordnung();
-    if (Helper.checkEmptyString(verordnung)) {
-      return Constants.getEmptyValue();
-    }
-    return FhirGenerator.reference(verordnung);
+    return optionalReference(verordnung);
   }
 
   public MedicationStatement.MedicationStatementStatus getMedicationStatementStatus() {
     String code = this.getStatus();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    return MedikationStatus.medicationStatementStatusFromCode(parsedCode.getCode())
-        .orElseGet(LOGGER.errorSupplier("getMedicationStatementStatus", "status", code));
+    LoggingData data = LoggingData.of(LOGGER, "getMedicationStatementStatus", "status");
+    return medicationStatementStatus(code, data);
   }
 
   public Identifier getMedicationStatementIdentifier() {
-    String value = this.getIdentifikation();
-    if (Helper.checkEmptyString(value)) {
-      return Constants.getEmptyValue();
-    }
-    String system = IdentifierSystem.EMPTY;
-    return FhirGenerator.identifier(value, system);
+    String id = this.getIdentifikation();
+    return optionalIdentifier(id);
   }
 
   public Reference getMedicationStatementPartOf() {
     String abgabe = this.getBezug_abgabe();
-    if (Helper.checkEmptyString(abgabe)) {
-      return Constants.getEmptyValue();
-    }
-    return FhirGenerator.reference(abgabe);
+    return optionalReference(abgabe);
   }
 
   public Reference getMedicationStatementSubject() {
