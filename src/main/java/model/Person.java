@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static helper.FhirParser.*;
+
 public class Person implements Datablock {
   private final Logger LOGGER = new Logger(Person.class);
   @CsvBindByName private String patNr;
@@ -160,15 +162,12 @@ public class Person implements Datablock {
     String city = this.getStrassenanschrift_wohnort();
     String postalCode = this.getStrassenanschrift_plz();
     String country = this.getStrassenanschrift_land();
-    if (Helper.checkAllEmptyString(line, city, postalCode, country)) {
-      return Constants.getEmptyValue();
-    }
-    if (Helper.checkAnyEmptyString(line, city, postalCode, country)) {
-      return LOGGER.error(
-          "getPatientAddressStrassenanschrift",
-          "All values for line, city, postalCode and country have to be set!");
-    }
-    return FhirGenerator.address(type, line, city, postalCode, country);
+    LoggingData data =
+        LoggingData.withMessage(
+            LOGGER,
+            "getPatientAddressStrassenanschrift",
+            "All values for line, city, postalCode and country have to be set!");
+    return optionalAddress(line, city, postalCode, country, type, data);
   }
 
   public Address getPatientAddressPostfach() {
@@ -177,42 +176,29 @@ public class Person implements Datablock {
     String city = this.getPostfach_wohnort();
     String postalCode = this.getPostfach_plz();
     String country = this.getPostfach_land();
-    if (Helper.checkAllEmptyString(line, city, postalCode, country)) {
-      return Constants.getEmptyValue();
-    }
-    if (Helper.checkAnyEmptyString(line, city, postalCode, country)) {
-      return LOGGER.error(
-          "getPatientAddressPostfach",
-          "All values for line, city, postalCode and country have to be set!");
-    }
-    return FhirGenerator.address(type, line, city, postalCode, country);
+    LoggingData data =
+        LoggingData.withMessage(
+            LOGGER,
+            "getPatientAddressPostfach",
+            "All values for line, city, postalCode and country have to be set!");
+    return optionalAddress(line, city, postalCode, country, type, data);
   }
 
   public Type getPatientDeceased() {
     String todeszeitpunkt = this.getTodeszeitpunkt();
-    if (Helper.checkNonEmptyString(todeszeitpunkt)) {
-      Optional<DateTimeType> t =
-          Helper.getDateFromISO(todeszeitpunkt).map(FhirGenerator::dateTimeType);
-      if (t.isPresent()) {
-        return t.get();
-      }
-      LOGGER.error("getPatientDeceased", "todeszeitpunkt", todeszeitpunkt);
-    }
+    LoggingData zeitData = LoggingData.of(LOGGER, "getPatientDeceased", "todeszeitpunkt");
     String verstorben = this.getPatient_verstorben();
-    if (Helper.checkNonEmptyString(verstorben)) {
-      return Helper.booleanFromString(verstorben)
-          .map(FhirGenerator::booleanType)
-          .orElseGet(LOGGER.errorSupplier("getPatientDeceased", "patient_verstorben", verstorben));
-    }
-    return Constants.getEmptyValue();
+    LoggingData versData = LoggingData.of(LOGGER, "getPatientDeceased", "patient_verstorben");
+    return optionalDateTimeTypeOrBooleanType(todeszeitpunkt, verstorben, zeitData, versData);
   }
 
   public Date getPatientBirthDate() {
     String birthDate = this.getGeburtsdatum();
-    return Helper.getDateFromISO(birthDate)
-        .orElseGet(LOGGER.errorSupplier("getPatientBirthDate", "geburtsdatum", birthDate));
+    LoggingData data = LoggingData.of(LOGGER, "getPatientBirthDate", "geburtsdatum");
+    return date(birthDate, data);
   }
 
+  // TODO: Refactor gender mapping
   public Enumerations.AdministrativeGender getPatientGender() {
     ParsedCode parsedCode = ParsedCode.fromString(this.getAdmininistratives_geschlecht());
     return parsedCode.hasEmptyCode()
