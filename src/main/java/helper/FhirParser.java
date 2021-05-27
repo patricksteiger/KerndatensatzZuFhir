@@ -194,6 +194,25 @@ public class FhirParser {
     return FhirGenerator.extension(extensionUrl, coding);
   }
 
+  public static Extension optionalExtensionWithStringType(
+      String kerndatensatzValue, String extensionUrl) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return Constants.getEmptyValue();
+    }
+    StringType type = new StringType(kerndatensatzValue);
+    return FhirGenerator.extension(extensionUrl, type);
+  }
+
+  public static Extension optionalExtensionWithCodeType(
+      String kerndatensatzValue, String extensionUrl) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    CodeType type = new CodeType(parsedCode.getCode());
+    return FhirGenerator.extension(extensionUrl, type);
+  }
+
   public static Coding optionalCodingFromSystemWithVersionAndExtension(
       String kerndatensatzValue, String codeSystem, String codeVersion, Extension extension) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
@@ -236,6 +255,20 @@ public class FhirParser {
     return FhirGenerator.identifier(kerndatensatzValue, identifierSystem, coding);
   }
 
+  public static Identifier optionalIdentifierFromSystemWithCodeAndReference(
+      String kerndatensatzValue,
+      String identifierSystem,
+      Identifier.IdentifierUse identifierUse,
+      Code code,
+      Reference reference) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return Constants.getEmptyValue();
+    }
+    CodeableConcept type = FhirGenerator.codeableConcept(code);
+    return FhirGenerator.identifier(
+        kerndatensatzValue, identifierSystem, type, reference, identifierUse);
+  }
+
   public static Identifier optionalIdentifier(String id) {
     return Helper.checkEmptyString(id)
         ? Constants.getEmptyValue()
@@ -262,6 +295,16 @@ public class FhirParser {
         kerndatensatzValue, IdentifierSystem.EMPTY, codeableConcept, assignerRef);
   }
 
+  public static Identifier identifierFromSystemAndCodeWithCode(
+      String kerndatensatzValue, String identifierSystem, Code code, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    if (parsedCode.hasEmptyCode()) {
+      return logMethodValue(loggingData, kerndatensatzValue);
+    }
+    CodeableConcept type = FhirGenerator.codeableConcept(code);
+    return FhirGenerator.identifier(parsedCode.getCode(), identifierSystem, type);
+  }
+
   public static Reference optionalReferenceWithIdentifier(String type, String identifierId) {
     if (Helper.checkEmptyString(identifierId)) {
       return Constants.getEmptyValue();
@@ -274,6 +317,19 @@ public class FhirParser {
     return Helper.checkNonEmptyString(ref)
         ? FhirGenerator.reference(ref)
         : Constants.getEmptyValue();
+  }
+
+  public static Reference referenceWithIdentifierFromSystem(
+      String kerndatensatzValue,
+      String identifierSystem,
+      Identifier.IdentifierUse identifierUse,
+      LoggingData loggingData) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return logMethodValue(loggingData, kerndatensatzValue);
+    }
+    Identifier identifier =
+        FhirGenerator.identifier(kerndatensatzValue, identifierSystem, identifierUse);
+    return FhirGenerator.reference(identifier);
   }
 
   public static Quantity quantity(String kerndatensatzValue, LoggingData loggingData) {
@@ -308,6 +364,13 @@ public class FhirParser {
       String kerndatensatzValue, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return MedikationStatus.medicationStatementStatusFromCode(parsedCode.getCode())
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
+  public static ResearchSubject.ResearchSubjectStatus researchSubjectStatus(
+      String kerndatensatzValue, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return FhirHelper.getResearchSubjectStatusFromCode(parsedCode.getCode())
         .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
@@ -417,6 +480,45 @@ public class FhirParser {
       return logMethodMessage(loggingData);
     }
     return FhirGenerator.address(type, line, city, postalCode, country);
+  }
+
+  public static HumanName optionalHumanName(String kerndatensatzValue, HumanName.NameUse use) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return Constants.getEmptyValue();
+    }
+    StringType family = new StringType(kerndatensatzValue);
+    return FhirGenerator.humanName(family, use);
+  }
+
+  public static StringType stringTypeWithExtensions(
+      String kerndatensatzValue, LoggingData loggingData, Extension... extensions) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return logMethodValue(loggingData, kerndatensatzValue);
+    }
+    StringType family = new StringType(kerndatensatzValue);
+    for (Extension extension : extensions) {
+      family.addExtension(extension);
+    }
+    return family;
+  }
+
+  public static StringType optionalStringTypeWithExtension(
+      String kerndatensatzValue, Extension extension) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return Constants.getEmptyValue();
+    }
+    StringType stringType = new StringType(kerndatensatzValue);
+    stringType.addExtension(extension);
+    return stringType;
+  }
+
+  public static List<StringType> stringTypeListFromName(
+      String kerndatensatzValue, LoggingData loggingData) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return logMethodValue(loggingData, kerndatensatzValue);
+    }
+    List<String> names = Helper.splitNames(kerndatensatzValue);
+    return Helper.listMap(names, StringType::new);
   }
 
   private static <T> T logMethodValue(LoggingData loggingData, String value) {
