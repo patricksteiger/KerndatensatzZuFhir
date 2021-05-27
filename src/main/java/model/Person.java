@@ -13,7 +13,6 @@ import org.hl7.fhir.r4.model.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static helper.FhirParser.*;
 
@@ -208,12 +207,8 @@ public class Person implements Datablock {
 
   public HumanName getPatientGeburtsname() {
     String geburtsName = this.getGeburtsname();
-    if (Helper.checkEmptyString(geburtsName)) {
-      return Constants.getEmptyValue();
-    }
     HumanName.NameUse use = HumanName.NameUse.MAIDEN;
-    StringType family = new StringType(geburtsName);
-    return FhirGenerator.humanName(family, use);
+    return optionalHumanName(geburtsName, use);
   }
 
   public HumanName getPatientName() {
@@ -226,88 +221,58 @@ public class Person implements Datablock {
 
   public StringType getPatientNameFamily() {
     String familyName = this.getFamilienname();
-    if (Helper.checkEmptyString(familyName)) {
-      return LOGGER.emptyValue("getPatientNameFamily", "familienname");
-    }
-    StringType family = new StringType(familyName);
-    family.addExtension(this.getPatientNameFamilyNamenszusatz());
-    family.addExtension(this.getPatientNameFamilyNachname());
-    family.addExtension(this.getPatientNameFamilyVorsatzwort());
-    return family;
+    Extension namenszusatzExt = this.getPatientNameFamilyNamenszusatz();
+    Extension nachnameExt = this.getPatientNameFamilyNachname();
+    Extension vorsatzwortExt = this.getPatientNameFamilyVorsatzwort();
+    LoggingData data = LoggingData.of(LOGGER, "getPatientNameFamily", "familienname");
+    return stringTypeWithExtensions(familyName, data, namenszusatzExt, nachnameExt, vorsatzwortExt);
   }
 
   public Extension getPatientNameFamilyNamenszusatz() {
     String namensZusatz = this.getNamenszusatz();
-    if (Helper.checkEmptyString(namensZusatz)) {
-      return Constants.getEmptyValue();
-    }
     String url = ExtensionUrl.NAMENSZUSATZ;
-    StringType type = new StringType(namensZusatz);
-    return FhirGenerator.extension(url, type);
+    return optionalExtensionWithStringType(namensZusatz, url);
   }
 
   public Extension getPatientNameFamilyNachname() {
     String nachName = this.getNachname();
-    if (Helper.checkEmptyString(nachName)) {
-      return Constants.getEmptyValue();
-    }
     String url = ExtensionUrl.NACHNAME;
-    StringType type = new StringType(nachName);
-    return FhirGenerator.extension(url, type);
+    return optionalExtensionWithStringType(nachName, url);
   }
 
   public Extension getPatientNameFamilyVorsatzwort() {
     String vorsatzWort = this.getVorsatzwort();
-    if (Helper.checkEmptyString(vorsatzWort)) {
-      return Constants.getEmptyValue();
-    }
     String url = ExtensionUrl.VORSATZWORT;
-    StringType type = new StringType(vorsatzWort);
-    return FhirGenerator.extension(url, type);
+    return optionalExtensionWithStringType(vorsatzWort, url);
   }
 
   // TODO: Do we have to split vorname into several names? E.g.: "Maja Julia"
   public List<StringType> getPatientNameGiven() {
     String vorName = this.getVorname();
-    if (Helper.checkEmptyString(vorName)) {
-      return LOGGER.error("getPatientNameGiven", "given is required!");
-    }
-    List<String> names = Helper.splitNames(vorName);
-    return Helper.listMap(names, StringType::new);
+    LoggingData data = LoggingData.of(LOGGER, "getPatientNameGiven", "vorname");
+    return stringTypeListFromName(vorName, data);
   }
 
   public StringType getPatientNamePrefix() {
-    String praefix = this.getPraefix();
-    if (Helper.checkEmptyString(praefix)) {
-      return Constants.getEmptyValue();
-    }
-    StringType prefix = new StringType(praefix);
-    prefix.addExtension(this.getPatientNamePrefixQualifier());
-    return prefix;
+    String prefix = this.getPraefix();
+    Extension prefixQualifier = this.getPatientNamePrefixQualifier();
+    return optionalStringTypeWithExtension(prefix, prefixQualifier);
   }
 
   public Extension getPatientNamePrefixQualifier() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getArt_des_praefix());
-    if (parsedCode.hasEmptyCode()) {
-      return Constants.getEmptyValue();
-    }
+    String artDesPraefix = this.getArt_des_praefix();
     String url = ExtensionUrl.PREFIX;
-    CodeType type = new CodeType(parsedCode.getCode());
-    return FhirGenerator.extension(url, type);
+    return optionalExtensionWithCodeType(artDesPraefix, url);
   }
 
+  // TODO: Is system of PID correct?
   public Identifier getPatientPID() {
     String value = this.getPatient_pid();
-    if (Helper.checkEmptyString(value)) {
-      return Constants.getEmptyValue();
-    }
-    IdentifierTypeCode mr = IdentifierTypeCode.MR;
-    CodeableConcept type = FhirGenerator.codeableConcept(mr);
-    // TODO: Is system of PID correct?
     String system = IdentifierSystem.PID;
-    Reference assignerRef = this.getPIDAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
-    return FhirGenerator.identifier(value, system, type, assignerRef, use);
+    IdentifierTypeCode mr = IdentifierTypeCode.MR;
+    Reference assignerRef = this.getPIDAssignerReference();
+    return optionalIdentifierFromSystemWithCodeAndReference(value, system, use, mr, assignerRef);
   }
 
   // TODO: Could be IKNR or CORE-LOCATION?
@@ -320,41 +285,31 @@ public class Person implements Datablock {
 
   public Identifier getPatientGKV() {
     String value = this.getVersichertenId_gkv();
-    if (Helper.checkEmptyString(value)) {
-      return Constants.getEmptyValue();
-    }
-    VersichertenCode gkv = VersichertenCode.GKV;
-    CodeableConcept type = FhirGenerator.codeableConcept(gkv);
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
-    Reference assignerRef = this.getGKVAssignerReference();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
-    return FhirGenerator.identifier(value, system, type, assignerRef, use);
+    VersichertenCode gkv = VersichertenCode.GKV;
+    Reference assignerRef = this.getGKVAssignerReference();
+    return optionalIdentifierFromSystemWithCodeAndReference(value, system, use, gkv, assignerRef);
   }
 
   public Reference getGKVAssignerReference() {
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
     String system = IdentifierSystem.IKNR;
     String identifierValue = this.getInstitutionskennzeichen_krankenkasse();
-    if (Helper.checkEmptyString(identifierValue)) {
-      return LOGGER.emptyValue("getGKVAssignerReference", "institutionskennzeichen_krankenkasse");
-    }
-    Identifier identifier = FhirGenerator.identifier(identifierValue, system, use);
-    return FhirGenerator.reference(identifier);
+    LoggingData data =
+        LoggingData.of(LOGGER, "getGKVAssignerReference", "institutionskennzeichen_krankenkasse");
+    return referenceWithIdentifierFromSystem(identifierValue, system, use, data);
   }
 
+  // TODO: Is PKV System always empty?
+  // TODO: What is assignerRef of PKV? Example only display: "Signal Iduna"
   public Identifier getPatientPKV() {
     String value = this.getVersichertennummer_pkv();
-    if (Helper.checkEmptyString(value)) {
-      return Constants.getEmptyValue();
-    }
-    // TODO: Is PKV System always empty?
     String system = Constants.getEmptyValue();
-    VersichertenCode pkv = VersichertenCode.PKV;
-    CodeableConcept type = FhirGenerator.codeableConcept(pkv);
-    // TODO: What is assignerRef of PKV? Example only display: "Signal Iduna"
-    Reference assignerRef = Constants.getEmptyValue();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
-    return FhirGenerator.identifier(value, system, type, assignerRef, use);
+    VersichertenCode pkv = VersichertenCode.PKV;
+    Reference assignerRef = Constants.getEmptyValue();
+    return optionalIdentifierFromSystemWithCodeAndReference(value, system, use, pkv, assignerRef);
   }
 
   public Meta getResearchSubjectMeta() {
@@ -384,38 +339,27 @@ public class Person implements Datablock {
 
   public Period getResearchSubjectPeriod() {
     String beginn = this.getTeilnahme_beginn();
-    Optional<Date> start = Helper.getDateFromISO(beginn);
-    if (!start.isPresent()) {
-      return LOGGER.error("getResearchSubjectPeriod", "teilnahme_beginn", beginn);
-    }
+    LoggingData beginnData = LoggingData.of(LOGGER, "getResearchSubjectPeriod", "teilnahme_beginn");
     String ende = this.getTeilnahme_ende();
-    if (Helper.checkNonEmptyString(ende)) {
-      return Helper.getDateFromISO(ende)
-          .map(date -> FhirGenerator.period(start.get(), date))
-          .orElseGet(LOGGER.errorSupplier("getResearchSubjectPeriod", "teilnahme_ende", ende));
-    }
-    return FhirGenerator.period(start.get());
+    LoggingData endedata = LoggingData.of(LOGGER, "getResearchSubjectPeriod", "teilnahme_ende");
+    return periodWithOptionalEnd(beginn, ende, beginnData, endedata);
   }
 
   // TODO: What is valueset of teilnahme_status?
   public ResearchSubject.ResearchSubjectStatus getResearchSubjectStatus() {
     String code = this.getTeilnahme_status();
-    ParsedCode parsedCode = ParsedCode.fromString(code);
-    return FhirHelper.getResearchSubjectStatusFromCode(parsedCode.getCode())
-        .orElseGet(LOGGER.errorSupplier("getResearchSubjectStatus", "teilnahme_status", code));
+    LoggingData data = LoggingData.of(LOGGER, "getResearchSubjectStatus", "teilnahme_status");
+    return researchSubjectStatus(code, data);
   }
 
   public Identifier getResearchSubjectSubjectIdentificationCode() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getSubjekt_identifizierungscode());
-    if (parsedCode.hasEmptyCode()) {
-      return LOGGER.emptyValue(
-          "getResearchSubjectSubjectIdentificationCode", "subjekt_identifizierungscode");
-    }
-    // TODO: Is system for SubjectIdentificationCode correct?
+    String value = this.getSubjekt_identifizierungscode();
     String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
     IdentifierTypeCode anon = IdentifierTypeCode.ANON;
-    CodeableConcept type = FhirGenerator.codeableConcept(anon);
-    return FhirGenerator.identifier(parsedCode.getCode(), system, type);
+    LoggingData data =
+        LoggingData.of(
+            LOGGER, "getResearchSubjectSubjectIdentificationCode", "subjekt_identifizierungscode");
+    return identifierFromSystemAndCodeWithCode(value, system, anon, data);
   }
 
   public Meta getObservationMeta() {
@@ -444,10 +388,8 @@ public class Person implements Datablock {
 
   public DateTimeType getObservationEffective() {
     String zeitpunkt = this.getLetzter_lebendzeitpunkt();
-    return Helper.getDateFromISO(zeitpunkt)
-        .map(FhirGenerator::dateTimeType)
-        .orElseGet(
-            LOGGER.errorSupplier("getObservationEffective", "letzter_lebendzeitpunkt", zeitpunkt));
+    LoggingData data = LoggingData.of(LOGGER, "getObservationEffective", "letzter_lebendzeitpunkt");
+    return dateTimeType(zeitpunkt, data);
   }
 
   public CodeableConcept getObservationCode() {
