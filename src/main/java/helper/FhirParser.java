@@ -490,26 +490,29 @@ public class FhirParser {
     return FhirGenerator.humanName(family, use);
   }
 
+  private static StringType generalStringTypeWithExtensions(
+      String kerndatensatzvalue, Supplier<StringType> emptyValue, Extension... extensions) {
+    if (Helper.checkEmptyString(kerndatensatzvalue)) {
+      return emptyValue.get();
+    }
+    StringType type = new StringType(kerndatensatzvalue);
+    for (Extension extension : extensions) {
+      type.addExtension(extension);
+    }
+    return type;
+  }
+
   public static StringType stringTypeWithExtensions(
       String kerndatensatzValue, LoggingData loggingData, Extension... extensions) {
-    if (Helper.checkEmptyString(kerndatensatzValue)) {
-      return logMethodValue(loggingData, kerndatensatzValue);
-    }
-    StringType family = new StringType(kerndatensatzValue);
-    for (Extension extension : extensions) {
-      family.addExtension(extension);
-    }
-    return family;
+    return generalStringTypeWithExtensions(
+        kerndatensatzValue,
+        getMethodValueLoggingSupplier(loggingData, kerndatensatzValue),
+        extensions);
   }
 
   public static StringType optionalStringTypeWithExtension(
       String kerndatensatzValue, Extension extension) {
-    if (Helper.checkEmptyString(kerndatensatzValue)) {
-      return Constants.getEmptyValue();
-    }
-    StringType stringType = new StringType(kerndatensatzValue);
-    stringType.addExtension(extension);
-    return stringType;
+    return generalStringTypeWithExtensions(kerndatensatzValue, Constants::getEmptyValue, extension);
   }
 
   public static List<StringType> stringTypeListFromName(
