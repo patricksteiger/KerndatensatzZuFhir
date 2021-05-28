@@ -405,11 +405,33 @@ public class Laborbefund implements Datablock {
 
   // TODO: Add Extension with Specimen or laboratory datetime
   public DateTimeType getObservationEffective() {
-    String untersuchungszeitpunkt = this.getLaboruntersuchung_untersuchungszeitpunkt();
-    LoggingData data =
-        LoggingData.of(
-            LOGGER, "getObservationEffective", "laboruntersuchung_untersuchungszeitpunkt");
-    return dateTimeType(untersuchungszeitpunkt, data);
+    String abnahmezeitpunkt = this.getProbenmaterial_abnahmezeitpunkt();
+    // Abnahmezeitpunkt is general value needed
+    if (Helper.checkNonEmptyString(abnahmezeitpunkt)) {
+      LoggingData data =
+          LoggingData.of(LOGGER, "getDiagnosticReportEffective", "probenmaterial_abnahmezeitpunkt");
+      Extension specimen = this.getObservationEffectiveSpecimen();
+      return dateTimeTypeWithExtension(abnahmezeitpunkt, data, specimen);
+    } else { // Laboreingangszeitpunkt is set if Abnahmezeitpunkt isn't present
+      String laboreingangszeitpunkt = this.getProbenmaterial_laboreingangszeitpunkt();
+      LoggingData data =
+          LoggingData.of(
+              LOGGER, "getDiagnosticReportEffective", "probenmaterial_laboreingangszeitpunkt");
+      Extension laboratory = this.getObservationEffectiveLaboratory();
+      return dateTimeTypeWithExtension(laboreingangszeitpunkt, data, laboratory);
+    }
+  }
+
+  public Extension getObservationEffectiveSpecimen() {
+    QuelleKlinischesBezugsdatum specimen = QuelleKlinischesBezugsdatum.SPECIMEN;
+    String url = ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM;
+    return extensionWithCoding(specimen, url);
+  }
+
+  public Extension getObservationEffectiveLaboratory() {
+    QuelleKlinischesBezugsdatum lab = QuelleKlinischesBezugsdatum.LABORATORY;
+    String url = ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM;
+    return extensionWithCoding(lab, url);
   }
 
   public Reference getObservationSubject() {

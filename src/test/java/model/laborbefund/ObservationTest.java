@@ -1,9 +1,7 @@
 package model.laborbefund;
 
-import constants.CodingCode;
-import constants.CodingSystem;
 import constants.Constants;
-import constants.IdentifierSystem;
+import constants.*;
 import enums.*;
 import helper.Logger;
 import model.Laborbefund;
@@ -216,14 +214,38 @@ class ObservationTest {
 
   @Test
   void testEffective() {
-    // invalid datum
-    laborbefund.setLaboruntersuchung_untersuchungszeitpunkt("invalid date");
+    // invalid abnahmezeitpunkt
+    laborbefund.setProbenmaterial_abnahmezeitpunkt("invalid date");
+    laborbefund.setProbenmaterial_laboreingangszeitpunkt("2013-08-24");
     assertEmptyValue(laborbefund.getObservationEffective());
-    // valid datum
-    String datum = "2013-08-24T10:13:27";
-    laborbefund.setLaboruntersuchung_untersuchungszeitpunkt(datum);
+    // empty abnahmezeitpunkt, invalid laboreinganszeitpunkt
+    laborbefund.setProbenmaterial_abnahmezeitpunkt("");
+    laborbefund.setProbenmaterial_laboreingangszeitpunkt("invalid date");
+    assertEmptyValue(laborbefund.getObservationEffective());
+    // valid abnahmezeitpunkt
+    String abnahmezeitpunkt = "2013-08-24T10:13:27";
+    laborbefund.setProbenmaterial_abnahmezeitpunkt(abnahmezeitpunkt);
+    laborbefund.setProbenmaterial_laboreingangszeitpunkt("");
     DateTimeType result = laborbefund.getObservationEffective();
-    assertDateTimeType(expectedDateString(datum), result);
+    assertDateTimeType(expectedDateString(abnahmezeitpunkt), result);
+    Extension extension = result.getExtensionByUrl(ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM);
+    assertNonEmptyValue(extension);
+    assertExtensionWithCoding(
+        QuelleKlinischesBezugsdatum.SPECIMEN,
+        ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM,
+        extension);
+    // empty abnahmezeitpunkt, valid laboreinganszeitpunkt
+    String laboreingangszeitpunkt = "2014-10-15";
+    laborbefund.setProbenmaterial_abnahmezeitpunkt("");
+    laborbefund.setProbenmaterial_laboreingangszeitpunkt(laboreingangszeitpunkt);
+    result = laborbefund.getObservationEffective();
+    assertDateTimeType(expectedDateString(laboreingangszeitpunkt), result);
+    extension = result.getExtensionByUrl(ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM);
+    assertNonEmptyValue(extension);
+    assertExtensionWithCoding(
+        QuelleKlinischesBezugsdatum.LABORATORY,
+        ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM,
+        extension);
   }
 
   @Test

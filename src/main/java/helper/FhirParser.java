@@ -160,6 +160,19 @@ public class FhirParser {
     return FhirGenerator.coding(parsedCode.getCode(), parsedCode.getSystem(), display);
   }
 
+  public static Extension extensionWithDateTimeType(
+      String date, String extensionUrl, LoggingData loggingData) {
+    return Helper.getDateFromISO(date)
+        .map(FhirGenerator::dateTimeType)
+        .map(dateTime -> FhirGenerator.extension(extensionUrl, dateTime))
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, date));
+  }
+
+  public static Extension extensionWithCoding(Code code, String url) {
+    Coding coding = FhirGenerator.coding(code);
+    return FhirGenerator.extension(url, coding);
+  }
+
   public static <T extends Code> Extension optionalExtensionWithCodingFromValueSet(
       String kerndatensatzValue,
       String extensionUrl,
@@ -236,14 +249,6 @@ public class FhirParser {
         .apply(parsedCode.getCode())
         .map(FhirGenerator::coding)
         .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
-  }
-
-  public static Extension extensionWithDateTimeType(
-      String date, String extensionUrl, LoggingData loggingData) {
-    return Helper.getDateFromISO(date)
-        .map(FhirGenerator::dateTimeType)
-        .map(dateTime -> FhirGenerator.extension(extensionUrl, dateTime))
-        .orElseGet(getMethodValueLoggingSupplier(loggingData, date));
   }
 
   public static Identifier optionalIdentifierFromSystemWithCoding(
@@ -381,6 +386,14 @@ public class FhirParser {
   }
 
   public static DateTimeType dateTimeTypeWithExtension(
+      String date, LoggingData loggingData, Extension extension) {
+    Optional<DateTimeType> dateTimeType =
+        Helper.getDateFromISO(date).map(FhirGenerator::dateTimeType);
+    dateTimeType.ifPresent(d -> d.addExtension(extension));
+    return dateTimeType.orElseGet(getMethodValueLoggingSupplier(loggingData, date));
+  }
+
+  public static DateTimeType nonEmptyDateTimeTypeWithExtension(
       String date, LoggingData loggingData, Extension extension) {
     DateTimeType result = new DateTimeType();
     if (Helper.checkNonEmptyString(date)) {

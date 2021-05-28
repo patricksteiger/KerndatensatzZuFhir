@@ -32,4 +32,6 @@ public class ExtensionUrl {
       "http://fhir.de/StructureDefinition/icd-10-gm-primaercode";
   public static final String MEDIKATION_WIRKSTOFFTYP =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp";
+  public static final String QUELLE_KLINISCHES_BEZUGSDATUM =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/QuelleKlinischesBezugsdatum";
 }
