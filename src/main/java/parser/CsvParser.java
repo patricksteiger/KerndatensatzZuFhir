@@ -28,7 +28,8 @@ public class CsvParser {
    */
   public static <T extends Datablock> List<T> parseDatablocks(
       String csvFilePath, Class<T> datablockClass) throws IOException {
-    BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(csvFilePath), StandardCharsets.ISO_8859_1);
+    BufferedReader bufferedReader =
+        Files.newBufferedReader(Paths.get(csvFilePath), StandardCharsets.ISO_8859_1);
     HeaderColumnNameMappingStrategy<T> headerStrategy = new HeaderColumnNameMappingStrategy<>();
     headerStrategy.setType(datablockClass);
     CsvToBean<T> beanParser =

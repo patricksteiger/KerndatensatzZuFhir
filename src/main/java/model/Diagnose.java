@@ -190,10 +190,11 @@ public class Diagnose implements Datablock {
   public Type getOnset() {
     String zeitraumVon = this.getZeitraum_von();
     LoggingData startData = LoggingData.of(LOGGER, "getOnset", "zeitraum_von");
-    DateTimeType start = dateTimeTypeWithExtension(zeitraumVon, startData, getLebensphaseVon());
+    DateTimeType start =
+        nonEmptyDateTimeTypeWithExtension(zeitraumVon, startData, getLebensphaseVon());
     String zeitraumBis = this.getZeitraum_bis();
     LoggingData endData = LoggingData.of(LOGGER, "getOnset", "zeitraum_bis");
-    DateTimeType end = dateTimeTypeWithExtension(zeitraumBis, endData, getLebensphaseBis());
+    DateTimeType end = nonEmptyDateTimeTypeWithExtension(zeitraumBis, endData, getLebensphaseBis());
     return optionalDateTimeTypeOrPeriod(start, end);
   }
 
