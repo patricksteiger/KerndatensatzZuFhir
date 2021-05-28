@@ -403,7 +403,6 @@ public class Laborbefund implements Datablock {
     return optionalDate(dokumentationsdatum, data);
   }
 
-  // TODO: Add Extension with Specimen or laboratory datetime
   public DateTimeType getObservationEffective() {
     String abnahmezeitpunkt = this.getProbenmaterial_abnahmezeitpunkt();
     // Abnahmezeitpunkt is general value needed
