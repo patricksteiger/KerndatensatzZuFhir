@@ -148,7 +148,7 @@ public class Medikation implements Datablock {
     return this.getMedicationAdministrationReasonCode();
   }
 
-  // TODO: medication could also be CodeableConcept containing code of medi
+  // TODO: medication could also be CodeableConcept containing code of medication
   public Reference getMedicationAdministrationMedication() {
     String ref = MIIReference.REF_MEDICATION;
     return FhirGenerator.reference(ref);
