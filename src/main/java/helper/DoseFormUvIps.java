@@ -1,36 +1,149 @@
 package helper;
 
-import constants.CodingSystem;
-import interfaces.Code;
-
-import java.util.Optional;
-
 /** @see "https://simplifier.net/packages/hl7.fhir.uv.ips/1.0.0/files/244204" */
-public class DoseFormUvIps implements Code {
-  private final String code;
-  private final String display;
+public class DoseFormUvIps {
 
-  private DoseFormUvIps(String code, String display) {
-    this.code = code;
-    this.display = display;
-  }
+  private DoseFormUvIps() {}
 
-  public static Optional<DoseFormUvIps> fromCode(String code) {
-    return Optional.of(new DoseFormUvIps(code, ""));
-  }
-
-  public static boolean validDoseFormUvIpsCode(String code) {
-    if (Helper.checkEmptyString(code) || code.length() < 5 || code.length() > 8) {
+  /**
+   * Checks if given code is a valid DoseForm. There are two different types of codes. Examples:
+   * "50049300" and "22100".
+   *
+   * @param code Simple formatted code.
+   * @return true if code is valid. false otherwise.
+   */
+  public static boolean validate(String code) {
+    if (Helper.checkEmptyString(code) || (code.length() != 5 && code.length() != 8)) {
       return false;
     }
-    char n = code.charAt(0);
-    switch (n) {
+    switch (code.charAt(0)) {
       case '1':
         return isFormCode1(code);
-        // TODO: '2' and rest
+      case '2':
+        return isFormCode2(code);
+      case '3':
+        return isFormCode3(code);
+      case '5':
+        return isFormCode5(code);
       default:
         return false;
     }
+  }
+
+  private static boolean isFormCode5(String code) {
+    switch (code.charAt(1)) {
+      case '0':
+        return isFormCode50(code);
+      default:
+        return false;
+    }
+  }
+
+  private static boolean isFormCode50(String code) {
+    switch (code.charAt(2)) {
+      case '0':
+        return isFormCode500(code);
+      default:
+        return false;
+    }
+  }
+
+  private static boolean isFormCode500(String code) {
+    return isFormCode(code, 1, 66)
+        || isFormCode(code, 70, 74)
+        || isFormCode(code, 76, 82)
+        || stringEndingWith(code, "01", "250", "500")
+        || stringEndingWith(code, "09", "300", "500")
+        || "50013500".equals(code)
+        || stringEndingWith(code, "15", "300", "400", "500")
+        || "50020500".equals(code)
+        || "50021500".equals(code)
+        || "50023500".equals(code)
+        || stringEndingWith(code, "26", "250", "500")
+        || stringEndingWith(code, "29", "250", "500", "600", "700")
+        || stringEndingWith(code, "33", "300", "500")
+        || stringEndingWith(code, "36", "100", "500")
+        || stringEndingWith(code, "37", "250", "750")
+        || "50038500".equals(code)
+        || stringEndingWith(code, "39", "300", "500")
+        || "50041500".equals(code)
+        || "50044500".equals(code)
+        || "50045500".equals(code)
+        || stringEndingWith(code, "47", "500", "700")
+        || stringEndingWith(code, "48", "250", "300", "500", "600", "750")
+        || stringEndingWith(code, "49", "100", "250", "270", "300", "500")
+        || "50051100".equals(code)
+        || "50053500".equals(code)
+        || "50055500".equals(code)
+        || "50056500".equals(code)
+        || stringEndingWith(code, "60", "100", "200", "300", "400", "500")
+        || stringEndingWith(code, "61", "300", "500", "600")
+        || "50062500".equals(code)
+        || stringEndingWith(code, "63", "100", "200", "300", "500");
+  }
+
+  private static boolean isFormCode3(String code) {
+    switch (code.charAt(1)) {
+      case '0':
+        return isFormCode30(code);
+      case '1':
+        return isFormCode31(code);
+      default:
+        return false;
+    }
+  }
+
+  private static boolean isFormCode31(String code) {
+    return "31030".equals(code) || "31080".equals(code);
+  }
+
+  private static boolean isFormCode30(String code) {
+    return "30047500".equals(code);
+  }
+
+  private static boolean isFormCode2(String code) {
+    char c = code.charAt(1);
+    switch (c) {
+      case '0':
+        return isFormCode20(code);
+      case '1':
+        return isFormCode21(code);
+      case '2':
+        return isFormCode22(code);
+      case '6':
+        return isFormCode26(code);
+      case '9':
+        return isFormCode29(code);
+      default:
+        return false;
+    }
+  }
+
+  private static boolean isFormCode29(String code) {
+    return "29020".equals(code);
+  }
+
+  private static boolean isFormCode26(String code) {
+    return "26010".equals(code);
+  }
+
+  private static boolean isFormCode22(String code) {
+    return "22010".equals(code)
+        || "22050".equals(code)
+        || "22090".equals(code)
+        || "22100".equals(code)
+        || "22120".equals(code);
+  }
+
+  private static boolean isFormCode21(String code) {
+    return "21010".equals(code)
+        || "21060".equals(code)
+        || "21100".equals(code)
+        || "21140".equals(code);
+  }
+
+  private static boolean isFormCode20(String code) {
+    return "20050".equals(code);
   }
 
   private static boolean isFormCode1(String code) {
@@ -278,22 +391,16 @@ public class DoseFormUvIps implements Code {
     }
   }
 
-  private static boolean isCharInRange(char c, char lo, char hi) {
-    return lo <= c && c <= hi;
-  }
-
-  @Override
-  public String getCode() {
-    return code;
-  }
-
-  @Override
-  public String getSystem() {
-    return CodingSystem.EDQM_STANDARD;
-  }
-
-  @Override
-  public String getDisplay() {
-    return null;
+  private static boolean stringEndingWith(String code, String middle, String... endings) {
+    String xx = code.substring(3, 5);
+    if (!xx.equals(middle)) {
+      return false;
+    }
+    for (String ending : endings) {
+      if (code.endsWith(ending)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
