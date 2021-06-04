@@ -149,6 +149,7 @@ public class Fall implements Datablock {
     return periodWithOptionalEnd(beginndatum, enddatum, startData, endData);
   }
 
+  // TODO: Ist Kontaktebene fix für jeden Typ? Oder soll doch geparst werden?
   public CodeableConcept getVersorgungsstellenEncounterType() {
     String ebene = this.getVersorgungsstellenkontakt_ebene();
     LoggingData data =
