@@ -114,6 +114,9 @@ class MedicationTest {
   void testForm() {
     // empty form
     assertEmptyCodeValue(medikation::setDarreichungsform, medikation::getMedicationForm);
+    // invalid form
+    medikation.setDarreichungsform("invalid code");
+    assertEmptyValue(medikation.getMedicationForm());
     // non-empty form
     String code = "10219000", display = "Tablet";
     medikation.setDarreichungsform(getCodeDisplayStr(code, display));

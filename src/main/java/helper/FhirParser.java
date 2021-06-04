@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class FhirParser {
@@ -79,6 +80,21 @@ public class FhirParser {
   public static CodeableConcept optionalCodeFromSystem(
       String kerndatensatzValue, String codeSystem) {
     return optionalFhirFromSystem(kerndatensatzValue, codeSystem, FhirGenerator::codeableConcept);
+  }
+
+  public static CodeableConcept optionalCodeFromSystemWithValidation(
+      String kerndatensatzValue,
+      String system,
+      Predicate<String> validator,
+      LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, system);
+    if (parsedCode.hasEmptyCode()) {
+      return Constants.getEmptyValue();
+    }
+    if (!validator.test(parsedCode.getCode())) {
+      return logMethodValue(loggingData, kerndatensatzValue);
+    }
+    return FhirGenerator.codeableConcept(parsedCode);
   }
 
   public static <T extends Code> CodeableConcept optionalCodeFromValueSetOrSystem(

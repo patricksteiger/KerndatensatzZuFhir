@@ -202,11 +202,11 @@ public class Medikation implements Datablock {
     return optionalRatio(wirkstaerke, data);
   }
 
-  // TODO: https://simplifier.net/packages/hl7.fhir.uv.ips/1.0.0/files/244204
   public CodeableConcept getMedicationForm() {
     String code = this.getDarreichungsform();
     String system = CodingSystem.EDQM_STANDARD;
-    return optionalCodeFromSystem(code, system);
+    LoggingData data = LoggingData.of(LOGGER, "getMedicationForm", "darreichungsform");
+    return optionalCodeFromSystemWithValidation(code, system, DoseFormUvIps::validate, data);
   }
 
   public CodeableConcept getMedicationCode() {
