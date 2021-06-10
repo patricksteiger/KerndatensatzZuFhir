@@ -345,63 +345,6 @@ public class FallTest {
     }
 
     @Nested
-    class DischargeDispositionTest {
-      @Test
-      @DisplayName("empty Entlassungsgrund results in empty CodeableConcept")
-      void testEmptyDischargeDisposition() {
-        assertEmptyCodeValue(
-            fall::setEinrichtungskontakt_entlassungsgrund,
-            fall::getEinrichtungsEncounterDischargeDisposition);
-      }
-
-      @Test
-      @DisplayName("invalid Entlassungsgrund results in empty CodeableConcept")
-      void testInvalidDischargeDisposition() {
-        String entlassungsgrund = getCodeDisplayStr("invalid", "failed display");
-        fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
-        assertEmptyValue(fall.getEinrichtungsEncounterDischargeDisposition());
-      }
-
-      @Test
-      @DisplayName("valid Entlassungsgrund should be present in CodeableConcept")
-      void testDischargeDisposition() {
-        Entlassungsgrund grund = Entlassungsgrund.G15;
-        String entlassungsgrund = getCodeDisplayStr(grund);
-        fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
-        CodeableConcept result = fall.getEinrichtungsEncounterDischargeDisposition();
-        assertCodeableConcept(grund, result);
-      }
-    }
-
-    @Nested
-    class AdmitSourceTest {
-      @Test
-      @DisplayName("empty Aufnahmeanlass should result in empty CodeableConcept")
-      void testEmptyAdmitSource() {
-        assertEmptyCodeValue(
-            fall::setEinrichtungskontakt_aufnahmeanlass, fall::getEinrichtungsEncounterAdmitSource);
-      }
-
-      @Test
-      @DisplayName("invalid Aufnahmeanlass should result in empty CodeableConcept")
-      void testInvalidAdmitSource() {
-        String anlass = getCodeDisplayStr("invalid", "invalid display");
-        fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
-        assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
-      }
-
-      @Test
-      @DisplayName("valid Aufnahmeanlass should be present in CodeableConcept")
-      void testAdmitSource() {
-        Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.NOTFALL;
-        String anlass = getCodeDisplayStr(aufnahmeanlass);
-        fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
-        CodeableConcept result = fall.getEinrichtungsEncounterAdmitSource();
-        assertCodeableConcept(aufnahmeanlass, result);
-      }
-    }
-
-    @Nested
     class HospitalizationTest {
       @Test
       @DisplayName(
@@ -427,6 +370,64 @@ public class FallTest {
             fall.getEinrichtungsEncounterHospitalization();
         assertTrue(result.hasAdmitSource());
         assertTrue(result.hasDischargeDisposition());
+      }
+
+      @Nested
+      class DischargeDispositionTest {
+        @Test
+        @DisplayName("empty Entlassungsgrund results in empty CodeableConcept")
+        void testEmptyDischargeDisposition() {
+          assertEmptyCodeValue(
+              fall::setEinrichtungskontakt_entlassungsgrund,
+              fall::getEinrichtungsEncounterDischargeDisposition);
+        }
+
+        @Test
+        @DisplayName("invalid Entlassungsgrund results in empty CodeableConcept")
+        void testInvalidDischargeDisposition() {
+          String entlassungsgrund = getCodeDisplayStr("invalid", "failed display");
+          fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
+          assertEmptyValue(fall.getEinrichtungsEncounterDischargeDisposition());
+        }
+
+        @Test
+        @DisplayName("valid Entlassungsgrund should be present in CodeableConcept")
+        void testDischargeDisposition() {
+          Entlassungsgrund grund = Entlassungsgrund.G15;
+          String entlassungsgrund = getCodeDisplayStr(grund);
+          fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
+          CodeableConcept result = fall.getEinrichtungsEncounterDischargeDisposition();
+          assertCodeableConcept(grund, result);
+        }
+      }
+
+      @Nested
+      class AdmitSourceTest {
+        @Test
+        @DisplayName("empty Aufnahmeanlass should result in empty CodeableConcept")
+        void testEmptyAdmitSource() {
+          assertEmptyCodeValue(
+              fall::setEinrichtungskontakt_aufnahmeanlass,
+              fall::getEinrichtungsEncounterAdmitSource);
+        }
+
+        @Test
+        @DisplayName("invalid Aufnahmeanlass should result in empty CodeableConcept")
+        void testInvalidAdmitSource() {
+          String anlass = getCodeDisplayStr("invalid", "invalid display");
+          fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
+          assertEmptyValue(fall.getEinrichtungsEncounterAdmitSource());
+        }
+
+        @Test
+        @DisplayName("valid Aufnahmeanlass should be present in CodeableConcept")
+        void testAdmitSource() {
+          Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.NOTFALL;
+          String anlass = getCodeDisplayStr(aufnahmeanlass);
+          fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
+          CodeableConcept result = fall.getEinrichtungsEncounterAdmitSource();
+          assertCodeableConcept(aufnahmeanlass, result);
+        }
       }
     }
   }
