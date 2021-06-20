@@ -6,7 +6,6 @@ import enums.DurchfuehrungsabsichtCode;
 import enums.ProcedureCategorySnomedMapping;
 import enums.SeitenlokalisationCode;
 import helper.Logger;
-import model.Prozedur;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;

@@ -33,9 +33,10 @@ public class ParsedCodeTest {
     runTestCase(systemCode, "", system, "");
     runTestCase(displayCode, "", "", display);
     runTestCase(systemCode + " " + codeCode, code, system, "");
-    runTestCase( codeCode + "  " + systemCode, code, system, "");
+    runTestCase(codeCode + "  " + systemCode, code, system, "");
     runTestCase(systemCode + " " + displayCode, "", system, display);
-    runTestCase("  " + codeCode + "\n" + displayCode + "\t " + systemCode + " \n", code, system, display);
+    runTestCase(
+        "  " + codeCode + "\n" + displayCode + "\t " + systemCode + " \n", code, system, display);
   }
 
   @Test
@@ -46,7 +47,8 @@ public class ParsedCodeTest {
     assertTrue(parsedCode.hasDisplay());
   }
 
-  private void runTestCase(String input, String expectedCode, String expectedSystem, String expectedDisplay) {
+  private void runTestCase(
+      String input, String expectedCode, String expectedSystem, String expectedDisplay) {
     ParsedCode parsedCode = ParsedCode.fromString(input);
     assertNotNull(parsedCode);
     assertEquals(expectedCode, parsedCode.getCode());
