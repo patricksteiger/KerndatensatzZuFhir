@@ -103,7 +103,14 @@ public class Laborbefund implements Datablock {
     diagnosticReport.setIssued(this.getDiagnosticReportIssued());
     // Specimen (optional)
     diagnosticReport.addSpecimen(this.getDiagnosticReportSpecimen());
+    // Result
+    diagnosticReport.addResult(this.getDiagnosticReportResult());
     return diagnosticReport;
+  }
+
+  public Reference getDiagnosticReportResult() {
+    String ref = "Observation/test";
+    return optionalReference(ref);
   }
 
   public Reference getDiagnosticReportBasedOn() {
