@@ -1,6 +1,11 @@
 package helper;
 
 import org.junit.jupiter.api.Test;
+import valueSet.CodeDto;
+import valueSet.DoseFormUvIpsCodes;
+
+import java.io.FileNotFoundException;
+import java.util.List;
 
 import static helper.DoseFormUvIps.validate;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,5 +40,12 @@ class DoseFormUvIpsTest {
     assertFalse(validate("50049999"));
     assertFalse(validate("50077300"));
     assertFalse(validate("50075000"));
+  }
+
+  @Test
+  void testAllValidCodes() throws FileNotFoundException {
+    List<CodeDto> codes = DoseFormUvIpsCodes.get();
+    assertTrue(codes.size() > 400);
+    for (CodeDto code : codes) assertTrue(validate(code.getCode()));
   }
 }
