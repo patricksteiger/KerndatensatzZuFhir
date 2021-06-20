@@ -2,33 +2,15 @@ package helper;
 
 import org.junit.jupiter.api.Test;
 import valueSet.CodeDto;
-import valueSet.DoseFormUvIpsCodes;
+import valueSet.CodeUtil;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
 import static helper.DoseFormUvIps.validate;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoseFormUvIpsTest {
-  @Test
-  void testValidCodes() {
-    assertTrue(validate("22100"));
-    assertTrue(validate("50049300"));
-    assertTrue(validate("50082000"));
-    assertTrue(validate("16040"));
-    assertTrue(validate("31030"));
-    assertTrue(validate("10402000"));
-    assertTrue(validate("10101000"));
-    assertTrue(validate("11010"));
-    assertTrue(validate("12150"));
-    assertTrue(validate("11602000"));
-    assertTrue(validate("30047500"));
-    assertTrue(validate("29020"));
-    assertTrue(validate("50037750"));
-  }
-
   @Test
   void testInvalidCodes() {
     assertFalse(validate(null));
@@ -44,8 +26,8 @@ class DoseFormUvIpsTest {
 
   @Test
   void testAllValidCodes() throws FileNotFoundException {
-    List<CodeDto> codes = DoseFormUvIpsCodes.get();
-    assertTrue(codes.size() > 400);
-    for (CodeDto code : codes) assertTrue(validate(code.getCode()));
+    List<CodeDto> codes = CodeUtil.get("DoseFormUvIpsCodes.json");
+    assertEquals(461, codes.size());
+    codes.forEach(code -> assertTrue(validate(code.getCode())));
   }
 }
