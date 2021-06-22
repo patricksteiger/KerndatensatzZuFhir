@@ -53,4 +53,10 @@ public class CodeUtil {
     JSONTokener tokener = new JSONTokener(fileReader);
     return new JSONObject(tokener);
   }
+
+  public static <T extends Code> void assertSimpleSystem(String expectedSystem, T[] codes) {
+    for (T code : codes) {
+      assertEquals(expectedSystem, code.getSystem(), "Code: \"" + code.getCode() + "\"");
+    }
+  }
 }
