@@ -1,0 +1,62 @@
+{
+  "resourceType": "ValueSet",
+  "id": "ValueSetSemiquantitativeLaborergebnisse",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
+    ]
+  },
+  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/ValueSet/Laborergebnis-semiquantitativ",
+  "version": "1.0",
+  "title": "ValueSet - Semiquantitative Laborergebnisse",
+  "name": "ValueSetSemiquantitativeLaborergebnisse",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Medizininformatik Initiative",
+  "description": "Kodierung für semi-quantitative Laborergebnisse",
+  "codes": [
+    {
+      "code": "260347006",
+      "display": "Present + out of ++++ (qualifier value)"
+    },
+    {
+      "code": "260348001",
+      "display": "Present ++ out of ++++ (qualifier value)"
+    },
+    {
+      "code": "260349009",
+      "display": "Present +++ out of ++++ (qualifier value)"
+    },
+    {
+      "code": "260350009",
+      "display": "Present ++++ out of ++++ (qualifier value)"
+    },
+    {
+      "code": "410594000",
+      "display": "Definitely NOT present (qualifier value)"
+    },
+    {
+      "code": "260405006",
+      "display": "Trace (qualifier value)"
+    },
+    {
+      "code": "441614007",
+      "display": "Present one plus out of three plus"
+    },
+    {
+      "code": "441517005",
+      "display": "Present two plus out of three plus"
+    },
+    {
+      "code": "441521003",
+      "display": "Present three plus out of three plus"
+    }
+  ],
+  "compose": {
+    "include": [
+      {
+        "system": "http://snomed.info/sct"
+      }
+    ]
+  }
+}
