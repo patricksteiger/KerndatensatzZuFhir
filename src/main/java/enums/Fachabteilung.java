@@ -40,7 +40,7 @@ public enum Fachabteilung implements Code {
   HALS_NASEN_OHRENHEILKUNDE("2600", "Hals-, Nasen-, Ohrenheilkunde"),
   AUGENHEILKUNDE("2700", "Augenheilkunde"),
   NEUROLOGIE("2800", "Neurologie"),
-  ALLGEMEINE_PSYCHATRIE("2900", "Allgemeine Psychatrie"),
+  ALLGEMEINE_PSYCHATRIE("2900", "Allgemeine Psychiatrie"),
   KINDER_UND_JUGENDPSYCHATRIE("3000", "Kinder- und Jugendpsychiatrie"),
   PSYCHOTHERAPIE("3100", "Psychosomatik/Psychotherapie"),
   NUKLEARMEDIZIN("3200", "Nuklearmedizin"),
