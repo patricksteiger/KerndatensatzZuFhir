@@ -10,6 +10,7 @@ import java.util.Optional;
  * @see "https://simplifier.net/guide/LaborbefundinderMedizininformatik-Initiative/Terminologien"
  */
 public enum SemiQuantitativesLaborergebnis implements Code {
+  // TODO: FOUR OUT OF FOUR has is represented twice in valueSet?
   ONE_OF_FOUR("260347006", "Present + out of ++++ (qualifier value)"),
   TWO_OF_FOUR("260348001", "Present ++ out of ++++ (qualifier value)"),
   THREE_OF_FOUR("260349009", "Present +++ out of ++++ (qualifier value)"),
