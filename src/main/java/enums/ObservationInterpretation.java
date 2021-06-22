@@ -6,6 +6,7 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+// TODO: What should be done with deprecated values?
 /** @see "http://hl7.org/fhir/ValueSet/observation-interpretation" */
 public enum ObservationInterpretation implements Code {
   GENETIC_OBSERVATION_INTERPRETATION(
