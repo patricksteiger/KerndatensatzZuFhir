@@ -13,7 +13,7 @@ public class CodingSystem {
       "http://hl7.org/fhir/CodeSystem/observation-category";
   public static final String LOINC = "http://loinc.org";
   public static final String VITALSTATUS =
-      "https://www.medizininformatik-initiative.de/fhir/core/modul-person/ValueSet/Vitalstatus";
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-person/CodeSystem/Vitalstatus";
   public static final String DIAGNOSTIC_SERVICE_SECTION =
       "http://terminology.hl7.org/CodeSystem/v2-0074";
   public static final String TERMINOLOGY_OBSERVATION_VATEGORY =

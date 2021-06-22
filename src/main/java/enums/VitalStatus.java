@@ -1,7 +1,10 @@
 package enums;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
+
+import java.util.Optional;
 
 /**
  * @see
@@ -22,6 +25,10 @@ public enum VitalStatus implements Code {
   VitalStatus(String code, String display) {
     this.code = code;
     this.display = display;
+  }
+
+  public static Optional<VitalStatus> fromCode(String code) {
+    return Helper.codeFromString(VitalStatus.values(), code);
   }
 
   public String getCode() {
