@@ -11,10 +11,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static valueSet.CodeUtil.assertValidCodes;
 
 class FachabteilungTest {
+
+  @Test
+  void testSystem() {
+    String expectedSystem =
+        "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Fachabteilungsschluessel";
+    for (Fachabteilung fachabteilung : Fachabteilung.values()) {
+      assertEquals(
+          expectedSystem,
+          fachabteilung.getSystem(),
+          "Fachabteilungscode: " + fachabteilung.getCode());
+    }
+  }
+
   @Test
   void testAllValidCodes() throws FileNotFoundException {
     List<CodeDto> codes = CodeUtil.get("FachabteilungCodes.json");
-    assertEquals(codes.size(), Fachabteilung.values().length);
     assertValidCodes(codes, Fachabteilung::fromCode);
+    assertEquals(codes.size(), Fachabteilung.values().length);
   }
 }
