@@ -1,0 +1,689 @@
+{
+  "valueSet": [
+    {
+      "id": "1.2.40.0.34.10.47",
+      "name": "ELGA_Laborstruktur",
+      "display": "ELGA_Laborstruktur",
+      "effectiveDate": "2018-01-18T00:00:00",
+      "statusCode": "final",
+      "versionLabel": "4.3",
+      "desc": [
+        {
+          "language": "de-DE",
+          "#text": "Struktur eines österreichischen Laborbefundes. Drei Hierarchiebenenen: 'Allgemeiner Befund', 'Bereiche' und 'Gruppen'"
+        }
+      ],
+      "sourceCodeSystem": [
+        {
+          "id": "1.2.40.0.34.5.11",
+          "identifierName": "",
+          "canonicalUri": "urn:oid:1.2.40.0.34.5.11",
+          "canonicalUriDSTU2": "urn:oid:1.2.40.0.34.5.11",
+          "canonicalUriSTU3": "urn:oid:1.2.40.0.34.5.11",
+          "canonicalUriR4": "urn:oid:1.2.40.0.34.5.11"
+        }
+      ],
+      "publishingAuthority": [
+        {
+          "name": "Konsortium DIFUTURE",
+          "addrLine": [
+            {
+              "type": "uri",
+              "#text": "https://difuture.de"
+            }
+          ]
+        }
+      ],
+      "conceptList": [
+        {
+        }
+      ]
+    }
+  ],
+  "codes": [
+    {
+      "code": "1",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Allgemeiner Laborbefund",
+      "level": "0",
+      "type": "S"
+    },
+    {
+      "code": "10",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Probeninformation",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "100",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blutgruppenserologie",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "01850",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blutgruppenserologie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "01860",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "HLA-Diagnostik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "01870",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "HPA-Diagnostik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "200",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blutgasanalytik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "02060",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blutgasanalyse arteriell",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "02070",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hb-Derivate arteriell",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "02080",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blutgasanalyse venös",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "02090",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hb-Derivate venös",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "02100",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blutgasanalyse kapillär",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "02110",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hb-Derivate kapillär",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "02120",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hb-Derivate, gemischtvenös (Rechtsherzkatheter)",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "02130",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "BGA Sonstiges",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "300",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hämatologie",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "03010",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blutbild",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "03020",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Knochenmark Morphologie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "03030",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Immunphänotypisierung",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "03050",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hämatologie Sonstiges",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "400",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Gerinnung/Hämostaseologie",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "04140",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hämostaseologie Globaltests",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "04150",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Einzelfaktoranalysen",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "04160",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Thrombophilie Tests",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "04170",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Gerinnung Sonstiges",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "500",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Klinische Chemie/Proteindiagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "05180",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Klinische Chemie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "05190",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Proteindiagnostik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "05200",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Spurenelemente",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "05210",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Sondermaterialien",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "05220",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Unters. bei Stoffwechselerkrankungen",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "600",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hormone/Vitamine/Tumormarker",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "06330",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hormone",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "06340",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Vitamine",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "06350",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Tumormarker",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "900",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Toxikologie",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "07230",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Urin-Screening",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "07240",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Blut",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "07250",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Toxikologie Sonstiges",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "1000",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Medikamente",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "08260",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Antibiotika",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "08270",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Virostatika",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "08280",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Antiepileptika",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "08290",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Psychopharmaka",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "08300",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Kardiaka",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "08310",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Immunsuppressiva",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "08320",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Medikamente Sonstiges",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "1100",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Infektionsdiagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "10780",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Virologie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "10790",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Bakteriologie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "10800",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Mykologie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "10810",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Parasitologie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "10820",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Makroskopie/Mikroskopie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "1300",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Autoimmundiagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "11360",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Rheumatoide Arthritis-assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11370",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Kollagenose-assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11380",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Myositis-assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11390",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Lebererkrankungen-assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11400",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Perniziöse Anämie assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11410",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Vasculitis-assoziierte Antikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11420",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Goodpasture Syndrom assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11430",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "IBD assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11440",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Zöliakie assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11450",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Diabetes Mellitus assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11460",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Paraneoplasie assoziierte Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "11470",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Sonstige Autoantikörper",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "1800",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Allergiediagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "12010",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Globalmarker",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12020",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Inhalationsallergene IgE",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12030",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Nahrungsmittelallergene IgE",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12040",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Umwelt- und Berufsallergene IgE",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12050",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Medikamente IgE",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12060",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Insekten und Insektengifte IgE",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12070",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Sonstige IgE",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12080",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Allergiechip IgE",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "12090",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "IgG Antigene",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "1400",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Urindiagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "13730",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Urinstreifen",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "13740",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Urinsediment",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "13750",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Urinchemie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "1500",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Stuhldiagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "14760",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Stuhldiagnostik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "1600",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Liquordiagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "15770",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Liquordiagnostik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "2300",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Genetische Diagnostik",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "16830",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Pharmakogenetik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "16840",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Humangenetik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "16841",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Hämatologische Genetik",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "2500",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Sonstige",
+      "level": "1",
+      "type": "S"
+    },
+    {
+      "code": "17880",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Zytologie",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "17890",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Sonstige",
+      "level": "2",
+      "type": "S"
+    },
+    {
+      "code": "20",
+      "codeSystem": "1.2.40.0.34.5.11",
+      "display": "Befundbewertung",
+      "level": "1",
+      "type": "S"
+    }
+  ]
+}
