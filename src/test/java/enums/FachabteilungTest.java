@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static valueSet.CodeUtil.assertSimpleSystem;
 import static valueSet.CodeUtil.assertValidCodes;
 
 class FachabteilungTest {
@@ -16,12 +17,7 @@ class FachabteilungTest {
   void testSystem() {
     String expectedSystem =
         "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Fachabteilungsschluessel";
-    for (Fachabteilung fachabteilung : Fachabteilung.values()) {
-      assertEquals(
-          expectedSystem,
-          fachabteilung.getSystem(),
-          "Fachabteilungscode: " + fachabteilung.getCode());
-    }
+    assertSimpleSystem(expectedSystem, Fachabteilung.values());
   }
 
   @Test
