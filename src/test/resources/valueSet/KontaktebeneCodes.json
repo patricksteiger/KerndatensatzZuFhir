@@ -1,0 +1,47 @@
+{
+  "resourceType": "CodeSystem",
+  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Kontaktebene",
+  "version": "1.0",
+  "name": "Kontaktebene",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Medizininformatik Initative",
+  "description": "CodeSystem für Kontaktebene",
+  "caseSensitive": true,
+  "valueSet": "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/ValueSet/Kontaktebene",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "einrichtungskontakt",
+      "display": "Einrichtungskontakt",
+      "definition": "Beschreibt den Kontakt zur Einrichtung."
+    },
+    {
+      "code": "abteilungskontakt",
+      "display": "Abteilungskontakt",
+      "definition": "Beschreibt den Kontakt zur Abteilung."
+    },
+    {
+      "code": "versorgungsstellenkontakt",
+      "display": "Versorgungsstellenkontakt",
+      "definition": "Beschreibt den Kontakt zur Versorgungsstelle."
+    }
+  ],
+  "codes": [
+    {
+      "code": "einrichtungskontakt",
+      "display": "Einrichtungskontakt",
+      "definition": "Beschreibt den Kontakt zur Einrichtung."
+    },
+    {
+      "code": "abteilungskontakt",
+      "display": "Abteilungskontakt",
+      "definition": "Beschreibt den Kontakt zur Abteilung."
+    },
+    {
+      "code": "versorgungsstellenkontakt",
+      "display": "Versorgungsstellenkontakt",
+      "definition": "Beschreibt den Kontakt zur Versorgungsstelle."
+    }
+  ]
+}
