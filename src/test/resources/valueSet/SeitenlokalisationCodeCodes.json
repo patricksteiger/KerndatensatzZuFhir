@@ -1,0 +1,135 @@
+{
+  "codes": [
+    {
+      "code": "R",
+      "codeSystem": "2.16.840.1.113883.3.7.1.7",
+      "display": "rechts",
+      "level": "0",
+      "type": "L"
+    },
+    {
+      "code": "L",
+      "codeSystem": "2.16.840.1.113883.3.7.1.7",
+      "display": "links",
+      "level": "0",
+      "type": "L"
+    },
+    {
+      "code": "B",
+      "codeSystem": "2.16.840.1.113883.3.7.1.7",
+      "display": "beidseits",
+      "level": "0",
+      "type": "L"
+    },
+    {
+      "code": "M",
+      "codeSystem": "2.16.840.1.113883.3.7.1.7",
+      "display": "Mittellinienzone",
+      "level": "0",
+      "type": "L"
+    },
+    {
+      "code": "NA",
+      "codeSystem": "2.16.840.1.113883.5.1008",
+      "display": "nicht zutreffend",
+      "level": "0",
+      "type": "L"
+    },
+    {
+      "code": "UNK",
+      "codeSystem": "2.16.840.1.113883.5.1008",
+      "display": "unbekannt",
+      "level": "0",
+      "type": "L"
+    }
+  ],
+  "valueSet": [
+    {
+      "id": "1.2.40.0.34.10.176",
+      "name": "ELGA_Seitenlokalisation",
+      "displayName": "ELGA_Seitenlokalisation",
+      "effectiveDate": "2017-02-17T00:00:00",
+      "statusCode": "final",
+      "versionLabel": "4.0",
+      "sourceCodeSystem": [
+        {
+          "id": "2.16.840.1.113883.3.7.1.7",
+          "identifierName": "",
+          "canonicalUri": "urn:oid:2.16.840.1.113883.3.7.1.7",
+          "canonicalUriDSTU2": "urn:oid:2.16.840.1.113883.3.7.1.7",
+          "canonicalUriSTU3": "urn:oid:2.16.840.1.113883.3.7.1.7",
+          "canonicalUriR4": "urn:oid:2.16.840.1.113883.3.7.1.7"
+        },
+        {
+          "id": "2.16.840.1.113883.5.1008",
+          "identifierName": "Null&#160;Flavor",
+          "canonicalUri": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+          "canonicalUriDSTU2": "http://hl7.org/fhir/v3/NullFlavor",
+          "canonicalUriSTU3": "http://hl7.org/fhir/v3/NullFlavor",
+          "canonicalUriR4": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"
+        }
+      ],
+      "publishingAuthority": [
+        {
+          "name": "Konsortium DIFUTURE",
+          "addrLine": [
+            {
+              "type": "uri",
+              "#text": "https://difuture.de"
+            }
+          ]
+        }
+      ],
+      "conceptList": [
+        {
+          "concept": [
+            {
+              "code": "R",
+              "codeSystem": "2.16.840.1.113883.3.7.1.7",
+              "displayName": "rechts",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "L",
+              "codeSystem": "2.16.840.1.113883.3.7.1.7",
+              "displayName": "links",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "B",
+              "codeSystem": "2.16.840.1.113883.3.7.1.7",
+              "displayName": "beidseits",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "M",
+              "codeSystem": "2.16.840.1.113883.3.7.1.7",
+              "displayName": "Mittellinienzone",
+              "level": "0",
+              "type": "L"
+            }
+          ],
+          "exception": [
+            {
+              "code": "NA",
+              "codeSystem": "2.16.840.1.113883.5.1008",
+              "displayName": "nicht zutreffend",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "UNK",
+              "codeSystem": "2.16.840.1.113883.5.1008",
+              "displayName": "unbekannt",
+              "level": "0",
+              "type": "L"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
