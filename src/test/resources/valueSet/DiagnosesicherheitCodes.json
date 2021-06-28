@@ -1,0 +1,122 @@
+{
+  "valueSet": [
+    {
+      "id": "2.16.840.1.113883.3.1937.777.24.11.1",
+      "name": "Diagnosesicherheit",
+      "displayName": "Diagnosesicherheit",
+      "effectiveDate": "2018-06-13T13:05:22",
+      "statusCode": "draft",
+      "sourceCodeSystem": [
+        {
+          "id": "2.16.840.1.113883.6.96",
+          "identifierName": "SNOMED&#160;Clinical&#160;Terms",
+          "canonicalUri": "http://snomed.info/sct",
+          "canonicalUriDSTU2": "http://snomed.info/sct",
+          "canonicalUriSTU3": "http://snomed.info/sct",
+          "canonicalUriR4": "http://snomed.info/sct"
+        }
+      ],
+      "publishingAuthority": [
+        {
+          "name": "Konsortium DIFUTURE",
+          "addrLine": [
+            {
+              "type": "uri",
+              "#text": "https://difuture.de"
+            }
+          ]
+        }
+      ],
+      "copyright": [
+        {
+          "language": "en-US",
+          "#text": "This artefact includes content from SNOMED Clinical Terms® (SNOMED CT®) which is copyright of the International Health Terminology Standards Development Organisation (IHTSDO). Implementers of these artefacts must have the appropriate SNOMED CT Affiliate license - for more information contact http://www.snomed.org/snomed-ct/getsnomed-ct or info@snomed.org."
+        }
+      ],
+      "conceptList": [
+        {
+          "concept": [
+            {
+              "code": "415684004",
+              "codeSystem": "2.16.840.1.113883.6.96",
+              "displayName": "Suspected",
+              "ordinal": "0",
+              "level": "0",
+              "type": "L",
+              "desc": [
+                {
+                  "language": "de-DE",
+                  "#text": "&lt;span style=\"white-space:pre\"/&gt;"
+                }
+              ]
+            },
+            {
+              "code": "733495001",
+              "codeSystem": "2.16.840.1.113883.6.96",
+              "displayName": "Diagnosis of exclusion",
+              "ordinal": "1",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "410605003",
+              "codeSystem": "2.16.840.1.113883.6.96",
+              "displayName": "Confirmed present",
+              "ordinal": "2",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "237679004",
+              "codeSystem": "2.16.840.1.113883.6.96",
+              "displayName": "Status post",
+              "ordinal": "3",
+              "level": "0",
+              "type": "L"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "codes": [
+    {
+      "code": "415684004",
+      "codeSystem": "2.16.840.1.113883.6.96",
+      "display": "Suspected",
+      "ordinal": "0",
+      "level": "0",
+      "type": "L",
+      "desc": [
+        {
+          "language": "de-DE",
+          "#text": "&lt;span style=\"white-space:pre\"/&gt;"
+        }
+      ]
+    },
+    {
+      "code": "733495001",
+      "codeSystem": "2.16.840.1.113883.6.96",
+      "display": "Diagnosis of exclusion",
+      "ordinal": "1",
+      "level": "0",
+      "type": "L"
+    },
+    {
+      "code": "410605003",
+      "codeSystem": "2.16.840.1.113883.6.96",
+      "display": "Confirmed present",
+      "ordinal": "2",
+      "level": "0",
+      "type": "L"
+    },
+    {
+      "code": "237679004",
+      "codeSystem": "2.16.840.1.113883.6.96",
+      "display": "Status post",
+      "ordinal": "3",
+      "level": "0",
+      "type": "L"
+    }
+  ]
+}
