@@ -1,6 +1,7 @@
 package enums;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
 
 import java.util.Optional;
@@ -30,6 +31,10 @@ public enum ICD_Diagnosesicherheit implements Code {
    */
   public static Optional<ICD_Diagnosesicherheit> fromSnomedCode(String snomedCode) {
     return Diagnosesicherheit.fromCode(snomedCode).map(Diagnosesicherheit::getIcdMapping);
+  }
+
+  public static Optional<ICD_Diagnosesicherheit> fromCode(String code) {
+    return Helper.codeFromString(ICD_Diagnosesicherheit.values(), code);
   }
 
   public String getCode() {
