@@ -1,7 +1,10 @@
 package enums;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
+
+import java.util.Optional;
 
 /**
  * @see
@@ -17,6 +20,10 @@ public enum QuelleKlinischesBezugsdatum implements Code {
   QuelleKlinischesBezugsdatum(String code, String display) {
     this.code = code;
     this.display = display;
+  }
+
+  public static Optional<QuelleKlinischesBezugsdatum> fromCode(String code) {
+    return Helper.codeFromString(QuelleKlinischesBezugsdatum.values(), code);
   }
 
   @Override
