@@ -1,0 +1,20 @@
+{
+  "codes": [
+    {
+      "code": "A",
+      "display": "ausgeschlossen"
+    },
+    {
+      "code": "G",
+      "display": "gesicherte Diagnose"
+    },
+    {
+      "code": "V",
+      "display": "Verdacht auf / zum Ausschluss von"
+    },
+    {
+      "code": "Z",
+      "display": "Zustand nach"
+    }
+  ]
+}
