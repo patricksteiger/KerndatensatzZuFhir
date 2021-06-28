@@ -1,0 +1,44 @@
+{
+  "resourceType": "ValueSet",
+  "id": "QuelleKlinischesBezugsdatum",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
+    ]
+  },
+  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/ValueSet/QuelleKlinischesBezugsdatum",
+  "version": "1.0",
+  "title": "ValueSet - Quelle klinisches Bezugsdatum",
+  "name": "ValueSetQuelleKlinischesBezugsdatum",
+  "status": "active",
+  "experimental": false,
+  "publisher": "Medizininformatik Initiative",
+  "description": "Kodierung der Quelle des klinischen Bezugsdatums",
+  "compose": {
+    "include": [
+      {
+        "system": "http://snomed.info/sct",
+        "concept": [
+          {
+            "code": "399445004",
+            "display": "Specimen collection date (observable entity)"
+          },
+          {
+            "code": "281271004",
+            "display": "Date sample received in laboratory (observable entity)"
+          }
+        ]
+      }
+    ]
+  },
+  "codes": [
+    {
+      "code": "399445004",
+      "display": "Specimen collection date (observable entity)"
+    },
+    {
+      "code": "281271004",
+      "display": "Date sample received in laboratory (observable entity)"
+    }
+  ]
+}
