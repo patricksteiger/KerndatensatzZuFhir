@@ -14,7 +14,7 @@ import static valueSet.CodeUtil.assertValidCodes;
 class ICD_DiagnosesicherheitTest {
   @Test
   void testSystem() {
-    String expectedSystem = "urn:oid:1.2.276.0.76.3.1.1.5.1.21";
+    String expectedSystem = "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT";
     assertSimpleSystem(expectedSystem, ICD_Diagnosesicherheit.values());
   }
 
