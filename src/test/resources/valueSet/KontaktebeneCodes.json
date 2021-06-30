@@ -1,14 +1,16 @@
 {
   "resourceType": "CodeSystem",
-  "url": "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Kontaktebene",
-  "version": "1.0",
+  "id": "Kontaktebene",
+  "url": "http://fhir.de/CodeSystem/Kontaktebene",
+  "version": "1.0.0",
   "name": "Kontaktebene",
   "status": "active",
+  "date": "2021-02-12",
   "experimental": false,
-  "publisher": "Medizininformatik Initative",
-  "description": "CodeSystem für Kontaktebene",
+  "publisher": "HL7 Deutschland e.V. (Technisches Komitee FHIR)",
+  "description": "CodeSystem für die Ebene eines Kontaktes mit einer Gesundheitseinrichtung",
   "caseSensitive": true,
-  "valueSet": "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/ValueSet/Kontaktebene",
+  "valueSet": "http://fhir.de/ValueSet/Kontaktebene",
   "content": "complete",
   "concept": [
     {
