@@ -1,11 +1,61 @@
 {
   "resourceType": "ValueSet",
-  "url": "https://fhir.kbv.de/ValueSet/KBV_VS_Base_Stage_Life",
-  "version": "1.1.0",
-  "name": "KBV_VS_Base_Stage_Life",
+  "id": "ValueSetLebensphaseDe",
+  "url": "http://fhir.de/ValueSet/lebensphase-de",
+  "version": "1.0.0",
+  "name": "ValueSetLebensphaseDe",
   "status": "active",
-  "publisher": "Kassenärztliche Bundesvereinigung (KBV)",
-  "description": "Dieses Valueset enthält Codes zur Angabe der Lebensphase",
+  "date": "2021-02-17",
+  "publisher": "HL7 Deutschland e.V. (Technisches Komitee FHIR)",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://hl7.de/technische-komitees/fhir/"
+        }
+      ]
+    }
+  ],
+  "description": "Dieses Valueset enthält Snomedcodes zur Angabe der Lebensphase",
+  "copyright": "Kassenärztliche Bundesvereinigung (KBV)",
+  "compose": {
+    "include": [
+      {
+        "system": "http://snomed.info/sct",
+        "concept": [
+          {
+            "code": "41847000",
+            "display": "Adulthood (qualifier value)"
+          },
+          {
+            "code": "263659003",
+            "display": "Adolescence (qualifier value)"
+          },
+          {
+            "code": "255398004",
+            "display": "Childhood (qualifier value)"
+          },
+          {
+            "code": "713153009",
+            "display": "Toddler (qualifier value)"
+          },
+          {
+            "code": "3658006",
+            "display": "Infancy (qualifier value)"
+          },
+          {
+            "code": "255407002",
+            "display": "Neonatal (qualifier value)"
+          },
+          {
+            "code": "271872005",
+            "display": "Old age (qualifier value)"
+          }
+        ]
+      }
+    ]
+  },
   "codes": [
     {
       "code": "41847000",
@@ -35,13 +85,5 @@
       "code": "271872005",
       "display": "Old age (qualifier value)"
     }
-  ],
-  "compose": {
-    "include": [
-      {
-        "system": "http://snomed.info/sct",
-        "version": "http://snomed.info/sct/900000000000207008/version/20200131"
-      }
-    ]
-  }
+  ]
 }
