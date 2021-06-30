@@ -1,0 +1,62 @@
+{
+  "resourceType": "CodeSystem",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/shareablecodesystem"
+    ]
+  },
+  "url": "http://fhir.de/CodeSystem/kbv/s-icd-seitenlokalisation",
+  "identifier": {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:oid:1.2.276.0.76.3.1.1.5.1.22"
+  },
+  "version": "1.00",
+  "name": "kbv-s-icd-seitenlokalisation",
+  "status": "draft",
+  "experimental": true,
+  "date": "2017-09-15",
+  "publisher": "HL7 Deutschland e.V. (Technisches Komitee FHIR)",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "other",
+          "value": "http://hl7.de/technische-komitees/fhir/"
+        }
+      ]
+    }
+  ],
+  "description": "Angaben zur Lokalisation (Seitigkeit - links, recht, beidseitig) von Organen. Zusatzangabe zur Spezifikation der Diagnosen (ICD-10) oder Operationen und Prozeduren (OPS) bei paarigen Organen oder Körperteilen.",
+  "copyright": "Kassenärztliche Bundesvereinigung",
+  "caseSensitive": true,
+  "valueSet": "http://fhir.de/ValueSet/kbv/s-icd-seitenlokalisation",
+  "content": "complete",
+  "concept": [
+    {
+      "code": "B",
+      "display": "beiderseits"
+    },
+    {
+      "code": "L",
+      "display": "links"
+    },
+    {
+      "code": "R",
+      "display": "rechts"
+    }
+  ],
+  "codes": [
+    {
+      "code": "B",
+      "display": "beiderseits"
+    },
+    {
+      "code": "L",
+      "display": "links"
+    },
+    {
+      "code": "R",
+      "display": "rechts"
+    }
+  ]
+}
