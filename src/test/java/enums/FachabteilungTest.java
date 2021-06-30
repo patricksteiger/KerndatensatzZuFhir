@@ -12,11 +12,9 @@ import static valueSet.CodeUtil.assertSimpleSystem;
 import static valueSet.CodeUtil.assertValidCodes;
 
 class FachabteilungTest {
-
   @Test
   void testSystem() {
-    String expectedSystem =
-        "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Fachabteilungsschluessel";
+    String expectedSystem = "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel";
     assertSimpleSystem(expectedSystem, Fachabteilung.values());
   }
 

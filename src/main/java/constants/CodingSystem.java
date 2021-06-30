@@ -33,7 +33,7 @@ public class CodingSystem {
   public static final String FALL_ENTLASSUNGSGRUND =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Entlassungsgrund";
   public static final String FALL_FACHABTEILUNGSSCHLUESSEL =
-      "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Fachabteilungsschluessel";
+      "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel";
   public static final String ORPHANET = "http://www.orpha.net";
   public static final String ALPHA_ID_DIMDI = "http://fhir.de/CodeSystem/dimdi/alpha-id";
   public static final String ICD_10_GM_DIMDI = "http://fhir.de/CodeSystem/dimdi/icd-10-gm";
