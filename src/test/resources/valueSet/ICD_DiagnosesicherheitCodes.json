@@ -1,20 +1,104 @@
 {
+  "valueSet": [
+    {
+      "id": "1.2.276.0.76.11.121",
+      "name": "S_ICD_DIAGNOSESICHERHEIT",
+      "displayName": "S_ICD_DIAGNOSESICHERHEIT",
+      "effectiveDate": "2005-08-01T00:00:00",
+      "statusCode": "final",
+      "desc": [
+        {
+          "language": "de-DE",
+          "#text": "Die Diagnosesicherheit gibt an, wie sicher eine gestellte Diagnose ist. Es handelt sich hier um Zusatzkennzeichen zur Diagnose (ICD-10) im ambulanten Bereich. Die Angaben zur Diagnosesicherheit entsprechen der Vorgabe im KVDT."
+        }
+      ],
+      "sourceCodeSystem": [
+        {
+          "id": "1.2.276.0.76.3.1.1.5.1.21",
+          "identifierName": "",
+          "canonicalUri": "urn:oid:1.2.276.0.76.3.1.1.5.1.21",
+          "canonicalUriDSTU2": "urn:oid:1.2.276.0.76.3.1.1.5.1.21",
+          "canonicalUriSTU3": "urn:oid:1.2.276.0.76.3.1.1.5.1.21",
+          "canonicalUriR4": "urn:oid:1.2.276.0.76.3.1.1.5.1.21"
+        }
+      ],
+      "publishingAuthority": [
+        {
+          "name": "HL7 Deutschland e. V.",
+          "addrLine": [
+            "Anna-Louisa-Karsch-Str. 2",
+            "10178 Berlin",
+            {
+              "type": "phone",
+              "#text": "T 0700 77 77 67 67"
+            }
+          ]
+        }
+      ],
+      "conceptList": [
+        {
+          "concept": [
+            {
+              "code": "A",
+              "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+              "displayName": "ausgeschlossen",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "G",
+              "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+              "displayName": "gesicherte Diagnose",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "V",
+              "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+              "displayName": "Verdacht auf / zum Ausschluss von",
+              "level": "0",
+              "type": "L"
+            },
+            {
+              "code": "Z",
+              "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+              "displayName": "Zustand nach",
+              "level": "0",
+              "type": "L"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "codes": [
     {
       "code": "A",
-      "display": "ausgeschlossen"
+      "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+      "display": "ausgeschlossen",
+      "level": "0",
+      "type": "L"
     },
     {
       "code": "G",
-      "display": "gesicherte Diagnose"
+      "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+      "display": "gesicherte Diagnose",
+      "level": "0",
+      "type": "L"
     },
     {
       "code": "V",
-      "display": "Verdacht auf / zum Ausschluss von"
+      "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+      "display": "Verdacht auf / zum Ausschluss von",
+      "level": "0",
+      "type": "L"
     },
     {
       "code": "Z",
-      "display": "Zustand nach"
+      "codeSystem": "1.2.276.0.76.3.1.1.5.1.21",
+      "display": "Zustand nach",
+      "level": "0",
+      "type": "L"
     }
   ]
 }
