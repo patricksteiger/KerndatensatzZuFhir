@@ -20,6 +20,7 @@ public enum Behandlungsgrund implements Code {
     this.display = display;
   }
 
+  // TODO: Behandlungsgrund-codes valueSet correct?
   /**
    * Returns Behandlungsgrund corresponding to given code. Valid codes: a, b and c.
    *
