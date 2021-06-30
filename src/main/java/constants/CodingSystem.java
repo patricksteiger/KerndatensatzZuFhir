@@ -25,8 +25,7 @@ public class CodingSystem {
       "http://terminology.hl7.org/CodeSystem/referencerange-meaning";
   public static final String ENCOUNTER_CLASS_DE =
       "https://www.medizininformatik-initiative.de/fhir/core/ValueSet/EncounterClassDE";
-  public static final String FALL_KONTAKTEBENE =
-      "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Kontaktebene";
+  public static final String FALL_KONTAKTEBENE = "http://fhir.de/CodeSystem/Kontaktebene";
   public static final String FALL_AUFNAHMEGRUND =
       "https://www.medizininformatik-initiative.de/fhir/modul-fall/core/CodeSystem/Aufnahmegrund";
   public static final String FALL_AUFNAHMEANLASS = "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass";

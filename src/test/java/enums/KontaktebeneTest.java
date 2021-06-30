@@ -14,8 +14,7 @@ import static valueSet.CodeUtil.assertValidCodes;
 class KontaktebeneTest {
   @Test
   void testSystem() {
-    String expectedSystem =
-        "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Kontaktebene";
+    String expectedSystem = "http://fhir.de/CodeSystem/Kontaktebene";
     assertSimpleSystem(expectedSystem, Kontaktebene.values());
   }
 
