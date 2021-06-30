@@ -44,8 +44,7 @@ public class CodingSystem {
   public static final String EDQM_STANDARD = "http://standardterms.edqm.eu";
   public static final String MEDIKATION_WIRKSTOFFTYP =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/CodeSystem/wirkstofftyp";
-  public static final String ICD_DIAGNOSESICHERHEIT =
-      "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT";
+  public static final String ICD_DIAGNOSESICHERHEIT = "urn:oid:1.2.276.0.76.3.1.1.5.1.21";
   public static final String BEHANDLUNGSGRUND =
       "http://terminology.hl7.org/CodeSystem/reason-medication-given";
   public static final String OBSERVATION_INTERPRETATION =
