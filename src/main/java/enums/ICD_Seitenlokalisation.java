@@ -1,15 +1,19 @@
 package enums;
 
+import constants.CodingSystem;
 import helper.Helper;
 import interfaces.Code;
 
 import java.util.Optional;
 
-/** @see "https://applications.kbv.de/S_ICD_SEITENLOKALISATION_V1.00.xhtml" */
+/**
+ * @see "https://applications.kbv.de/S_ICD_SEITENLOKALISATION_V1.00.xhtml"
+ * @see "https://simplifier.net/vos/s-icd-seitenlokalisation-duplicate-2"
+ */
 public enum ICD_Seitenlokalisation implements Code {
   RECHTS("R", "rechts"),
   LINKS("L", "links"),
-  BEIDSEITIG("B", "beidseitig");
+  BEIDSEITIG("B", "beiderseits");
 
   private final String code;
   private final String display;
@@ -38,6 +42,6 @@ public enum ICD_Seitenlokalisation implements Code {
   }
 
   public String getSystem() {
-    return "http://fhir.de/CodeSystem/kbv/s_icd_seitenlokalisation";
+    return CodingSystem.ICD_SEITENLOKALISATION;
   }
 }
