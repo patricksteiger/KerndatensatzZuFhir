@@ -13,9 +13,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HelperTest {
+class HelperTest {
   @Test
-  public void testExtractCode() {
+  void testExtractCode() {
     String code = "code=";
     List<String> words = new ArrayList<>();
     assertEquals("", Helper.extractCode(words, code));
@@ -28,7 +28,7 @@ public class HelperTest {
   }
 
   @Test
-  public void testSplitCode() {
+  void testSplitCode() {
     String nullStr = null;
     assertEquals(0, Helper.splitCode(nullStr).size());
     String emptyStr = "";
@@ -51,7 +51,7 @@ public class HelperTest {
   }
 
   @Test
-  public void testParseValue() {
+  void testParseValue() {
     assertFalse(Helper.parseValue(null).isPresent());
     assertFalse(Helper.parseValue("").isPresent());
     assertFalse(Helper.parseValue("/").isPresent());
@@ -99,7 +99,7 @@ public class HelperTest {
   }
 
   @Test
-  public void testTrimQuotes() {
+  void testTrimQuotes() {
     String onlyQuotes = "\"\"";
     assertEquals("", Helper.trimQuotes(onlyQuotes));
     String normalQuotes = "\"abc\"";
@@ -107,7 +107,7 @@ public class HelperTest {
   }
 
   @Test
-  public void testTrimCharacter() {
+  void testTrimCharacter() {
     String emptySpaces = "     ";
     assertEquals("", Helper.trimCharacter(emptySpaces, ' '));
     String wrappingSpaces = "  abc   ";
@@ -126,7 +126,7 @@ public class HelperTest {
   }
 
   @Test
-  public void testGetDateFromISO() throws ParseException {
+  void testGetDateFromISO() throws ParseException {
     assertEquals(Optional.empty(), Helper.getDateFromISO(null));
     assertEquals(Optional.empty(), Helper.getDateFromISO(""));
     assertEquals(Optional.empty(), Helper.getDateFromISO("20.10.2020"));
@@ -144,7 +144,7 @@ public class HelperTest {
   }
 
   @Test
-  public void testCheckNonEmptyString() {
+  void testCheckNonEmptyString() {
     String s = null;
     assertFalse(Helper.checkNonEmptyString(s));
     s = "";
@@ -153,5 +153,19 @@ public class HelperTest {
     assertTrue(Helper.checkNonEmptyString(s));
     s = "test";
     assertTrue(Helper.checkNonEmptyString(s));
+  }
+
+  @Test
+  void testSplitNames() {
+    String s = null;
+    assertEquals(Helper.listOf(), Helper.splitNames(s));
+    s = "";
+    assertEquals(Helper.listOf(), Helper.splitNames(s));
+    s = "Fritz";
+    assertEquals(Helper.listOf("Fritz"), Helper.splitNames(s));
+    s = "Maja Julia";
+    assertEquals(Helper.listOf("Maja", "Julia"), Helper.splitNames(s));
+    s = " Maja Julia   Augustine  Harmonie  ";
+    assertEquals(Helper.listOf("Maja", "Julia", "Augustine", "Harmonie"), Helper.splitNames(s));
   }
 }
