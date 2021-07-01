@@ -153,7 +153,7 @@ public class Helper {
    * Splits the given name into multiple names. Splits by spaces. Name without spaces result in it
    * being the only element in the list.
    *
-   * @param name Name to plit into multiple names
+   * @param name Name to split into multiple names
    * @return List containing all single names
    */
   public static List<String> splitNames(String name) {
@@ -266,7 +266,7 @@ public class Helper {
       // Skip whitespaces
       int wordIndex = indexAfterWhitespace(code, index);
       int firstQuoteIndex = indexNextQuote(code, wordIndex);
-      // Get index of second index, so code spans from wordIndex to secondQuoteIndex
+      // Get index of second quote, so code spans from wordIndex to secondQuoteIndex
       int secondQuoteIndex = indexNextQuote(code, firstQuoteIndex + 1);
       // Update index to next character
       index = secondQuoteIndex + 1;
