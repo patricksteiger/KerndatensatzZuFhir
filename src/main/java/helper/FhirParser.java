@@ -3,9 +3,9 @@ package helper;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import constants.Constants;
 import constants.IdentifierSystem;
-import enums.MedikationStatus;
 import interfaces.Code;
 import org.hl7.fhir.r4.model.*;
+import valueSets.MedikationStatus;
 
 import java.util.Date;
 import java.util.List;

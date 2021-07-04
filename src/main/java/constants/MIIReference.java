@@ -1,6 +1,6 @@
 package constants;
 
-import enums.MIICoreLocations;
+import valueSets.MIICoreLocations;
 
 public class MIIReference {
   private static final String ORGANIZATION = "Organization/";

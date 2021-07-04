@@ -3,10 +3,10 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
-import enums.*;
 import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
+import valueSets.*;
 
 import java.util.Date;
 import java.util.List;

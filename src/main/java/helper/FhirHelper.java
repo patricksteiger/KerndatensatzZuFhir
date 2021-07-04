@@ -1,10 +1,10 @@
 package helper;
 
 import constants.IdentifierSystem;
-import enums.MIICoreLocations;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r4.model.*;
 import unit.converter.UnitConverter;
+import valueSets.MIICoreLocations;
 
 import java.util.Optional;
 

@@ -2,13 +2,13 @@ package model;
 
 import constants.CodingSystem;
 import constants.ExtensionUrl;
-import enums.DurchfuehrungsabsichtCode;
-import enums.ProcedureCategorySnomedMapping;
-import enums.SeitenlokalisationCode;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
+import valueSets.DurchfuehrungsabsichtCode;
+import valueSets.ProcedureCategorySnomedMapping;
+import valueSets.SeitenlokalisationCode;
 
 import java.util.List;
 

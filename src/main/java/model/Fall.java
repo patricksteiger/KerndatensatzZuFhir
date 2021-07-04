@@ -2,13 +2,13 @@ package model;
 
 import com.opencsv.bean.CsvBindByName;
 import constants.*;
-import enums.*;
 import helper.FhirGenerator;
 import helper.Helper;
 import helper.Logger;
 import helper.LoggingData;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
+import valueSets.*;
 
 import java.util.List;
 

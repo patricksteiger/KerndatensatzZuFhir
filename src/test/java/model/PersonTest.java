@@ -4,15 +4,15 @@ import constants.CodingCode;
 import constants.CodingSystem;
 import constants.ExtensionUrl;
 import constants.IdentifierSystem;
-import enums.IdentifierTypeCode;
-import enums.MIICoreLocations;
-import enums.VersichertenCode;
-import enums.VitalStatus;
 import helper.Helper;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
+import valueSets.IdentifierTypeCode;
+import valueSets.MIICoreLocations;
+import valueSets.VersichertenCode;
+import valueSets.VitalStatus;
 
 import java.util.List;
 

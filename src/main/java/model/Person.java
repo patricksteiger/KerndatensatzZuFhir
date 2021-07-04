@@ -3,13 +3,13 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
-import enums.IdentifierTypeCode;
-import enums.MIICoreLocations;
-import enums.VersichertenCode;
-import enums.VitalStatus;
 import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
+import valueSets.IdentifierTypeCode;
+import valueSets.MIICoreLocations;
+import valueSets.VersichertenCode;
+import valueSets.VitalStatus;
 
 import java.util.Date;
 import java.util.List;

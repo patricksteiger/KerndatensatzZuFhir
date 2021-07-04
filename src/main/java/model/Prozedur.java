@@ -3,12 +3,12 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
-import enums.DurchfuehrungsabsichtCode;
-import enums.ProcedureCategorySnomedMapping;
-import enums.SeitenlokalisationCode;
 import helper.*;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
+import valueSets.DurchfuehrungsabsichtCode;
+import valueSets.ProcedureCategorySnomedMapping;
+import valueSets.SeitenlokalisationCode;
 
 import java.util.List;
 

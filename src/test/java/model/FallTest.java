@@ -2,11 +2,11 @@ package model;
 
 import constants.CodingSystem;
 import constants.IdentifierSystem;
-import enums.*;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
+import valueSets.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.clearInvocations;
