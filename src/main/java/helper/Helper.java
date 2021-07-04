@@ -1,6 +1,7 @@
 package helper;
 
 import constants.Constants;
+import interfaces.CharPredicate;
 import interfaces.Code;
 
 import java.math.BigDecimal;
@@ -280,19 +281,17 @@ public class Helper {
     return codes;
   }
 
-  public static int indexNextQuote(String s, int from) {
-    return indexAfterPredicate(s, from, c -> c != '\"');
+  public static int indexNextQuote(String s, int startIndex) {
+    return indexNextPredicate(s, startIndex, c -> c == '\"');
   }
 
-  public static int indexAfterWhitespace(String s, int from) {
-    return indexAfterPredicate(s, from, Character::isWhitespace);
+  public static int indexAfterWhitespace(String s, int startIndex) {
+    return indexNextPredicate(s, startIndex, c -> !Character.isWhitespace(c));
   }
 
-  public static int indexAfterPredicate(String s, int from, Predicate<Character> predicate) {
-    for (int i = from; i < s.length(); i++) {
-      if (!predicate.test(s.charAt(i))) {
-        return i;
-      }
+  public static int indexNextPredicate(String s, int startIndex, CharPredicate predicate) {
+    for (int i = startIndex; i < s.length(); i++) {
+      if (predicate.test(s.charAt(i))) return i;
     }
     return s.length();
   }
