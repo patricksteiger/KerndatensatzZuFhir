@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UnitMapper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UnitMapper.class);
-  private static final boolean LOGGING_ACTIVATED = false;
+  private static final boolean LOGGING_ACTIVATED = true;
 
   private static final Map<String, UnitMapping> mappings = generateMappings(ParseMappings.list());
 
@@ -57,7 +57,7 @@ public class UnitMapper {
   private static void logFailedMapping(MappingBean bean, int line) {
     LOGGER.warn(
         "Couldn't generate mapping for unit on line {}. Local = \"{}\", Ucum = \"{}\", Conversion = \"{}\"",
-        line + 1,
+        line,
         bean.getLocalUnit(),
         bean.getUcumUnit(),
         bean.getConversion());

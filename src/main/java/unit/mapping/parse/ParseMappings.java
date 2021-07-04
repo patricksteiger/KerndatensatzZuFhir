@@ -5,8 +5,10 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class ParseMappings {
@@ -29,8 +31,10 @@ public class ParseMappings {
     return mappings;
   }
 
+  // TODO: Charset needs to be set manually. Correct one?
   private static List<MappingBean> parseMappings() throws IOException {
-    BufferedReader br = new BufferedReader(new FileReader(MAPPINGS_PATH));
+    BufferedReader br =
+        Files.newBufferedReader(Paths.get(MAPPINGS_PATH), StandardCharsets.ISO_8859_1);
     ColumnPositionMappingStrategy<MappingBean> headerStrategy =
         new ColumnPositionMappingStrategy<>();
     headerStrategy.setType(MappingBean.class);
