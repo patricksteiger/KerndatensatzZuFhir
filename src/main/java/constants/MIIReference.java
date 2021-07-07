@@ -4,7 +4,7 @@ import valueSets.MIICoreLocations;
 
 public class MIIReference {
   private static final String ORGANIZATION = "Organization/";
-  public static final String MII_ORGANIZATION = ORGANIZATION + MIICoreLocations.UKU;
+  public static final String MII_ORGANIZATION = ORGANIZATION + MIICoreLocations.UKU.getCode();
   private static final String PATIENT = "Patient/";
   public static final String MII_PATIENT = PATIENT + "MII-Patient";
   private static final String CONSENT = "Consent/";

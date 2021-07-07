@@ -279,8 +279,8 @@ public class Person implements Datablock {
   public Reference getPIDAssignerReference() {
     MIICoreLocations ulm = MIICoreLocations.UKU;
     String system = IdentifierSystem.CORE_LOCATIONS;
-    Identifier identifier = FhirGenerator.identifier(ulm.name(), system);
-    return FhirGenerator.reference(identifier, ulm.toString());
+    Identifier identifier = FhirGenerator.identifier(ulm.getCode(), system);
+    return FhirGenerator.reference(identifier, ulm.getDisplay());
   }
 
   public Identifier getPatientGKV() {

@@ -152,9 +152,9 @@ class PersonTest {
           assertIdentifier(pid, IdentifierSystem.PID, IdentifierTypeCode.MR, pidIdentifier);
           assertTrue(pidIdentifier.hasAssigner());
           Reference assigner = pidIdentifier.getAssigner();
-          assertEquals(MIICoreLocations.UKU.toString(), assigner.getDisplay());
+          assertEquals(MIICoreLocations.UKU.getDisplay(), assigner.getDisplay());
           assertTrue(assigner.hasIdentifier());
-          assertEquals(MIICoreLocations.UKU.name(), assigner.getIdentifier().getValue());
+          assertEquals(MIICoreLocations.UKU.getCode(), assigner.getIdentifier().getValue());
           assertEquals(IdentifierSystem.CORE_LOCATIONS, assigner.getIdentifier().getSystem());
         }
       }
