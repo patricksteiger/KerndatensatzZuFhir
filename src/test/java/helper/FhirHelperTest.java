@@ -1,3 +1,55 @@
 package helper;
 
-public class FhirHelperTest {}
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import static helper.FhirHelper.getGenderMapping;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static util.Asserter.*;
+
+class FhirHelperTest {
+  @Nested
+  class GenderMappingTest {
+    @Test
+    void testFReturnsFemale() {
+      String FEMALE = "female";
+      assertAdministrativeGender(FEMALE, getGenderMapping("F"));
+    }
+
+    @Test
+    void testMReturnsMale() {
+      String MALE = "male";
+      assertAdministrativeGender(MALE, getGenderMapping("M"));
+    }
+
+    @Test
+    void testDReturnsOtherWithExtensionD() {
+      assertAdministrativeGenderDivers(getGenderMapping("D"));
+    }
+
+    @Test
+    void testXReturnsOtherWithExtensionX() {
+      assertAdministrativeGenderUnbestimmt(getGenderMapping("X"));
+    }
+
+    @Test
+    void testUNKReturnsOtherWithExtensionX() {
+      assertAdministrativeGenderUnbestimmt(getGenderMapping("UNK"));
+    }
+
+    @Test
+    void testUNReturnsOtherWithExtensionX() {
+      assertAdministrativeGenderUnbestimmt(getGenderMapping("UN"));
+    }
+
+    @Test
+    void testUReturnsOtherWithExtensionX() {
+      assertAdministrativeGenderUnbestimmt(getGenderMapping("U"));
+    }
+
+    @Test
+    void testOReturnsEmpty() {
+      assertFalse(getGenderMapping("O").isPresent());
+    }
+  }
+}

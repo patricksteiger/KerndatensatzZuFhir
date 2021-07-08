@@ -553,6 +553,13 @@ public class FhirParser {
     return Helper.listMap(names, StringType::new);
   }
 
+  public static Enumeration<Enumerations.AdministrativeGender> administrativeGender(
+      String kerndatensatzValue, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return FhirHelper.getGenderMapping(parsedCode.getCode())
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
   private static <T> T logMethodValue(LoggingData loggingData, String value) {
     return loggingData.LOGGER.error(loggingData.METHOD_NAME, loggingData.VALUE_NAME, value);
   }

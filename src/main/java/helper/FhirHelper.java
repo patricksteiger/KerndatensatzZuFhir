@@ -1,5 +1,7 @@
 package helper;
 
+import constants.CodingSystem;
+import constants.ExtensionUrl;
 import constants.IdentifierSystem;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r4.model.*;
@@ -64,15 +66,56 @@ public class FhirHelper {
     return !dateTimeType.hasValue() && !dateTimeType.hasExtension();
   }
 
-  // TODO: Implement changes to "divers"-gender when finalized
-  // https://wiki.hl7.de/index.php?title=Geschlecht#administratives_Geschlecht
-  public static Enumerations.AdministrativeGender getGenderMapping(String gender) {
-    if ("f".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.FEMALE;
-    if ("m".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.MALE;
-    if ("un".equalsIgnoreCase(gender)) return Enumerations.AdministrativeGender.OTHER;
-    // new Enumeration(new
-    // AdministrativeGenderEnumFactory()).setValue(Enumerations.AdministrativeGender.OTHER).addExtension()
-    return Enumerations.AdministrativeGender.UNKNOWN;
+  /**
+   * Returns the mapping of given gender code
+   *
+   * @param gender codes: F, M, D, X, U, UN, UNK
+   * @return Mapping of given code, F maps to FEMALE, M to MALE, D to OTHER with extension "D" and
+   *     X, U, UN, UNK to OTHER with extension "X"
+   * @see "https://wiki.hl7.de/index.php?title=Geschlecht#administratives_Geschlecht"
+   */
+  public static Optional<Enumeration<Enumerations.AdministrativeGender>> getGenderMapping(
+      String gender) {
+    if (Helper.checkEmptyString(gender)) {
+      return Optional.empty();
+    }
+    switch (gender) {
+      case "F":
+        return Optional.of(
+            administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE));
+      case "M":
+        return Optional.of(
+            administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.MALE));
+      case "D":
+        return Optional.of(getGenderDE("D", "divers"));
+      case "X":
+      case "U":
+      case "UN":
+      case "UNK":
+        return Optional.of(getGenderDE("X", "unbestimmt"));
+      default:
+        return Optional.empty();
+    }
+  }
+
+  private static Enumeration<Enumerations.AdministrativeGender> getGenderDE(
+      String code, String display) {
+    String system = CodingSystem.ADMINISTRATIVE_GENDER;
+    Coding gender = FhirGenerator.coding(code, system, display);
+    String url = ExtensionUrl.ADMINISTRATIVE_GENDER;
+    Extension extension = FhirGenerator.extension(url, gender);
+    Enumeration<Enumerations.AdministrativeGender> result =
+        administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.OTHER);
+    result.addExtension(extension);
+    return result;
+  }
+
+  public static Enumeration<Enumerations.AdministrativeGender>
+      administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender gender) {
+    Enumeration<Enumerations.AdministrativeGender> result =
+        new Enumeration<>(new Enumerations.AdministrativeGenderEnumFactory());
+    result.setValue(gender);
+    return result;
   }
 
   public static Reference getMIIPatientReference(String patNr) {

@@ -15,7 +15,8 @@ public class ExtensionUrl {
       "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix";
   public static final String PREFIX =
       "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier";
-  public static final String GENDER = "http://fhir.de/StructureDefinition/gender-amtlich-de";
+  public static final String ADMINISTRATIVE_GENDER =
+      "http://fhir.de/StructureDefinition/gender-amtlich-de";
   public static final String BIRTH_DATE =
       "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
   public static final String STAGE_LIFE =

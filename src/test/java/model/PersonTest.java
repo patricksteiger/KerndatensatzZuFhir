@@ -406,6 +406,8 @@ class PersonTest {
       @Test
       @DisplayName("empty Administratives Geschlecht should result in empty value")
       void testEmptyG() {
+        person.setAdmininistratives_geschlecht(null);
+        assertEmptyValue(person.getPatientGender());
         person.setAdmininistratives_geschlecht("");
         assertEmptyValue(person.getPatientGender());
       }
@@ -415,7 +417,24 @@ class PersonTest {
       void testValidG() {
         String geschlecht = "M";
         person.setAdmininistratives_geschlecht(geschlecht);
-        assertEquals(Enumerations.AdministrativeGender.MALE, person.getPatientGender());
+        Enumeration<Enumerations.AdministrativeGender> result = person.getPatientGender();
+        assertNonEmptyValue(result);
+        assertEquals("male", result.getCode());
+      }
+
+      @Test
+      @DisplayName(
+          "valid Administratives Geschlecht X should be present in gender with Extension containing Coding")
+      void testX() {
+        person.setAdmininistratives_geschlecht("X");
+        Enumeration<Enumerations.AdministrativeGender> result = person.getPatientGender();
+        assertNonEmptyValue(result);
+        assertEquals("other", result.getCode());
+        String EXTENSION_URL = "http://fhir.de/StructureDefinition/gender-amtlich-de";
+        assertTrue(result.hasExtension(EXTENSION_URL));
+        Extension extension = result.getExtensionByUrl(EXTENSION_URL);
+        String CODING_SYSTEM = "http://fhir.de/CodeSystem/gender-amtlich-de";
+        assertExtensionWithCoding("X", CODING_SYSTEM, "unbestimmt", EXTENSION_URL, extension);
       }
     }
 

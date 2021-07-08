@@ -51,4 +51,5 @@ public class CodingSystem {
       "http://terminology.hl7.org/CodeSystem/reason-medication-given";
   public static final String OBSERVATION_INTERPRETATION =
       "http://hl7.org/fhir/ValueSet/observation-interpretation";
+  public static final String ADMINISTRATIVE_GENDER = "http://fhir.de/CodeSystem/gender-amtlich-de";
 }

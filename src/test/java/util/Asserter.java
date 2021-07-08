@@ -9,6 +9,7 @@ import unit.ucum.Ucum;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -266,6 +267,36 @@ public class Asserter {
   public static void assertLoggerHasCalledWarning(Logger logger, int times) {
     verify(logger, times(times)).warning(any(), anyString(), anyString());
   }*/
+
+  public static void assertAdministrativeGender(
+      String code, Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
+    assertTrue(expectedGender.isPresent());
+    assertEquals(code, expectedGender.get().getCode());
+  }
+
+  public static void assertAdministrativeGenderUnbestimmt(
+      Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
+    assertTrue(expectedGender.isPresent());
+    Enumeration<Enumerations.AdministrativeGender> result = expectedGender.get();
+    assertEquals("other", result.getCode());
+    String EXTENSION_URL = "http://fhir.de/StructureDefinition/gender-amtlich-de";
+    assertTrue(result.hasExtension(EXTENSION_URL));
+    Extension extension = result.getExtensionByUrl(EXTENSION_URL);
+    String CODING_SYSTEM = "http://fhir.de/CodeSystem/gender-amtlich-de";
+    assertExtensionWithCoding("X", CODING_SYSTEM, "unbestimmt", EXTENSION_URL, extension);
+  }
+
+  public static void assertAdministrativeGenderDivers(
+      Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
+    assertTrue(expectedGender.isPresent());
+    Enumeration<Enumerations.AdministrativeGender> result = expectedGender.get();
+    assertEquals("other", result.getCode());
+    String EXTENSION_URL = "http://fhir.de/StructureDefinition/gender-amtlich-de";
+    assertTrue(result.hasExtension(EXTENSION_URL));
+    Extension extension = result.getExtensionByUrl(EXTENSION_URL);
+    String CODING_SYSTEM = "http://fhir.de/CodeSystem/gender-amtlich-de";
+    assertExtensionWithCoding("D", CODING_SYSTEM, "divers", EXTENSION_URL, extension);
+  }
 
   public static void assertAnnotation(String expectedText, Annotation annotation) {
     assertNonEmptyValue(annotation);

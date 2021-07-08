@@ -3,7 +3,10 @@ package model;
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;
 import constants.*;
-import helper.*;
+import helper.FhirGenerator;
+import helper.Helper;
+import helper.Logger;
+import helper.LoggingData;
 import interfaces.Datablock;
 import org.hl7.fhir.r4.model.*;
 import valueSets.IdentifierTypeCode;
@@ -76,7 +79,7 @@ public class Person implements Datablock {
     // Geburtsname
     patient.addName(this.getPatientGeburtsname());
     // Administratives Geschlecht, returns UNKNOWN if gender isn't set
-    patient.setGender(this.getPatientGender());
+    patient.setGenderElement(this.getPatientGender());
     // Geburtsdatum
     patient.setBirthDate(this.getPatientBirthDate());
     // Deceased (optional)
@@ -197,12 +200,11 @@ public class Person implements Datablock {
     return date(birthDate, data);
   }
 
-  // TODO: Refactor gender mapping
-  public Enumerations.AdministrativeGender getPatientGender() {
-    ParsedCode parsedCode = ParsedCode.fromString(this.getAdmininistratives_geschlecht());
-    return parsedCode.hasEmptyCode()
-        ? LOGGER.emptyValue("getPatientGender", "admininistratives_geschlecht")
-        : FhirHelper.getGenderMapping(parsedCode.getCode());
+  public Enumeration<Enumerations.AdministrativeGender> getPatientGender() {
+    String gender = this.getAdmininistratives_geschlecht();
+    LoggingData loggingData =
+        LoggingData.of(LOGGER, "getPatientGender", "admininistratives_geschlecht");
+    return administrativeGender(gender, loggingData);
   }
 
   public HumanName getPatientGeburtsname() {
