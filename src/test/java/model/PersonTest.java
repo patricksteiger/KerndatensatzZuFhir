@@ -149,7 +149,7 @@ class PersonTest {
           String pid = "42285243";
           person.setPatient_pid(pid);
           Identifier pidIdentifier = person.getPatientPID();
-          assertIdentifier(pid, IdentifierSystem.PID, IdentifierTypeCode.MR, pidIdentifier);
+          assertIdentifier(pid, null, IdentifierTypeCode.MR, pidIdentifier);
           assertTrue(pidIdentifier.hasAssigner());
           Reference assigner = pidIdentifier.getAssigner();
           assertEquals(MIICoreLocations.UKU.getDisplay(), assigner.getDisplay());

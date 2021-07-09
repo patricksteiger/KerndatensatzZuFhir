@@ -270,7 +270,7 @@ public class Person implements Datablock {
   // TODO: Is system of PID correct?
   public Identifier getPatientPID() {
     String value = this.getPatient_pid();
-    String system = IdentifierSystem.PID;
+    String system = IdentifierSystem.EMPTY;
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
     IdentifierTypeCode mr = IdentifierTypeCode.MR;
     Reference assignerRef = this.getPIDAssignerReference();
