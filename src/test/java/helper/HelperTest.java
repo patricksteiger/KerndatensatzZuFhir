@@ -167,5 +167,7 @@ class HelperTest {
     assertEquals(Helper.listOf("Maja", "Julia"), Helper.splitNames(s));
     s = " Maja Julia   Augustine  Harmonie  ";
     assertEquals(Helper.listOf("Maja", "Julia", "Augustine", "Harmonie"), Helper.splitNames(s));
+    s = "Hans-Jürgen";
+    assertEquals(Helper.listOf(s), Helper.splitNames(s));
   }
 }
