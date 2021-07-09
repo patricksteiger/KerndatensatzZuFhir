@@ -7,9 +7,7 @@ import interfaces.Code;
 public enum VersichertenCode implements Code {
   GKV("GKV", "Gesetzliche Krankenversicherung"),
   PKV("PKV", "Private Krankenversicherung"),
-  LANR("LANR", "Lebenslange Arztnummer"),
   ZANR("ZANR", "Zahnarztnummer"),
-  BSNR("BSNR", "Betriebsstättennummer"),
   KZVA("KZVA", "KZVAbrechnungsnummer");
 
   private final String code;
