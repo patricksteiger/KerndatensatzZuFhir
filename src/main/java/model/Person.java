@@ -16,6 +16,7 @@ import valueSets.VitalStatus;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static helper.FhirParser.*;
 
@@ -273,7 +274,7 @@ public class Person implements Datablock {
     String system = IdentifierSystem.EMPTY;
     Identifier.IdentifierUse use = Identifier.IdentifierUse.USUAL;
     IdentifierTypeCode mr = IdentifierTypeCode.MR;
-    Reference assignerRef = this.getPIDAssignerReference();
+    Supplier<Reference> assignerRef = this::getPIDAssignerReference;
     return optionalIdentifierFromSystemWithCodeAndReference(value, system, use, mr, assignerRef);
   }
 
@@ -290,7 +291,7 @@ public class Person implements Datablock {
     String system = IdentifierSystem.VERSICHERTEN_ID_GKV;
     Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
     VersichertenCode gkv = VersichertenCode.GKV;
-    Reference assignerRef = this.getGKVAssignerReference();
+    Supplier<Reference> assignerRef = this::getGKVAssignerReference;
     return optionalIdentifierFromSystemWithCodeAndReference(value, system, use, gkv, assignerRef);
   }
 
@@ -310,7 +311,7 @@ public class Person implements Datablock {
     String system = Constants.getEmptyValue();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
     VersichertenCode pkv = VersichertenCode.PKV;
-    Reference assignerRef = Constants.getEmptyValue();
+    Supplier<Reference> assignerRef = Constants::getEmptyValue;
     return optionalIdentifierFromSystemWithCodeAndReference(value, system, use, pkv, assignerRef);
   }
 

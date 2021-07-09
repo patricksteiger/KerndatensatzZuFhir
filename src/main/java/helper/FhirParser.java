@@ -281,13 +281,13 @@ public class FhirParser {
       String identifierSystem,
       Identifier.IdentifierUse identifierUse,
       Code code,
-      Reference reference) {
+      Supplier<Reference> reference) {
     if (Helper.checkEmptyString(kerndatensatzValue)) {
       return Constants.getEmptyValue();
     }
     CodeableConcept type = FhirGenerator.codeableConcept(code);
     return FhirGenerator.identifier(
-        kerndatensatzValue, identifierSystem, type, reference, identifierUse);
+        kerndatensatzValue, identifierSystem, type, reference.get(), identifierUse);
   }
 
   public static Identifier optionalIdentifier(String id) {
