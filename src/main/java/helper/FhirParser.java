@@ -353,6 +353,21 @@ public class FhirParser {
     return FhirGenerator.reference(identifier);
   }
 
+  public static <T extends Code> Reference referenceWithIdentifierFromSystemWithCodeableConcept(
+      String kerndatensatzValue,
+      String identifierSystem,
+      Identifier.IdentifierUse identifierUse,
+      T typeValue,
+      LoggingData loggingData) {
+    if (Helper.checkEmptyString(kerndatensatzValue)) {
+      return logMethodValue(loggingData, kerndatensatzValue);
+    }
+    CodeableConcept type = FhirGenerator.codeableConcept(typeValue);
+    Identifier identifier =
+        FhirGenerator.identifier(kerndatensatzValue, identifierSystem, type, null, identifierUse);
+    return FhirGenerator.reference(identifier);
+  }
+
   public static Quantity quantity(String kerndatensatzValue, LoggingData loggingData) {
     return ParsedQuantity.fromString(kerndatensatzValue)
         .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));

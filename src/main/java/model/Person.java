@@ -311,8 +311,18 @@ public class Person implements Datablock {
     String system = Constants.getEmptyValue();
     Identifier.IdentifierUse use = Identifier.IdentifierUse.SECONDARY;
     VersichertenCode pkv = VersichertenCode.PKV;
-    Supplier<Reference> assignerRef = Constants::getEmptyValue;
+    Supplier<Reference> assignerRef = this::getPKVAssignerReference;
     return optionalIdentifierFromSystemWithCodeAndReference(value, system, use, pkv, assignerRef);
+  }
+
+  public Reference getPKVAssignerReference() {
+    Identifier.IdentifierUse use = Identifier.IdentifierUse.OFFICIAL;
+    String system = IdentifierSystem.IKNR;
+    IdentifierTypeCode type = IdentifierTypeCode.XX;
+    String value = this.getInstitutionskennzeichen_krankenkasse();
+    LoggingData data =
+        LoggingData.of(LOGGER, "getPKVAssignerReference", "institutionskennzeichen_krankenkasse");
+    return referenceWithIdentifierFromSystemWithCodeableConcept(value, system, use, type, data);
   }
 
   public Meta getResearchSubjectMeta() {
