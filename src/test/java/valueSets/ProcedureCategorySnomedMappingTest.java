@@ -2,33 +2,33 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import java.util.Optional;
 
-public class ProcedureCategorySnomedMappingTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static valueSets.ProcedureCategorySnomedMapping.*;
+
+class ProcedureCategorySnomedMappingTest {
   @Test
-  public void testGetSnomedMappingByOpsCode() {
-    assertFalse(ProcedureCategorySnomedMapping.fromOpsCode(null).isPresent());
-    assertFalse(ProcedureCategorySnomedMapping.fromOpsCode("").isPresent());
-    assertFalse(ProcedureCategorySnomedMapping.fromOpsCode("test").isPresent());
-    assertFalse(ProcedureCategorySnomedMapping.fromOpsCode("0").isPresent());
-    assertEquals(
-        ProcedureCategorySnomedMapping.DIAGNOSTIC,
-        ProcedureCategorySnomedMapping.fromOpsCode("1").get());
-    assertEquals(
-        ProcedureCategorySnomedMapping.IMAGING,
-        ProcedureCategorySnomedMapping.fromOpsCode("3").get());
-    assertEquals(
-        ProcedureCategorySnomedMapping.SURGICAL,
-        ProcedureCategorySnomedMapping.fromOpsCode("5").get());
-    assertEquals(
-        ProcedureCategorySnomedMapping.ADMINISTRATION_OF_MEDICINE,
-        ProcedureCategorySnomedMapping.fromOpsCode("6").get());
-    assertEquals(
-        ProcedureCategorySnomedMapping.THERAPEUTIC,
-        ProcedureCategorySnomedMapping.fromOpsCode("8").get());
-    assertEquals(
-        ProcedureCategorySnomedMapping.OTHER,
-        ProcedureCategorySnomedMapping.fromOpsCode("9").get());
+  void testInvalidCodes() {
+    assertFalse(fromOpsCode(null).isPresent());
+    assertFalse(fromOpsCode("").isPresent());
+    assertFalse(fromOpsCode("test").isPresent());
+    assertFalse(fromOpsCode("0").isPresent());
+  }
+
+  @Test
+  void testAllValidResults() {
+    assertMapping(DIAGNOSTIC, "1");
+    assertMapping(IMAGING, "3");
+    assertMapping(SURGICAL, "5");
+    assertMapping(ADMINISTRATION_OF_MEDICINE, "6");
+    assertMapping(THERAPEUTIC, "8");
+    assertMapping(OTHER, "9");
+  }
+
+  private void assertMapping(ProcedureCategorySnomedMapping expectedMapping, String input) {
+    Optional<ProcedureCategorySnomedMapping> actual = fromOpsCode(input);
+    assertTrue(actual.isPresent(), "Code: " + input);
+    assertEquals(expectedMapping, actual.get());
   }
 }
