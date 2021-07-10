@@ -1,13 +1,7 @@
 package valueSets;
 
 import org.junit.jupiter.api.Test;
-import valueSet.CodeDto;
-import valueSet.CodeUtil;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static valueSet.CodeUtil.assertSimpleSystem;
 import static valueSet.CodeUtil.assertValidCodes;
 
@@ -19,9 +13,7 @@ class BehandlungsgrundTest {
   }
 
   @Test
-  void testAllValidCodes() throws FileNotFoundException {
-    List<CodeDto> codes = CodeUtil.get("BehandlungsgrundCodes.json");
-    assertValidCodes(codes, Behandlungsgrund::fromCode);
-    assertEquals(codes.size(), Behandlungsgrund.values().length);
+  void testAllValidCodes() {
+    assertValidCodes(Behandlungsgrund.class);
   }
 }
