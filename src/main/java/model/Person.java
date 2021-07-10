@@ -305,7 +305,7 @@ public class Person implements Datablock {
   }
 
   // TODO: Is PKV System always empty?
-  // TODO: What is assignerRef of PKV? Example only display: "Signal Iduna"
+  // TODO: Display of assignerReference should be set as name of Krankenkasse from IKNR
   public Identifier getPatientPKV() {
     String value = this.getVersichertennummer_pkv();
     String system = Constants.getEmptyValue();
