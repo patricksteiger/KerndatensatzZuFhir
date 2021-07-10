@@ -1,7 +1,10 @@
 package valueSets;
 
 import constants.CodingSystem;
+import helper.Helper;
 import interfaces.Code;
+
+import java.util.Optional;
 
 /** @see "http://fhir.de/CodeSystem/identifier-type-de-basis" */
 public enum VersichertenCode implements Code {
@@ -16,6 +19,10 @@ public enum VersichertenCode implements Code {
   VersichertenCode(String code, String display) {
     this.code = code;
     this.display = display;
+  }
+
+  public static Optional<VersichertenCode> fromCode(String code) {
+    return Helper.codeFromString(VersichertenCode.values(), code);
   }
 
   public String getCode() {
