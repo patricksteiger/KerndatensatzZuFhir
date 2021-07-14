@@ -278,7 +278,6 @@ public class Medikation implements Datablock {
     return optionalIdentifier(id);
   }
 
-  // TODO: Administration or Statement effective?
   public Type getMedicationAdministrationEffective() {
     return this.getMedicationStatementEffective();
   }
