@@ -1,4 +1,4 @@
-package model;
+package basismodule;
 
 import com.opencsv.bean.CsvBindByName;
 import constants.Constants;

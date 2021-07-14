@@ -1,6 +1,6 @@
 package endToEnd;
 
-import model.Diagnose;
+import basismodule.Diagnose;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

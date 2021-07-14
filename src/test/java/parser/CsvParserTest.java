@@ -1,6 +1,6 @@
 package parser;
 
-import model.Prozedur;
+import basismodule.Prozedur;
 import org.junit.jupiter.api.Test;
 import testModel.DatablockMock;
 

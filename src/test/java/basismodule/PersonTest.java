@@ -1,4 +1,4 @@
-package model;
+package basismodule;
 
 import constants.CodingCode;
 import constants.CodingSystem;
