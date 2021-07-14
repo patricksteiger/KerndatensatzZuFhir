@@ -98,9 +98,10 @@ public class Diagnose implements Datablock {
     return this.getFreitextbeschreibung();
   }
 
+  // TODO: Mehrfachcodierungskennzeichen replaces Ausruf, Manifest and Primaer?
   public Coding getCodeIcd() {
     String code = this.getIcd_diagnosecode();
-    String system = CodingSystem.ICD_10_GM_DIMDI;
+    String system = CodingSystem.ICD_10_GM;
     List<Extension> extensions =
         Helper.listOf(
             this.getCodeIcdDiagnosesicherheit(),
@@ -113,7 +114,7 @@ public class Diagnose implements Datablock {
 
   public Extension getCodeIcdPrimaercode() {
     String icd = this.getIcd_primaercode();
-    String system = CodingSystem.ICD_10_GM_DIMDI;
+    String system = CodingSystem.ICD_10_GM;
     String version = Constants.VERSION_2020;
     String url = ExtensionUrl.ICD_10_GM_PRIMAERCODE;
     return optionalExtensionWithCoding(icd, system, version, url);
@@ -121,7 +122,7 @@ public class Diagnose implements Datablock {
 
   public Extension getCodeIcdManifestationscode() {
     String code = this.getIcd_manifestationscode();
-    String system = CodingSystem.ICD_10_GM_DIMDI;
+    String system = CodingSystem.ICD_10_GM;
     String version = Constants.VERSION_2020;
     String url = ExtensionUrl.ICD_10_GM_MANIFESTATIONSCODE;
     return optionalExtensionWithCoding(code, system, version, url);
@@ -129,7 +130,7 @@ public class Diagnose implements Datablock {
 
   public Extension getCodeIcdAusrufezeichen() {
     String code = this.getIcd_ausrufezeichencode();
-    String system = CodingSystem.ICD_10_GM_DIMDI;
+    String system = CodingSystem.ICD_10_GM;
     String version = Constants.VERSION_2020;
     String url = ExtensionUrl.ICD_10_GM_AUSRUFEZEICHEN;
     return optionalExtensionWithCoding(code, system, version, url);
@@ -155,7 +156,7 @@ public class Diagnose implements Datablock {
 
   public Coding getCodeAlpha() {
     String alpha = this.getAlpha_diagnosecode();
-    String system = CodingSystem.ALPHA_ID_DIMDI;
+    String system = CodingSystem.ALPHA_ID;
     return optionalCodingFromSystem(alpha, system);
   }
 

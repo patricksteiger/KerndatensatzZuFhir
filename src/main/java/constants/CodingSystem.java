@@ -34,8 +34,8 @@ public class CodingSystem {
   public static final String FALL_FACHABTEILUNGSSCHLUESSEL =
       "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel";
   public static final String ORPHANET = "http://www.orpha.net";
-  public static final String ALPHA_ID_DIMDI = "http://fhir.de/CodeSystem/dimdi/alpha-id";
-  public static final String ICD_10_GM_DIMDI = "http://fhir.de/CodeSystem/dimdi/icd-10-gm";
+  public static final String ALPHA_ID = "http://fhir.de/CodeSystem/bfarm/alpha-id";
+  public static final String ICD_10_GM = "http://fhir.de/CodeSystem/bfarm/icd-10-gm";
   public static final String ICD_SEITENLOKALISATION =
       "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION";
   public static final String CONDITION_CLINICAL_STATUS =
