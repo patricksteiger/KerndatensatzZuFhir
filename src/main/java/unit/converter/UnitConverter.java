@@ -18,18 +18,19 @@ public class UnitConverter {
 
   private UnitConverter() {}
 
-  public static Optional<Quantity> fromLocalCode(String localCode, String value) {
+  // TODO: How to react to unity-Unit? Currently doesn't set a value in Quantity!
+  public static Optional<Quantity> fromLocalUnit(String localUnit, String value) {
     if (Helper.checkEmptyString(value)) {
       return Optional.empty();
     }
     // No unit is represented with "1".
-    String localUnit = Helper.checkEmptyString(localCode) ? "1" : localCode;
-    Optional<UnitMapping> mappingOptional = UnitMapper.getUcum(localUnit);
-    if (!mappingOptional.isPresent()) {
-      return Optional.empty();
-    }
-    // TODO: How to react to unity-Unit? Currently doesn't set a value in Quantity!
-    UnitMapping mapping = mappingOptional.get();
+    String unit = Helper.checkEmptyString(localUnit) ? "1" : localUnit;
+    return UnitMapper.getUcum(unit)
+        .flatMap(mapping -> quantityFromUnitMappingAndValue(mapping, value));
+  }
+
+  private static Optional<Quantity> quantityFromUnitMappingAndValue(
+      UnitMapping mapping, String value) {
     if (UnitReducible.fromString(mapping.getUcumCode())) {
       return convertValue(value, mapping.getConversion()).flatMap(val -> quantity(val, mapping));
     } else {

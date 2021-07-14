@@ -51,13 +51,13 @@ public class FhirHelper {
   public static Optional<Ratio> generateRatioFromFractions(
       ValueAndUnitFraction valueAndUnitFraction) {
     Optional<Quantity> numerator =
-        UnitConverter.fromLocalCode(
+        UnitConverter.fromLocalUnit(
             valueAndUnitFraction.getUnitNumerator(), valueAndUnitFraction.getValueNumerator());
     if (!numerator.isPresent()) {
       return Optional.empty();
     }
     Optional<Quantity> denominator =
-        UnitConverter.fromLocalCode(
+        UnitConverter.fromLocalUnit(
             valueAndUnitFraction.getUnitDenominator(), valueAndUnitFraction.getValueDenominator());
     return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
   }

@@ -11,20 +11,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class UnitConverterTest {
   @Test
   void testEmpty() {
-    assertFalse(UnitConverter.fromLocalCode(null, null).isPresent());
-    assertFalse(UnitConverter.fromLocalCode("", "").isPresent());
-    assertFalse(UnitConverter.fromLocalCode(null, "").isPresent());
-    assertFalse(UnitConverter.fromLocalCode("", null).isPresent());
+    assertFalse(UnitConverter.fromLocalUnit(null, null).isPresent());
+    assertFalse(UnitConverter.fromLocalUnit("", "").isPresent());
+    assertFalse(UnitConverter.fromLocalUnit(null, "").isPresent());
+    assertFalse(UnitConverter.fromLocalUnit("", null).isPresent());
     String unit = "ml";
-    assertFalse(UnitConverter.fromLocalCode(unit, "").isPresent());
-    assertFalse(UnitConverter.fromLocalCode(unit, null).isPresent());
+    assertFalse(UnitConverter.fromLocalUnit(unit, "").isPresent());
+    assertFalse(UnitConverter.fromLocalUnit(unit, null).isPresent());
   }
 
   @Test
   void testNonReducible() {
     String value = "120/80";
     String unit = "mm Hg";
-    Optional<Quantity> result = UnitConverter.fromLocalCode(unit, value);
+    Optional<Quantity> result = UnitConverter.fromLocalUnit(unit, value);
     assertQuantity(value, "mm[Hg]", result);
   }
 
@@ -32,21 +32,21 @@ class UnitConverterTest {
   void testInvalidUnit() {
     String value = "1";
     String unit = "invalid";
-    assertFalse(UnitConverter.fromLocalCode(unit, value).isPresent());
+    assertFalse(UnitConverter.fromLocalUnit(unit, value).isPresent());
   }
 
   @Test
   void testInvalidValue() {
     String value = "invalid";
     String unit = "mL";
-    assertFalse(UnitConverter.fromLocalCode(unit, value).isPresent());
+    assertFalse(UnitConverter.fromLocalUnit(unit, value).isPresent());
   }
 
   @Test
   void testSimpleValue() {
     String value = "12";
     String unit = "mL";
-    Optional<Quantity> result = UnitConverter.fromLocalCode(unit, value);
+    Optional<Quantity> result = UnitConverter.fromLocalUnit(unit, value);
     assertQuantity(value, unit, result);
   }
 
@@ -54,7 +54,7 @@ class UnitConverterTest {
   void testFractionValue() {
     String value = "1/2";
     String unit = "mL";
-    Optional<Quantity> result = UnitConverter.fromLocalCode(unit, value);
+    Optional<Quantity> result = UnitConverter.fromLocalUnit(unit, value);
     assertQuantity("0.5", unit, result);
   }
 
