@@ -6,7 +6,8 @@ import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import valueSets.*;
+import valueSets.ClinicalStatus;
+import valueSets.KBVBaseStageLife;
 
 import java.util.List;
 
@@ -37,6 +38,10 @@ class DiagnoseTest {
 
     @Nested
     class CodeTest {
+
+      private final String ALPHA_SYSTEM = "http://fhir.de/CodeSystem/bfarm/alpha-id";
+      private final String SNOMED_SYSTEM = "http://snomed.info/sct";
+
       @Test
       @DisplayName("no codes set should result in empty value")
       void testNoCodes() {
@@ -66,12 +71,17 @@ class DiagnoseTest {
         assertEquals(freitext, result.getText());
         List<Coding> codings = result.getCoding();
         assertEquals(2, codings.size());
-        assertCoding(alphaCode, CodingSystem.ALPHA_ID_DIMDI, alphaDisplay, codings);
-        assertCoding(snomedCode, CodingSystem.SNOMED_CLINICAL_TERMS, snomedDisplay, codings);
+        assertCoding(alphaCode, ALPHA_SYSTEM, alphaDisplay, codings);
+        assertCoding(snomedCode, SNOMED_SYSTEM, snomedDisplay, codings);
       }
 
       @Nested
       class CodeIcdTest {
+
+        private final String ICD_10_SYSTEM = "http://fhir.de/CodeSystem/bfarm/icd-10-gm";
+        private final String SEITENLOKALISATION_URL =
+            "http://fhir.de/StructureDefinition/seitenlokalisation";
+
         @Test
         @DisplayName("empty Diagnosecode should result in empty value")
         void testEmptyDiagnosecode() {
@@ -86,7 +96,7 @@ class DiagnoseTest {
           String diagnosecode = getCodeDisplayStr(code, display);
           diagnose.setIcd_diagnosecode(diagnosecode);
           Coding result = diagnose.getCodeIcd();
-          assertCoding(code, CodingSystem.ICD_10_GM_DIMDI, display, result);
+          assertCoding(code, ICD_10_SYSTEM, display, result);
           assertFalse(result.hasExtension());
         }
 
@@ -97,12 +107,12 @@ class DiagnoseTest {
           String display = "icd code";
           String diagnosecode = getCodeDisplayStr(code, display);
           diagnose.setIcd_diagnosecode(diagnosecode);
-          String seitenlokalisation = getCodeDisplayStr(ICD_Seitenlokalisation.LINKS);
+          String seitenlokalisation = getCodeStr("L");
           diagnose.setIcd_seitenlokalisation(seitenlokalisation);
           Coding result = diagnose.getCodeIcd();
-          assertCoding(code, CodingSystem.ICD_10_GM_DIMDI, display, result);
+          assertCoding(code, ICD_10_SYSTEM, display, result);
           assertEquals(1, result.getExtension().size());
-          assertTrue(result.hasExtension(ExtensionUrl.ICD_10_GM_SEITENLOKALISATION));
+          assertTrue(result.hasExtension(SEITENLOKALISATION_URL));
         }
 
         @Nested
@@ -124,14 +134,18 @@ class DiagnoseTest {
           @Test
           @DisplayName("valid Diagnosesicherheit should be present in Extension")
           void testValidCodeIcdSicherheit() {
-            Diagnosesicherheit diagnosesicherheitCode = Diagnosesicherheit.SUSPECTED;
-            String diagnosesicherheit = getCodeDisplayStr(diagnosesicherheitCode);
+            // diagnosesicherheit is SUSPECTED
+            String diagnosesicherheit = getCodeStr("415684004");
             diagnose.setIcd_diagnosesicherheit(diagnosesicherheit);
             Extension result = diagnose.getCodeIcdDiagnosesicherheit();
-            ICD_Diagnosesicherheit icdDiagnosesicherheitCode =
-                diagnosesicherheitCode.getIcdMapping();
+            String expectedCode = "V",
+                expectedSystem =
+                    "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                expectedDisplay = "Verdacht auf / zum Ausschluss von";
+            String DIAGNOSESICHERHEIT_URL =
+                "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit";
             assertExtensionWithCoding(
-                icdDiagnosesicherheitCode, ExtensionUrl.ICD_10_GM_DIAGNOSESEICHERHEIT, result);
+                expectedCode, expectedSystem, expectedDisplay, DIAGNOSESICHERHEIT_URL, result);
           }
         }
 
@@ -154,12 +168,15 @@ class DiagnoseTest {
           @Test
           @DisplayName("valid Seitenlokalisation should be present in Extension")
           void testCodeIcdSeitenlokalisation() {
-            ICD_Seitenlokalisation icdSeitenlokalisation = ICD_Seitenlokalisation.BEIDSEITIG;
-            String seitenlokalisation = getCodeDisplayStr(icdSeitenlokalisation);
+            String seitenlokalisation = getCodeStr("B");
             diagnose.setIcd_seitenlokalisation(seitenlokalisation);
             Extension result = diagnose.getCodeIcdSeitenlokalisation();
+            String expectedCode = "B",
+                expectedSystem =
+                    "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_SEITENLOKALISATION",
+                expectedDisplay = "beiderseits";
             assertExtensionWithCoding(
-                icdSeitenlokalisation, ExtensionUrl.ICD_10_GM_SEITENLOKALISATION, result);
+                expectedCode, expectedSystem, expectedDisplay, SEITENLOKALISATION_URL, result);
           }
         }
 
@@ -181,11 +198,7 @@ class DiagnoseTest {
             diagnose.setIcd_ausrufezeichencode(ausrufezeichen);
             Extension result = diagnose.getCodeIcdAusrufezeichen();
             assertExtensionWithCoding(
-                code,
-                CodingSystem.ICD_10_GM_DIMDI,
-                display,
-                ExtensionUrl.ICD_10_GM_AUSRUFEZEICHEN,
-                result);
+                code, ICD_10_SYSTEM, display, ExtensionUrl.ICD_10_GM_AUSRUFEZEICHEN, result);
           }
         }
 
@@ -207,11 +220,7 @@ class DiagnoseTest {
             diagnose.setIcd_manifestationscode(manifestation);
             Extension result = diagnose.getCodeIcdManifestationscode();
             assertExtensionWithCoding(
-                code,
-                CodingSystem.ICD_10_GM_DIMDI,
-                display,
-                ExtensionUrl.ICD_10_GM_MANIFESTATIONSCODE,
-                result);
+                code, ICD_10_SYSTEM, display, ExtensionUrl.ICD_10_GM_MANIFESTATIONSCODE, result);
           }
         }
 
@@ -232,11 +241,7 @@ class DiagnoseTest {
             diagnose.setIcd_primaercode(primaercode);
             Extension result = diagnose.getCodeIcdPrimaercode();
             assertExtensionWithCoding(
-                code,
-                CodingSystem.ICD_10_GM_DIMDI,
-                display,
-                ExtensionUrl.ICD_10_GM_PRIMAERCODE,
-                result);
+                code, ICD_10_SYSTEM, display, ExtensionUrl.ICD_10_GM_PRIMAERCODE, result);
           }
         }
       }
@@ -257,7 +262,7 @@ class DiagnoseTest {
           String diagnosecode = getCodeDisplayStr(code, display);
           diagnose.setAlpha_diagnosecode(diagnosecode);
           Coding result = diagnose.getCodeAlpha();
-          assertCoding(code, CodingSystem.ALPHA_ID_DIMDI, display, result);
+          assertCoding(code, ALPHA_SYSTEM, display, result);
         }
       }
 
@@ -277,7 +282,7 @@ class DiagnoseTest {
           String snomed = getCodeDisplayStr(code, display);
           diagnose.setSnomed_diagnosecode(snomed);
           Coding result = diagnose.getCodeSct();
-          assertCoding(code, CodingSystem.SNOMED_CLINICAL_TERMS, display, result);
+          assertCoding(code, SNOMED_SYSTEM, display, result);
         }
       }
 
@@ -297,7 +302,8 @@ class DiagnoseTest {
           String orphanet = getCodeDisplayStr(code, display);
           diagnose.setOrphanet_diagnosecode(orphanet);
           Coding result = diagnose.getCodeOrphanet();
-          assertCoding(code, CodingSystem.ORPHANET, display, result);
+          String ORPHANET_SYSTEM = "http://www.orpha.net";
+          assertCoding(code, ORPHANET_SYSTEM, display, result);
         }
       }
 
