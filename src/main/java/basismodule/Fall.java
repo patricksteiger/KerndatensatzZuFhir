@@ -305,6 +305,7 @@ public class Fall implements Datablock {
     return Encounter.EncounterStatus.FINISHED;
   }
 
+  // TODO: Is ACME-Patient system always correct? It is not a fixed value
   public Identifier getAbteilungsEncounterIdentifier() {
     String aufnahmenummer = this.getAbteilungskontakt_aufnahmenummer();
     String system = IdentifierSystem.ACME_PATIENT;
