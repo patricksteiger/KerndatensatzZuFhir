@@ -1,12 +1,10 @@
 package basismodule;
 
-import constants.CodingSystem;
 import constants.ExtensionUrl;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import valueSets.ClinicalStatus;
 
 import java.util.List;
 
@@ -518,7 +516,7 @@ class DiagnoseTest {
         String koerperstelle = getCodeDisplayStr(code, display);
         diagnose.setKoerperstelle(koerperstelle);
         CodeableConcept result = diagnose.getBodySite();
-        assertCodeableConcept(code, CodingSystem.SNOMED_CLINICAL_TERMS, display, result);
+        assertCodeableConcept(code, SNOMED_SYSTEM, display, result);
       }
     }
 
@@ -540,11 +538,13 @@ class DiagnoseTest {
       @Test
       @DisplayName("valid Status should be present in CodeableConcept")
       void testClinicalStatus() {
-        ClinicalStatus clinicalStatus = ClinicalStatus.ACTIVE;
-        String status = getCodeDisplayStr(clinicalStatus);
+        String active = "active";
+        String status = getCodeStr(active);
         diagnose.setKlinischer_status(status);
         CodeableConcept result = diagnose.getClinicalStatus();
-        assertCodeableConcept(clinicalStatus, result);
+        String expectedSystem = "http://terminology.hl7.org/CodeSystem/condition-clinical",
+            expectedDisplay = "Active";
+        assertCodeableConcept(active, expectedSystem, expectedDisplay, result);
       }
     }
   }
