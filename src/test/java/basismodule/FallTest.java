@@ -15,6 +15,8 @@ import static util.Util.*;
 
 public class FallTest {
   private static Logger LOGGER;
+  private final String FACHABTEILUNG_SYSTEM =
+      "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel";
   private Fall fall;
 
   @BeforeAll
@@ -100,19 +102,18 @@ public class FallTest {
         String schluessel = getCodeDisplayStr(code, display);
         fall.setAbteilungskontakt_fachabteilungsschluessel(schluessel);
         CodeableConcept result = fall.getAbteilungsEncounterServiceType();
-        assertCodeableConcept(code, CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL, display, result);
+        assertCodeableConcept(code, FACHABTEILUNG_SYSTEM, display, result);
       }
 
       @Test
       @DisplayName("valid Fachabteilungsschlüssel should be present in CodeableConcept")
       void testValidServiceType() {
-        Fachabteilung fachabteilung = Fachabteilung.AUGENHEILKUNDE;
-        String code = fachabteilung.getCode();
-        String display = fachabteilung.getDisplay();
-        String schluessel = getCodeDisplayStr(code, display);
+        String innereMedizin = "0100";
+        String display = "Innere Medizin";
+        String schluessel = getCodeDisplayStr(innereMedizin, display);
         fall.setAbteilungskontakt_fachabteilungsschluessel(schluessel);
         CodeableConcept result = fall.getAbteilungsEncounterServiceType();
-        assertCodeableConcept(fachabteilung, result);
+        assertCodeableConcept(innereMedizin, FACHABTEILUNG_SYSTEM, display, result);
       }
     }
 
