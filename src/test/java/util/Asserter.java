@@ -159,6 +159,20 @@ public class Asserter {
   }
 
   public static void assertExtensionWithCodeableConcept(
+      String expectedCode,
+      String expectedSystem,
+      String expectedDisplay,
+      String expectedUrl,
+      Extension extension) {
+    assertNonEmptyValue(extension);
+    assertEquals(expectedUrl, extension.getUrl());
+    assertTrue(extension.hasValue());
+    assertTrue(extension.getValue() instanceof CodeableConcept);
+    CodeableConcept value = (CodeableConcept) extension.getValue();
+    assertCodeableConcept(expectedCode, expectedSystem, expectedDisplay, value);
+  }
+
+  public static void assertExtensionWithCodeableConcept(
       Code expectedCode, String expectedUrl, Extension extension) {
     assertNonEmptyValue(extension);
     assertEquals(expectedUrl, extension.getUrl());

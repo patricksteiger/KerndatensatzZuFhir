@@ -19,8 +19,7 @@ public class ExtensionUrl {
       "http://fhir.de/StructureDefinition/gender-amtlich-de";
   public static final String BIRTH_DATE =
       "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
-  public static final String STAGE_LIFE =
-      "https://fhir.kbv.de/StructureDefinition/KBV_EX_Base_Stage_Life";
+  public static final String STAGE_LIFE = "http://fhir.de/StructureDefinition/lebensphase";
   public static final String ICD_10_GM_DIAGNOSESEICHERHEIT =
       "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit";
   public static final String ICD_10_GM_SEITENLOKALISATION =

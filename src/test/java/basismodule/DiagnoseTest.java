@@ -7,7 +7,6 @@ import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import valueSets.ClinicalStatus;
-import valueSets.KBVBaseStageLife;
 
 import java.util.List;
 
@@ -36,11 +35,12 @@ class DiagnoseTest {
   @Nested
   class ConditionTest {
 
+    private final String SNOMED_SYSTEM = "http://snomed.info/sct";
+
     @Nested
     class CodeTest {
 
       private final String ALPHA_SYSTEM = "http://fhir.de/CodeSystem/bfarm/alpha-id";
-      private final String SNOMED_SYSTEM = "http://snomed.info/sct";
 
       @Test
       @DisplayName("no codes set should result in empty value")
@@ -341,7 +341,6 @@ class DiagnoseTest {
       @Test
       @DisplayName("non-empty Erlaeuterung should be present in Annotation")
       void testNote() {
-        // non-empty erlaeuterung
         String erlaeuterung = "some text";
         diagnose.setDiagnoseerlaeuterung(erlaeuterung);
         Annotation result = diagnose.getNote();
@@ -371,6 +370,8 @@ class DiagnoseTest {
 
     @Nested
     class OnsetTest {
+      private final String LEBENSPHASE_URL = "http://fhir.de/StructureDefinition/lebensphase";
+
       @Test
       @DisplayName("empty Zeitraum and Lebensphase should result in empty value")
       void testEmptyOnset() {
@@ -387,14 +388,17 @@ class DiagnoseTest {
         diagnose.setZeitraum_bis("");
         diagnose.setZeitraum_von("");
         diagnose.setLebensphase_bis("");
-        KBVBaseStageLife vonStageLife = KBVBaseStageLife.NEONATAL;
-        String lebensphaseVon = getCodeDisplayStr(vonStageLife);
+        String neonatal = "255407002";
+        String lebensphaseVon = getCodeStr(neonatal);
         diagnose.setLebensphase_von(lebensphaseVon);
         Type result = diagnose.getOnset();
         assertNonEmptyValue(result);
         assertTrue(result instanceof DateTimeType);
         assertFalse(((DateTimeType) result).hasValue());
-        assertTrue(result.hasExtension(ExtensionUrl.STAGE_LIFE));
+        Extension actualExtension = result.getExtensionByUrl(LEBENSPHASE_URL);
+        String expectedDisplay = "Neonatal (qualifier value)";
+        assertExtensionWithCodeableConcept(
+            neonatal, SNOMED_SYSTEM, expectedDisplay, LEBENSPHASE_URL, actualExtension);
         assertEquals(1, result.getExtension().size());
       }
 
@@ -405,14 +409,17 @@ class DiagnoseTest {
         diagnose.setLebensphase_bis("");
         String startDate = "2021-01-16";
         diagnose.setZeitraum_von(startDate);
-        KBVBaseStageLife vonStageLife = KBVBaseStageLife.NEONATAL;
-        String lebensphaseVon = getCodeDisplayStr(vonStageLife);
+        String infancy = "3658006";
+        String lebensphaseVon = getCodeStr(infancy);
         diagnose.setLebensphase_von(lebensphaseVon);
         Type result = diagnose.getOnset();
         assertNonEmptyValue(result);
         assertTrue(result instanceof DateTimeType);
         assertEquals(expectedDateString(startDate), ((DateTimeType) result).getValue());
-        assertTrue(result.hasExtension(ExtensionUrl.STAGE_LIFE));
+        Extension actualExtension = result.getExtensionByUrl(LEBENSPHASE_URL);
+        String expectedDisplay = "Infancy (qualifier value)";
+        assertExtensionWithCodeableConcept(
+            infancy, SNOMED_SYSTEM, expectedDisplay, LEBENSPHASE_URL, actualExtension);
         assertEquals(1, result.getExtension().size());
       }
 
@@ -423,8 +430,8 @@ class DiagnoseTest {
         diagnose.setZeitraum_von(startDate);
         String endDate = "2021-02-07";
         diagnose.setZeitraum_bis(endDate);
-        KBVBaseStageLife vonStageLife = KBVBaseStageLife.NEONATAL;
-        String lebensphaseVon = getCodeDisplayStr(vonStageLife);
+        String adulthood = "41847000";
+        String lebensphaseVon = getCodeStr(adulthood);
         diagnose.setLebensphase_von(lebensphaseVon);
         Type result = diagnose.getOnset();
         assertNonEmptyValue(result);
@@ -433,7 +440,7 @@ class DiagnoseTest {
         assertTrue(period.hasStart());
         assertEquals(expectedDateString(startDate), period.getStart());
         assertEquals(1, period.getStartElement().getExtension().size());
-        assertTrue(period.getStartElement().hasExtension(ExtensionUrl.STAGE_LIFE));
+        assertTrue(period.getStartElement().hasExtension(LEBENSPHASE_URL));
         assertTrue(period.hasEnd());
         assertEquals(expectedDateString(endDate), period.getEnd());
         assertFalse(period.getEndElement().hasExtension());
@@ -457,11 +464,13 @@ class DiagnoseTest {
         @Test
         @DisplayName("valid LebensphaseVon should be present in Extension")
         void testLebensphaseVon() {
-          KBVBaseStageLife vonStageLife = KBVBaseStageLife.INFANCY;
-          String vonCode = getCodeDisplayStr(vonStageLife);
+          String childhood = "255398004";
+          String vonCode = getCodeStr(childhood);
           diagnose.setLebensphase_von(vonCode);
           Extension result = diagnose.getLebensphaseVon();
-          assertExtensionWithCodeableConcept(vonStageLife, ExtensionUrl.STAGE_LIFE, result);
+          String expectedDisplay = "Childhood (qualifier value)";
+          assertExtensionWithCodeableConcept(
+              childhood, SNOMED_SYSTEM, expectedDisplay, LEBENSPHASE_URL, result);
         }
       }
 
@@ -482,11 +491,13 @@ class DiagnoseTest {
 
         @Test
         void testLebensphaseBis() {
-          KBVBaseStageLife bisStageLife = KBVBaseStageLife.INFANCY;
-          String bisCode = getCodeDisplayStr(bisStageLife);
+          String oldAge = "271872005";
+          String bisCode = getCodeStr(oldAge);
           diagnose.setLebensphase_von(bisCode);
           Extension result = diagnose.getLebensphaseVon();
-          assertExtensionWithCodeableConcept(bisStageLife, ExtensionUrl.STAGE_LIFE, result);
+          String expectedDisplay = "Old age (qualifier value)";
+          assertExtensionWithCodeableConcept(
+              oldAge, SNOMED_SYSTEM, expectedDisplay, LEBENSPHASE_URL, result);
         }
       }
     }
