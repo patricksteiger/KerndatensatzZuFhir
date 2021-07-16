@@ -132,7 +132,9 @@ public class FallTest {
         String ebene = getCodeStr(code);
         fall.setAbteilungskontakt_ebene(ebene);
         CodeableConcept result = fall.getAbteilungsEncounterType();
-        assertCodeableConcept(Kontaktebene.ABTEILUNG, result);
+        String expectedSystem = "http://fhir.de/CodeSystem/Kontaktebene",
+            expectedDisplay = "Abteilungskontakt";
+        assertCodeableConcept(code, expectedSystem, expectedDisplay, result);
       }
     }
 
