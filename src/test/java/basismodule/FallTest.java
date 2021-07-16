@@ -17,6 +17,7 @@ public class FallTest {
   private static Logger LOGGER;
   private final String FACHABTEILUNG_SYSTEM =
       "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel";
+  private final String ENCOUNTER_CLASS_SYSTEM = "http://terminology.hl7.org/CodeSystem/v3-ActCode";
   private Fall fall;
 
   @BeforeAll
@@ -180,12 +181,12 @@ public class FallTest {
       @Test
       @DisplayName("non-empty Klasse should be present in Coding")
       void testClass() {
-        String code = "1a2b";
-        String display = "correct display";
+        String code = "AMB";
+        String display = "ambulatory";
         String klasse = getCodeDisplayStr(code, display);
         fall.setAbteilungskontakt_klasse(klasse);
         Coding result = fall.getAbteilungsEncounterClass();
-        assertCoding(code, CodingSystem.ENCOUNTER_CLASS_DE, display, result);
+        assertCoding(code, ENCOUNTER_CLASS_SYSTEM, display, result);
       }
     }
   }
