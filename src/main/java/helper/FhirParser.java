@@ -35,6 +35,17 @@ public class FhirParser {
         : FhirGenerator.coding(parsedCode);
   }
 
+  public static <T extends Code> Coding codingFromValueSet(
+      String kerndatensatzValue,
+      Function<String, Optional<T>> mapToFhirCodeFromValueSet,
+      LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    return mapToFhirCodeFromValueSet
+        .apply(parsedCode.getCode())
+        .map(FhirGenerator::coding)
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
+  }
+
   public static Coding optionalCoding(String kerndatensatzValue) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return parsedCode.hasEmptyCode() ? Constants.getEmptyValue() : FhirGenerator.coding(parsedCode);

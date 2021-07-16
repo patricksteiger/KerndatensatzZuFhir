@@ -160,11 +160,10 @@ public class Fall implements Datablock {
 
   public Coding getVersorgungsstellenEncounterClass() {
     String code = this.getVersorgungsstellenkontakt_klasse();
-    String system = CodingSystem.ENCOUNTER_CLASS_DE;
     LoggingData data =
         LoggingData.of(
             LOGGER, "getVersorgungsstellenEncounterClass", "versorgungsstellenkontakt_klasse");
-    return codingFromSystem(code, system, data);
+    return codingFromValueSet(code, EncounterClassDE::fromCode, data);
   }
 
   public Encounter.EncounterStatus getVersorgungsstellenEncounterStatus() {
@@ -241,10 +240,9 @@ public class Fall implements Datablock {
 
   public Coding getEinrichtungsEncounterClass() {
     String code = this.getEinrichtungskontakt_klasse();
-    String system = CodingSystem.ENCOUNTER_CLASS_DE;
     LoggingData data =
         LoggingData.of(LOGGER, "getEinrichtungsEncounterClass", "einrichtungskontakt_klasse");
-    return codingFromSystem(code, system, data);
+    return codingFromValueSet(code, EncounterClassDE::fromCode, data);
   }
 
   public Encounter.EncounterStatus getEinrichtungsEncounterStatus() {
@@ -295,10 +293,9 @@ public class Fall implements Datablock {
 
   public Coding getAbteilungsEncounterClass() {
     String code = this.getAbteilungskontakt_klasse();
-    String system = CodingSystem.ENCOUNTER_CLASS_DE;
     LoggingData data =
         LoggingData.of(LOGGER, "getAbteilungsEncounterClass", "abteilungskontakt_klasse");
-    return codingFromSystem(code, system, data);
+    return codingFromValueSet(code, EncounterClassDE::fromCode, data);
   }
 
   public Encounter.EncounterStatus getAbteilungsEncounterStatus() {
