@@ -18,6 +18,7 @@ import static util.Asserter.*;
 import static util.Util.*;
 
 public class LaborbefundTest {
+  private static final String LOINC_SYSTEM = "http://loinc.org";
   private static Logger LOGGER;
   private Laborbefund laborbefund;
 
@@ -121,11 +122,14 @@ public class LaborbefundTest {
 
     @Nested
     class CodeTest {
+
+      private final String LAB_REPORT = "11502-2";
+
       @Test
       @DisplayName("code is fixed value: labReport")
       void testCode() {
         CodeableConcept result = laborbefund.getDiagnosticReportCode();
-        assertCodeableConcept(CodingCode.LOINC_LAB_REPORT, CodingSystem.LOINC, result);
+        assertCodeableConcept(LAB_REPORT, LOINC_SYSTEM, result);
       }
 
       @Nested
@@ -134,7 +138,7 @@ public class LaborbefundTest {
         @DisplayName("lapReport is fixed value: 11502-2")
         void testLabReport() {
           Coding result = laborbefund.getDiagnosticReportLabReport();
-          assertCoding(CodingCode.LOINC_LAB_REPORT, CodingSystem.LOINC, result);
+          assertCoding(LAB_REPORT, LOINC_SYSTEM, result);
         }
       }
     }
@@ -160,6 +164,11 @@ public class LaborbefundTest {
 
     @Nested
     class CategoryTest {
+
+      private final String SERVICE_SECTION_SYSTEM = "http://terminology.hl7.org/CodeSystem/v2-0074";
+      private final String SERVICE_SECTION_LAB = "LAB";
+      private final String LOINC_LAB = "26436-6";
+
       @Test
       @DisplayName("category is fixed values: serivceSection and loincLab")
       void testC() {
@@ -167,11 +176,8 @@ public class LaborbefundTest {
         assertNonEmptyValue(result);
         List<Coding> codings = result.getCoding();
         assertEquals(2, codings.size());
-        assertCoding(CodingCode.LOINC_LAB, CodingSystem.LOINC, codings.get(0));
-        assertCoding(
-            CodingCode.LAB_DIAGNOSTIC_REPORT,
-            CodingSystem.DIAGNOSTIC_SERVICE_SECTION,
-            codings.get(1));
+        assertCoding(LOINC_LAB, LOINC_SYSTEM, codings.get(0));
+        assertCoding(SERVICE_SECTION_LAB, SERVICE_SECTION_SYSTEM, codings.get(1));
       }
 
       @Nested
@@ -180,8 +186,7 @@ public class LaborbefundTest {
         @DisplayName("serviceSection is fixed value: LAB")
         void testService() {
           Coding result = laborbefund.getDiagnosticReportServiceSection();
-          assertCoding(
-              CodingCode.LAB_DIAGNOSTIC_REPORT, CodingSystem.DIAGNOSTIC_SERVICE_SECTION, result);
+          assertCoding(SERVICE_SECTION_LAB, SERVICE_SECTION_SYSTEM, result);
         }
       }
 
@@ -191,7 +196,7 @@ public class LaborbefundTest {
         @DisplayName("loincLab is fixed value: 26436-6")
         void testLoincLab() {
           Coding result = laborbefund.getDiagnosticReportLoincLab();
-          assertCoding(CodingCode.LOINC_LAB, CodingSystem.LOINC, result);
+          assertCoding(LOINC_LAB, LOINC_SYSTEM, result);
         }
       }
     }
@@ -213,9 +218,16 @@ public class LaborbefundTest {
           String id = "0987654321";
           laborbefund.setIdentifikation(id);
           Identifier result = laborbefund.getDiagnosticReportBefund();
-          assertIdentifier(id, IdentifierSystem.EMPTY, IdentifierTypeCode.FILL, result);
+          assertIdentifier(id, IdentifierSystem.EMPTY, result);
+          assertTrue(result.hasType());
+          CodeableConcept type = result.getType();
+          String expectedCode = "FILL",
+              IDENTIFIER_TYPE_SYSTEM = "http://terminology.hl7.org/CodeSystem/v2-0203",
+              expectedDisplay = "Filler Identifier";
+          assertCodeableConcept(expectedCode, IDENTIFIER_TYPE_SYSTEM, expectedDisplay, type);
           assertTrue(result.hasAssigner());
-          assertEquals(MIIReference.MII_ORGANIZATION, result.getAssigner().getReference());
+          String organization = "Organization/UKU";
+          assertEquals(organization, result.getAssigner().getReference());
         }
       }
     }
