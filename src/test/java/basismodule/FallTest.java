@@ -1,13 +1,11 @@
 package basismodule;
 
-import constants.CodingSystem;
 import constants.IdentifierSystem;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import valueSets.IdentifierTypeCode;
-import valueSets.Kontaktebene;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.clearInvocations;
@@ -501,12 +499,12 @@ public class FallTest {
       @Test
       @DisplayName("non-empty Klasse should be present in Coding")
       void testClass() {
-        String code = "1a2c";
-        String display = "display";
+        String code = "PRENC";
+        String display = "pre-admission";
         String klasse = getCodeDisplayStr(code, display);
         fall.setVersorgungsstellenkontakt_klasse(klasse);
         Coding result = fall.getVersorgungsstellenEncounterClass();
-        assertCoding(code, CodingSystem.ENCOUNTER_CLASS_DE, display, result);
+        assertCoding(code, ENCOUNTER_CLASS_SYSTEM, display, result);
       }
     }
 
@@ -526,7 +524,8 @@ public class FallTest {
         String ebene = getCodeStr(code);
         fall.setVersorgungsstellenkontakt_ebene(ebene);
         CodeableConcept result = fall.getVersorgungsstellenEncounterType();
-        assertCodeableConcept(Kontaktebene.VERSORGUNGSSTELLE, result);
+        String expectedDisplay = "Versorgungsstellenkontakt";
+        assertCodeableConcept(code, KONTAKT_EBENE_SYSTEM, expectedDisplay, result);
       }
     }
 
