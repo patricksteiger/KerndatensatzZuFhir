@@ -6,7 +6,8 @@ import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import valueSets.*;
+import valueSets.IdentifierTypeCode;
+import valueSets.Kontaktebene;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.clearInvocations;
@@ -18,6 +19,7 @@ public class FallTest {
   private final String FACHABTEILUNG_SYSTEM =
       "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel";
   private final String ENCOUNTER_CLASS_SYSTEM = "http://terminology.hl7.org/CodeSystem/v3-ActCode";
+  private final String KONTAKT_EBENE_SYSTEM = "http://fhir.de/CodeSystem/Kontaktebene";
   private Fall fall;
 
   @BeforeAll
@@ -133,9 +135,8 @@ public class FallTest {
         String ebene = getCodeStr(code);
         fall.setAbteilungskontakt_ebene(ebene);
         CodeableConcept result = fall.getAbteilungsEncounterType();
-        String expectedSystem = "http://fhir.de/CodeSystem/Kontaktebene",
-            expectedDisplay = "Abteilungskontakt";
-        assertCodeableConcept(code, expectedSystem, expectedDisplay, result);
+        String expectedDisplay = "Abteilungskontakt";
+        assertCodeableConcept(code, KONTAKT_EBENE_SYSTEM, expectedDisplay, result);
       }
     }
 
@@ -239,12 +240,12 @@ public class FallTest {
       @Test
       @DisplayName("non-empty Klasse should be present in Coding")
       void testNonEmptyClass() {
-        String code = "12345";
-        String display = "very good klasse";
+        String code = "VR";
+        String display = "virtual";
         String klasse = getCodeDisplayStr(code, display);
         fall.setEinrichtungskontakt_klasse(klasse);
         Coding result = fall.getEinrichtungsEncounterClass();
-        assertCoding(code, CodingSystem.ENCOUNTER_CLASS_DE, display, result);
+        assertCoding(code, ENCOUNTER_CLASS_SYSTEM, display, result);
       }
     }
 
@@ -266,7 +267,8 @@ public class FallTest {
         String ebene = getCodeStr(code);
         fall.setEinrichtungskontakt_ebene(ebene);
         CodeableConcept result = fall.getEinrichtungsEncounterType();
-        assertCodeableConcept(Kontaktebene.EINRICHTUNG, result);
+        String expectedDisplay = "Einrichtungskontakt";
+        assertCodeableConcept(code, KONTAKT_EBENE_SYSTEM, expectedDisplay, result);
       }
     }
 
@@ -275,8 +277,9 @@ public class FallTest {
       @Test
       @DisplayName("serviceType is fixed value: 0100 (Innere Medizin)")
       void testServiceType() {
+        String code = "0100", display = "Innere Medizin";
         assertCodeableConcept(
-            Fachabteilung.INNERE_MEDIZIN, fall.getEinrichtungsEncounterServiceType());
+            code, FACHABTEILUNG_SYSTEM, display, fall.getEinrichtungsEncounterServiceType());
       }
     }
 
@@ -300,11 +303,14 @@ public class FallTest {
       @Test
       @DisplayName("valid Aufnahmegrund should be present in CodeableConcept")
       void testValidReasonCode() {
-        Aufnahmegrund aufnahmegrund = Aufnahmegrund.G01;
-        String code = getCodeStr(aufnahmegrund.getCode());
-        fall.setEinrichtungskontakt_aufnahmegrund(code);
+        String code = "01";
+        String display = "Krankenhausbehandlung, vollstationär";
+        String aufnahmegrund = getCodeDisplayStr(code, display);
+        fall.setEinrichtungskontakt_aufnahmegrund(aufnahmegrund);
         CodeableConcept result = fall.getEinrichtungsEncounterReasonCode();
-        assertCodeableConcept(aufnahmegrund, result);
+        String AUFNAHMEGRUND_SYSTEM =
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Aufnahmegrund";
+        assertCodeableConcept(code, AUFNAHMEGRUND_SYSTEM, display, result);
       }
     }
 
@@ -366,10 +372,14 @@ public class FallTest {
       @DisplayName(
           "valid Aufnahmeanlass and Entlassungsgrund should be present in EncounterHospitalizationComponent")
       void testHospitalization() {
-        Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.GEBURT;
-        Entlassungsgrund entlassungsgrund = Entlassungsgrund.G011;
-        fall.setEinrichtungskontakt_aufnahmeanlass(getCodeDisplayStr(aufnahmeanlass));
-        fall.setEinrichtungskontakt_entlassungsgrund(getCodeDisplayStr(entlassungsgrund));
+        String aufnahmeanlassCode = "G";
+        String aufnahmeanlassDisplay = "Geburt";
+        String aufnahmeanlass = getCodeDisplayStr(aufnahmeanlassCode, aufnahmeanlassDisplay);
+        String entlassungsgrundCode = "079";
+        String entlassungsgrundDisplay = "Tod";
+        String entlassungsgrund = getCodeDisplayStr(entlassungsgrundCode, entlassungsgrundDisplay);
+        fall.setEinrichtungskontakt_aufnahmeanlass(aufnahmeanlass);
+        fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
         Encounter.EncounterHospitalizationComponent result =
             fall.getEinrichtungsEncounterHospitalization();
         assertTrue(result.hasAdmitSource());
@@ -397,11 +407,16 @@ public class FallTest {
         @Test
         @DisplayName("valid Entlassungsgrund should be present in CodeableConcept")
         void testDischargeDisposition() {
-          Entlassungsgrund grund = Entlassungsgrund.G15;
-          String entlassungsgrund = getCodeDisplayStr(grund);
+          String entlassungsgrundCode = "079";
+          String entlassungsgrundDisplay = "Tod";
+          String entlassungsgrund =
+              getCodeDisplayStr(entlassungsgrundCode, entlassungsgrundDisplay);
           fall.setEinrichtungskontakt_entlassungsgrund(entlassungsgrund);
           CodeableConcept result = fall.getEinrichtungsEncounterDischargeDisposition();
-          assertCodeableConcept(grund, result);
+          String ENTLASSUNGSGRUND_SYSTEM =
+              "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/CodeSystem/Entlassungsgrund";
+          assertCodeableConcept(
+              entlassungsgrundCode, ENTLASSUNGSGRUND_SYSTEM, entlassungsgrundDisplay, result);
         }
       }
 
@@ -426,11 +441,14 @@ public class FallTest {
         @Test
         @DisplayName("valid Aufnahmeanlass should be present in CodeableConcept")
         void testAdmitSource() {
-          Aufnahmeanlass aufnahmeanlass = Aufnahmeanlass.NOTFALL;
-          String anlass = getCodeDisplayStr(aufnahmeanlass);
-          fall.setEinrichtungskontakt_aufnahmeanlass(anlass);
+          String aufnahmeanlassCode = "G";
+          String aufnahmeanlassDisplay = "Geburt";
+          String aufnahmeanlass = getCodeDisplayStr(aufnahmeanlassCode, aufnahmeanlassDisplay);
+          fall.setEinrichtungskontakt_aufnahmeanlass(aufnahmeanlass);
           CodeableConcept result = fall.getEinrichtungsEncounterAdmitSource();
-          assertCodeableConcept(aufnahmeanlass, result);
+          String AUFNAHMEANLASS_SYSTEM = "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass";
+          assertCodeableConcept(
+              aufnahmeanlassCode, AUFNAHMEANLASS_SYSTEM, aufnahmeanlassDisplay, result);
         }
       }
     }
