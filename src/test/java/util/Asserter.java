@@ -17,6 +17,28 @@ import static org.junit.jupiter.api.Assertions.*;
 import static util.Util.getCodeStr;
 
 public class Asserter {
+
+  private static final String CODE = "code";
+  private static final String SYSTEM = "system";
+  private static final String DISPLAY = "display";
+  private static final String VALUE = "value";
+  private static final String USE = "use";
+  private static final String TYPE = "type";
+  private static final String IDENTIFIER = "identifier";
+  private static final String REFERENCE = "reference";
+  private static final String START_DATE = "start date";
+  private static final String END_DATE = "end date";
+  private static final String URL = "url";
+  private static final String UNIT = "unit";
+  private static final String TEXT = "text";
+  private static final String FAMILY_NAME = "family name";
+  private static final String GIVEN_NAME = "given name";
+  private static final String NAME_PREFIX = "name prefix";
+  private static final String TYPE_CODING = "type expected: Coding";
+  private static final String TYPE_CODEABLE_CONCEPT = "type expected: CodeableConcept";
+  private static final String TYPE_STRINGTYPE = "type expected: StringType";
+  private static final String NUMBER_OF_CODINGS = "number of codings";
+
   private Asserter() {}
 
   public static <T> void assertEmptyCodeValue(Consumer<String> setter, Supplier<T> getter) {
@@ -31,9 +53,9 @@ public class Asserter {
   public static void assertIdentifier(
       String expectedValue, String expectedSystem, Code expectedCode, Identifier identifier) {
     assertNonEmptyValue(identifier);
-    assertEquals(expectedValue, identifier.getValue());
-    assertEquals(expectedSystem, identifier.getSystem());
-    assertEquals(1, identifier.getType().getCoding().size());
+    assertEquals(expectedValue, identifier.getValue(), VALUE);
+    assertEquals(expectedSystem, identifier.getSystem(), SYSTEM);
+    assertEquals(1, identifier.getType().getCoding().size(), NUMBER_OF_CODINGS);
     assertCoding(expectedCode, identifier.getType().getCoding().get(0));
   }
 
@@ -43,29 +65,29 @@ public class Asserter {
       Identifier.IdentifierUse expectedUse,
       Identifier identifier) {
     assertNonEmptyValue(identifier);
-    assertEquals(expectedValue, identifier.getValue());
-    assertEquals(expectedSystem, identifier.getSystem());
-    assertEquals(expectedUse, identifier.getUse());
+    assertEquals(expectedValue, identifier.getValue(), VALUE);
+    assertEquals(expectedSystem, identifier.getSystem(), SYSTEM);
+    assertEquals(expectedUse, identifier.getUse(), USE);
   }
 
   public static void assertIdentifier(
       String expectedValue, String expectedSystem, Identifier identifier) {
     assertNonEmptyValue(identifier);
-    assertEquals(expectedValue, identifier.getValue());
-    assertEquals(expectedSystem, identifier.getSystem());
+    assertEquals(expectedValue, identifier.getValue(), VALUE);
+    assertEquals(expectedSystem, identifier.getSystem(), SYSTEM);
   }
 
   public static void assertReference(
       String expectedType, String expectedValue, String expectedSystem, Reference reference) {
     assertNonEmptyValue(reference);
-    assertEquals(expectedType, reference.getType());
-    assertTrue(reference.hasIdentifier());
+    assertEquals(expectedType, reference.getType(), TYPE);
+    assertTrue(reference.hasIdentifier(), IDENTIFIER);
     assertIdentifier(expectedValue, expectedSystem, reference.getIdentifier());
   }
 
   public static void assertReference(String expectedReference, Reference reference) {
     assertNonEmptyValue(reference);
-    assertEquals(expectedReference, reference.getReference());
+    assertEquals(expectedReference, reference.getReference(), REFERENCE);
   }
 
   public static void assertCodeableConcept(
@@ -74,7 +96,7 @@ public class Asserter {
       String expectedDisplay,
       CodeableConcept codeableConcept) {
     assertNonEmptyValue(codeableConcept);
-    assertEquals(1, codeableConcept.getCoding().size());
+    assertEquals(1, codeableConcept.getCoding().size(), NUMBER_OF_CODINGS);
     assertCoding(expectedCode, expectedSystem, expectedDisplay, codeableConcept.getCoding().get(0));
   }
 
@@ -85,29 +107,27 @@ public class Asserter {
 
   public static void assertCodeableConcept(Code expectedCode, CodeableConcept codeableConcept) {
     assertNonEmptyValue(codeableConcept);
-    assertEquals(1, codeableConcept.getCoding().size());
+    assertEquals(1, codeableConcept.getCoding().size(), NUMBER_OF_CODINGS);
     assertCoding(expectedCode, codeableConcept.getCoding().get(0));
   }
 
   public static void assertCoding(Code expectedCode, Coding coding) {
-    assertNonEmptyValue(coding);
-    assertEquals(expectedCode.getCode(), coding.getCode());
-    assertEquals(expectedCode.getSystem(), coding.getSystem());
-    assertEquals(expectedCode.getDisplay(), coding.getDisplay());
+    assertCoding(
+        expectedCode.getCode(), expectedCode.getSystem(), expectedCode.getDisplay(), coding);
   }
 
   public static void assertCoding(
       String expectedCode, String expectedSystem, String expectedDisplay, Coding coding) {
     assertNonEmptyValue(coding);
-    assertEquals(expectedCode, coding.getCode());
-    assertEquals(expectedSystem, coding.getSystem());
-    assertEquals(expectedDisplay, coding.getDisplay());
+    assertEquals(expectedCode, coding.getCode(), CODE);
+    assertEquals(expectedSystem, coding.getSystem(), SYSTEM);
+    assertEquals(expectedDisplay, coding.getDisplay(), DISPLAY);
   }
 
   public static void assertCoding(String expectedCode, String expectedSystem, Coding coding) {
     assertNonEmptyValue(coding);
-    assertEquals(expectedCode, coding.getCode());
-    assertEquals(expectedSystem, coding.getSystem());
+    assertEquals(expectedCode, coding.getCode(), CODE);
+    assertEquals(expectedSystem, coding.getSystem(), SYSTEM);
   }
 
   public static void assertCoding(
@@ -123,16 +143,9 @@ public class Asserter {
   }
 
   public static void assertPeriod(Date expectedStart, Date expectedEnd, Period period) {
-    if (expectedStart == Constants.getEmptyValue()) {
-      assertEquals(Constants.getEmptyValue(), period.getStart());
-    } else {
-      assertEquals(expectedStart, period.getStart());
-    }
-    if (expectedEnd == Constants.getEmptyValue()) {
-      assertEquals(Constants.getEmptyValue(), period.getEnd());
-    } else {
-      assertEquals(expectedEnd, period.getEnd());
-    }
+    assertNonEmptyValue(period);
+    assertEquals(expectedStart, period.getStart(), START_DATE);
+    assertEquals(expectedEnd, period.getEnd(), END_DATE);
   }
 
   public static void assertExtensionWithCoding(
@@ -142,9 +155,9 @@ public class Asserter {
       String expectedUrl,
       Extension extension) {
     assertNonEmptyValue(extension);
-    assertEquals(expectedUrl, extension.getUrl());
-    assertTrue(extension.hasValue());
-    assertTrue(extension.getValue() instanceof Coding);
+    assertEquals(expectedUrl, extension.getUrl(), URL);
+    assertTrue(extension.hasValue(), VALUE);
+    assertTrue(extension.getValue() instanceof Coding, TYPE_CODING);
     assertCoding(expectedCode, expectedSystem, expectedDisplay, (Coding) extension.getValue());
   }
 
@@ -165,29 +178,19 @@ public class Asserter {
       String expectedUrl,
       Extension extension) {
     assertNonEmptyValue(extension);
-    assertEquals(expectedUrl, extension.getUrl());
-    assertTrue(extension.hasValue());
-    assertTrue(extension.getValue() instanceof CodeableConcept);
+    assertEquals(expectedUrl, extension.getUrl(), URL);
+    assertTrue(extension.hasValue(), VALUE);
+    assertTrue(extension.getValue() instanceof CodeableConcept, TYPE_CODEABLE_CONCEPT);
     CodeableConcept value = (CodeableConcept) extension.getValue();
     assertCodeableConcept(expectedCode, expectedSystem, expectedDisplay, value);
-  }
-
-  public static void assertExtensionWithCodeableConcept(
-      Code expectedCode, String expectedUrl, Extension extension) {
-    assertNonEmptyValue(extension);
-    assertEquals(expectedUrl, extension.getUrl());
-    assertTrue(extension.hasValue());
-    assertTrue(extension.getValue() instanceof CodeableConcept);
-    CodeableConcept value = (CodeableConcept) extension.getValue();
-    assertCodeableConcept(expectedCode, value);
   }
 
   public static void assertExtensionWithStringType(
       String expectedValue, String expectedUrl, Extension extension) {
     assertNonEmptyValue(extension);
-    assertEquals(expectedUrl, extension.getUrl());
-    assertTrue(extension.hasValue());
-    assertTrue(extension.getValue() instanceof StringType);
+    assertEquals(expectedUrl, extension.getUrl(), URL);
+    assertTrue(extension.hasValue(), VALUE);
+    assertTrue(extension.getValue() instanceof StringType, TYPE_STRINGTYPE);
     StringType value = (StringType) extension.getValue();
     assertEquals(expectedValue, value.getValue());
   }
@@ -204,22 +207,23 @@ public class Asserter {
       HumanName.NameUse expectedUse,
       HumanName humanName) {
     assertNonEmptyValue(humanName);
-    assertEquals(expectedFamily, humanName.getFamily());
+    assertEquals(expectedFamily, humanName.getFamily(), FAMILY_NAME);
     if (expectedGiven == Constants.getEmptyValue()) {
-      assertEquals(Helper.listOf(), humanName.getGiven());
+      assertEquals(Helper.listOf(), humanName.getGiven(), GIVEN_NAME);
     } else {
       List<StringType> given = humanName.getGiven();
       assertNonEmptyValue(given);
-      assertEquals(expectedGiven, Helper.listMap(given, StringType::getValue));
+      assertEquals(expectedGiven, Helper.listMap(given, StringType::getValue), GIVEN_NAME);
     }
     if (expectedPrefix == Constants.getEmptyValue()) {
-      assertEquals(Helper.listOf(), humanName.getPrefix());
+      assertEquals(Helper.listOf(), humanName.getPrefix(), NAME_PREFIX);
     } else {
       List<StringType> prefix = humanName.getPrefix();
       assertNonEmptyValue(prefix);
-      assertEquals(Helper.listOf(expectedPrefix), Helper.listMap(prefix, StringType::getValue));
+      assertEquals(
+          Helper.listOf(expectedPrefix), Helper.listMap(prefix, StringType::getValue), NAME_PREFIX);
     }
-    assertEquals(expectedUse, humanName.getUse());
+    assertEquals(expectedUse, humanName.getUse(), USE);
   }
 
   public static void assertHumanName(
@@ -239,10 +243,10 @@ public class Asserter {
       String expectedUnit,
       Quantity quantity) {
     assertNonEmptyValue(quantity);
-    assertEquals(expectedValue, quantity.getValue());
-    assertEquals(expectedCode, quantity.getCode());
-    assertEquals(expectedSystem, quantity.getSystem());
-    assertEquals(expectedUnit, quantity.getUnit());
+    assertEquals(expectedValue, quantity.getValue(), VALUE);
+    assertEquals(expectedCode, quantity.getCode(), CODE);
+    assertEquals(expectedSystem, quantity.getSystem(), SYSTEM);
+    assertEquals(expectedUnit, quantity.getUnit(), UNIT);
   }
 
   public static void assertRatio(
@@ -285,16 +289,16 @@ public class Asserter {
   public static void assertAdministrativeGender(
       String code, Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
     assertTrue(expectedGender.isPresent());
-    assertEquals(code, expectedGender.get().getCode());
+    assertEquals(code, expectedGender.get().getCode(), CODE);
   }
 
   public static void assertAdministrativeGenderUnbestimmt(
       Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
     assertTrue(expectedGender.isPresent());
     Enumeration<Enumerations.AdministrativeGender> result = expectedGender.get();
-    assertEquals("other", result.getCode());
+    assertEquals("other", result.getCode(), CODE);
     String EXTENSION_URL = "http://fhir.de/StructureDefinition/gender-amtlich-de";
-    assertTrue(result.hasExtension(EXTENSION_URL));
+    assertTrue(result.hasExtension(EXTENSION_URL), URL);
     Extension extension = result.getExtensionByUrl(EXTENSION_URL);
     String CODING_SYSTEM = "http://fhir.de/CodeSystem/gender-amtlich-de";
     assertExtensionWithCoding("X", CODING_SYSTEM, "unbestimmt", EXTENSION_URL, extension);
@@ -304,9 +308,9 @@ public class Asserter {
       Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
     assertTrue(expectedGender.isPresent());
     Enumeration<Enumerations.AdministrativeGender> result = expectedGender.get();
-    assertEquals("other", result.getCode());
+    assertEquals("other", result.getCode(), CODE);
     String EXTENSION_URL = "http://fhir.de/StructureDefinition/gender-amtlich-de";
-    assertTrue(result.hasExtension(EXTENSION_URL));
+    assertTrue(result.hasExtension(EXTENSION_URL), URL);
     Extension extension = result.getExtensionByUrl(EXTENSION_URL);
     String CODING_SYSTEM = "http://fhir.de/CodeSystem/gender-amtlich-de";
     assertExtensionWithCoding("D", CODING_SYSTEM, "divers", EXTENSION_URL, extension);
@@ -314,7 +318,7 @@ public class Asserter {
 
   public static void assertAnnotation(String expectedText, Annotation annotation) {
     assertNonEmptyValue(annotation);
-    assertEquals(expectedText, annotation.getText());
+    assertEquals(expectedText, annotation.getText(), TEXT);
   }
 
   public static <T> void assertEmptyValue(T value) {
