@@ -1,6 +1,5 @@
 package basismodule;
 
-import constants.ExtensionUrl;
 import constants.IdentifierSystem;
 import helper.Helper;
 import helper.Logger;
@@ -8,8 +7,6 @@ import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import valueSets.IdentifierTypeCode;
-import valueSets.MIICoreLocations;
-import valueSets.VersichertenCode;
 
 import java.util.List;
 
@@ -20,8 +17,18 @@ import static util.Util.*;
 
 class PersonTest {
   private static final String LOINC_SYSTEM = "http://loinc.org";
+  private static final String IKNR_SYSTEM = "http://fhir.de/sid/arge-ik/iknr";
   private static final String VITALSTATUS_SYSTEM =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/CodeSystem/Vitalstatus";
+  private static final String IDENTIFIER_TYPE_BASIS_SYSTEM =
+      "http://fhir.de/CodeSystem/identifier-type-de-basis";
+  private static final String IDENTIFIER_TYPE_SYSTEM =
+      "http://terminology.hl7.org/CodeSystem/v2-0203";
+  private static final String GKV_VERSICHERTEN_SYSTEM = "http://fhir.de/sid/gkv/kvid-10";
+  private static final String NACHNAME_URL =
+      "http://hl7.org/fhir/StructureDefinition/humanname-own-name";
+  private static final String PREFIX_QUALIFIER_URL =
+      "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier";
   private static Logger LOGGER;
   private Person person;
 
@@ -154,10 +161,12 @@ class PersonTest {
           assertIdentifier(pid, null, IdentifierTypeCode.MR, pidIdentifier);
           assertTrue(pidIdentifier.hasAssigner());
           Reference assigner = pidIdentifier.getAssigner();
-          assertEquals(MIICoreLocations.UKU.getDisplay(), assigner.getDisplay());
+          assertEquals("Universitätsklinikum Ulm", assigner.getDisplay());
           assertTrue(assigner.hasIdentifier());
-          assertEquals(MIICoreLocations.UKU.getCode(), assigner.getIdentifier().getValue());
-          assertEquals(IdentifierSystem.CORE_LOCATIONS, assigner.getIdentifier().getSystem());
+          assertEquals("UKU", assigner.getIdentifier().getValue());
+          String CORE_LOCATIONS_SYSTEM =
+              "https://www.medizininformatik-initiative.de/fhir/core/CodeSystem/core-location-identifier";
+          assertEquals(CORE_LOCATIONS_SYSTEM, assigner.getIdentifier().getSystem());
         }
       }
 
@@ -178,7 +187,14 @@ class PersonTest {
           String gkv = "25436435";
           person.setVersichertenId_gkv(gkv);
           Identifier result = person.getPatientGKV();
-          assertIdentifier(gkv, IdentifierSystem.VERSICHERTEN_ID_GKV, VersichertenCode.GKV, result);
+          String expectedCode = "GKV", expectedDisplay = "Gesetzliche Krankenversicherung";
+          assertIdentifierWithType(
+              gkv,
+              GKV_VERSICHERTEN_SYSTEM,
+              expectedCode,
+              IDENTIFIER_TYPE_BASIS_SYSTEM,
+              expectedDisplay,
+              result);
           assertFalse(result.hasAssigner());
         }
 
@@ -191,11 +207,18 @@ class PersonTest {
           person.setInstitutionskennzeichen_krankenkasse(iknr);
           person.setVersichertenId_gkv(gkv);
           Identifier result = person.getPatientGKV();
-          assertIdentifier(gkv, IdentifierSystem.VERSICHERTEN_ID_GKV, VersichertenCode.GKV, result);
+          String expectedCode = "GKV", expectedDisplay = "Gesetzliche Krankenversicherung";
+          assertIdentifierWithType(
+              gkv,
+              GKV_VERSICHERTEN_SYSTEM,
+              expectedCode,
+              IDENTIFIER_TYPE_BASIS_SYSTEM,
+              expectedDisplay,
+              result);
           assertTrue(result.hasAssigner());
           assertIdentifier(
               iknr,
-              IdentifierSystem.IKNR,
+              IKNR_SYSTEM,
               Identifier.IdentifierUse.OFFICIAL,
               result.getAssigner().getIdentifier());
         }
@@ -217,10 +240,7 @@ class PersonTest {
             Reference result = person.getGKVAssignerReference();
             assertNonEmptyValue(result);
             assertIdentifier(
-                iknr,
-                IdentifierSystem.IKNR,
-                Identifier.IdentifierUse.OFFICIAL,
-                result.getIdentifier());
+                iknr, IKNR_SYSTEM, Identifier.IdentifierUse.OFFICIAL, result.getIdentifier());
           }
         }
       }
@@ -240,7 +260,14 @@ class PersonTest {
           String pkv = "123456";
           person.setVersichertennummer_pkv(pkv);
           Identifier result = person.getPatientPKV();
-          assertIdentifier(pkv, null, VersichertenCode.PKV, result);
+          String expectedCode = "PKV", expectedDisplay = "Private Krankenversicherung";
+          assertIdentifierWithType(
+              pkv,
+              IdentifierSystem.EMPTY,
+              expectedCode,
+              IDENTIFIER_TYPE_BASIS_SYSTEM,
+              expectedDisplay,
+              result);
           assertFalse(result.hasAssigner());
           assertEquals(Identifier.IdentifierUse.SECONDARY, result.getUse());
         }
@@ -511,7 +538,7 @@ class PersonTest {
             assertNonEmptyValue(result);
             assertEquals(familienname, result.getValue());
             assertEquals(1, result.getExtension().size());
-            assertTrue(result.hasExtension(ExtensionUrl.NACHNAME));
+            assertTrue(result.hasExtension(NACHNAME_URL));
           }
 
           @Nested
@@ -529,7 +556,8 @@ class PersonTest {
               String namenszusatz = "RA";
               person.setNamenszusatz(namenszusatz);
               Extension result = person.getPatientNameFamilyNamenszusatz();
-              assertExtensionWithStringType(namenszusatz, ExtensionUrl.NAMENSZUSATZ, result);
+              String NAMENSZUSATZ_URL = "http://fhir.de/StructureDefinition/humanname-namenszusatz";
+              assertExtensionWithStringType(namenszusatz, NAMENSZUSATZ_URL, result);
             }
           }
 
@@ -548,7 +576,7 @@ class PersonTest {
               String nachname = "Van-der-Dussen";
               person.setNachname(nachname);
               Extension result = person.getPatientNameFamilyNachname();
-              assertExtensionWithStringType(nachname, ExtensionUrl.NACHNAME, result);
+              assertExtensionWithStringType(nachname, NACHNAME_URL, result);
             }
           }
 
@@ -567,7 +595,9 @@ class PersonTest {
               String vorsatzwort = "bei der";
               person.setVorsatzwort(vorsatzwort);
               Extension result = person.getPatientNameFamilyVorsatzwort();
-              assertExtensionWithStringType(vorsatzwort, ExtensionUrl.VORSATZWORT, result);
+              String VORSATZWORT_URL =
+                  "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix";
+              assertExtensionWithStringType(vorsatzwort, VORSATZWORT_URL, result);
             }
           }
         }
@@ -627,7 +657,7 @@ class PersonTest {
             assertNonEmptyValue(result);
             assertEquals(praefix, result.getValue());
             assertEquals(1, result.getExtension().size());
-            assertTrue(result.hasExtension(ExtensionUrl.PREFIX));
+            assertTrue(result.hasExtension(PREFIX_QUALIFIER_URL));
           }
 
           @Nested
@@ -647,7 +677,7 @@ class PersonTest {
               person.setArt_des_praefix(code);
               Extension result = person.getPatientNamePrefixQualifier();
               assertNonEmptyValue(result);
-              assertEquals(ExtensionUrl.PREFIX, result.getUrl());
+              assertEquals(PREFIX_QUALIFIER_URL, result.getUrl());
               assertTrue(result.hasValue());
               assertTrue(result.getValue() instanceof CodeType);
               CodeType type = (CodeType) result.getValue();
@@ -738,10 +768,13 @@ class PersonTest {
         String code = getCodeStr(subjektIdentifikationsCode);
         person.setSubjekt_identifizierungscode(code);
         Identifier result = person.getResearchSubjectSubjectIdentificationCode();
-        assertIdentifier(
+        String expectedCode = "ANON", expectedDisplay = "Anonymous identifier";
+        assertIdentifierWithType(
             subjektIdentifikationsCode,
-            IdentifierSystem.SUBJECT_IDENTIFICATION_CODE,
-            IdentifierTypeCode.ANON,
+            IdentifierSystem.EMPTY,
+            expectedCode,
+            IDENTIFIER_TYPE_SYSTEM,
+            expectedDisplay,
             result);
       }
     }
