@@ -1,12 +1,12 @@
 package basismodule;
 
-import constants.Constants;
-import constants.*;
+import constants.IdentifierSystem;
+import constants.ReferenceType;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import valueSets.*;
+import valueSets.IdentifierTypeCode;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -19,6 +19,12 @@ import static util.Util.*;
 
 public class LaborbefundTest {
   private static final String LOINC_SYSTEM = "http://loinc.org";
+  private static final String QUANTITY_SYSTEM = "http://unitsofmeasure.org";
+  private static final String SNOMED_SYSTEM = "http://snomed.info/sct";
+  private static final String REFERENCE_RANGE_MEANING_SYSTEM =
+      "http://terminology.hl7.org/CodeSystem/referencerange-meaning";
+  private static final String QUELLE_BEZUGSDATUM_URL =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/QuelleKlinischesBezugsdatum";
   private static Logger LOGGER;
   private Laborbefund laborbefund;
 
@@ -256,16 +262,16 @@ public class LaborbefundTest {
         laborbefund.setLaboruntersuchung_referenzbereich_untergrenze(getValueStr(untergrenze));
         String obergrenze = "132";
         laborbefund.setLaboruntersuchung_referenzbereich_obergrenze(getValueStr(obergrenze));
-        ReferenceRangeMeaning typ = ReferenceRangeMeaning.LUTEAL;
-        laborbefund.setLaboruntersuchung_referenzbereich_typ(getCodeStr(typ.getCode()));
+        String typeCode = "luteal", typeDisplay = "Luteal";
+        laborbefund.setLaboruntersuchung_referenzbereich_typ(
+            getCodeDisplayStr(typeCode, typeDisplay));
         Observation.ObservationReferenceRangeComponent result =
             laborbefund.getObservationReferenceRange();
         assertNonEmptyValue(result);
-        assertQuantity(
-            new BigDecimal(untergrenze), "1", Constants.QUANTITY_SYSTEM, "1", result.getLow());
-        assertQuantity(
-            new BigDecimal(obergrenze), "1", Constants.QUANTITY_SYSTEM, "1", result.getHigh());
-        assertCodeableConcept(typ, result.getType());
+        assertQuantity(new BigDecimal(untergrenze), "1", QUANTITY_SYSTEM, "1", result.getLow());
+        assertQuantity(new BigDecimal(obergrenze), "1", QUANTITY_SYSTEM, "1", result.getHigh());
+        assertCodeableConcept(
+            typeCode, REFERENCE_RANGE_MEANING_SYSTEM, typeDisplay, result.getType());
       }
 
       @Nested
@@ -292,7 +298,7 @@ public class LaborbefundTest {
           String input = getValueStr(grenze);
           laborbefund.setLaboruntersuchung_referenzbereich_obergrenze(input);
           Quantity result = laborbefund.getObservationReferenceRangeHigh();
-          assertQuantity(new BigDecimal(grenze), "1", Constants.QUANTITY_SYSTEM, "1", result);
+          assertQuantity(new BigDecimal(grenze), "1", QUANTITY_SYSTEM, "1", result);
         }
       }
 
@@ -320,7 +326,7 @@ public class LaborbefundTest {
           String input = getValueStr(grenze);
           laborbefund.setLaboruntersuchung_referenzbereich_obergrenze(input);
           Quantity result = laborbefund.getObservationReferenceRangeHigh();
-          assertQuantity(new BigDecimal(grenze), "1", Constants.QUANTITY_SYSTEM, "1", result);
+          assertQuantity(new BigDecimal(grenze), "1", QUANTITY_SYSTEM, "1", result);
         }
       }
 
@@ -344,11 +350,11 @@ public class LaborbefundTest {
         @Test
         @DisplayName("valid Referenzbereichtyp should be present in CodeableConcept")
         void testReferenceRangeType() {
-          // valid typ
-          ReferenceRangeMeaning typ = ReferenceRangeMeaning.NORMAL;
-          laborbefund.setLaboruntersuchung_referenzbereich_typ(getCodeStr(typ.getCode()));
+          String typeCode = "normal", typeDisplay = "Normal Range";
+          laborbefund.setLaboruntersuchung_referenzbereich_typ(
+              getCodeDisplayStr(typeCode, typeDisplay));
           CodeableConcept result = laborbefund.getObservationReferenceRangeType();
-          assertCodeableConcept(typ, result);
+          assertCodeableConcept(typeCode, REFERENCE_RANGE_MEANING_SYSTEM, typeDisplay, result);
         }
       }
     }
@@ -435,12 +441,14 @@ public class LaborbefundTest {
       @Test
       @DisplayName("valid, semi-quantitative Ergebnis should be present in CodeableConcept")
       void testSemiV() {
-        SemiQuantitativesLaborergebnis semiErgebnis = SemiQuantitativesLaborergebnis.FOUR_OF_FOUR;
-        laborbefund.setLaboruntersuchung_ergebnis(getCodeStr(semiErgebnis.getCode()));
+        String fourPlusCode = "260350009",
+            fourPlusDisplay = "Present ++++ out of ++++ (qualifier value)";
+        laborbefund.setLaboruntersuchung_ergebnis(getCodeDisplayStr(fourPlusCode, fourPlusDisplay));
         Type result = laborbefund.getObservationValue();
         assertNonEmptyValue(result);
         assertTrue(result instanceof CodeableConcept);
-        assertCodeableConcept(semiErgebnis, (CodeableConcept) result);
+        assertCodeableConcept(
+            fourPlusCode, SNOMED_SYSTEM, fourPlusDisplay, (CodeableConcept) result);
       }
 
       @Test
@@ -451,8 +459,7 @@ public class LaborbefundTest {
         Type result = laborbefund.getObservationValue();
         assertNonEmptyValue(result);
         assertTrue(result instanceof Quantity);
-        assertQuantity(
-            new BigDecimal(value), "1", Constants.QUANTITY_SYSTEM, "1", (Quantity) result);
+        assertQuantity(new BigDecimal(value), "1", QUANTITY_SYSTEM, "1", (Quantity) result);
       }
 
       @Nested
@@ -467,10 +474,12 @@ public class LaborbefundTest {
         @Test
         @DisplayName("valid, semi-quantitative Ergebnis should be present in CodeableConcept")
         void testValueCodeableConcept() {
-          SemiQuantitativesLaborergebnis ergebnis = SemiQuantitativesLaborergebnis.ONE_OF_THREE;
-          laborbefund.setLaboruntersuchung_ergebnis(getCodeStr(ergebnis.getCode()));
+          String onePlusOfThreeCode = "441614007",
+              onePlusOfThreeDisplay = "Present one plus out of three plus";
+          laborbefund.setLaboruntersuchung_ergebnis(
+              getCodeDisplayStr(onePlusOfThreeCode, onePlusOfThreeDisplay));
           CodeableConcept result = laborbefund.getObservationValueCodeableConcept();
-          assertCodeableConcept(ergebnis, result);
+          assertCodeableConcept(onePlusOfThreeCode, SNOMED_SYSTEM, onePlusOfThreeDisplay, result);
         }
       }
 
@@ -489,8 +498,7 @@ public class LaborbefundTest {
           String value = "13.5", unit = "mg";
           laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
           Quantity result = laborbefund.getObservationValueQuantity();
-          assertQuantity(
-              new BigDecimal(value), unit, Constants.QUANTITY_SYSTEM, "(milligram)", result);
+          assertQuantity(new BigDecimal(value), unit, QUANTITY_SYSTEM, "(milligram)", result);
         }
       }
     }
@@ -551,12 +559,12 @@ public class LaborbefundTest {
         laborbefund.setProbenmaterial_laboreingangszeitpunkt("");
         DateTimeType result = laborbefund.getObservationEffective();
         assertDateTimeType(expectedDateString(abnahmezeitpunkt), result);
-        Extension extension = result.getExtensionByUrl(ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM);
+        Extension extension = result.getExtensionByUrl(QUELLE_BEZUGSDATUM_URL);
         assertNonEmptyValue(extension);
+        String expectedCode = "399445004",
+            expectedDisplay = "Specimen collection date (observable entity)";
         assertExtensionWithCoding(
-            QuelleKlinischesBezugsdatum.SPECIMEN,
-            ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM,
-            extension);
+            expectedCode, SNOMED_SYSTEM, expectedDisplay, QUELLE_BEZUGSDATUM_URL, extension);
       }
 
       @Test
@@ -568,12 +576,12 @@ public class LaborbefundTest {
         laborbefund.setProbenmaterial_laboreingangszeitpunkt(laboreingangszeitpunkt);
         DateTimeType result = laborbefund.getObservationEffective();
         assertDateTimeType(expectedDateString(laboreingangszeitpunkt), result);
-        Extension extension = result.getExtensionByUrl(ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM);
+        Extension extension = result.getExtensionByUrl(QUELLE_BEZUGSDATUM_URL);
         assertNonEmptyValue(extension);
+        String expectedCode = "281271004",
+            expectedDisplay = "Date sample received in laboratory (observable entity)";
         assertExtensionWithCoding(
-            QuelleKlinischesBezugsdatum.LABORATORY,
-            ExtensionUrl.QUELLE_KLINISCHES_BEZUGSDATUM,
-            extension);
+            expectedCode, SNOMED_SYSTEM, expectedDisplay, QUELLE_BEZUGSDATUM_URL, extension);
       }
     }
 
@@ -592,7 +600,7 @@ public class LaborbefundTest {
         String code = "20570-8", display = "Hematocrit [Volume Fraction] of Blood";
         laborbefund.setLaboruntersuchung_code(getCodeDisplayStr(code, display));
         CodeableConcept result = laborbefund.getObservationCode();
-        assertCodeableConcept(code, CodingSystem.LOINC, display, result);
+        assertCodeableConcept(code, LOINC_SYSTEM, display, result);
         assertFalse(result.hasText());
       }
 
@@ -604,7 +612,7 @@ public class LaborbefundTest {
         String bezeichnung = "some text";
         laborbefund.setLaborparameter_bezeichnung(bezeichnung);
         CodeableConcept result = laborbefund.getObservationCode();
-        assertCodeableConcept(code, CodingSystem.LOINC, display, result);
+        assertCodeableConcept(code, LOINC_SYSTEM, display, result);
         assertEquals(bezeichnung, result.getText());
       }
     }
@@ -618,7 +626,7 @@ public class LaborbefundTest {
         @DisplayName("loinc has fixed value: 26436-6")
         void testCategoryLoinc() {
           Coding result = laborbefund.getObservationCategoryLoinc();
-          assertCoding("26436-6", CodingSystem.LOINC, result);
+          assertCoding("26436-6", LOINC_SYSTEM, result);
         }
       }
 
@@ -628,7 +636,9 @@ public class LaborbefundTest {
         @DisplayName("category has fixed value: laboratory")
         void testCategoryCategory() {
           Coding result = laborbefund.getObservationCategoryCategory();
-          assertCoding("laboratory", CodingSystem.OBSERVATION_CATEGORY_TERMINOLOGY, result);
+          String OBSERVATION_CATEGORY_SYSTEM =
+              "http://terminology.hl7.org/CodeSystem/observation-category";
+          assertCoding("laboratory", OBSERVATION_CATEGORY_SYSTEM, result);
         }
       }
 
@@ -651,10 +661,10 @@ public class LaborbefundTest {
         @Test
         @DisplayName("valid Code should be present in Coding")
         void testCategoryBereich() {
-          Laborbereich code = Laborbereich.CELL_MARKER;
-          laborbefund.setLaborbereich_code(getCodeStr(code.getCode()));
+          String expectedCode = "18718-7", expectedDisplay = "CELL MARKER STUDIES";
+          laborbefund.setLaborbereich_code(getCodeDisplayStr(expectedCode, expectedDisplay));
           Coding result = laborbefund.getObservationCategoryBereich();
-          assertCoding(code, result);
+          assertCoding(expectedCode, LOINC_SYSTEM, expectedDisplay, result);
         }
       }
 
@@ -677,10 +687,11 @@ public class LaborbefundTest {
         @Test
         @DisplayName("valid Code should be present in Coding")
         void testCategoryGruppen() {
-          Laborstruktur code = Laborstruktur.ZYTOLOGIE;
-          laborbefund.setLaborgruppe_code(getCodeStr(code.getCode()));
+          String expectedCode = "17880", expectedDisplay = "Zytologie";
+          laborbefund.setLaborgruppe_code(getCodeDisplayStr(expectedCode, expectedDisplay));
           Coding result = laborbefund.getObservationCategoryGruppen();
-          assertCoding(code, result);
+          String LABORSTRUKTUR_SYSTEM = "urn:oid:1.2.40.0.34.5.11";
+          assertCoding(expectedCode, LABORSTRUKTUR_SYSTEM, expectedDisplay, result);
         }
       }
     }
@@ -697,10 +708,10 @@ public class LaborbefundTest {
       @Test
       @DisplayName("valid Status should be present in ObservationStatus")
       void testStatus() {
-        Observation.ObservationStatus status = Observation.ObservationStatus.FINAL;
-        laborbefund.setLaboruntersuchung_status(getCodeStr(status.toCode()));
+        String status = "final";
+        laborbefund.setLaboruntersuchung_status(getCodeStr(status));
         Observation.ObservationStatus result = laborbefund.getObservationStatus();
-        assertEquals(status, result);
+        assertEquals(Observation.ObservationStatus.FINAL, result);
       }
     }
 
