@@ -77,6 +77,20 @@ public class Asserter {
     assertEquals(expectedSystem, identifier.getSystem(), SYSTEM);
   }
 
+  public static void assertIdentifierWithType(
+      String expectedValue,
+      String expectedSystem,
+      String expectedTypeCode,
+      String expectedTypeSystem,
+      String expectedTypeDisplay,
+      Identifier result) {
+    assertNonEmptyValue(result);
+    assertEquals(expectedValue, result.getValue());
+    assertEquals(expectedSystem, result.getSystem());
+    CodeableConcept type = result.getType();
+    assertCodeableConcept(expectedTypeCode, expectedTypeSystem, expectedTypeDisplay, type);
+  }
+
   public static void assertReference(
       String expectedType, String expectedValue, String expectedSystem, Reference reference) {
     assertNonEmptyValue(reference);
@@ -270,6 +284,12 @@ public class Asserter {
         ratio.getDenominator());
   }
 
+  public static void assertAdministrativeGender(
+      String code, Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
+    assertTrue(expectedGender.isPresent());
+    assertEquals(code, expectedGender.get().getCode(), CODE);
+  }
+
   /*public static void assertLoggerHasCalledError3(Logger logger, int times) {
     verify(logger, times(times)).error(anyString(), anyString(), anyString());
   }
@@ -285,12 +305,6 @@ public class Asserter {
   public static void assertLoggerHasCalledWarning(Logger logger, int times) {
     verify(logger, times(times)).warning(any(), anyString(), anyString());
   }*/
-
-  public static void assertAdministrativeGender(
-      String code, Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
-    assertTrue(expectedGender.isPresent());
-    assertEquals(code, expectedGender.get().getCode(), CODE);
-  }
 
   public static void assertAdministrativeGenderUnbestimmt(
       Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
