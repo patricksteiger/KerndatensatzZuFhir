@@ -1,7 +1,5 @@
 package basismodule;
 
-import constants.CodingCode;
-import constants.CodingSystem;
 import constants.ExtensionUrl;
 import constants.IdentifierSystem;
 import helper.Helper;
@@ -12,7 +10,6 @@ import org.mockito.Mockito;
 import valueSets.IdentifierTypeCode;
 import valueSets.MIICoreLocations;
 import valueSets.VersichertenCode;
-import valueSets.VitalStatus;
 
 import java.util.List;
 
@@ -22,6 +19,9 @@ import static util.Asserter.*;
 import static util.Util.*;
 
 class PersonTest {
+  private static final String LOINC_SYSTEM = "http://loinc.org";
+  private static final String VITALSTATUS_SYSTEM =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-person/CodeSystem/Vitalstatus";
   private static Logger LOGGER;
   private Person person;
 
@@ -48,7 +48,7 @@ class PersonTest {
       void testEmptyValue() {
         person.setPatient_verstorben("");
         Coding result = person.getObservationValue();
-        assertCoding(VitalStatus.UNBEKANNT, result);
+        assertCoding("X", VITALSTATUS_SYSTEM, "unbekannt", result);
       }
 
       @Test
@@ -56,7 +56,7 @@ class PersonTest {
       void testValue() {
         person.setPatient_verstorben("1");
         Coding result = person.getObservationValue();
-        assertCoding(VitalStatus.VERSTORBEN, result);
+        assertCoding("T", VITALSTATUS_SYSTEM, "Patient verstorben", result);
       }
     }
 
@@ -85,7 +85,7 @@ class PersonTest {
       @DisplayName("code is fixed CodeableConcept: 67162-8")
       void testCode() {
         CodeableConcept result = person.getObservationCode();
-        assertCodeableConcept(CodingCode.LOINC_OBSERVATION, CodingSystem.LOINC, null, result);
+        assertCodeableConcept("67162-8", LOINC_SYSTEM, result);
       }
     }
 
@@ -95,7 +95,9 @@ class PersonTest {
       @DisplayName("category is fixed CodeableConcept: survey")
       void testCategory() {
         CodeableConcept result = person.getObservationCategory();
-        assertCodeableConcept(CodingCode.SURVEY, CodingSystem.OBSERVATION_CATEGORY, null, result);
+        String OBSERVATION_CATEGORY_SYSTEM =
+            "http://terminology.hl7.org/CodeSystem/observation-category";
+        assertCodeableConcept("survey", OBSERVATION_CATEGORY_SYSTEM, result);
       }
     }
 
