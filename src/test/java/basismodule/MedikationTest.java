@@ -1,13 +1,10 @@
 package basismodule;
 
-import constants.CodingSystem;
-import constants.ExtensionUrl;
 import constants.IdentifierSystem;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import valueSets.Wirkstofftyp;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,6 +15,8 @@ import static util.Asserter.*;
 import static util.Util.*;
 
 public class MedikationTest {
+  private static final String ATC_DE_SYSTEM = "http://fhir.de/CodeSystem/dimdi/atc";
+  private static final String PZN_SYSTEM = "http://fhir.de/CodeSystem/ifa/pzn";
   private static Logger LOGGER;
   private Medikation medikation;
 
@@ -404,10 +403,15 @@ public class MedikationTest {
         @Test
         @DisplayName("valid Wirkstoffcode-allgemein should be present in Coding of Extension")
         void testIngredientExtension() {
-          medikation.setWirkstoff_code_allgemein(getCodeStr("MIN"));
+          String expectedCode = "MIN", expectedDisplay = "Kombinationswirkstoff";
+          medikation.setWirkstoff_code_allgemein(getCodeDisplayStr(expectedCode, expectedDisplay));
           Extension result = medikation.getMedicationIngredientExtension();
+          String WIRKSTOFFTYP_URL =
+              "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/StructureDefinition/wirkstofftyp";
+          String WIRKSTOFF_SYSTEM =
+              "https://www.medizininformatik-initiative.de/fhir/core/modul-medikation/CodeSystem/wirkstofftyp";
           assertExtensionWithCoding(
-              Wirkstofftyp.KOMBINATION, ExtensionUrl.MEDIKATION_WIRKSTOFFTYP, result);
+              expectedCode, WIRKSTOFF_SYSTEM, expectedDisplay, WIRKSTOFFTYP_URL, result);
         }
       }
 
@@ -435,9 +439,8 @@ public class MedikationTest {
 
         @Test
         @DisplayName(
-            "non-empty Wirkstoffcode-aktiv and and explicitly given Wirkstoffname should be present in CodeableConcept")
+            "non-empty Wirkstoffcode-aktiv and explicitly given Wirkstoffname should be present in CodeableConcept")
         void testIngredientItem() {
-          // non-empty code and directly given display overwrites display from wirkstoff_name_aktiv
           String code = "00002",
               system = "http://fhir.de/CodeSystem/ask",
               display = "Acetylsalicylsäure";
@@ -522,7 +525,8 @@ public class MedikationTest {
         String code = "10219000", display = "Tablet";
         medikation.setDarreichungsform(getCodeDisplayStr(code, display));
         CodeableConcept result = medikation.getMedicationForm();
-        assertCodeableConcept(code, CodingSystem.EDQM_STANDARD, display, result);
+        String EDQM_SYSTEM = "http://standardterms.edqm.eu";
+        assertCodeableConcept(code, EDQM_SYSTEM, display, result);
       }
     }
 
@@ -557,7 +561,7 @@ public class MedikationTest {
       void testNonEmptyPharmaCode() {
         medikation.setRezeptur_freitextzeile("");
         String code = "06312077",
-            system = CodingSystem.PHARMA_ZENTRAL_NUMMER,
+            system = PZN_SYSTEM,
             display = "ASS 100 - 1a Pharma TAH Tabletten";
         medikation.setArzneimittel_code(getCodeDisplaySystemStr(code, display, system));
         CodeableConcept result = medikation.getMedicationCode();
@@ -572,7 +576,7 @@ public class MedikationTest {
         String display = "acetylsalicylic acid";
         medikation.setArzneimittel_code(getCodeDisplayStr(code, display));
         CodeableConcept result = medikation.getMedicationCode();
-        assertCodeableConcept(code, CodingSystem.ATC_DIMDI, display, result);
+        assertCodeableConcept(code, ATC_DE_SYSTEM, display, result);
       }
 
       @Nested
@@ -592,7 +596,7 @@ public class MedikationTest {
           medikation.setArzneimittel_code(getCodeStr(code));
           medikation.setArzneimittel_name(display);
           Coding result = medikation.getMedicationCodePharma();
-          assertCoding(code, CodingSystem.PHARMA_ZENTRAL_NUMMER, display, result);
+          assertCoding(code, PZN_SYSTEM, display, result);
         }
 
         @Test
@@ -603,7 +607,7 @@ public class MedikationTest {
           medikation.setArzneimittel_code(getCodeDisplayStr(code, display));
           medikation.setArzneimittel_name("ignored display");
           Coding result = medikation.getMedicationCodePharma();
-          assertCoding(code, CodingSystem.PHARMA_ZENTRAL_NUMMER, display, result);
+          assertCoding(code, PZN_SYSTEM, display, result);
         }
       }
 
@@ -624,7 +628,7 @@ public class MedikationTest {
           medikation.setArzneimittel_code(getCodeStr(code));
           medikation.setArzneimittel_name(display);
           Coding result = medikation.getMedicationCodeAtcDE();
-          assertCoding(code, CodingSystem.ATC_DIMDI, display, result);
+          assertCoding(code, ATC_DE_SYSTEM, display, result);
         }
 
         @Test
@@ -635,7 +639,7 @@ public class MedikationTest {
           medikation.setArzneimittel_code(getCodeDisplayStr(code, display));
           medikation.setArzneimittel_name("ignored display");
           Coding result = medikation.getMedicationCodeAtcDE();
-          assertCoding(code, CodingSystem.ATC_DIMDI, display, result);
+          assertCoding(code, ATC_DE_SYSTEM, display, result);
         }
       }
     }
