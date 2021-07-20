@@ -10,7 +10,7 @@ public class CodingSystem {
       "http://fhir.de/CodeSystem/identifier-type-de-basis";
   public static final String IDENTIFIER_TYPE = "http://terminology.hl7.org/CodeSystem/v2-0203";
   public static final String OBSERVATION_CATEGORY =
-      "http://hl7.org/fhir/CodeSystem/observation-category";
+      "http://terminology.hl7.org/CodeSystem/observation-category";
   public static final String LOINC = "http://loinc.org";
   public static final String VITALSTATUS =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/CodeSystem/Vitalstatus";
