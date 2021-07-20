@@ -1,14 +1,10 @@
 package basismodule;
 
-import constants.CodingSystem;
 import constants.ExtensionUrl;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import valueSets.DurchfuehrungsabsichtCode;
-import valueSets.ProcedureCategorySnomedMapping;
-import valueSets.SeitenlokalisationCode;
 
 import java.util.List;
 
@@ -18,6 +14,11 @@ import static util.Asserter.*;
 import static util.Util.*;
 
 class ProzedurTest {
+  private static final String SNOMED_SYSTEM = "http://snomed.info/sct";
+  private static final String OPS_SYSTEM = "http://fhir.de/CodeSystem/bfarm/ops";
+  private static final String SEITENLOKALISATION_URL =
+      "http://fhir.de/StructureDefinition/seitenlokalisation";
+  private static final String SEITENLOKALISATION_SYSTEM = "urn:oid:2.16.840.1.113883.3.7.1.7";
   private static Logger LOGGER;
   private Prozedur prozedur;
 
@@ -67,9 +68,9 @@ class ProzedurTest {
       void testValidCategory() {
         String code = getCodeStr("5-526.21");
         prozedur.setOPS_Vollst_Prozedurenkode(code);
-        ProcedureCategorySnomedMapping expectedMapping = ProcedureCategorySnomedMapping.SURGICAL;
         CodeableConcept result = prozedur.getCategory();
-        assertCodeableConcept(expectedMapping, result);
+        String expectedCode = "387713003", expectedDisplay = "Surgical procedure";
+        assertCodeableConcept(expectedCode, SNOMED_SYSTEM, expectedDisplay, result);
       }
     }
 
@@ -94,8 +95,8 @@ class ProzedurTest {
         assertNonEmptyValue(result);
         List<Coding> codings = result.getCoding();
         assertEquals(2, codings.size());
-        assertCoding(opsCode, CodingSystem.OPS_DIMDI, null, codings);
-        assertCoding(snomedCode, CodingSystem.SNOMED_CLINICAL_TERMS, null, codings);
+        assertCoding(opsCode, OPS_SYSTEM, null, codings);
+        assertCoding(snomedCode, SNOMED_SYSTEM, null, codings);
       }
 
       @Nested
@@ -114,7 +115,7 @@ class ProzedurTest {
           String opsCode = getCodeDisplayStr(code, display);
           prozedur.setOPS_Vollst_Prozedurenkode(opsCode);
           Coding result = prozedur.getCodingOps();
-          assertCoding(code, CodingSystem.OPS_DIMDI, display, result);
+          assertCoding(code, OPS_SYSTEM, display, result);
           assertFalse(result.hasExtension());
         }
 
@@ -126,11 +127,18 @@ class ProzedurTest {
           String display = "ops display";
           String opsCode = getCodeDisplayStr(code, display);
           prozedur.setOPS_Vollst_Prozedurenkode(opsCode);
-          SeitenlokalisationCode seitenlokalisationCode = SeitenlokalisationCode.RECHTS;
-          String seitenlokalisation = getCodeDisplayStr(seitenlokalisationCode);
+          String expectedCode = "R", expectedDisplay = "rechts";
+          String seitenlokalisation = getCodeDisplayStr(expectedCode, expectedDisplay);
           prozedur.setOPS_Seitenlokalisation(seitenlokalisation);
           Coding result = prozedur.getCodingOps();
-          assertEquals(1, result.getExtension().size());
+          assertTrue(result.hasExtension(SEITENLOKALISATION_URL));
+          Extension extension = result.getExtensionByUrl(SEITENLOKALISATION_URL);
+          assertExtensionWithCoding(
+              expectedCode,
+              SEITENLOKALISATION_SYSTEM,
+              expectedDisplay,
+              SEITENLOKALISATION_URL,
+              extension);
         }
 
         @Nested
@@ -151,12 +159,16 @@ class ProzedurTest {
 
           @Test
           void testSeitenlokalisation() {
-            SeitenlokalisationCode seitenlokalisationCode = SeitenlokalisationCode.LINKS;
-            String seitenlokalisation = getCodeDisplayStr(seitenlokalisationCode);
+            String expectedCode = "L", expectedDisplay = "links";
+            String seitenlokalisation = getCodeDisplayStr(expectedCode, expectedDisplay);
             prozedur.setOPS_Seitenlokalisation(seitenlokalisation);
             Extension result = prozedur.getSeitenlokalisation();
             assertExtensionWithCoding(
-                seitenlokalisationCode, ExtensionUrl.OPS_SEITENLOKALISATION, result);
+                expectedCode,
+                SEITENLOKALISATION_SYSTEM,
+                expectedDisplay,
+                SEITENLOKALISATION_URL,
+                result);
           }
         }
       }
@@ -178,7 +190,7 @@ class ProzedurTest {
           String snomed = getCodeDisplayStr(code, display);
           prozedur.setSNOMED_Vollst_Prozedurenkode(snomed);
           Coding result = prozedur.getCodingSnomed();
-          assertCoding(code, CodingSystem.SNOMED_CLINICAL_TERMS, display, result);
+          assertCoding(code, SNOMED_SYSTEM, display, result);
         }
       }
     }
@@ -218,7 +230,7 @@ class ProzedurTest {
         String koerperstelle = getCodeDisplayStr(code, display);
         prozedur.setKoerperstelle(koerperstelle);
         CodeableConcept result = prozedur.getBodySite();
-        assertCodeableConcept(code, CodingSystem.SNOMED_CLINICAL_TERMS, display, result);
+        assertCodeableConcept(code, SNOMED_SYSTEM, display, result);
       }
     }
 
@@ -303,12 +315,14 @@ class ProzedurTest {
       @Test
       @DisplayName("valid Durchfuehrungsabsicht should be present in extension")
       void testValidDurchfuehrungsabsicht() {
-        DurchfuehrungsabsichtCode durchfuehrungsabsichtCode = DurchfuehrungsabsichtCode.OTHER;
-        String durchfuehrungsabsicht = getCodeDisplayStr(durchfuehrungsabsichtCode);
+        String expectedCode = "264931009", expectedDisplay = "Symptomatic";
+        String durchfuehrungsabsicht = getCodeDisplayStr(expectedCode, expectedDisplay);
         prozedur.setDurchfuehrungsabsicht(durchfuehrungsabsicht);
         Extension result = prozedur.getDurchfuehrungsabsicht();
+        String DURCHFUEHRUNGSABSICHT_URL =
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht";
         assertExtensionWithCoding(
-            durchfuehrungsabsichtCode, ExtensionUrl.DURCHFUEHRUNGSABSICHT, result);
+            expectedCode, SNOMED_SYSTEM, expectedDisplay, DURCHFUEHRUNGSABSICHT_URL, result);
       }
     }
   }
