@@ -837,10 +837,7 @@ public class LaborbefundTest {
       void testCategory() {
         CodeableConcept result = laborbefund.getServiceRequestCategory();
         assertCodeableConcept(
-            "laboratory",
-            "http://terminology.hl7.org/CodeSystem/observation-category",
-            null,
-            result);
+            "laboratory", "http://terminology.hl7.org/CodeSystem/observation-category", result);
       }
     }
 
