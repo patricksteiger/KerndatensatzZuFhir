@@ -2,11 +2,11 @@ package basismodule;
 
 import constants.CodingSystem;
 import constants.ExtensionUrl;
+import constants.IdentifierSystem;
 import helper.Logger;
 import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import valueSets.Behandlungsgrund;
 import valueSets.Wirkstofftyp;
 
 import java.math.BigDecimal;
@@ -93,7 +93,7 @@ public class MedikationTest {
         String id = "ExampleMedicationAdministration";
         medikation.setIdentifikation(id);
         Identifier result = medikation.getMedicationAdministrationIdentifier();
-        assertIdentifier(id, null, result);
+        assertIdentifier(id, IdentifierSystem.EMPTY, result);
       }
     }
 
@@ -138,9 +138,12 @@ public class MedikationTest {
       @Test
       @DisplayName("valid Behandlungsgrund should be present in CodeableConcept")
       void testReasonCode() {
-        medikation.setBehandlungsgrund("b");
+        String expectedCode = "b", expectedDisplay = "Given as Ordered";
+        medikation.setBehandlungsgrund(expectedCode);
         CodeableConcept result = medikation.getMedicationAdministrationReasonCode();
-        assertCodeableConcept(Behandlungsgrund.GIVEN_AS_ORDERED, result);
+        String GIVEN_AS_ORDERED_SYSTEM =
+            "http://terminology.hl7.org/CodeSystem/reason-medication-given";
+        assertCodeableConcept(expectedCode, GIVEN_AS_ORDERED_SYSTEM, expectedDisplay, result);
       }
     }
   }
