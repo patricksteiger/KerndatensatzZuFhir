@@ -367,7 +367,8 @@ public class Person implements Datablock {
 
   public Identifier getResearchSubjectSubjectIdentificationCode() {
     String value = this.getSubjekt_identifizierungscode();
-    String system = IdentifierSystem.SUBJECT_IDENTIFICATION_CODE;
+    // TODO:What is system of SubjectIdentificationCode?
+    String system = IdentifierSystem.EMPTY;
     IdentifierTypeCode anon = IdentifierTypeCode.ANON;
     LoggingData data =
         LoggingData.of(
