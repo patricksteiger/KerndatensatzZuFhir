@@ -6,6 +6,7 @@ import interfaces.Code;
 
 import java.util.Optional;
 
+/** @see "https://simplifier.net/packages/de.basisprofil.r4/1.0.0-rc4/files/377902" */
 public enum EncounterClassDE implements Code {
   AMBULATORY("AMB", "ambulatory"),
   INPATIENT("IMP", "inpatient encounter"),
