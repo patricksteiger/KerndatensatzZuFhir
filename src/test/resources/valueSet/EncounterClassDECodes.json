@@ -1,0 +1,29 @@
+{
+  "date": "2021-03-12",
+  "codes": [
+    {
+      "code": "AMB",
+      "display": "ambulatory"
+    },
+    {
+      "code": "IMP",
+      "display": "inpatient encounter"
+    },
+    {
+      "code": "PRENC",
+      "display": "pre-admission"
+    },
+    {
+      "code": "VR",
+      "display": "virtual"
+    },
+    {
+      "code": "SS",
+      "display": "short stay"
+    },
+    {
+      "code": "HH",
+      "display": "home health"
+    }
+  ]
+}
