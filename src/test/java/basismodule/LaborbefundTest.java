@@ -423,7 +423,7 @@ public class LaborbefundTest {
         CodeableConcept result = laborbefund.getObservationInterpretation();
         assertCodeableConcept(
             interpretation,
-            "http://hl7.org/fhir/ValueSet/observation-interpretation",
+            "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
             "Normal",
             result);
       }
