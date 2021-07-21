@@ -104,7 +104,7 @@ public class DiagnoseTest {
     assertEquals("Prellung des linken Ellenbogens", result.getText());
     assertEquals(2, result.getCoding().size());
     String icdCode = "550.0",
-        icdSystem = "http://fhir.de/CodeSystem/dimdi/icd-10-gm",
+        icdSystem = "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
         icdDisplay = "Prellung des Ellenbogens";
     assertCoding(icdCode, icdSystem, icdDisplay, result.getCoding());
     String snomedCode = "91613004",
