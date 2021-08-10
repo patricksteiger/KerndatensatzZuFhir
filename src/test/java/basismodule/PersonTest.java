@@ -17,6 +17,7 @@ import static util.Util.*;
 
 class PersonTest {
   private static final String LOINC_SYSTEM = "http://loinc.org";
+  private static final String SNOMED_SYSTEM = "http://snomed.info/sct";
   private static final String IKNR_SYSTEM = "http://fhir.de/sid/arge-ik/iknr";
   private static final String VITALSTATUS_SYSTEM =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/CodeSystem/Vitalstatus";
@@ -43,6 +44,28 @@ class PersonTest {
     clearInvocations(LOGGER);
     person = new Person();
     setMockLoggerField(person, LOGGER);
+  }
+
+  @Nested
+  class TodesursacheTest {
+    @Nested
+    class CategoryTest {
+      @Test
+      @DisplayName("SNOMED has fixed value: 16100001")
+      void testSnomed() {
+        String expectedValue = "16100001", expectedSystem = SNOMED_SYSTEM;
+        Coding result = person.getTodesursacheCategorySnomed();
+        assertCoding(expectedValue, expectedSystem, result);
+      }
+
+      @Test
+      @DisplayName("LOINC has fixed value: 79378-6")
+      void testLoinc() {
+        String expectedValue = "79378-6", expectedSystem = LOINC_SYSTEM;
+        Coding result = person.getTodesursacheCategoryLoinc();
+        assertCoding(expectedValue, expectedSystem, result);
+      }
+    }
   }
 
   @Nested
