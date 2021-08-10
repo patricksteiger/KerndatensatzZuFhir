@@ -19,6 +19,7 @@ class PersonTest {
   private static final String LOINC_SYSTEM = "http://loinc.org";
   private static final String SNOMED_SYSTEM = "http://snomed.info/sct";
   private static final String IKNR_SYSTEM = "http://fhir.de/sid/arge-ik/iknr";
+  private static final String ICD_10_SYSTEM = "http://fhir.de/CodeSystem/bfarm/icd-10-gm";
   private static final String VITALSTATUS_SYSTEM =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/CodeSystem/Vitalstatus";
   private static final String IDENTIFIER_TYPE_BASIS_SYSTEM =
@@ -64,6 +65,24 @@ class PersonTest {
         String expectedValue = "79378-6", expectedSystem = LOINC_SYSTEM;
         Coding result = person.getTodesursacheCategoryLoinc();
         assertCoding(expectedValue, expectedSystem, result);
+      }
+    }
+
+    @Nested
+    class CodeTest {
+      @Test
+      @DisplayName("invalid Todesgrund should result in empty value")
+      void testInvalid() {
+        assertEmptyCodeValue(person::setTodesgrund, person::getTodesursacheCode);
+      }
+
+      @Test
+      @DisplayName("non-empty Todesgrund should be present in CodeableConcept")
+      void testNonEmpty() {
+        String todesgrund = "R96.1";
+        person.setTodesgrund(todesgrund);
+        CodeableConcept result = person.getTodesursacheCode();
+        assertCodeableConcept(todesgrund, ICD_10_SYSTEM, result);
       }
     }
   }
