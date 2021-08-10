@@ -74,6 +74,44 @@ public class Person implements Datablock {
         this.getTodesursache());
   }
 
+  public Patient getPatient() {
+    Patient patient = new Patient();
+    patient.setMeta(this.getPatientMeta());
+    this.getPatientIdentifiers().forEach(patient::addIdentifier);
+    patient.addName(this.getPatientName());
+    patient.addName(this.getPatientGeburtsname());
+    patient.setGenderElement(this.getPatientGender());
+    patient.setBirthDate(this.getPatientBirthDate());
+    patient.setDeceased(this.getPatientDeceased());
+    this.getPatientAddresses().forEach(patient::addAddress);
+    patient.setManagingOrganization(this.getPatientManagingOrganization());
+    return patient;
+  }
+
+  public ResearchSubject getResearchSubject() {
+    ResearchSubject researchSubject = new ResearchSubject();
+    researchSubject.setMeta(this.getResearchSubjectMeta());
+    researchSubject.addIdentifier(this.getResearchSubjectSubjectIdentificationCode());
+    researchSubject.setStatus(this.getResearchSubjectStatus());
+    researchSubject.setPeriod(this.getResearchSubjectPeriod());
+    researchSubject.setIndividual(this.getResearchSubjectIndividual());
+    researchSubject.setConsent(this.getResearchSubjectConsent());
+    researchSubject.setStudy(this.getResearchSubjectStudy());
+    return researchSubject;
+  }
+
+  public Observation getObservation() {
+    Observation observation = new Observation();
+    observation.setMeta(this.getObservationMeta());
+    observation.setStatus(this.getObservationStatus());
+    observation.addCategory(this.getObservationCategory());
+    observation.setCode(this.getObservationCode());
+    observation.setSubject(this.getObservationSubject());
+    observation.setEffective(this.getObservationEffective());
+    observation.setValue(this.getObservationValue());
+    return observation;
+  }
+
   public Condition getTodesursache() {
     Condition condition = new Condition();
     condition.setMeta(this.getTodesursacheMeta());
@@ -112,67 +150,6 @@ public class Person implements Datablock {
         MetaProfile.PERSON_TODESURSACHE,
         MetaSource.PERSON_TODESURSACHE,
         MetaVersionId.PERSON_TODESURSACHE);
-  }
-
-  public Patient getPatient() {
-    Patient patient = new Patient();
-    // Meta
-    patient.setMeta(this.getPatientMeta());
-    // Identifier
-    this.getPatientIdentifiers().forEach(patient::addIdentifier);
-    // Name
-    patient.addName(this.getPatientName());
-    // Geburtsname
-    patient.addName(this.getPatientGeburtsname());
-    // Administratives Geschlecht, returns UNKNOWN if gender isn't set
-    patient.setGenderElement(this.getPatientGender());
-    // Geburtsdatum
-    patient.setBirthDate(this.getPatientBirthDate());
-    // Deceased (optional)
-    patient.setDeceased(this.getPatientDeceased());
-    // Address
-    this.getPatientAddresses().forEach(patient::addAddress);
-    // Managing organization
-    patient.setManagingOrganization(this.getPatientManagingOrganization());
-    return patient;
-  }
-
-  public ResearchSubject getResearchSubject() {
-    ResearchSubject researchSubject = new ResearchSubject();
-    // Meta
-    researchSubject.setMeta(this.getResearchSubjectMeta());
-    // Subject identification code
-    researchSubject.addIdentifier(this.getResearchSubjectSubjectIdentificationCode());
-    // Status
-    researchSubject.setStatus(this.getResearchSubjectStatus());
-    // Period
-    researchSubject.setPeriod(this.getResearchSubjectPeriod());
-    // Individual
-    researchSubject.setIndividual(this.getResearchSubjectIndividual());
-    // Consent
-    researchSubject.setConsent(this.getResearchSubjectConsent());
-    // Study (optional)
-    researchSubject.setStudy(this.getResearchSubjectStudy());
-    return researchSubject;
-  }
-
-  public Observation getObservation() {
-    Observation observation = new Observation();
-    // Meta
-    observation.setMeta(this.getObservationMeta());
-    // Status
-    observation.setStatus(this.getObservationStatus());
-    // Category
-    observation.addCategory(this.getObservationCategory());
-    // Code
-    observation.setCode(this.getObservationCode());
-    // Subject
-    observation.setSubject(this.getObservationSubject());
-    // Effective
-    observation.setEffective(this.getObservationEffective());
-    // Value
-    observation.setValue(this.getObservationValue());
-    return observation;
   }
 
   public List<Identifier> getPatientIdentifiers() {
