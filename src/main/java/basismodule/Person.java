@@ -45,6 +45,7 @@ public class Person implements Datablock {
   @CsvBindByName private String strassenanschrift_wohnort;
   @CsvBindByName private String strasse;
   // Demographie - Vitalstatus
+  @CsvBindByName private String todesgrund;
   @CsvBindByName private String patient_verstorben;
   @CsvBindByName private String todeszeitpunkt;
   @CsvBindByName private String informationsquelle;
@@ -76,7 +77,34 @@ public class Person implements Datablock {
   public Condition getTodesursache() {
     Condition condition = new Condition();
     condition.setMeta(this.getTodesursacheMeta());
+    condition.addCategory(this.getTodesursacheCategory());
+    condition.setCode(this.getTodesursacheCode());
     return condition;
+  }
+
+  public CodeableConcept getTodesursacheCode() {
+    String grund = this.getTodesgrund();
+    String system = CodingSystem.ICD_10_GM;
+    LoggingData data = LoggingData.of(LOGGER, "getTodesursacheCode", "todesgrund");
+    return codeFromSystemWithOptionalText(grund, system, null, data);
+  }
+
+  public Coding getTodesursacheCategorySnomed() {
+    String value = "16100001";
+    String system = CodingSystem.SNOMED_CLINICAL_TERMS;
+    return FhirGenerator.coding(value, system);
+  }
+
+  public Coding getTodesursacheCategoryLoinc() {
+    String value = "79378-6";
+    String system = CodingSystem.LOINC;
+    return FhirGenerator.coding(value, system);
+  }
+
+  public CodeableConcept getTodesursacheCategory() {
+    Coding snomed = this.getTodesursacheCategorySnomed();
+    Coding loinc = this.getTodesursacheCategoryLoinc();
+    return FhirGenerator.codeableConcept(snomed, loinc);
   }
 
   public Meta getTodesursacheMeta() {
@@ -591,6 +619,14 @@ public class Person implements Datablock {
 
   public void setStrasse(String strasse) {
     this.strasse = strasse;
+  }
+
+  public String getTodesgrund() {
+    return todesgrund;
+  }
+
+  public void setTodesgrund(String todesgrund) {
+    this.todesgrund = todesgrund;
   }
 
   public String getPatient_verstorben() {
