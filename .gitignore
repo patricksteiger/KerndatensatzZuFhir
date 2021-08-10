@@ -29,6 +29,9 @@ target/
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
+# Run configuration
+.idea/runConfigurations.xml
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
