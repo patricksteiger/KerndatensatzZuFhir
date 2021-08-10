@@ -9,6 +9,7 @@ public class MetaSource {
   public static final String PERSON_PATIENT = UKU_SAP + "Person-Patient";
   public static final String PERSON_RESEARCH_SUBJECT = UKU_SAP + "Person-ResearchSubject";
   public static final String PERSON_OBSERVATION = UKU_SAP + "Person-Observation";
+  public static final String PERSON_TODESURSACHE = UKU_SAP + "Person-Todesursache";
   // Laborbefund
   public static final String LABOR_DIAGNOSTIC_REPORT = UKU_SAP + "Laborbefund-DiagnosticReport";
   public static final String LABOR_SERVICE_REQUEST = UKU_SAP + "Laborbefund-ServiceRequest";

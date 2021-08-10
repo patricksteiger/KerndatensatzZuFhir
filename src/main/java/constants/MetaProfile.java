@@ -24,6 +24,8 @@ public class MetaProfile {
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/ResearchSubject";
   public static final String PERSON_OBSERVATION =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Vitalstatus";
+  public static final String PERSON_TODESURSACHE =
+      "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Todesursache";
   // Laborbefund
   public static final String LABOR_DIAGNOSTIC_REPORT =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/DiagnosticReportLab";

@@ -9,6 +9,7 @@ public class MetaVersionId {
   public static final String PERSON_PATIENT = UKU + "Person_Patient_1.0.0.0";
   public static final String PERSON_RESEARCH_SUBJECT = UKU + "Person_ResearchSubject_1.0.0.0";
   public static final String PERSON_OBSERVATION = UKU + "Person_Observation_1.0.0.0";
+  public static final String PERSON_TODESURSACHE = UKU + "Person_Condition_1.0.0.0";
   // Laborbefund
   public static final String LABOR_DIAGNOSTIC_REPORT = UKU + "Laborbefund_DiagnosticReport_1.0.0.0";
   public static final String LABOR_SERVICE_REQUEST = UKU + "Laborbefund_ServiceRequest_1.0.0.0";

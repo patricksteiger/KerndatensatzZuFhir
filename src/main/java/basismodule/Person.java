@@ -66,7 +66,24 @@ public class Person implements Datablock {
 
   @Override
   public List<Resource> toFhirResources() {
-    return Helper.listOf(this.getPatient(), this.getResearchSubject(), this.getObservation());
+    return Helper.listOf(
+        this.getPatient(),
+        this.getResearchSubject(),
+        this.getObservation(),
+        this.getTodesursache());
+  }
+
+  public Condition getTodesursache() {
+    Condition condition = new Condition();
+    condition.setMeta(this.getTodesursacheMeta());
+    return condition;
+  }
+
+  public Meta getTodesursacheMeta() {
+    return FhirGenerator.meta(
+        MetaProfile.PERSON_TODESURSACHE,
+        MetaSource.PERSON_TODESURSACHE,
+        MetaVersionId.PERSON_TODESURSACHE);
   }
 
   public Patient getPatient() {
