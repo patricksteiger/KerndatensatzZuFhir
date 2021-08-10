@@ -4,7 +4,7 @@ public class ExtensionUrl {
   public static final String OPS_SEITENLOKALISATION =
       "http://fhir.de/StructureDefinition/seitenlokalisation";
   public static final String RECORDED_DATE =
-      "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/procedure-recordedDate";
+      "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum";
   public static final String DURCHFUEHRUNGSABSICHT =
       "https://www.medizininformatik-initiative.de/fhir/core/modul-prozedur/StructureDefinition/Durchfuehrungsabsicht";
   public static final String NAMENSZUSATZ =
@@ -17,8 +17,6 @@ public class ExtensionUrl {
       "http://hl7.org/fhir/StructureDefinition/iso21090-EN-qualifier";
   public static final String ADMINISTRATIVE_GENDER =
       "http://fhir.de/StructureDefinition/gender-amtlich-de";
-  public static final String BIRTH_DATE =
-      "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
   public static final String STAGE_LIFE = "http://fhir.de/StructureDefinition/lebensphase";
   public static final String ICD_10_GM_DIAGNOSESEICHERHEIT =
       "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit";
