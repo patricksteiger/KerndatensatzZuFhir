@@ -216,13 +216,13 @@ public class Diagnose implements Datablock {
   public CodeableConcept getBodySite() {
     String code = this.getKoerperstelle();
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    return optionalCodeFromSystem(code, system);
+    return optionalCodeableConceptFromSystem(code, system);
   }
 
   public CodeableConcept getClinicalStatus() {
     String status = this.getKlinischer_status();
     LoggingData data = LoggingData.of(LOGGER, "getClinicalStatus", "klinischer_status");
-    return optionalCodeFromValueSet(status, ClinicalStatus::fromCode, data);
+    return optionalCodeableConceptFromValueSet(status, ClinicalStatus::fromCode, data);
   }
 
   public Meta getMeta() {

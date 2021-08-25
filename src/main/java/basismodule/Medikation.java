@@ -158,7 +158,7 @@ public class Medikation implements Datablock {
     String code = this.getBehandlungsgrund();
     LoggingData data =
         LoggingData.of(LOGGER, "getMedicationAdministrationReasonCode", "behandlungsgrund");
-    return optionalCodeFromValueSet(code, Behandlungsgrund::fromCode, data);
+    return optionalCodeableConceptFromValueSet(code, Behandlungsgrund::fromCode, data);
   }
 
   public Medication.MedicationIngredientComponent getMedicationIngredient() {
@@ -185,7 +185,7 @@ public class Medikation implements Datablock {
     String display = this.getWirkstoff_name_aktiv();
     LoggingData data =
         LoggingData.of(LOGGER, "getMedicationIngredientItem", "wirkstoff_code_aktiv");
-    return codeWithDefaultDisplay(code, display, data);
+    return codeableConceptWithDefaultDisplay(code, display, data);
   }
 
   public Extension getMedicationIngredientExtension() {
@@ -206,7 +206,8 @@ public class Medikation implements Datablock {
     String code = this.getDarreichungsform();
     String system = CodingSystem.EDQM_STANDARD;
     LoggingData data = LoggingData.of(LOGGER, "getMedicationForm", "darreichungsform");
-    return optionalCodeFromSystemWithValidation(code, system, DoseFormUvIps::validate, data);
+    return optionalCodeableConceptFromSystemWithValidation(
+        code, system, DoseFormUvIps::validate, data);
   }
 
   public CodeableConcept getMedicationCode() {
@@ -218,7 +219,7 @@ public class Medikation implements Datablock {
             parsedCode.getSystem().equals(CodingSystem.PHARMA_ZENTRAL_NUMMER)
                 ? this.getMedicationCodePharma()
                 : this.getMedicationCodeAtcDE();
-    return optionalCodeWithCodingAndOptionalText(code, text, chooser);
+    return optionalCodeableConceptWithCodingAndOptionalText(code, text, chooser);
   }
 
   public String getMedicationCodeText() {

@@ -207,7 +207,7 @@ public class Laborbefund implements Datablock {
     String text = this.getServiceRequestCodeText();
     LoggingData data =
         LoggingData.of(LOGGER, "getServiceRequestCode", "laboranforderung_laborparameter_code");
-    return codeWithOptionalText(code, text, data);
+    return codeableConceptWithOptionalText(code, text, data);
   }
 
   public String getServiceRequestCodeText() {
@@ -342,7 +342,7 @@ public class Laborbefund implements Datablock {
     LoggingData data =
         LoggingData.of(
             LOGGER, "getObservationReferenceRangeType", "laboruntersuchung_referenzbereich_typ");
-    return optionalCodeFromValueSet(code, ReferenceRangeMeaning::fromCode, data);
+    return optionalCodeableConceptFromValueSet(code, ReferenceRangeMeaning::fromCode, data);
   }
 
   public Quantity getObservationReferenceRangeLow() {
@@ -367,7 +367,7 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getObservationMethod() {
     String code = this.getLaboruntersuchung_untersuchungsmethode();
-    return optionalCode(code);
+    return optionalCodeableConcept(code);
   }
 
   public Annotation getObservationNote() {
@@ -379,7 +379,8 @@ public class Laborbefund implements Datablock {
     String interpretation = this.getLaboruntersuchung_bewertung();
     LoggingData data =
         LoggingData.of(LOGGER, "getObservationInterpretation", "laboruntersuchung_bewertung");
-    return optionalCodeFromValueSet(interpretation, ObservationInterpretation::fromCode, data);
+    return optionalCodeableConceptFromValueSet(
+        interpretation, ObservationInterpretation::fromCode, data);
   }
 
   public Type getObservationValue() {
@@ -391,7 +392,7 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getObservationValueCodeableConcept() {
     String code = this.getLaboruntersuchung_ergebnis();
-    return optionalCodeFromValueSet(code, SemiQuantitativesLaborergebnis::fromCode);
+    return optionalCodeableConceptFromValueSet(code, SemiQuantitativesLaborergebnis::fromCode);
   }
 
   public Quantity getObservationValueQuantity() {
@@ -449,7 +450,7 @@ public class Laborbefund implements Datablock {
     String system = CodingSystem.LOINC;
     String text = this.getLaborparameter_bezeichnung();
     LoggingData data = LoggingData.of(LOGGER, "getObservationCode", "laborparameter_bezeichnung");
-    return codeFromSystemWithOptionalText(code, system, text, data);
+    return codeableConceptFromSystemWithOptionalText(code, system, text, data);
   }
 
   public CodeableConcept getObservationCategory() {

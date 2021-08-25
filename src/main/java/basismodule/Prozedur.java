@@ -85,7 +85,8 @@ public class Prozedur implements Datablock {
   public CodeableConcept getCategory() {
     String ops = this.getOPS_Vollst_Prozedurenkode();
     LoggingData data = LoggingData.of(LOGGER, "getCategory", "OPS_Vollst_Prozedurenkode");
-    return optionalCodeFromValueSet(ops, ProcedureCategorySnomedMapping::fromOpsCode, data);
+    return optionalCodeableConceptFromValueSet(
+        ops, ProcedureCategorySnomedMapping::fromOpsCode, data);
   }
 
   public CodeableConcept getCode() {
@@ -130,7 +131,7 @@ public class Prozedur implements Datablock {
   public CodeableConcept getBodySite() {
     String code = this.getKoerperstelle();
     String system = CodingSystem.SNOMED_CLINICAL_TERMS;
-    return optionalCodeFromSystem(code, system);
+    return optionalCodeableConceptFromSystem(code, system);
   }
 
   public Annotation getNote() {

@@ -124,7 +124,7 @@ public class Person implements Datablock {
     String grund = this.getTodesgrund();
     String system = CodingSystem.ICD_10_GM;
     LoggingData data = LoggingData.of(LOGGER, "getTodesursacheCode", "todesgrund");
-    return codeFromSystem(grund, system, data);
+    return codeableConceptFromSystem(grund, system, data);
   }
 
   public Coding getTodesursacheCategorySnomed() {

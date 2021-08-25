@@ -155,7 +155,7 @@ public class Fall implements Datablock {
     LoggingData data =
         LoggingData.of(
             LOGGER, "getVersorgungsstellenEncounterType", "versorgungsstellenkontakt_ebene");
-    return optionalCodeFromValueSet(ebene, Kontaktebene::fromCode, data);
+    return optionalCodeableConceptFromValueSet(ebene, Kontaktebene::fromCode, data);
   }
 
   public Coding getVersorgungsstellenEncounterClass() {
@@ -190,7 +190,7 @@ public class Fall implements Datablock {
     LoggingData data =
         LoggingData.of(
             LOGGER, "getEinrichtungsEncounterAdmitSource", "einrichtungskontakt_aufnahmeanlass");
-    return optionalCodeFromValueSet(code, Aufnahmeanlass::fromCode, data);
+    return optionalCodeableConceptFromValueSet(code, Aufnahmeanlass::fromCode, data);
   }
 
   public CodeableConcept getEinrichtungsEncounterDischargeDisposition() {
@@ -200,7 +200,7 @@ public class Fall implements Datablock {
             LOGGER,
             "getEinrichtungsEncounterDischargeDisposition",
             "einrichtungskontakt_entlassungsgrund");
-    return optionalCodeFromValueSet(code, Entlassungsgrund::fromCode, data);
+    return optionalCodeableConceptFromValueSet(code, Entlassungsgrund::fromCode, data);
   }
 
   public CodeableConcept getEinrichtungsEncounterReasonCode() {
@@ -208,7 +208,7 @@ public class Fall implements Datablock {
     LoggingData data =
         LoggingData.of(
             LOGGER, "getEinrichtungsEncounterReasonCode", "einrichtungskontakt_aufnahmegrund");
-    return optionalCodeFromValueSet(aufnahmegrund, Aufnahmegrund::fromCode, data);
+    return optionalCodeableConceptFromValueSet(aufnahmegrund, Aufnahmegrund::fromCode, data);
   }
 
   public Period getEinrichtungsEncounterPeriod() {
@@ -235,7 +235,7 @@ public class Fall implements Datablock {
     String ebene = this.getEinrichtungskontakt_ebene();
     LoggingData data =
         LoggingData.of(LOGGER, "getEinrichtungsEncounterType", "einrichtungskontakt_ebene");
-    return optionalCodeFromValueSet(ebene, Kontaktebene::fromCode, data);
+    return optionalCodeableConceptFromValueSet(ebene, Kontaktebene::fromCode, data);
   }
 
   public Coding getEinrichtungsEncounterClass() {
@@ -277,7 +277,7 @@ public class Fall implements Datablock {
     String ebene = this.getAbteilungskontakt_ebene();
     LoggingData data =
         LoggingData.of(LOGGER, "getAbteilungsEncounterType", "abteilungskontakt_ebene");
-    return optionalCodeFromValueSet(ebene, Kontaktebene::fromCode, data);
+    return optionalCodeableConceptFromValueSet(ebene, Kontaktebene::fromCode, data);
   }
 
   public Reference getAbteilungsEncounterSubject() {
@@ -288,7 +288,8 @@ public class Fall implements Datablock {
     String abteilungsCode = this.getAbteilungskontakt_fachabteilungsschluessel();
     String system = CodingSystem.FALL_FACHABTEILUNGSSCHLUESSEL;
     LoggingData data = LoggingData.of(LOGGER, "getAbteilungsEncounterServiceType", "");
-    return optionalCodeFromValueSetOrSystem(abteilungsCode, system, Fachabteilung::fromCode, data);
+    return optionalCodeableConceptFromValueSetOrSystem(
+        abteilungsCode, system, Fachabteilung::fromCode, data);
   }
 
   public Coding getAbteilungsEncounterClass() {

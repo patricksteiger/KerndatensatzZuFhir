@@ -64,7 +64,7 @@ public class FhirParser {
     return coding;
   }
 
-  public static CodeableConcept codeWithOptionalText(
+  public static CodeableConcept codeableConceptWithOptionalText(
       String kerndatensatzValue, String text, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return parsedCode.hasEmptyCode()
@@ -72,14 +72,14 @@ public class FhirParser {
         : FhirGenerator.codeableConcept(parsedCode).setText(text);
   }
 
-  public static CodeableConcept optionalCode(String kerndatensatzValue) {
+  public static CodeableConcept optionalCodeableConcept(String kerndatensatzValue) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return parsedCode.hasEmptyCode()
         ? Constants.getEmptyValue()
         : FhirGenerator.codeableConcept(parsedCode);
   }
 
-  public static <T extends Code> CodeableConcept optionalCodeFromValueSet(
+  public static <T extends Code> CodeableConcept optionalCodeableConceptFromValueSet(
       String kerndatensatzValue, Function<String, Optional<T>> mapToFhirCodeFromValueSet) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     return mapToFhirCodeFromValueSet
@@ -88,12 +88,12 @@ public class FhirParser {
         .orElse(Constants.getEmptyValue());
   }
 
-  public static CodeableConcept optionalCodeFromSystem(
+  public static CodeableConcept optionalCodeableConceptFromSystem(
       String kerndatensatzValue, String codeSystem) {
     return optionalFhirFromSystem(kerndatensatzValue, codeSystem, FhirGenerator::codeableConcept);
   }
 
-  public static CodeableConcept optionalCodeFromSystemWithValidation(
+  public static CodeableConcept optionalCodeableConceptFromSystemWithValidation(
       String kerndatensatzValue,
       String system,
       Predicate<String> validator,
@@ -108,7 +108,7 @@ public class FhirParser {
     return FhirGenerator.codeableConcept(parsedCode);
   }
 
-  public static <T extends Code> CodeableConcept optionalCodeFromValueSetOrSystem(
+  public static <T extends Code> CodeableConcept optionalCodeableConceptFromValueSetOrSystem(
       String kerndatensatzValue,
       String codeSystem,
       Function<String, Optional<T>> mapToFhirCodeFromValueSet,
@@ -140,7 +140,7 @@ public class FhirParser {
         .orElseGet(getMethodValueLoggingSupplier(loggingData, kerndatensatzValue));
   }
 
-  public static <T extends Code> CodeableConcept optionalCodeFromValueSet(
+  public static <T extends Code> CodeableConcept optionalCodeableConceptFromValueSet(
       String kerndatensatzValue,
       Function<String, Optional<T>> mapToFhirCodeFromValueSet,
       LoggingData loggingData) {
@@ -148,7 +148,7 @@ public class FhirParser {
         kerndatensatzValue, mapToFhirCodeFromValueSet, loggingData, FhirGenerator::codeableConcept);
   }
 
-  public static CodeableConcept optionalCodeWithCodingAndOptionalText(
+  public static CodeableConcept optionalCodeableConceptWithCodingAndOptionalText(
       String kerndatensatzValue, String text, Function<ParsedCode, Coding> codingChooser) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     if (parsedCode.hasEmptyCode() && Helper.checkEmptyString(text)) {
@@ -158,7 +158,7 @@ public class FhirParser {
     return FhirGenerator.codeableConcept(coding).setText(text);
   }
 
-  public static CodeableConcept codeFromSystem(
+  public static CodeableConcept codeableConceptFromSystem(
       String kerndatensatzValue, String codeSystem, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
     return parsedCode.hasEmptyCode()
@@ -166,7 +166,7 @@ public class FhirParser {
         : FhirGenerator.codeableConcept(parsedCode);
   }
 
-  public static CodeableConcept codeFromSystemWithOptionalText(
+  public static CodeableConcept codeableConceptFromSystemWithOptionalText(
       String kerndatensatzValue, String codeSystem, String text, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
     return parsedCode.hasEmptyCode()
@@ -174,7 +174,7 @@ public class FhirParser {
         : FhirGenerator.codeableConcept(parsedCode).setText(text);
   }
 
-  public static CodeableConcept codeWithDefaultDisplay(
+  public static CodeableConcept codeableConceptWithDefaultDisplay(
       String kerndatensatzValue, String defaultDisplay, LoggingData data) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
     if (parsedCode.hasEmptyCode()) {
