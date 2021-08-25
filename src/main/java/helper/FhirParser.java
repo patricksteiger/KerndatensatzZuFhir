@@ -158,6 +158,14 @@ public class FhirParser {
     return FhirGenerator.codeableConcept(coding).setText(text);
   }
 
+  public static CodeableConcept codeFromSystem(
+      String kerndatensatzValue, String codeSystem, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
+    return parsedCode.hasEmptyCode()
+        ? logMethodValue(loggingData, kerndatensatzValue)
+        : FhirGenerator.codeableConcept(parsedCode);
+  }
+
   public static CodeableConcept codeFromSystemWithOptionalText(
       String kerndatensatzValue, String codeSystem, String text, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
