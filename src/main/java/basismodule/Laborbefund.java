@@ -13,6 +13,12 @@ import java.util.List;
 
 import static helper.FhirParser.*;
 
+/**
+ * Implements version 1.0.6 released on 19.07.2021.
+ *
+ * @see
+ *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Laborbefund/IGMIIKDSModulLabor.html"
+ */
 public class Laborbefund implements Datablock {
   private final Logger LOGGER = new Logger(Laborbefund.class);
   @CsvBindByName private String patNr;
