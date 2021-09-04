@@ -14,6 +14,12 @@ import java.util.List;
 
 import static helper.FhirParser.*;
 
+/**
+ * Implements version 1.0.0 released on 15.03.2021.
+ *
+ * @see
+ *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Fall/IGMIIKDSModulFall.html"
+ */
 public class Fall implements Datablock {
   private final Logger LOGGER = new Logger(Fall.class);
 
