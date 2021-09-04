@@ -2,8 +2,11 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static valueSet.CodeUtil.assertValidCodes;
+import static valueSet.CodeUtil.getResourcePrefixFile;
 
 class LaborbereichTest {
   @Test
@@ -21,6 +24,7 @@ class LaborbereichTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(Laborbereich.class);
+    File actualCodes = getResourcePrefixFile("LaborbereichCodes.json");
+    assertValidCodes(Laborbereich.values(), Laborbereich::fromCode, actualCodes);
   }
 }

@@ -2,8 +2,9 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
-import static valueSet.CodeUtil.assertSimpleSystem;
-import static valueSet.CodeUtil.assertValidCodes;
+import java.io.File;
+
+import static valueSet.CodeUtil.*;
 
 class ReferenceRangeMeaningTest {
   @Test
@@ -14,6 +15,7 @@ class ReferenceRangeMeaningTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(ReferenceRangeMeaning.class);
+    File actualCodes = getResourcePrefixFile("ReferenceRangeMeaningCodes.json");
+    assertValidCodes(ReferenceRangeMeaning.values(), ReferenceRangeMeaning::fromCode, actualCodes);
   }
 }

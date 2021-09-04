@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import valueSet.CodeDto;
 import valueSet.CodeUtil;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -26,7 +27,8 @@ class DoseFormUvIpsTest {
 
   @Test
   void testAllValidCodes() throws FileNotFoundException {
-    List<CodeDto> codes = CodeUtil.get("DoseFormUvIpsCodes.json");
+    File actualCodes = CodeUtil.getResourcePrefixFile("DoseFormUvIpsCodes.json");
+    List<CodeDto> codes = CodeUtil.get(actualCodes);
     assertEquals(461, codes.size());
     codes.forEach(code -> assertTrue(validate(code.getCode())));
   }

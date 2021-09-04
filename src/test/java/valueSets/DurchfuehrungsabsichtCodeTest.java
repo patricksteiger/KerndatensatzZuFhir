@@ -2,8 +2,9 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
-import static valueSet.CodeUtil.assertSimpleSystem;
-import static valueSet.CodeUtil.assertValidCodes;
+import java.io.File;
+
+import static valueSet.CodeUtil.*;
 
 class DurchfuehrungsabsichtCodeTest {
   @Test
@@ -14,6 +15,8 @@ class DurchfuehrungsabsichtCodeTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(DurchfuehrungsabsichtCode.class);
+    File actualCodes = getResourcePrefixFile("DurchfuehrungsabsichtCodeCodes.json");
+    assertValidCodes(
+        DurchfuehrungsabsichtCode.values(), DurchfuehrungsabsichtCode::fromCode, actualCodes);
   }
 }

@@ -2,8 +2,9 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
-import static valueSet.CodeUtil.assertSimpleSystem;
-import static valueSet.CodeUtil.assertValidCodes;
+import java.io.File;
+
+import static valueSet.CodeUtil.*;
 
 class ICD_SeitenlokalisationTest {
   @Test
@@ -14,6 +15,8 @@ class ICD_SeitenlokalisationTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(ICD_Seitenlokalisation.class);
+    File actualCodes = getResourcePrefixFile("ICD_SeitenlokalisationCodes.json");
+    assertValidCodes(
+        ICD_Seitenlokalisation.values(), ICD_Seitenlokalisation::fromCode, actualCodes);
   }
 }

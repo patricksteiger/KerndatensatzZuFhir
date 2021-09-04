@@ -2,8 +2,9 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
-import static valueSet.CodeUtil.assertSimpleSystem;
-import static valueSet.CodeUtil.assertValidCodes;
+import java.io.File;
+
+import static valueSet.CodeUtil.*;
 
 class MIICoreLocationsTest {
   @Test
@@ -15,6 +16,7 @@ class MIICoreLocationsTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(MIICoreLocations.class);
+    File actualCodes = getResourcePrefixFile("MIICoreLocationsCodes.json");
+    assertValidCodes(MIICoreLocations.values(), MIICoreLocations::fromCode, actualCodes);
   }
 }

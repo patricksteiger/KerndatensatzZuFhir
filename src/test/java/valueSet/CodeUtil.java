@@ -5,9 +5,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,34 +20,32 @@ public class CodeUtil {
   public static final String RESOURCES_PATH = "src/test/resources/valueSet/";
 
   /**
-   * To assert all valid codes this methods assumes a json-file in test/resources/valueSet named
-   * testedClassCodes.json exists, and on the root level exists the "codes"-field with all valid
-   * codes. Also the given class has to have a fromCode-Method expecting the code and returning an
-   * optional containing an instance of the testedClass. It also has to be be an Enum.
+   * Asserts all valid codes containing in file codes to be correctly parsed from fromCode-Function
+   * and the size of all actual values is the same as expected values from file codes.
    *
-   * @param testedClass
+   * @param values
+   * @param fromCode
+   * @param codes
    * @param <T>
-   * @param <Enum>
    */
-  public static <T extends Code, Enum> void assertValidCodes(Class<T> testedClass) {
-    String className = testedClass.getSimpleName();
+  public static <T extends Code> void assertValidCodes(
+      T[] values, Function<String, Optional<T>> fromCode, File codes) {
+    assertTrue(codes.canRead(), "Couldn't read file: " + codes.getName());
+    List<CodeDto> expectedCodes = null;
     try {
-      Method fromCodeMethod = testedClass.getMethod("fromCode", String.class);
-      List<CodeDto> expectedCodes = get(className + "Codes.json");
-      for (CodeDto expectedCode : expectedCodes) {
-        Optional<T> code = (Optional<T>) fromCodeMethod.invoke(null, expectedCode.getCode());
-        assertTrue(code.isPresent(), "Expected code: \"" + expectedCode.getCode() + "\"");
-        T actualCode = code.get();
-        assertEquals(expectedCode.getCode(), actualCode.getCode());
-        assertEquals(expectedCode.getDisplay(), actualCode.getDisplay());
-      }
-      Method valuesMethod = testedClass.getMethod("values", null);
-      T[] values = (T[]) valuesMethod.invoke(null, null);
-      assertEquals(expectedCodes.size(), values.length);
+      expectedCodes = get(codes);
     } catch (Exception e) {
       e.printStackTrace();
-      fail("Failed automated testing of all valid codes of valueSet: " + className);
+      fail("Failed automated testing of all valid codes of valueSet: " + codes.getName());
     }
+    for (CodeDto expectedCode : expectedCodes) {
+      Optional<T> code = fromCode.apply(expectedCode.getCode());
+      assertTrue(code.isPresent(), "Expected code: \"" + expectedCode.getCode() + "\"");
+      T actualCode = code.get();
+      assertEquals(expectedCode.getCode(), actualCode.getCode());
+      assertEquals(expectedCode.getDisplay(), actualCode.getDisplay());
+    }
+    assertEquals(expectedCodes.size(), values.length);
   }
 
   public static <T extends Code> void assertValidCodes(
@@ -73,16 +71,20 @@ public class CodeUtil {
     return result;
   }
 
-  public static List<CodeDto> get(String fileName) throws FileNotFoundException {
-    JSONObject root = CodeUtil.parseFile(RESOURCES_PATH + fileName);
+  public static List<CodeDto> get(File file) throws FileNotFoundException {
+    JSONObject root = CodeUtil.parseFile(file);
     JSONArray codes = root.getJSONArray("codes");
     return CodeUtil.parseCodes(codes);
   }
 
-  public static JSONObject parseFile(String path) throws FileNotFoundException {
-    FileReader fileReader = new FileReader(path);
+  public static JSONObject parseFile(File file) throws FileNotFoundException {
+    FileReader fileReader = new FileReader(file);
     JSONTokener tokener = new JSONTokener(fileReader);
     return new JSONObject(tokener);
+  }
+
+  public static File getResourcePrefixFile(String fileName) {
+    return new File(RESOURCES_PATH + fileName);
   }
 
   public static <T extends Code> void assertSimpleSystem(String expectedSystem, T[] codes) {

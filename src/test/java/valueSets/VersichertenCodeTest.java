@@ -2,8 +2,9 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
-import static valueSet.CodeUtil.assertSimpleSystem;
-import static valueSet.CodeUtil.assertValidCodes;
+import java.io.File;
+
+import static valueSet.CodeUtil.*;
 
 class VersichertenCodeTest {
   @Test
@@ -14,6 +15,7 @@ class VersichertenCodeTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(VersichertenCode.class);
+    File actualCodes = getResourcePrefixFile("VersichertenCodeCodes.json");
+    assertValidCodes(VersichertenCode.values(), VersichertenCode::fromCode, actualCodes);
   }
 }

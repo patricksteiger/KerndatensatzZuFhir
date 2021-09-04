@@ -2,8 +2,9 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
-import static valueSet.CodeUtil.assertSimpleSystem;
-import static valueSet.CodeUtil.assertValidCodes;
+import java.io.File;
+
+import static valueSet.CodeUtil.*;
 
 class KBVBaseStageLifeTest {
   @Test
@@ -14,6 +15,7 @@ class KBVBaseStageLifeTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(KBVBaseStageLife.class);
+    File actualCodes = getResourcePrefixFile("KBVBaseStageLifeCodes.json");
+    assertValidCodes(KBVBaseStageLife.values(), KBVBaseStageLife::fromCode, actualCodes);
   }
 }

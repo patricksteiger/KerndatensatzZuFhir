@@ -2,8 +2,11 @@ package valueSets;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static valueSet.CodeUtil.assertValidCodes;
+import static valueSet.CodeUtil.getResourcePrefixFile;
 
 class SeitenlokalisationCodeTest {
   @Test
@@ -21,6 +24,8 @@ class SeitenlokalisationCodeTest {
 
   @Test
   void testAllValidCodes() {
-    assertValidCodes(SeitenlokalisationCode.class);
+    File actualCodes = getResourcePrefixFile("SeitenlokalisationCodeCodes.json");
+    assertValidCodes(
+        SeitenlokalisationCode.values(), SeitenlokalisationCode::fromCode, actualCodes);
   }
 }
