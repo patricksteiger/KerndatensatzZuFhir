@@ -273,7 +273,6 @@ public class Person implements Datablock {
     return optionalExtensionWithStringType(vorsatzWort, url);
   }
 
-  // TODO: Do we have to split vorname into several names? E.g.: "Maja Julia"
   public List<StringType> getPatientNameGiven() {
     String vorName = this.getVorname();
     LoggingData data = LoggingData.of(LOGGER, "getPatientNameGiven", "vorname");
