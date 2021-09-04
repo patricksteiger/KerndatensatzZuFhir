@@ -19,6 +19,12 @@ import java.util.List;
 
 import static helper.FhirParser.*;
 
+/**
+ * Implements version 1.0.4 released on 27.05.2021.
+ *
+ * @see
+ *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Diagnose/IGMIIKDSModulDiagnose.html"
+ */
 public class Diagnose implements Datablock {
   private final Logger LOGGER = new Logger(Diagnose.class);
   @CsvBindByName private String patNr;
