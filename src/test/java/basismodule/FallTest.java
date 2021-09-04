@@ -155,8 +155,7 @@ public class FallTest {
         String aufnahmenummer = "1a2b";
         fall.setAbteilungskontakt_aufnahmenummer(aufnahmenummer);
         Identifier result = fall.getAbteilungsEncounterIdentifier();
-        assertIdentifier(
-            aufnahmenummer, IdentifierSystem.ACME_PATIENT, IdentifierTypeCode.VN, result);
+        assertIdentifier(aufnahmenummer, IdentifierSystem.EMPTY, IdentifierTypeCode.VN, result);
       }
     }
 
@@ -210,8 +209,7 @@ public class FallTest {
         String aufnahmenummer = "123";
         fall.setEinrichtungskontakt_aufnahmenummer(aufnahmenummer);
         Identifier result = fall.getEinrichtungsEncounterIdentifier();
-        assertIdentifier(
-            aufnahmenummer, IdentifierSystem.ACME_PATIENT, IdentifierTypeCode.VN, result);
+        assertIdentifier(aufnahmenummer, IdentifierSystem.EMPTY, IdentifierTypeCode.VN, result);
       }
     }
 
@@ -472,8 +470,7 @@ public class FallTest {
         String aufnahmenummer = "1a2b";
         fall.setVersorgungsstellenkontakt_aufnahmenummer(aufnahmenummer);
         Identifier result = fall.getVersorgungsstellenEncounterIdentifier();
-        assertIdentifier(
-            aufnahmenummer, IdentifierSystem.ACME_PATIENT, IdentifierTypeCode.VN, result);
+        assertIdentifier(aufnahmenummer, IdentifierSystem.EMPTY, IdentifierTypeCode.VN, result);
       }
     }
 

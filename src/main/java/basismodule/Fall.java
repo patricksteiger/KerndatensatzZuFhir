@@ -178,7 +178,7 @@ public class Fall implements Datablock {
   public Identifier getVersorgungsstellenEncounterIdentifier() {
     String aufnahmenummer = this.getVersorgungsstellenkontakt_aufnahmenummer();
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
-    String system = IdentifierSystem.ACME_PATIENT;
+    String system = IdentifierSystem.EMPTY;
     return optionalIdentifierFromSystemWithCoding(aufnahmenummer, system, typeCode);
   }
 
@@ -256,7 +256,7 @@ public class Fall implements Datablock {
 
   public Identifier getEinrichtungsEncounterIdentifier() {
     String aufnahmenummer = this.getEinrichtungskontakt_aufnahmenummer();
-    String system = IdentifierSystem.ACME_PATIENT;
+    String system = IdentifierSystem.EMPTY;
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
     return optionalIdentifierFromSystemWithCoding(aufnahmenummer, system, typeCode);
   }
@@ -311,7 +311,7 @@ public class Fall implements Datablock {
   // TODO: Is ACME-Patient system always correct? It is not a fixed value
   public Identifier getAbteilungsEncounterIdentifier() {
     String aufnahmenummer = this.getAbteilungskontakt_aufnahmenummer();
-    String system = IdentifierSystem.ACME_PATIENT;
+    String system = IdentifierSystem.EMPTY;
     IdentifierTypeCode typeCode = IdentifierTypeCode.VN;
     return optionalIdentifierFromSystemWithCoding(aufnahmenummer, system, typeCode);
   }
