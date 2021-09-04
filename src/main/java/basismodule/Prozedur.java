@@ -68,7 +68,6 @@ public class Prozedur implements Datablock {
     return Procedure.ProcedureStatus.COMPLETED;
   }
 
-  // TODO: Is patNr really needed?
   public Reference getSubject() {
     String patientenNummer = this.getPatNr();
     if (Helper.checkEmptyString(patientenNummer)) {
