@@ -104,7 +104,6 @@ public class Diagnose implements Datablock {
     return this.getFreitextbeschreibung();
   }
 
-  // TODO: Mehrfachcodierungskennzeichen replaces Ausruf, Manifest and Primaer?
   public Coding getCodeIcd() {
     String code = this.getIcd_diagnosecode();
     String system = CodingSystem.ICD_10_GM;
