@@ -291,7 +291,6 @@ public class Person implements Datablock {
     return optionalExtensionWithCodeType(artDesPraefix, url);
   }
 
-  // TODO: Is system of PID correct?
   public Identifier getPatientPID() {
     String value = this.getPatient_pid();
     String system = IdentifierSystem.EMPTY;
