@@ -14,6 +14,12 @@ import java.util.List;
 
 import static helper.FhirParser.*;
 
+/**
+ * Implements version 1.0.7 released on 27.05.2021.
+ *
+ * @see
+ *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Prozeduren/IGMIIKDSModulProzedur.html"
+ */
 public class Prozedur implements Datablock {
   private final Logger LOGGER = new Logger(Prozedur.class);
   @CsvBindByName private String patNr;
