@@ -20,6 +20,12 @@ import java.util.function.Supplier;
 
 import static helper.FhirParser.*;
 
+/**
+ * Implements version 1.0.14 released on 27.05.2021.
+ *
+ * @see
+ *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Person/IGMIIKDSModulPerson.html"
+ */
 public class Person implements Datablock {
   private final Logger LOGGER = new Logger(Person.class);
   @CsvBindByName private String patNr;
@@ -67,11 +73,7 @@ public class Person implements Datablock {
 
   @Override
   public List<Resource> toFhirResources() {
-    return Helper.listOf(
-        this.getPatient(),
-        this.getResearchSubject(),
-        this.getObservation(),
-        this.getTodesursache());
+    return Helper.listOf(this.getPatient(), this.getResearchSubject(), this.getObservation());
   }
 
   public Patient getPatient() {
