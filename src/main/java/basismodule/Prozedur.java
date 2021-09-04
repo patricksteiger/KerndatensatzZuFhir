@@ -106,7 +106,6 @@ public class Prozedur implements Datablock {
   public Coding getCodingOps() {
     String ops = this.getOPS_Vollst_Prozedurenkode();
     String system = CodingSystem.OPS_DIMDI;
-    // TODO: Version of OPS-Code correct?
     String version = Constants.VERSION_2020;
     Extension seite = this.getSeitenlokalisation();
     return optionalCodingFromSystemWithVersionAndExtension(ops, system, version, seite);
