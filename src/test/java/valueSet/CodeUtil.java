@@ -23,6 +23,9 @@ public class CodeUtil {
    * Asserts all valid codes containing in file codes to be correctly parsed from fromCode-Function
    * and the size of all actual values is the same as expected values from file codes.
    *
+   * <p>The file codes should have a field "codes" at the root level with all valid codes as an
+   * element in the array.
+   *
    * @param values
    * @param fromCode
    * @param codes
