@@ -68,8 +68,7 @@ public class Fall implements Datablock {
     Encounter einrichtung = this.getEinrichtungsEncounter();
     Encounter abteilung = this.getAbteilungsEncounter();
     Encounter versorgungsstelle = this.getVersorgungsstellenEncounter();
-    Organization organization = this.getOrganization();
-    return Helper.listOf(einrichtung, abteilung, versorgungsstelle, organization);
+    return Helper.listOf(einrichtung, abteilung, versorgungsstelle);
   }
 
   public Encounter getEinrichtungsEncounter() {
@@ -328,12 +327,6 @@ public class Fall implements Datablock {
     String source = MetaSource.FALL_VERSORGUNGSSTELLE_ENCOUNTER;
     String versionId = MetaVersionId.FALL_VERSORGUNGSSTELLE_ENCOUNTER;
     return FhirGenerator.meta(profile, source, versionId);
-  }
-
-  // TODO: What is organization?
-  public Organization getOrganization() {
-    Organization organization = new Organization();
-    return organization;
   }
 
   public String getPatNr() {
