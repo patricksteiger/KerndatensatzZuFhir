@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+// TODO: remove deprecated classes for unit mapping?
 public class UnitMapper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UnitMapper.class);
