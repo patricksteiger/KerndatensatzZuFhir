@@ -6,9 +6,9 @@ public class UnitMapping {
   private final String ucumCode;
   private final BigDecimal conversion;
 
-  public UnitMapping(String ucumCode, String conversion) {
+  public UnitMapping(String ucumCode, BigDecimal conversion) {
     this.ucumCode = ucumCode;
-    this.conversion = new BigDecimal(conversion);
+    this.conversion = conversion;
   }
 
   public String getUcumCode() {
