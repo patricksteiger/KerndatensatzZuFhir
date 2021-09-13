@@ -4,8 +4,8 @@ import constants.Constants;
 import helper.FhirGenerator;
 import helper.Helper;
 import org.hl7.fhir.r4.model.Quantity;
-import unit.mapping.UnitMapper;
-import unit.mapping.mapping.UnitMapping;
+import unit.mapping.Mapper;
+import unit.mapping.UnitMapping;
 import unit.ucum.Ucum;
 
 import java.math.BigDecimal;
@@ -25,12 +25,12 @@ public class UnitConverter {
     }
     // No unit is represented with "1".
     String unit = Helper.checkEmptyString(localUnit) ? "1" : localUnit;
-    return UnitMapper.getUcum(unit)
+    return Mapper.getUcumMappingFromLocalUnit(unit)
         .flatMap(mapping -> quantityFromUnitMappingAndValue(mapping, value));
   }
 
   private static Optional<Quantity> quantityFromUnitMappingAndValue(
-      UnitMapping mapping, String value) {
+      unit.mapping.UnitMapping mapping, String value) {
     if (UnitReducible.fromString(mapping.getUcumCode())) {
       return convertValue(value, mapping.getConversion()).flatMap(val -> quantity(val, mapping));
     } else {
