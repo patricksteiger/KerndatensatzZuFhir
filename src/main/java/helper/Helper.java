@@ -253,9 +253,10 @@ public class Helper {
   }
 
   /**
-   * Splits code into different values. Example: system="http://loinc.org" code="20570-8" gets split
-   * into [system="http://loinc.org", code="20570-8"]. Quotes can't be within the values, they need
-   * to wrap around as seen in the example.
+   * Splits code into different values. Example: 'system="http://loinc.org" code="20570-8"' gets
+   * split into [system="http://loinc.org", code="20570-8"]. Quotes can't be within the values, they
+   * need to wrap around as seen in the example. If the code is in simple format, e.g. "20570-8",
+   * then it will be the only element in the list.
    *
    * @param code Code containing values
    * @return Split values from code
@@ -271,10 +272,11 @@ public class Helper {
       int firstQuoteIndex = indexNextQuote(code, wordIndex);
       // Get index of second quote, so code spans from wordIndex to secondQuoteIndex
       int secondQuoteIndex = indexNextQuote(code, firstQuoteIndex + 1);
-      // Update index to next character
+      // Update index to next character after current code
       index = secondQuoteIndex + 1;
       if (wordIndex < CODE_LEN) {
-        // If code has simple format, index > code.length().
+        // If code has simple format, a quote might not be present, which means
+        // secondQuoteIndex == CODE_LEN and therefore index > CODE_LEN.
         int endIndex = Math.min(index, CODE_LEN);
         String word = code.substring(wordIndex, endIndex);
         codes.add(word);
