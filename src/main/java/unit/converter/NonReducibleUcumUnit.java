@@ -3,6 +3,7 @@ package unit.converter;
 import java.util.HashSet;
 import java.util.Set;
 
+// TODO: What are all non-reducible units? Could this be transferred to UnitMapping?
 public class NonReducibleUcumUnit {
   private static final Set<String> nonReducibleUnits = generateNonReducibleUcumUnits();
 
