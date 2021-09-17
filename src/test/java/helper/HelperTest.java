@@ -52,38 +52,38 @@ class HelperTest {
 
   @Test
   void testParseValue() {
-    assertFalse(Helper.parseValue(null).isPresent());
-    assertFalse(Helper.parseValue("").isPresent());
-    assertFalse(Helper.parseValue("/").isPresent());
-    assertFalse(Helper.parseValue("abc").isPresent());
-    assertFalse(Helper.parseValue("3/").isPresent());
-    assertFalse(Helper.parseValue("/3").isPresent());
-    assertFalse(Helper.parseValue("3,4").isPresent());
-    assertFalse(Helper.parseValue("3/0").isPresent());
-    assertFalse(Helper.parseValue("0/0").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity(null).isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("/").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("abc").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("3/").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("/3").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("3,4").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("3/0").isPresent());
+    assertFalse(Helper.parseBigDecimalFromQuantity("0/0").isPresent());
     String value = "12.7";
-    Optional<BigDecimal> result = Helper.parseValue(value);
+    Optional<BigDecimal> result = Helper.parseBigDecimalFromQuantity(value);
     assertTrue(result.isPresent());
     assertEquals(new BigDecimal(value), result.get());
     value = "0";
-    result = Helper.parseValue(value);
+    result = Helper.parseBigDecimalFromQuantity(value);
     assertTrue(result.isPresent());
     assertEquals(new BigDecimal("0"), result.get());
     value = "3/4";
-    result = Helper.parseValue(value);
+    result = Helper.parseBigDecimalFromQuantity(value);
     assertTrue(result.isPresent());
     assertEquals(scaledBigDecimal("0.75"), result.get());
     value = "3/-4";
-    result = Helper.parseValue(value);
+    result = Helper.parseBigDecimalFromQuantity(value);
     assertTrue(result.isPresent());
     assertEquals(scaledBigDecimal("-0.75"), result.get());
     value = "6.3/2";
-    result = Helper.parseValue(value);
+    result = Helper.parseBigDecimalFromQuantity(value);
     assertTrue(result.isPresent());
     assertEquals(scaledBigDecimal("3.15"), result.get());
     String nominator = "1";
     String denominator = "7";
-    result = Helper.parseValue(nominator + "/" + denominator);
+    result = Helper.parseBigDecimalFromQuantity(nominator + "/" + denominator);
     assertTrue(result.isPresent());
     assertEquals(scaledBigDecimalDivide(nominator, denominator), result.get());
   }

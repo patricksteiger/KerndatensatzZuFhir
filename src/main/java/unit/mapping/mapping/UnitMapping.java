@@ -53,7 +53,7 @@ public class UnitMapping {
       return Optional.empty();
     }
     String number = conversion.substring(2);
-    return Helper.parseValue(number);
+    return Helper.parseBigDecimalFromQuantity(number);
   }
 
   public String getUcumCode() {

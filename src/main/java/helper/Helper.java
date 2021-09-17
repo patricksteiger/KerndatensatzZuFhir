@@ -109,7 +109,7 @@ public class Helper {
     }
   }
 
-  public static Optional<BigDecimal> parseValue(String value) {
+  public static Optional<BigDecimal> parseBigDecimalFromQuantity(String value) {
     if (Helper.checkEmptyString(value)) {
       return Optional.empty();
     }
@@ -117,22 +117,27 @@ public class Helper {
     if (split.length == 1) {
       return maybeBigDecimal(value);
     } else if (split.length == 2) {
-      Optional<BigDecimal> numerator = maybeBigDecimal(split[0]);
-      Optional<BigDecimal> denominator = maybeBigDecimal(split[1]);
-      if (!denominator.isPresent()) {
-        return Optional.empty();
-      }
-      try {
-        return numerator.map(
-            n ->
-                n.divide(
-                    denominator.get(),
-                    Constants.BIG_DECIMAL_SCALE,
-                    Constants.BIG_DECIMAL_ROUNDING_MODE));
-      } catch (Exception e) {
-        return Optional.empty();
-      }
+      return fraction(split[0], split[1]);
     } else {
+      return Optional.empty();
+    }
+  }
+
+  public static Optional<BigDecimal> fraction(String numerator, String denominator) {
+    Optional<BigDecimal> num = maybeBigDecimal(numerator);
+    Optional<BigDecimal> den = maybeBigDecimal(denominator);
+    if (!num.isPresent() || !den.isPresent()) {
+      return Optional.empty();
+    }
+    return safeDiv(num.get(), den.get());
+  }
+
+  public static Optional<BigDecimal> safeDiv(BigDecimal numerator, BigDecimal denominator) {
+    try {
+      return Optional.of(
+          numerator.divide(
+              denominator, Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE));
+    } catch (Exception e) {
       return Optional.empty();
     }
   }
