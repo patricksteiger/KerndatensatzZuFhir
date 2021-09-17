@@ -126,10 +126,7 @@ public class Helper {
   public static Optional<BigDecimal> fraction(String numerator, String denominator) {
     Optional<BigDecimal> num = maybeBigDecimal(numerator);
     Optional<BigDecimal> den = maybeBigDecimal(denominator);
-    if (!num.isPresent() || !den.isPresent()) {
-      return Optional.empty();
-    }
-    return safeDiv(num.get(), den.get());
+    return (num.isPresent() && den.isPresent()) ? safeDiv(num.get(), den.get()) : Optional.empty();
   }
 
   public static Optional<BigDecimal> safeDiv(BigDecimal numerator, BigDecimal denominator) {
