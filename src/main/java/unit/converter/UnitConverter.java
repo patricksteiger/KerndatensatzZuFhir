@@ -30,7 +30,7 @@ public class UnitConverter {
   private static Optional<Quantity> quantityFromUnitMappingAndValue(
       UnitMapping mapping, String value) {
     String ucumCode = mapping.getUcumCode();
-    return NonReducibleUcumUnit.check(ucumCode)
+    return IrreducibleUcumUnit.check(ucumCode)
         ? quantity(value, mapping.getUcumCode())
         : convertValue(value, mapping.getConversion()).flatMap(val -> quantity(val, ucumCode));
   }
