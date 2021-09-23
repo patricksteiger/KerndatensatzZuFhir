@@ -1,8 +1,10 @@
 package unit.mapping;
 
 import org.junit.jupiter.api.Test;
+import unit.ucum.Ucum;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,5 +60,17 @@ class MapperTest {
     String unit = "pg/ml", expectedUcumUnit = "ug/L";
     BigDecimal conversion = new BigDecimal("0.001");
     assertUnitMappingFromUnit(unit, expectedUcumUnit, conversion);
+  }
+
+  @Test
+  void allUnitMappingsHaveUcumUnits() {
+    Map<String, UnitMapping> mappings = Mapper.generateMappings();
+    assertFalse(mappings.isEmpty());
+    mappings.forEach(
+        (local, mapping) -> {
+          String unit = mapping.getUcumCode();
+          String message = "Local: " + local + ", Unit: " + unit;
+          assertTrue(Ucum.validate(unit), message);
+        });
   }
 }
