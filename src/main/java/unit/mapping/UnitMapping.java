@@ -1,6 +1,7 @@
 package unit.mapping;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class UnitMapping {
   private final String ucumCode;
@@ -17,5 +18,19 @@ public class UnitMapping {
 
   public BigDecimal getConversion() {
     return conversion;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UnitMapping that = (UnitMapping) o;
+    return Objects.equals(getUcumCode(), that.getUcumCode())
+        && Objects.equals(getConversion(), that.getConversion());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getUcumCode(), getConversion());
   }
 }
