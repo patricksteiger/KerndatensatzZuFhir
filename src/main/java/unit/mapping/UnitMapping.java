@@ -33,4 +33,9 @@ public class UnitMapping {
   public int hashCode() {
     return Objects.hash(getUcumCode(), getConversion());
   }
+
+  @Override
+  public String toString() {
+    return "UnitMapping{" + "ucumCode='" + ucumCode + '\'' + ", conversion=" + conversion + '}';
+  }
 }
