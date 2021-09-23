@@ -23,7 +23,7 @@ public class Mapper {
     return mapping.isPresent() ? mapping : getUcumMappingFromUcumCode(localCode);
   }
 
-  public static Optional<UnitMapping> getUcumMappingFromUcumCode(String ucumCode) {
+  private static Optional<UnitMapping> getUcumMappingFromUcumCode(String ucumCode) {
     return Ucum.validate(ucumCode) ? Optional.of(new UnitMapping(ucumCode, ONE)) : Optional.empty();
   }
 
