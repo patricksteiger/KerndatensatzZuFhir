@@ -29,6 +29,7 @@ public class Mapper {
 
   // TODO: some local codes are mapped to creatin-codes, even though its not in their name
   // TODO: codes with unknown conversions
+  // TODO: should the conversion be dependant on loinc-code given in resource Ulm-Mapping_checklist?
   public static Map<String, UnitMapping> generateMappings() {
     Map<String, UnitMapping> result = new HashMap<>();
     result.put("%", new UnitMapping("%", ONE));
