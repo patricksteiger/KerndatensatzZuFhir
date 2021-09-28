@@ -27,10 +27,9 @@ public class MedikationTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     clearInvocations(LOGGER);
-    medikation = new Medikation();
-    setMockLoggerField(medikation, LOGGER);
+    medikation = new Medikation(LOGGER);
   }
 
   @Nested

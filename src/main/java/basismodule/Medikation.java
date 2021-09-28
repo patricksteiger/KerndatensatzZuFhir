@@ -23,7 +23,7 @@ import static helper.FhirParser.*;
  *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Medikation/IGMIIKDSModulMedikation.html"
  */
 public class Medikation implements Datablock {
-  private final Logger LOGGER = new Logger(Medikation.class);
+  private final Logger LOGGER;
   @CsvBindByName private String patNr;
   // Medikationseintrag
   @CsvBindByName private String identifikation;
@@ -68,6 +68,14 @@ public class Medikation implements Datablock {
   @CsvBindByName private String dosierung_periode;
   // Autor/Informant des Eintrags
   @CsvBindByName private String organisationsname;
+
+  public Medikation() {
+    LOGGER = new Logger(Medikation.class);
+  }
+
+  public Medikation(Logger logger) {
+    LOGGER = logger;
+  }
 
   @Override
   public List<Resource> toFhirResources() {
