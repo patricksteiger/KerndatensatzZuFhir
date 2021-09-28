@@ -41,10 +41,9 @@ class PersonTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     clearInvocations(LOGGER);
-    person = new Person();
-    setMockLoggerField(person, LOGGER);
+    person = new Person(LOGGER);
   }
 
   @Nested

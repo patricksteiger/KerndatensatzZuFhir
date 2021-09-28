@@ -27,7 +27,7 @@ import static helper.FhirParser.*;
  *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Person/IGMIIKDSModulPerson.html"
  */
 public class Person implements Datablock {
-  private final Logger LOGGER = new Logger(Person.class);
+  private final Logger LOGGER;
   @CsvBindByName private String patNr;
   // Name
   @CsvBindByName private String vorname;
@@ -70,6 +70,14 @@ public class Person implements Datablock {
   @CsvBindByName private String teilnahme_beginn;
   @CsvBindByName private String teilnahme_ende;
   @CsvBindByName private String teilnahme_status;
+
+  public Person() {
+    LOGGER = new Logger(Person.class);
+  }
+
+  public Person(Logger logger) {
+    LOGGER = logger;
+  }
 
   @Override
   public List<Resource> toFhirResources() {
