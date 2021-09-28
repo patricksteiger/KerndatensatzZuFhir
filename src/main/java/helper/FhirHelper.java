@@ -101,12 +101,6 @@ public class FhirHelper {
     return result;
   }
 
-  public static Reference getMIIPatientReference(String patNr) {
-    Reference assignerRef = FhirHelper.getUKUAssignerReference();
-    Identifier subjectId = FhirGenerator.identifier(patNr, IdentifierSystem.LOCAL_PID, assignerRef);
-    return FhirGenerator.reference(subjectId);
-  }
-
   public static Reference getUKUAssignerReference() {
     Identifier assignerId =
         FhirGenerator.identifier(MIICoreLocations.UKU.getCode(), IdentifierSystem.NS_DIZ);
