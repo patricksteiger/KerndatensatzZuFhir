@@ -16,36 +16,27 @@ public class DoseFormUvIps {
     if (Helper.checkEmptyString(code) || (code.length() != 5 && code.length() != 8)) {
       return false;
     }
-    switch (code.charAt(0)) {
-      case '1':
-        return isFormCode1(code);
-      case '2':
-        return isFormCode2(code);
-      case '3':
-        return isFormCode3(code);
-      case '5':
-        return isFormCode5(code);
-      default:
-        return false;
-    }
+    return switch (code.charAt(0)) {
+      case '1' -> isFormCode1(code);
+      case '2' -> isFormCode2(code);
+      case '3' -> isFormCode3(code);
+      case '5' -> isFormCode5(code);
+      default -> false;
+    };
   }
 
   private static boolean isFormCode5(String code) {
-    switch (code.charAt(1)) {
-      case '0':
-        return isFormCode50(code);
-      default:
-        return false;
+    if (code.charAt(1) == '0') {
+      return isFormCode50(code);
     }
+    return false;
   }
 
   private static boolean isFormCode50(String code) {
-    switch (code.charAt(2)) {
-      case '0':
-        return isFormCode500(code);
-      default:
-        return false;
+    if (code.charAt(2) == '0') {
+      return isFormCode500(code);
     }
+    return false;
   }
 
   private static boolean isFormCode500(String code) {
@@ -83,14 +74,11 @@ public class DoseFormUvIps {
   }
 
   private static boolean isFormCode3(String code) {
-    switch (code.charAt(1)) {
-      case '0':
-        return isFormCode30(code);
-      case '1':
-        return isFormCode31(code);
-      default:
-        return false;
-    }
+    return switch (code.charAt(1)) {
+      case '0' -> isFormCode30(code);
+      case '1' -> isFormCode31(code);
+      default -> false;
+    };
   }
 
   private static boolean isFormCode31(String code) {
@@ -102,21 +90,14 @@ public class DoseFormUvIps {
   }
 
   private static boolean isFormCode2(String code) {
-    char c = code.charAt(1);
-    switch (c) {
-      case '0':
-        return isFormCode20(code);
-      case '1':
-        return isFormCode21(code);
-      case '2':
-        return isFormCode22(code);
-      case '6':
-        return isFormCode26(code);
-      case '9':
-        return isFormCode29(code);
-      default:
-        return false;
-    }
+    return switch (code.charAt(1)) {
+      case '0' -> isFormCode20(code);
+      case '1' -> isFormCode21(code);
+      case '2' -> isFormCode22(code);
+      case '6' -> isFormCode26(code);
+      case '9' -> isFormCode29(code);
+      default -> false;
+    };
   }
 
   private static boolean isFormCode29(String code) {
@@ -147,31 +128,19 @@ public class DoseFormUvIps {
   }
 
   private static boolean isFormCode1(String code) {
-    char n = code.charAt(1);
-    switch (n) {
-      case '0':
-        return isFormCode10(code);
-      case '1':
-        return isFormCode11(code);
-      case '2':
-        return isFormCode12(code);
-      case '3':
-        return isFormCode13(code);
-      case '4':
-        return isFormCode14(code);
-      case '5':
-        return isFormCode15(code);
-      case '6':
-        return isFormCode16(code);
-      case '7':
-        return isFormCode17(code);
-      case '8':
-        return isFormCode18(code);
-      case '9':
-        return isFormCode19(code);
-      default:
-        return false;
-    }
+    return switch (code.charAt(1)) {
+      case '0' -> isFormCode10(code);
+      case '1' -> isFormCode11(code);
+      case '2' -> isFormCode12(code);
+      case '3' -> isFormCode13(code);
+      case '4' -> isFormCode14(code);
+      case '5' -> isFormCode15(code);
+      case '6' -> isFormCode16(code);
+      case '7' -> isFormCode17(code);
+      case '8' -> isFormCode18(code);
+      case '9' -> isFormCode19(code);
+      default -> false;
+    };
   }
 
   private static boolean isFormCode19(String code) {
@@ -203,19 +172,13 @@ public class DoseFormUvIps {
   }
 
   private static boolean isFormCode12(String code) {
-    char c = code.charAt(2);
-    switch (c) {
-      case '0':
-        return isFormCode120(code);
-      case '1':
-        return isFormCode121(code);
-      case '2':
-        return isFormCode122(code);
-      case '3':
-        return isFormCode123(code);
-      default:
-        return false;
-    }
+    return switch (code.charAt(2)) {
+      case '0' -> isFormCode120(code);
+      case '1' -> isFormCode121(code);
+      case '2' -> isFormCode122(code);
+      case '3' -> isFormCode123(code);
+      default -> false;
+    };
   }
 
   private static boolean isFormCode123(String code) {
@@ -242,29 +205,18 @@ public class DoseFormUvIps {
   }
 
   private static boolean isFormCode11(String code) {
-    char c = code.charAt(2);
-    switch (c) {
-      case '0':
-        return isFormCode110(code);
-      case '1':
-        return isFormCode111(code);
-      case '2':
-        return isFormCode112(code);
-      case '3':
-        return isFormCode113(code);
-      case '4':
-        return isFormCode114(code);
-      case '5':
-        return isFormCode115(code);
-      case '6':
-        return isFormCode116(code);
-      case '7':
-        return isFormCode117(code);
-      case '9':
-        return isFormCode119(code);
-      default:
-        return false;
-    }
+    return switch (code.charAt(2)) {
+      case '0' -> isFormCode110(code);
+      case '1' -> isFormCode111(code);
+      case '2' -> isFormCode112(code);
+      case '3' -> isFormCode113(code);
+      case '4' -> isFormCode114(code);
+      case '5' -> isFormCode115(code);
+      case '6' -> isFormCode116(code);
+      case '7' -> isFormCode117(code);
+      case '9' -> isFormCode119(code);
+      default -> false;
+    };
   }
 
   private static boolean isFormCode119(String code) {
@@ -304,29 +256,18 @@ public class DoseFormUvIps {
   }
 
   private static boolean isFormCode10(String code) {
-    char c = code.charAt(2);
-    switch (c) {
-      case '1':
-        return isFormCode101(code);
-      case '2':
-        return isFormCode102(code);
-      case '3':
-        return isFormCode103(code);
-      case '4':
-        return isFormCode104(code);
-      case '5':
-        return isFormCode105(code);
-      case '6':
-        return isFormCode106(code);
-      case '7':
-        return isFormCode107(code);
-      case '8':
-        return isFormCode108(code);
-      case '9':
-        return isFormCode109(code);
-      default:
-        return false;
-    }
+    return switch (code.charAt(2)) {
+      case '1' -> isFormCode101(code);
+      case '2' -> isFormCode102(code);
+      case '3' -> isFormCode103(code);
+      case '4' -> isFormCode104(code);
+      case '5' -> isFormCode105(code);
+      case '6' -> isFormCode106(code);
+      case '7' -> isFormCode107(code);
+      case '8' -> isFormCode108(code);
+      case '9' -> isFormCode109(code);
+      default -> false;
+    };
   }
 
   private static boolean isFormCode109(String code) {
