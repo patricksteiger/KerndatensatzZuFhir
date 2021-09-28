@@ -3,7 +3,6 @@ package helper;
 import constants.CodingSystem;
 import constants.ExtensionUrl;
 import constants.IdentifierSystem;
-import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.r4.model.*;
 import unit.converter.UnitConverter;
 import valueSets.MIICoreLocations;
@@ -32,20 +31,12 @@ public class FhirHelper {
   }
 
   public static Optional<Observation.ObservationStatus> getObservationStatusFromCode(String code) {
-    try {
-      return Optional.ofNullable(Observation.ObservationStatus.fromCode(code));
-    } catch (FHIRException e) {
-      return Optional.empty();
-    }
+    return Helper.optionalOfException(() -> Observation.ObservationStatus.fromCode(code));
   }
 
   public static Optional<ResearchSubject.ResearchSubjectStatus> getResearchSubjectStatusFromCode(
       String code) {
-    try {
-      return Optional.ofNullable(ResearchSubject.ResearchSubjectStatus.fromCode(code));
-    } catch (FHIRException e) {
-      return Optional.empty();
-    }
+    return Helper.optionalOfException(() -> ResearchSubject.ResearchSubjectStatus.fromCode(code));
   }
 
   public static Optional<Ratio> generateRatioFromFractions(
@@ -53,7 +44,7 @@ public class FhirHelper {
     Optional<Quantity> numerator =
         UnitConverter.fromLocalUnit(
             valueAndUnitFraction.getUnitNumerator(), valueAndUnitFraction.getValueNumerator());
-    if (!numerator.isPresent()) {
+    if (numerator.isEmpty()) {
       return Optional.empty();
     }
     Optional<Quantity> denominator =
@@ -79,23 +70,15 @@ public class FhirHelper {
     if (Helper.checkEmptyString(gender)) {
       return Optional.empty();
     }
-    switch (gender) {
-      case "F":
-        return Optional.of(
-            administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE));
-      case "M":
-        return Optional.of(
-            administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.MALE));
-      case "D":
-        return Optional.of(getGenderDE("D", "divers"));
-      case "X":
-      case "U":
-      case "UN":
-      case "UNK":
-        return Optional.of(getGenderDE("X", "unbestimmt"));
-      default:
-        return Optional.empty();
-    }
+    return switch (gender) {
+      case "F" -> Optional.of(
+          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE));
+      case "M" -> Optional.of(
+          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.MALE));
+      case "D" -> Optional.of(getGenderDE("D", "divers"));
+      case "X", "U", "UN", "UNK" -> Optional.of(getGenderDE("X", "unbestimmt"));
+      default -> Optional.empty();
+    };
   }
 
   private static Enumeration<Enumerations.AdministrativeGender> getGenderDE(
