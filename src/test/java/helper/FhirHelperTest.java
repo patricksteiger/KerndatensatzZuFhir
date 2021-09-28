@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static helper.FhirHelper.getGenderMapping;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static util.Asserter.*;
 
 class FhirHelperTest {
@@ -49,7 +49,17 @@ class FhirHelperTest {
 
     @Test
     void testOReturnsEmpty() {
-      assertFalse(getGenderMapping("O").isPresent());
+      assertTrue(getGenderMapping("O").isEmpty());
+    }
+
+    @Test
+    void testEmptyInputReturnsEmpty() {
+      assertTrue(getGenderMapping("").isEmpty());
+    }
+
+    @Test
+    void testNullReturnsEmpty() {
+      assertTrue(getGenderMapping(null).isEmpty());
     }
   }
 }
