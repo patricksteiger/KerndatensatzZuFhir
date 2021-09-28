@@ -20,7 +20,7 @@ import static helper.FhirParser.*;
  *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Laborbefund/IGMIIKDSModulLabor.html"
  */
 public class Laborbefund implements Datablock {
-  private final Logger LOGGER = new Logger(Laborbefund.class);
+  private final Logger LOGGER;
   @CsvBindByName private String patNr;
   @CsvBindByName private String identifikation;
   @CsvBindByName private String status;
@@ -79,6 +79,14 @@ public class Laborbefund implements Datablock {
   @CsvBindByName private String laboranforderung_probenmaterial_probenart;
   @CsvBindByName private String laboranforderung_probenmaterial_koerperstelle;
   @CsvBindByName private String laboranforderung_probenmaterial_kommentar;
+
+  public Laborbefund() {
+    LOGGER = new Logger(Laborbefund.class);
+  }
+
+  public Laborbefund(Logger logger) {
+    LOGGER = logger;
+  }
 
   @Override
   public List<Resource> toFhirResources() {

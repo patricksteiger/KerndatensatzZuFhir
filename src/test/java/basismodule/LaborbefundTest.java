@@ -35,10 +35,9 @@ public class LaborbefundTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     clearInvocations(LOGGER);
-    laborbefund = new Laborbefund();
-    setMockLoggerField(laborbefund, LOGGER);
+    laborbefund = new Laborbefund(LOGGER);
   }
 
   @Nested
