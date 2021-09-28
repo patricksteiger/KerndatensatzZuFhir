@@ -29,10 +29,9 @@ class ProzedurTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     clearInvocations(LOGGER);
-    prozedur = new Prozedur();
-    setMockLoggerField(prozedur, LOGGER);
+    prozedur = new Prozedur(LOGGER);
   }
 
   @Nested

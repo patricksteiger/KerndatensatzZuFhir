@@ -21,7 +21,7 @@ import static helper.FhirParser.*;
  *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Prozeduren/IGMIIKDSModulProzedur.html"
  */
 public class Prozedur implements Datablock {
-  private final Logger LOGGER = new Logger(Prozedur.class);
+  private final Logger LOGGER;
   @CsvBindByName private String patNr;
   // OPS Prozedur kodiert
   @CsvBindByName private String OPS_Vollst_Prozedurenkode;
@@ -33,6 +33,14 @@ public class Prozedur implements Datablock {
   @CsvBindByName private String dokumentationsdatum;
   @CsvBindByName private String freitextbeschreibung;
   @CsvBindByName private String koerperstelle;
+
+  public Prozedur() {
+    LOGGER = new Logger(Prozedur.class);
+  }
+
+  public Prozedur(Logger logger) {
+    LOGGER = logger;
+  }
 
   @Override
   public List<Resource> toFhirResources() {
