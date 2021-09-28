@@ -5,8 +5,6 @@ import helper.Helper;
 import helper.Logger;
 import interfaces.Code;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Date;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -16,7 +14,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 
 public class Util {
-  public static final String LOGGER_FIELD_NAME = "LOGGER";
 
   private Util() {}
 
@@ -62,15 +59,6 @@ public class Util {
 
   public static Date expectedDateString(String date) {
     return Helper.getDateFromISO(date).get();
-  }
-
-  public static void setMockLoggerField(Object obj, Object newValue) throws Exception {
-    Field field = obj.getClass().getDeclaredField(LOGGER_FIELD_NAME);
-    field.setAccessible(true);
-    Field modifiersField = Field.class.getDeclaredField("modifiers");
-    modifiersField.setAccessible(true);
-    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-    field.set(obj, newValue);
   }
 
   public static void setUpLoggerMock(Logger mockedLogger) {
