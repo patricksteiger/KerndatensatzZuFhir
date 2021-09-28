@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class Helper {
   private static final String FRACTION = "/";
@@ -130,18 +131,17 @@ public class Helper {
   }
 
   public static Optional<BigDecimal> safeDiv(BigDecimal numerator, BigDecimal denominator) {
-    try {
-      return Optional.of(
-          numerator.divide(
-              denominator, Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE));
-    } catch (Exception e) {
-      return Optional.empty();
-    }
+    return optionalOfException(() -> numerator.divide(
+        denominator, Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE));
   }
 
   public static Optional<BigDecimal> maybeBigDecimal(String value) {
+    return optionalOfException(() -> new BigDecimal(value.trim()));
+  }
+
+  public static <T> Optional<T> optionalOfException(Supplier<T> supplier) {
     try {
-      return Optional.of(new BigDecimal(value.trim()));
+      return Optional.of(supplier.get());
     } catch (Exception e) {
       return Optional.empty();
     }
