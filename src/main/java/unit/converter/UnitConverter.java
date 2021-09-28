@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 public class UnitConverter {
-  private static final String FRACTION = "/";
 
   private UnitConverter() {}
 
@@ -36,24 +35,7 @@ public class UnitConverter {
   }
 
   private static Optional<BigDecimal> convertValue(String value, BigDecimal conversion) {
-    String[] formula = value.split(FRACTION);
-    switch (formula.length) {
-      case 1:
-        return simpleValueConversion(value, conversion);
-      case 2:
-        return fractionConversion(formula[0], formula[1], conversion);
-      default:
-        return Optional.empty();
-    }
-  }
-
-  private static Optional<BigDecimal> fractionConversion(
-      String numerator, String denominator, BigDecimal conversion) {
-    return Helper.fraction(numerator, denominator).map(conversion::multiply);
-  }
-
-  private static Optional<BigDecimal> simpleValueConversion(String value, BigDecimal conversion) {
-    return Helper.maybeBigDecimal(value).map(conversion::multiply);
+    return Helper.parseBigDecimalFromQuantity(value).map(conversion::multiply);
   }
 
   private static Optional<Quantity> quantity(BigDecimal value, String ucumCode) {

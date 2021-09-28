@@ -14,6 +14,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Helper {
+  private static final String FRACTION = "/";
+
   private Helper() {}
 
   /**
@@ -113,14 +115,12 @@ public class Helper {
     if (Helper.checkEmptyString(value)) {
       return Optional.empty();
     }
-    String[] split = value.split("/");
-    if (split.length == 1) {
-      return maybeBigDecimal(value);
-    } else if (split.length == 2) {
-      return fraction(split[0], split[1]);
-    } else {
-      return Optional.empty();
-    }
+    String[] split = value.split(FRACTION);
+    return switch (split.length) {
+      case 1 -> maybeBigDecimal(value);
+      case 2 -> fraction(split[0], split[1]);
+      default -> Optional.empty();
+    };
   }
 
   public static Optional<BigDecimal> fraction(String numerator, String denominator) {
