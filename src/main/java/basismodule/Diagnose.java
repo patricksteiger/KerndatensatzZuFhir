@@ -26,7 +26,7 @@ import static helper.FhirParser.*;
  *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Diagnose/IGMIIKDSModulDiagnose.html"
  */
 public class Diagnose implements Datablock {
-  private final Logger LOGGER = new Logger(Diagnose.class);
+  private final Logger LOGGER;
   @CsvBindByName private String patNr;
   // ICD-10-GM Diagnose kodiert
   @CsvBindByName private String icd_diagnosecode;
@@ -55,6 +55,14 @@ public class Diagnose implements Datablock {
   @CsvBindByName private String lebensphase_von;
   @CsvBindByName private String lebensphase_bis;
   @CsvBindByName private String feststellungsdatum;
+
+  public Diagnose() {
+    LOGGER = new Logger(Diagnose.class);
+  }
+
+  public Diagnose(Logger logger) {
+    LOGGER = logger;
+  }
 
   @Override
   public List<Resource> toFhirResources() {

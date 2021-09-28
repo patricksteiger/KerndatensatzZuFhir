@@ -24,10 +24,9 @@ class DiagnoseTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     clearInvocations(LOGGER);
-    diagnose = new Diagnose();
-    setMockLoggerField(diagnose, LOGGER);
+    diagnose = new Diagnose(LOGGER);
   }
 
   @Nested
