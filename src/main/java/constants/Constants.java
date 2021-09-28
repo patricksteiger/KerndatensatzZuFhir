@@ -1,12 +1,12 @@
 package constants;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Constants {
   public static final String VERSION_2020 = "2020";
   public static final String QUANTITY_SYSTEM = "http://unitsofmeasure.org";
   public static final int BIG_DECIMAL_SCALE = 20;
-  public static final int BIG_DECIMAL_ROUNDING_MODE = BigDecimal.ROUND_HALF_DOWN;
+  public static final RoundingMode BIG_DECIMAL_ROUNDING_MODE = RoundingMode.HALF_DOWN;
 
   private Constants() {}
 
