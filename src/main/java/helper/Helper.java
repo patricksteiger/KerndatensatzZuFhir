@@ -141,7 +141,7 @@ public class Helper {
 
   public static <T> Optional<T> optionalOfException(Supplier<T> supplier) {
     try {
-      return Optional.of(supplier.get());
+      return Optional.ofNullable(supplier.get());
     } catch (Exception e) {
       return Optional.empty();
     }
