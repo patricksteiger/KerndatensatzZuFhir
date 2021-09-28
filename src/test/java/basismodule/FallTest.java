@@ -27,10 +27,9 @@ public class FallTest {
   }
 
   @BeforeEach
-  public void setUp() throws Exception {
+  public void setUp() {
     clearInvocations(LOGGER);
-    fall = new Fall();
-    setMockLoggerField(fall, LOGGER);
+    fall = new Fall(LOGGER);
   }
 
   @Nested

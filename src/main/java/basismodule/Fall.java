@@ -21,7 +21,7 @@ import static helper.FhirParser.*;
  *     "https://www.medizininformatik-initiative.de/Kerndatensatz/Modul_Fall/IGMIIKDSModulFall.html"
  */
 public class Fall implements Datablock {
-  private final Logger LOGGER = new Logger(Fall.class);
+  private final Logger LOGGER;
 
   @CsvBindByName private String patNr;
   // Einrichtungskontakt
@@ -62,6 +62,14 @@ public class Fall implements Datablock {
   @CsvBindByName private String abrechnungsfall_zieleinrichtung;
   @CsvBindByName private String abrechnungsfall_aufnahmenummer;
   @CsvBindByName private String abrechnungsfall_fallzusammenfuehrung;
+
+  public Fall() {
+    LOGGER = new Logger(Fall.class);
+  }
+
+  public Fall(Logger logger) {
+    LOGGER = logger;
+  }
 
   @Override
   public List<Resource> toFhirResources() {
