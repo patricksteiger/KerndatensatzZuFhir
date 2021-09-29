@@ -19,8 +19,8 @@ public class Mapper {
   private Mapper() {}
 
   public static Optional<UnitMapping> getUcumMappingFromLocalUnit(String localCode) {
-    Optional<UnitMapping> mapping = Optional.ofNullable(mappings.get(localCode));
-    return mapping.isPresent() ? mapping : getUcumMappingFromUcumCode(localCode);
+    return Optional.ofNullable(mappings.get(localCode))
+        .or(() -> getUcumMappingFromUcumCode(localCode));
   }
 
   private static Optional<UnitMapping> getUcumMappingFromUcumCode(String ucumCode) {
