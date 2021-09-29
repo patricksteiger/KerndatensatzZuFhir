@@ -45,13 +45,19 @@ public class FhirHelper {
     Optional<Quantity> numerator =
         UnitConverter.fromLocalUnit(
             valueAndUnitFraction.getUnitNumerator(), valueAndUnitFraction.getValueNumerator());
-    if (numerator.isEmpty()) {
-      return Optional.empty();
-    }
-    Optional<Quantity> denominator =
-        UnitConverter.fromLocalUnit(
-            valueAndUnitFraction.getUnitDenominator(), valueAndUnitFraction.getValueDenominator());
-    return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
+    String unitDenominator = valueAndUnitFraction.getUnitDenominator();
+    String valueDenominator = valueAndUnitFraction.getValueDenominator();
+    return Helper.optionalAnd(
+        numerator,
+        () -> UnitConverter.fromLocalUnit(unitDenominator, valueDenominator),
+        FhirGenerator::ratio);
+    //if (numerator.isEmpty()) {
+    //  return Optional.empty();
+    //}
+    //Optional<Quantity> denominator =
+    //    UnitConverter.fromLocalUnit(
+    //        valueAndUnitFraction.getUnitDenominator(), valueAndUnitFraction.getValueDenominator());
+    //return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
   }
 
   public static boolean emptyDateTimeType(DateTimeType dateTimeType) {

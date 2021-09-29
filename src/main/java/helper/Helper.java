@@ -9,10 +9,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class Helper {
   private static final String FRACTION = "/";
@@ -145,6 +142,17 @@ public class Helper {
     } catch (Exception e) {
       return Optional.empty();
     }
+  }
+
+  public static <T, U, R> Optional<R> optionalAnd(Optional<T> x, Supplier<Optional<U>> ySupplier, BiFunction<T, U, R> f) {
+    if (x.isEmpty()) {
+      return Optional.empty();
+    }
+    Optional<U> y = ySupplier.get();
+    if (y.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.ofNullable(f.apply(x.get(), y.get()));
   }
 
   @SafeVarargs
