@@ -39,6 +39,7 @@ public class FhirHelper {
     return Helper.optionalOfException(() -> ResearchSubject.ResearchSubjectStatus.fromCode(code));
   }
 
+  // TODO: Add method to UnitConverter to handle guaranteed non-fractions
   public static Optional<Ratio> generateRatioFromFractions(
       ValueAndUnitFraction valueAndUnitFraction) {
     Optional<Quantity> numerator =
@@ -70,15 +71,15 @@ public class FhirHelper {
     if (Helper.checkEmptyString(gender)) {
       return Optional.empty();
     }
-    return switch (gender) {
-      case "F" -> Optional.of(
-          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE));
-      case "M" -> Optional.of(
-          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.MALE));
-      case "D" -> Optional.of(getGenderDE("D", "divers"));
-      case "X", "U", "UN", "UNK" -> Optional.of(getGenderDE("X", "unbestimmt"));
-      default -> Optional.empty();
-    };
+    return Optional.ofNullable(switch (gender) {
+      case "F" ->
+          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE);
+      case "M" ->
+          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.MALE);
+      case "D" -> getGenderDE("D", "divers");
+      case "X", "U", "UN", "UNK" -> getGenderDE("X", "unbestimmt");
+      default -> null;
+    });
   }
 
   private static Enumeration<Enumerations.AdministrativeGender> getGenderDE(
