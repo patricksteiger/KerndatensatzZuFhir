@@ -359,6 +359,7 @@ public class Laborbefund implements Datablock {
     return optionalCodeableConceptFromValueSet(code, ReferenceRangeMeaning::fromCode, data);
   }
 
+  // TODO: Are there local codes for range? There is no code in Referenzbereich
   public Quantity getObservationReferenceRangeLow() {
     String lower = this.getLaboruntersuchung_referenzbereich_untergrenze();
     LoggingData data =

@@ -188,6 +188,7 @@ public class Medikation implements Datablock {
     return ingredient;
   }
 
+  // TODO: Are there local codes that have to be converted? allgemein and aktiv-code!
   public Ratio getMedicationIngredientStrength() {
     String menge = this.getWirkstoff_menge();
     LoggingData data = LoggingData.of(LOGGER, "getMedicationIngredientStrength", "wirkstoff_menge");
@@ -210,6 +211,7 @@ public class Medikation implements Datablock {
     return optionalExtensionWithCodingFromValueSet(code, url, Wirkstofftyp::fromCode, data);
   }
 
+  // TODO: Are there local codes that have to be parsed? Code exists!
   public Ratio getMedicationAmount() {
     String wirkstaerke = this.getArzneimittel_wirkstaerke();
     LoggingData data = LoggingData.of(LOGGER, "getMedicationAmount", "arzneimittel_wirkstaerke");
