@@ -6,16 +6,16 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
 
 public class Mapper {
 
-  private static final BigDecimal UNKNOWN = ONE;
   private static final BigDecimal EMPTY = ONE;
   private static final BigDecimal ONE_POW_MINUS_SIX = new BigDecimal("1.0E-6");
-  private static final BigDecimal TENTHOUSANDTH = new BigDecimal("1.0E-4");
+  private static final BigDecimal TEN_THOUSANDTH = new BigDecimal("1.0E-4");
   private static final BigDecimal THOUSANDTH = new BigDecimal("0.001");
   private static final BigDecimal HUNDREDTH = new BigDecimal("0.01");
   private static final BigDecimal TENTH = new BigDecimal("0.1");
@@ -95,6 +95,12 @@ public class Mapper {
   }
 
   // TODO local-code 952 is still doubled
+
+  /**
+   * Local codes that are not supported: 952
+   *
+   * @return
+   */
   public static Map<LocalCodeWithUnit, LoincMapping> generateLoincMappings() {
     var mappings = new HashMap<LocalCodeWithUnit, LoincMapping>();
     mappings.put(
@@ -457,13 +463,6 @@ public class Mapper {
         new LocalCodeWithUnit("10559", "mmol/d"),
         new LoincMapping("14881-7", "Phosphate [Moles/time] in 24 hour Urine", ONE, "mmol/(24.h)"));
     mappings.put(
-        new LocalCodeWithUnit("10560", "ml/min"),
-        new LoincMapping(
-            "50058-7",
-            "Phosphate renal clearance in collected for unspecified duration",
-            UNKNOWN,
-            ""));
-    mappings.put(
         new LocalCodeWithUnit("10561", "mmol/l"),
         new LoincMapping("14879-1", "Phosphate [Moles/volume] in Serum or Plasma", ONE, "mmol/L"));
     mappings.put(
@@ -493,17 +492,10 @@ public class Mapper {
         new LoincMapping("2599-9", "Magnesium [Moles/time] in 24 hour Urine", ONE, "mmol/(24.h)"));
     mappings.put(
         new LocalCodeWithUnit("10588", "mg/l"),
-        new LoincMapping("2888-6", "Protein [Mass/volume] in Urine", TENTHOUSANDTH, "g/dL"));
+        new LoincMapping("2888-6", "Protein [Mass/volume] in Urine", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("10619", "mg/l"),
-        new LoincMapping("2888-6", "Protein [Mass/volume] in Urine", TENTHOUSANDTH, "g/dL"));
-    mappings.put(
-        new LocalCodeWithUnit("10620", "mg/d"),
-        new LoincMapping(
-            "33559-6",
-            "Immunoglobulin light chains.kappa/Immunoglobulin light chains.lambda [Mass Ratio] in Urine",
-            UNKNOWN,
-            "{ratio}"));
+        new LoincMapping("2888-6", "Protein [Mass/volume] in Urine", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("10621", "g/mol K."),
         new LoincMapping(
@@ -553,7 +545,7 @@ public class Mapper {
             "%"));
     mappings.put(
         new LocalCodeWithUnit("10750", "mg/l"),
-        new LoincMapping("2881-1", "Protein [Mass/volume] in Body fluid", TENTHOUSANDTH, "g/dL"));
+        new LoincMapping("2881-1", "Protein [Mass/volume] in Body fluid", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("10751", "mg/dl"),
         new LoincMapping("2344-0", "Glucose [Mass/volume] in Body fluid", ONE, "mg/dL"));
@@ -569,7 +561,7 @@ public class Mapper {
             "U/L"));
     mappings.put(
         new LocalCodeWithUnit("10754", "mg/l"),
-        new LoincMapping("1747-5", "Albumin [Mass/volume] in Body fluid", TENTHOUSANDTH, "g/dL"));
+        new LoincMapping("1747-5", "Albumin [Mass/volume] in Body fluid", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("1076", "Zell./µl"),
         new LoincMapping(
@@ -900,10 +892,6 @@ public class Mapper {
         new LocalCodeWithUnit("501", ""),
         new LoincMapping("5803-2", "pH of Urine by Test strip", ONE, "[pH]"));
     mappings.put(
-        new LocalCodeWithUnit("504", ""),
-        new LoincMapping(
-            "20408-1", "Leukocytes [#/volume] in Urine by Test strip", UNKNOWN, "/uL"));
-    mappings.put(
         new LocalCodeWithUnit("505", "mg/dl"),
         new LoincMapping("5792-7", "Glucose [Mass/volume] in Urine by Test strip", ONE, "mg/dL"));
     mappings.put(
@@ -981,7 +969,7 @@ public class Mapper {
             "ug/dL"));
     mappings.put(
         new LocalCodeWithUnit("533", "mg/l"),
-        new LoincMapping("1754-1", "Albumin [Mass/volume] in Urine", TENTHOUSANDTH, "g/dL"));
+        new LoincMapping("1754-1", "Albumin [Mass/volume] in Urine", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("5332", "µg/l"),
         new LoincMapping(
@@ -1087,7 +1075,7 @@ public class Mapper {
     mappings.put(
         new LocalCodeWithUnit("539", "mg/l"),
         new LoincMapping(
-            "6888-2", "Alpha 2 globulin [Mass/volume] in Urine", TENTHOUSANDTH, "g/dL"));
+            "6888-2", "Alpha 2 globulin [Mass/volume] in Urine", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("5395", "%"),
         new LoincMapping(
@@ -1140,13 +1128,6 @@ public class Mapper {
             ONE,
             "[arb'U]/mL"));
     mappings.put(
-        new LocalCodeWithUnit("5408", "U/ml"),
-        new LoincMapping(
-            "26975-3",
-            "SCL-70 extractable nuclear Ab [Units/volume] in Serum by Immunoassay",
-            UNKNOWN,
-            ""));
-    mappings.put(
         new LocalCodeWithUnit("5409", "U/ml"),
         new LoincMapping(
             "82938-2",
@@ -1161,34 +1142,6 @@ public class Mapper {
             TENTH,
             "mg/dL"));
     mappings.put(
-        new LocalCodeWithUnit("5410", "U/ml"),
-        new LoincMapping(
-            "56549-9",
-            "Sjogrens syndrome-A extractable nuclear 52kD Ab [Units/volume] in Serum by Immunoassay",
-            UNKNOWN,
-            ""));
-    mappings.put(
-        new LocalCodeWithUnit("5411", "U/ml"),
-        new LoincMapping(
-            "45142-7",
-            "Sjogrens syndrome-B extractable nuclear Ab [Units/volume] in Serum by Immunoassay",
-            UNKNOWN,
-            ""));
-    mappings.put(
-        new LocalCodeWithUnit("5412", "U/ml"),
-        new LoincMapping(
-            "57662-9",
-            "U1 small nuclear ribonucleoprotein Ab [Units/volume] in Serum by Immunoassay",
-            UNKNOWN,
-            ""));
-    mappings.put(
-        new LocalCodeWithUnit("5413", "U/ml"),
-        new LoincMapping(
-            "17032-4",
-            "Jo-1 extractable nuclear Ab [Units/volume] in Serum by Immunofluorescence",
-            UNKNOWN,
-            ""));
-    mappings.put(
         new LocalCodeWithUnit("5414", "U/ml"),
         new LoincMapping(
             "82391-4",
@@ -1202,20 +1155,6 @@ public class Mapper {
     mappings.put(
         new LocalCodeWithUnit("5418", "nmol/l"),
         new LoincMapping("9740-2", "Neopterin [Moles/volume] in Serum or Plasma", ONE, "nmol/L"));
-    mappings.put(
-        new LocalCodeWithUnit("5419", "IU/ml"),
-        new LoincMapping(
-            "54910-5",
-            "DNA double strand Ab [Units/volume] in Serum by Immunofluorescence",
-            UNKNOWN,
-            ""));
-    mappings.put(
-        new LocalCodeWithUnit("542", ""),
-        new LoincMapping(
-            "27394-6",
-            "Immunoglobulin light chains.lambda [Mass/volume] in Urine",
-            UNKNOWN,
-            "mg/dL"));
     mappings.put(
         new LocalCodeWithUnit("5420", "µg/l"),
         new LoincMapping(
@@ -1408,34 +1347,6 @@ public class Mapper {
             ONE,
             "%"));
     mappings.put(
-        new LocalCodeWithUnit("5507", ""),
-        new LoincMapping(
-            "81643-9",
-            "von Willebrand factor (vWf) ristocetin cofactor/von Willebrand factor (vWf) Ag [Ratio] in Platelet poor plasma",
-            UNKNOWN,
-            "{ratio}"));
-    mappings.put(
-        new LocalCodeWithUnit("5508", ""),
-        new LoincMapping(
-            "81643-9",
-            "von Willebrand factor (vWf) ristocetin cofactor/von Willebrand factor (vWf) Ag [Ratio] in Platelet poor plasma",
-            UNKNOWN,
-            "{ratio}"));
-    mappings.put(
-        new LocalCodeWithUnit("5509", ""),
-        new LoincMapping(
-            "77725-0",
-            "Factor VIII+von Willebrand factor (vWf) ristocetin cofactor given [Units/volume] by vWF dosing",
-            UNKNOWN,
-            "[IU]"));
-    mappings.put(
-        new LocalCodeWithUnit("5512", "U/ml"),
-        new LoincMapping(
-            "5978-2",
-            "Plasminogen activator inhibitor 2 [Units/volume] in Platelet poor plasma by Chromogenic method",
-            UNKNOWN,
-            ""));
-    mappings.put(
         new LocalCodeWithUnit("5513", "nmol/l"),
         new LoincMapping(
             "25742-8",
@@ -1456,12 +1367,8 @@ public class Mapper {
         new LocalCodeWithUnit("586", ""),
         new LoincMapping("19295-5", "Opiates [Presence] in Urine by Screen method", EMPTY, ""));
     mappings.put(
-        new LocalCodeWithUnit("587", ""),
-        new LoincMapping(
-            "20408-1", "Leukocytes [#/volume] in Urine by Test strip", UNKNOWN, "/uL"));
-    mappings.put(
         new LocalCodeWithUnit("594", "mg/l"),
-        new LoincMapping("1754-1", "Albumin [Mass/volume] in Urine", TENTHOUSANDTH, "g/dL"));
+        new LoincMapping("1754-1", "Albumin [Mass/volume] in Urine", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("595", "mg/d"),
         new LoincMapping("1755-8", "Albumin [Mass/time] in 24 hour Urine", ONE, "mg/(24.h)"));
@@ -1536,15 +1443,8 @@ public class Mapper {
         new LocalCodeWithUnit("625", "µg/d"),
         new LoincMapping("2147-7", "Cortisol Free [Mass/time] in 24 hour Urine", ONE, "ug/(24.h)"));
     mappings.put(
-        new LocalCodeWithUnit("626", "µg/min"),
-        new LoincMapping(
-            "49002-9",
-            "Albumin [Mass/time] in Urine collected for unspecified duration",
-            UNKNOWN,
-            ""));
-    mappings.put(
         new LocalCodeWithUnit("631", "mg/l"),
-        new LoincMapping("1747-5", "Albumin [Mass/volume] in Body fluid", TENTHOUSANDTH, "g/dL"));
+        new LoincMapping("1747-5", "Albumin [Mass/volume] in Body fluid", TEN_THOUSANDTH, "g/dL"));
     mappings.put(
         new LocalCodeWithUnit("632", "mg/l"),
         new LoincMapping("15183-7", "IgG [Mass/volume] in Body fluid", TENTH, "mg/dL"));
@@ -1621,13 +1521,6 @@ public class Mapper {
         new LoincMapping(
             "25145-4", "Bacteria [Presence] in Urine sediment by Light microscopy", EMPTY, ""));
     mappings.put(
-        new LocalCodeWithUnit("775", "ml/min"),
-        new LoincMapping(
-            "33558-8",
-            "Creatinine renal clearance in collected for unspecified duration",
-            UNKNOWN,
-            ""));
-    mappings.put(
         new LocalCodeWithUnit("778", "µg/d"),
         new LoincMapping("2147-7", "Cortisol Free [Mass/time] in 24 hour Urine", ONE, "ug/(24.h)"));
     mappings.put(
@@ -1669,13 +1562,6 @@ public class Mapper {
         new LocalCodeWithUnit("809", "IU/l"),
         new LoincMapping(
             "5385-0", "Thyrotropin receptor Ab [Units/volume] in Serum", ONE, "[IU]/L"));
-    mappings.put(
-        new LocalCodeWithUnit("811", "IU/ml"),
-        new LoincMapping(
-            "56477-3",
-            "Thyroperoxidase Ab [Units/volume] in Serum or Plasma by Immunoassay",
-            UNKNOWN,
-            "{Index_val}"));
     mappings.put(
         new LocalCodeWithUnit("841", "nmol/l"),
         new LoincMapping(
@@ -1929,13 +1815,6 @@ public class Mapper {
         new LoincMapping(
             "59408-5", "Oxygen saturation in Arterial blood by Pulse oximetry", ONE, "%"));
     mappings.put(
-        new LocalCodeWithUnit("921", "pg/ml"),
-        new LoincMapping(
-            "70664-8",
-            "Parathyrin.intact intraoperative percent change in Serum or Plasma",
-            UNKNOWN,
-            "%"));
-    mappings.put(
         new LocalCodeWithUnit("924", "sec."),
         new LoincMapping("3243-3", "Thrombin time", ONE, "s"));
     mappings.put(
@@ -1969,15 +1848,6 @@ public class Mapper {
         new LocalCodeWithUnit("951", "µg/ml"),
         new LoincMapping(
             "1832-5", "Alpha-1-Fetoprotein [Mass/volume] in Amniotic fluid", THOUSAND, "ug/L"));
-
-    mappings.put(
-        new LocalCodeWithUnit("952", "MoM"),
-        new LoincMapping(
-            "1832-5", "Alpha-1-Fetoprotein [Mass/volume] in Amniotic fluid", UNKNOWN, "ug/L"));
-    mappings.put(
-        new LocalCodeWithUnit("952", "MoM"),
-        new LoincMapping(
-            "15019-3", "Alpha-1-Fetoprotein [Moles/volume] in Amniotic fluid", UNKNOWN, "nmol/L"));
 
     mappings.put(
         new LocalCodeWithUnit("955", "Zell./µl"),
@@ -2045,16 +1915,15 @@ public class Mapper {
             THOUSAND,
             "ng/mL{FEU}"));
     mappings.put(
-        new LocalCodeWithUnit("988", "IU/ml"),
-        new LoincMapping(
-            "56536-6",
-            "Thyroglobulin Ab [Units/volume] in Serum or Plasma by Immunoassay",
-            UNKNOWN,
-            ""));
-    mappings.put(
         new LocalCodeWithUnit("993", "mIU/ml"),
         new LoincMapping(
             "15061-5", "Erythropoietin (EPO) [Units/volume] in Serum or Plasma", ONE, "[IU]/L"));
     return mappings;
+  }
+
+  public static Set<String> getLocalCodesWithUnknownConversion() {
+    return Set.of(
+        "10560", "10620", "504", "5408", "5410", "5411", "5412", "5413", "5419", "542", "5507",
+        "5508", "5509", "5512", "587", "626", "775", "811", "921", "952", "988");
   }
 }
