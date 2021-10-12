@@ -72,11 +72,9 @@ public class FhirHelper {
    *     X, U, UN, UNK to OTHER with extension "X"
    * @see "https://wiki.hl7.de/index.php?title=Geschlecht#administratives_Geschlecht"
    */
-  public static Optional<Enumeration<Enumerations.AdministrativeGender>> getGenderMapping(
-      String gender) {
-    return Helper.checkEmptyString(gender)
-        ? Optional.empty()
-        : Optional.ofNullable(switch (gender) {
+  public static Optional<Enumeration<Enumerations.AdministrativeGender>> getGenderMapping(String gender) {
+    return Optional.ofNullable(
+        switch (gender == null ? "" : gender) {
           case "F" ->
               administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE);
           case "M" ->
@@ -84,7 +82,8 @@ public class FhirHelper {
           case "D" -> getGenderDE("D", "divers");
           case "X", "U", "UN", "UNK" -> getGenderDE("X", "unbestimmt");
           default -> null;
-        });
+        }
+      );
   }
 
   private static Enumeration<Enumerations.AdministrativeGender> getGenderDE(
