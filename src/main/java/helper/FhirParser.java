@@ -166,6 +166,17 @@ public class FhirParser {
         : FhirGenerator.codeableConcept(parsedCode);
   }
 
+  public static CodeableConcept codeableConceptFromLocalCodeWithOptionalText(
+      String localCode, String unit, String text, LoggingData loggingData) {
+    ParsedCode parsedCode = ParsedCode.fromString(localCode);
+    if (parsedCode.hasEmptyCode()) {
+      return logMethodValue(loggingData, localCode);
+    }
+    String localUnit = ParsedValueAndUnit.fromString(unit).getUnit();
+    AnyCode code = AnyCode.fromLocalCodeToLoinc(parsedCode, localUnit);
+    return FhirGenerator.codeableConcept(code).setText(text);
+  }
+
   public static CodeableConcept codeableConceptFromSystemWithOptionalText(
       String kerndatensatzValue, String codeSystem, String text, LoggingData loggingData) {
     ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue, codeSystem);
@@ -385,6 +396,11 @@ public class FhirParser {
     Identifier identifier =
         FhirGenerator.identifier(kerndatensatzValue, identifierSystem, type, null, identifierUse);
     return FhirGenerator.reference(identifier);
+  }
+
+  public static Quantity quantity(String valueAndUnit, String localCode, LoggingData loggingData) {
+    return ParsedQuantity.fromStringWithLocalCode(valueAndUnit, localCode)
+        .orElseGet(getMethodValueLoggingSupplier(loggingData, valueAndUnit));
   }
 
   public static Quantity quantity(String kerndatensatzValue, LoggingData loggingData) {

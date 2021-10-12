@@ -430,12 +430,6 @@ public class LaborbefundTest {
 
     @Nested
     class ValueTest {
-      @Test
-      @DisplayName("invalid Ergebnis should result in empty value")
-      void testInvalidV() {
-        laborbefund.setLaboruntersuchung_ergebnis("invalid result");
-        assertEmptyValue(laborbefund.getObservationValue());
-      }
 
       @Test
       @DisplayName("valid, semi-quantitative Ergebnis should be present in CodeableConcept")
@@ -458,7 +452,7 @@ public class LaborbefundTest {
         Type result = laborbefund.getObservationValue();
         assertNonEmptyValue(result);
         assertTrue(result instanceof Quantity);
-        assertQuantity(new BigDecimal(value), "1", QUANTITY_SYSTEM, "1", (Quantity) result);
+        assertQuantityWithElement(value, null, QUANTITY_SYSTEM, "(unity)", (Quantity) result);
       }
 
       @Nested
@@ -497,7 +491,7 @@ public class LaborbefundTest {
           String value = "13.5", unit = "mg";
           laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
           Quantity result = laborbefund.getObservationValueQuantity();
-          assertQuantity(new BigDecimal(value), unit, QUANTITY_SYSTEM, "(milligram)", result);
+          assertQuantityWithElement(value, unit, QUANTITY_SYSTEM, "(milligram)", result);
         }
       }
     }

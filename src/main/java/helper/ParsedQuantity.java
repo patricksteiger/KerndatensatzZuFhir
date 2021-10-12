@@ -16,4 +16,12 @@ public class ParsedQuantity {
     String unit = Helper.extractCode(splitCode, "unit=");
     return UnitConverter.fromLocalUnit(unit, value);
   }
+
+  public static Optional<Quantity> fromStringWithLocalCode(String s, String localCode) {
+    List<String> splitCode = Helper.splitCode(s);
+    String value = Helper.extractCode(splitCode, "value=");
+    String unit = Helper.extractCode(splitCode, "unit=");
+    String code = ParsedCode.fromString(localCode).getCode();
+    return UnitConverter.fromLocalCodeAndUnit(code, unit, value);
+  }
 }

@@ -250,6 +250,19 @@ public class Asserter {
         humanName);
   }
 
+  public static void assertQuantityWithElement(
+      String expectedValue,
+      String expectedCode,
+      String expectedSystem,
+      String expectedUnit,
+      Quantity quantity) {
+    assertNonEmptyValue(quantity);
+    assertEquals(expectedValue, quantity.getValueElement().getValueAsString(), VALUE);
+    assertEquals(expectedCode, quantity.getCode(), CODE);
+    assertEquals(expectedSystem, quantity.getSystem(), SYSTEM);
+    assertEquals(expectedUnit, quantity.getUnit(), UNIT);
+  }
+
   public static void assertQuantity(
       BigDecimal expectedValue,
       String expectedCode,

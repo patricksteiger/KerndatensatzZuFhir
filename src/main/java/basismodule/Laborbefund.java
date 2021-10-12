@@ -412,11 +412,12 @@ public class Laborbefund implements Datablock {
 
   public Quantity getObservationValueQuantity() {
     String ergebnis = this.getLaboruntersuchung_ergebnis();
+    String localCode = this.getLaboruntersuchung_code();
     LoggingData data = LoggingData.of(LOGGER, "getObservationValue", "laboruntersuchung_ergebnis");
     // ergebnis is treated as required here, because if both ValueCodeableConcept and this is empty
     // an error would be missed, since Value is required and 1 has to be set. Therefore
     // ValueCodeableConcept needs to be checked first.
-    return quantity(ergebnis, data);
+    return quantity(ergebnis, localCode, data);
   }
 
   public Date getObservationIssued() {
@@ -462,10 +463,10 @@ public class Laborbefund implements Datablock {
 
   public CodeableConcept getObservationCode() {
     String code = this.getLaboruntersuchung_code();
-    String system = CodingSystem.LOINC;
     String text = this.getLaborparameter_bezeichnung();
+    String unit = this.getLaboruntersuchung_ergebnis();
     LoggingData data = LoggingData.of(LOGGER, "getObservationCode", "laborparameter_bezeichnung");
-    return codeableConceptFromSystemWithOptionalText(code, system, text, data);
+    return codeableConceptFromLocalCodeWithOptionalText(code, unit, text, data);
   }
 
   public CodeableConcept getObservationCategory() {

@@ -26,12 +26,19 @@ public class Mapper {
   private static final BigDecimal THOUSAND = new BigDecimal("1000");
   private static final BigDecimal MILLION = new BigDecimal("1000000");
   private static final Map<String, UnitMapping> mappings = generateMappings();
+  private static final Map<LocalCodeWithUnit, LoincMapping> loincMappings = generateLoincMappings();
 
   private Mapper() {}
 
   public static Optional<UnitMapping> getUcumMappingFromLocalUnit(String localCode) {
     return Optional.ofNullable(mappings.get(localCode))
         .or(() -> getUcumMappingFromUcumCode(localCode));
+  }
+
+  public static Optional<LoincMapping> getLoincMappingFromLocalCodeAndUnit(
+      String localCode, String localUnit) {
+    var local = new LocalCodeWithUnit(localCode, localUnit);
+    return Optional.ofNullable(loincMappings.get(local));
   }
 
   private static Optional<UnitMapping> getUcumMappingFromUcumCode(String ucumCode) {
@@ -93,8 +100,6 @@ public class Mapper {
     result.put("Zell./µl", new UnitMapping("/uL", ONE));
     return result;
   }
-
-  // TODO local-code 952 is still doubled
 
   /**
    * Local codes that are not supported: 952
