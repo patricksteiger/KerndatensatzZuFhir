@@ -74,18 +74,17 @@ public class FhirHelper {
    */
   public static Optional<Enumeration<Enumerations.AdministrativeGender>> getGenderMapping(
       String gender) {
-    if (Helper.checkEmptyString(gender)) {
-      return Optional.empty();
-    }
-    return Optional.ofNullable(switch (gender) {
-      case "F" ->
-          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE);
-      case "M" ->
-          administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.MALE);
-      case "D" -> getGenderDE("D", "divers");
-      case "X", "U", "UN", "UNK" -> getGenderDE("X", "unbestimmt");
-      default -> null;
-    });
+    return Helper.checkEmptyString(gender)
+        ? Optional.empty()
+        : Optional.ofNullable(switch (gender) {
+          case "F" ->
+              administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.FEMALE);
+          case "M" ->
+              administrativeGenderEnumToEnumeration(Enumerations.AdministrativeGender.MALE);
+          case "D" -> getGenderDE("D", "divers");
+          case "X", "U", "UN", "UNK" -> getGenderDE("X", "unbestimmt");
+          default -> null;
+        });
   }
 
   private static Enumeration<Enumerations.AdministrativeGender> getGenderDE(
