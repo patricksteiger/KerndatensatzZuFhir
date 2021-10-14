@@ -699,6 +699,62 @@ public class LaborbefundTest {
       }
 
       @Test
+      @DisplayName("valid Local Code with Loinc-Mapping should be present in CodeableConcept")
+      void testValidVWithUnit() {
+        String code = "5322", value = "1", unit = "IU/l";
+        laborbefund.setLaboruntersuchung_code(getCodeStr(code));
+        laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+        CodeableConcept result = laborbefund.getObservationCode();
+        String expectedCode = "83098-4";
+        String expectedDisplay = "Follitropin [Units/volume] in Serum or Plasma by Immunoassay";
+        assertCodeableConcept(expectedCode, LOINC_SYSTEM, expectedDisplay, result);
+        assertFalse(result.hasText());
+      }
+
+      @Test
+      @DisplayName(
+          "valid Local Code with Loinc-Mapping but incorrect unit should be present in CodeableConcept")
+      void testValidLocalWithInvalidUnit() {
+        String code = "5322", value = "1", unit = "g";
+        laborbefund.setLaboruntersuchung_code(getCodeStr(code));
+        laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+        CodeableConcept result = laborbefund.getObservationCode();
+        String expectedCode = "5322";
+        String expectedSystem = null;
+        String expectedDisplay = "Follikel stim. Hormon (FSH).Serum .ECLIA";
+        assertCodeableConcept(expectedCode, expectedSystem, expectedDisplay, result);
+        assertFalse(result.hasText());
+      }
+
+      @Test
+      @DisplayName("valid Local Code without Loinc-Mapping should be present in CodeableConcept")
+      void testValidLocalWithoutMWithUnit() {
+        String code = "988", value = "1", unit = "kg";
+        laborbefund.setLaboruntersuchung_code(getCodeStr(code));
+        laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+        CodeableConcept result = laborbefund.getObservationCode();
+        String expectedCode = "988";
+        String expectedSystem = null;
+        String expectedDisplay = "Thyreoglobulin-Antikörper, Roche.Serum .ECLIA";
+        assertCodeableConcept(expectedCode, expectedSystem, expectedDisplay, result);
+        assertFalse(result.hasText());
+      }
+
+      @Test
+      @DisplayName("non-Local-Code is seen as LOINC and should be present in CodeableConcept")
+      void testInvalidCode() {
+        String code = "1234567890", display = "test display", value = "1", unit = "kg";
+        laborbefund.setLaboruntersuchung_code(getCodeDisplayStr(code, display));
+        laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+        CodeableConcept result = laborbefund.getObservationCode();
+        String expectedCode = code;
+        String expectedSystem = LOINC_SYSTEM;
+        String expectedDisplay = display;
+        assertCodeableConcept(expectedCode, expectedSystem, expectedDisplay, result);
+        assertFalse(result.hasText());
+      }
+
+      @Test
       @DisplayName("valid Code and non-empty Bezeichnung should be present in CodeableConcept")
       void testCode() {
         String code = "20570-8", display = "Hematocrit [Volume Fraction] of Blood";
