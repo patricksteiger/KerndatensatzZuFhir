@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import static constants.Constants.BIG_DECIMAL_ROUNDING_MODE;
+import static constants.Constants.BIG_DECIMAL_SCALE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.clearInvocations;
 import static util.Asserter.*;
@@ -477,7 +479,7 @@ public class LaborbefundTest {
       }
 
       @Nested
-      class ValueQuantity {
+      class ValueQuantityTest {
         @Test
         @DisplayName("invalid Ergebnis should result in empty value")
         void testInvalidQ() {
@@ -488,10 +490,101 @@ public class LaborbefundTest {
         @Test
         @DisplayName("valid, non-semi-quantitative Ergebnis should be present in Quantity")
         void testValueQuantity() {
-          String value = "13.5", unit = "mg";
+          String value = "7/4", unit = "mg";
           laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
           Quantity result = laborbefund.getObservationValueQuantity();
-          assertQuantity(new BigDecimal(value), unit, QUANTITY_SYSTEM, "(milligram)", result);
+          BigDecimal expectedValue =
+              new BigDecimal("1.75").setScale(BIG_DECIMAL_SCALE, BIG_DECIMAL_ROUNDING_MODE);
+          String expectedUnit = "mg";
+          String expectedDisplay = "(milligram)";
+          assertQuantity(expectedValue, expectedUnit, QUANTITY_SYSTEM, expectedDisplay, result);
+        }
+
+        @Test
+        @DisplayName(
+            "valid Ergebnis with Local Code and LOINC-Mapping should be mapped and present in Quantity")
+        void testMapping() {
+          String code = "10002", value = "17.34", unit = "mmol/l";
+          laborbefund.setLaboruntersuchung_code(code);
+          laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+          Quantity result = laborbefund.getObservationValueQuantity();
+          BigDecimal expectedValue = new BigDecimal(value);
+          String expectedUnit = "mmol/L";
+          String expectedDisplay = "(millimole) / (liter)";
+          assertQuantity(expectedValue, expectedUnit, QUANTITY_SYSTEM, expectedDisplay, result);
+        }
+
+        @Test
+        @DisplayName(
+            "valid Ergebnis with Local Code and LOINC-Mapping should be mapped and present in Quantity with conversion")
+        void testComplexMapping() {
+          String code = "10058", value = "5.879", unit = "mg/dl";
+          laborbefund.setLaboruntersuchung_code(code);
+          laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+          Quantity result = laborbefund.getObservationValueQuantity();
+          BigDecimal expectedValue = new BigDecimal("0.05879");
+          String expectedUnit = "g/L";
+          String expectedDisplay = "(gram) / (liter)";
+          assertQuantity(expectedValue, expectedUnit, QUANTITY_SYSTEM, expectedDisplay, result);
+        }
+
+        @Test
+        @DisplayName(
+            "valid Ergebnis with Local Code and incorrect Local Unit-Mapping should be present in Quantity without conversion")
+        void testComplexWrongUnitMapping() {
+          String code = "10058", value = "5.879", unit = "kg/l";
+          laborbefund.setLaboruntersuchung_code(code);
+          laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+          Quantity result = laborbefund.getObservationValueQuantity();
+          BigDecimal expectedValue = new BigDecimal("5.879");
+          String expectedUnit = "kg/l";
+          String expectedDisplay = "(kilogram) / (liter)";
+          assertQuantity(expectedValue, expectedUnit, QUANTITY_SYSTEM, expectedDisplay, result);
+        }
+
+        @Test
+        @DisplayName(
+            "valid Ergebnis with Local Code and Local Unit-Mapping empty should be present in Quantity")
+        void testEmptyMapping() {
+          String code = "10052", value = "-7", unit = "";
+          laborbefund.setLaboruntersuchung_code(code);
+          laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+          Quantity result = laborbefund.getObservationValueQuantity();
+          BigDecimal expectedValue = new BigDecimal(value);
+          String expectedUnit = null;
+          String expectedDisplay = "(unity)";
+          assertQuantity(expectedValue, expectedUnit, QUANTITY_SYSTEM, expectedDisplay, result);
+        }
+
+        @Test
+        @DisplayName(
+            "valid Ergebnis as fraction with Local Code should be mapped and present in Quantity with conversion")
+        void testUnit() {
+          String code = "5307", value = "-16/8", unit = "µg/l";
+          laborbefund.setLaboruntersuchung_code(code);
+          laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+          Quantity result = laborbefund.getObservationValueQuantity();
+          BigDecimal expectedValue =
+              new BigDecimal("-2").setScale(BIG_DECIMAL_SCALE, BIG_DECIMAL_ROUNDING_MODE);
+          String expectedUnit = "ng/mL";
+          String expectedDisplay = "(nanogram) / (milliliter)";
+          assertQuantity(expectedValue, expectedUnit, QUANTITY_SYSTEM, expectedDisplay, result);
+        }
+
+        @Test
+        @DisplayName(
+            "valid Ergebnis as fraction with Local Code with unknown conversion should be present in Quantity without conversion")
+        void testLocalUnknown() {
+          String code = "952", value = "17/8", unit = "µg/l";
+          laborbefund.setLaboruntersuchung_code(code);
+          laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+          Quantity result = laborbefund.getObservationValueQuantity();
+          BigDecimal expectedValue =
+              new BigDecimal("2.125").setScale(BIG_DECIMAL_SCALE, BIG_DECIMAL_ROUNDING_MODE);
+          String expectedUnit = "µg/l";
+          String expectedSystem = null;
+          String expectedDisplay = "µg/l";
+          assertQuantity(expectedValue, expectedUnit, expectedSystem, expectedDisplay, result);
         }
       }
     }
