@@ -4,17 +4,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 // TODO: What are all non-reducible units? Could this be transferred to UnitMapping?
-public class IrreducibleUcumUnit {
+public class IrreducibleUnit {
   private static final Set<String> nonReducibleUnits = generateIrreducibleUnits();
 
-  private IrreducibleUcumUnit() {}
+  private IrreducibleUnit() {}
 
   public static boolean check(String ucumUnit) {
     return nonReducibleUnits.contains(ucumUnit);
   }
 
   public static Set<String> generateIrreducibleUnits() {
-    Set<String> result = new HashSet<>();
+    var result = new HashSet<String>();
     result.add("mm[Hg]");
     result.add("mm Hg");
     result.add("mmHg");

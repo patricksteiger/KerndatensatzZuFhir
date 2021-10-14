@@ -48,7 +48,7 @@ public class UnitConverter {
   private static Optional<Quantity> quantityFromLoincMappingAndValue(
       LoincMapping loincMapping, String value) {
     String ucumCode = loincMapping.getUcumCode();
-    return IrreducibleUcumUnit.check(ucumCode)
+    return IrreducibleUnit.check(ucumCode)
         ? quantity(value, loincMapping.getUcumCode())
         : convertValue(value, loincMapping.getConversion()).flatMap(val -> quantity(val, ucumCode));
   }
@@ -56,7 +56,7 @@ public class UnitConverter {
   private static Optional<Quantity> quantityFromUnitMappingAndValue(
       UnitMapping mapping, String value) {
     String ucumCode = mapping.getUcumCode();
-    return IrreducibleUcumUnit.check(ucumCode)
+    return IrreducibleUnit.check(ucumCode)
         ? quantity(value, mapping.getUcumCode())
         : convertValue(value, mapping.getConversion()).flatMap(val -> quantity(val, ucumCode));
   }
