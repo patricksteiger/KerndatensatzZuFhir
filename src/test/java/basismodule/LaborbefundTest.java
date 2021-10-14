@@ -488,6 +488,14 @@ public class LaborbefundTest {
         }
 
         @Test
+        @DisplayName("invalid Ergebnis dividing by 0 should result in empty value")
+        void testInvalidFraction() {
+          String value = "0/0", unit = "mg";
+          laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
+          assertEmptyValue(laborbefund.getObservationValueCodeableConcept());
+        }
+
+        @Test
         @DisplayName("valid, non-semi-quantitative Ergebnis should be present in Quantity")
         void testValueQuantity() {
           String value = "7/4", unit = "mg";
