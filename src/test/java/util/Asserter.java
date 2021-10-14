@@ -250,7 +250,7 @@ public class Asserter {
         humanName);
   }
 
-  public static void assertQuantityWithElement(
+  public static void assertQuantity(
       String expectedValue,
       String expectedCode,
       String expectedSystem,

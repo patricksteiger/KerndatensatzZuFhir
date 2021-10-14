@@ -452,7 +452,7 @@ public class LaborbefundTest {
         Type result = laborbefund.getObservationValue();
         assertNonEmptyValue(result);
         assertTrue(result instanceof Quantity);
-        assertQuantityWithElement(value, null, QUANTITY_SYSTEM, "(unity)", (Quantity) result);
+        assertQuantity(new BigDecimal(value), null, QUANTITY_SYSTEM, "(unity)", (Quantity) result);
       }
 
       @Nested
@@ -491,7 +491,7 @@ public class LaborbefundTest {
           String value = "13.5", unit = "mg";
           laborbefund.setLaboruntersuchung_ergebnis(getValueUnitStr(value, unit));
           Quantity result = laborbefund.getObservationValueQuantity();
-          assertQuantityWithElement(value, unit, QUANTITY_SYSTEM, "(milligram)", result);
+          assertQuantity(new BigDecimal(value), unit, QUANTITY_SYSTEM, "(milligram)", result);
         }
       }
     }
