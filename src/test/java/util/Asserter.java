@@ -277,9 +277,9 @@ public class Asserter {
   }
 
   public static void assertRatio(
-      BigDecimal expectedNumeratorValue,
+      String expectedNumeratorValue,
       String expectedNumeratorUnit,
-      BigDecimal expectedDenominatorValue,
+      String expectedDenominatorValue,
       String expectedDenominatorUnit,
       Ratio ratio) {
     assertNonEmptyValue(ratio);
@@ -287,13 +287,13 @@ public class Asserter {
         expectedNumeratorValue,
         expectedNumeratorUnit,
         Constants.QUANTITY_SYSTEM,
-        Ucum.formalRepresentation(expectedNumeratorUnit).get(),
+        Ucum.formalRepresentation(expectedNumeratorUnit).orElse(null),
         ratio.getNumerator());
     assertQuantity(
         expectedDenominatorValue,
         expectedDenominatorUnit,
         Constants.QUANTITY_SYSTEM,
-        Ucum.formalRepresentation(expectedDenominatorUnit).get(),
+        Ucum.formalRepresentation(expectedDenominatorUnit).orElse(null),
         ratio.getDenominator());
   }
 

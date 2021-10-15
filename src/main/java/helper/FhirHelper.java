@@ -1,10 +1,11 @@
 package helper;
 
 import constants.CodingSystem;
+import constants.Constants;
 import constants.ExtensionUrl;
 import constants.IdentifierSystem;
 import org.hl7.fhir.r4.model.*;
-import unit.converter.UnitConverter;
+import unit.ucum.Ucum;
 import valueSets.MIICoreLocations;
 
 import java.util.Optional;
@@ -40,24 +41,17 @@ public class FhirHelper {
   }
 
   // TODO: Add method to UnitConverter to handle guaranteed non-fractions
-  public static Optional<Ratio> generateRatioFromFractions(
+  public static Ratio generateRatioFromFractions(
       ValueAndUnitFraction valueAndUnitFraction) {
-    Optional<Quantity> numerator =
-        UnitConverter.fromLocalUnit(
-            valueAndUnitFraction.getUnitNumerator(), valueAndUnitFraction.getValueNumerator());
-    String unitDenominator = valueAndUnitFraction.getUnitDenominator();
-    String valueDenominator = valueAndUnitFraction.getValueDenominator();
-    return Helper.optionalAnd(
-        numerator,
-        () -> UnitConverter.fromLocalUnit(unitDenominator, valueDenominator),
-        FhirGenerator::ratio);
-    //if (numerator.isEmpty()) {
-    //  return Optional.empty();
-    //}
-    //Optional<Quantity> denominator =
-    //    UnitConverter.fromLocalUnit(
-    //        valueAndUnitFraction.getUnitDenominator(), valueAndUnitFraction.getValueDenominator());
-    //return denominator.map(d -> FhirGenerator.ratio(numerator.get(), d));
+    Quantity n = quantityFromNonFraction(valueAndUnitFraction.getValueNumerator(), valueAndUnitFraction.getUnitNumerator());
+    Quantity d = quantityFromNonFraction(valueAndUnitFraction.getValueDenominator(), valueAndUnitFraction.getUnitDenominator());
+    return FhirGenerator.ratio(n, d);
+  }
+
+  public static Quantity quantityFromNonFraction(String value, String unit) {
+    String display = Ucum.formalRepresentation(unit).orElse("");
+    String system = Ucum.validate(unit) ? Constants.QUANTITY_SYSTEM : "";
+    return FhirGenerator.quantity(value, display, system, unit);
   }
 
   public static boolean emptyDateTimeType(DateTimeType dateTimeType) {

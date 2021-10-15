@@ -15,10 +15,7 @@ public class ValueAndUnitFraction {
       String valueFraction, String unitFraction) {
     Optional<Fraction> fractionValue = Fraction.fromString(valueFraction);
     Optional<Fraction> fractionUnit = Fraction.fromString(unitFraction);
-    if (fractionValue.isEmpty() || fractionUnit.isEmpty()) {
-      return Optional.empty();
-    }
-    return Optional.of(new ValueAndUnitFraction(fractionValue.get(), fractionUnit.get()));
+    return Helper.optionalAnd(fractionValue, () -> fractionUnit, ValueAndUnitFraction::new);
   }
 
   public String getValueNumerator() {

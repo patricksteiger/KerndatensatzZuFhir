@@ -6,7 +6,6 @@ import org.hl7.fhir.r4.model.*;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -472,7 +471,7 @@ public class MedikationTest {
           String value = "3/4", unit = "mmol/L";
           medikation.setWirkstoff_menge(getValueUnitStr(value, unit));
           Ratio result = medikation.getMedicationIngredientStrength();
-          assertRatio(new BigDecimal("3"), "mmol", new BigDecimal("4"), "L", result);
+          assertRatio("3", "mmol", "4", "L", result);
         }
       }
     }
@@ -499,7 +498,7 @@ public class MedikationTest {
         String value = "5/7", unit = "mmol/L";
         medikation.setArzneimittel_wirkstaerke(getValueUnitStr(value, unit));
         Ratio result = medikation.getMedicationAmount();
-        assertRatio(new BigDecimal("5"), "mmol", new BigDecimal("7"), "L", result);
+        assertRatio("5", "mmol", "7", "L", result);
       }
     }
 
