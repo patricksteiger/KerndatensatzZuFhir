@@ -38,7 +38,6 @@ public class UnitConverter {
         : quantityFromLocalUnitAndValue(localUnit, value);
   }
 
-  // TODO: Reduce possible fractions
   private static Optional<Quantity> quantityFromLocalUnitAndValue(String localUnit, String value) {
     String system = Ucum.validate(localUnit) ? QUANTITY_SYSTEM : "";
     return quantityFromValueUnitConversionWithSystem(value, localUnit, BigDecimal.ONE, system);
