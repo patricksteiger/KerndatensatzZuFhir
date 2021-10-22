@@ -11,11 +11,13 @@ public class ValueAndUnitFraction {
     this.unit = unit;
   }
 
+  // TODO: Can a value or unit fraction be empty?
   public static Optional<ValueAndUnitFraction> fromString(
       String valueFraction, String unitFraction) {
-    Optional<Fraction> fractionValue = Fraction.fromString(valueFraction);
-    Optional<Fraction> fractionUnit = Fraction.fromString(unitFraction);
-    return Helper.optionalAnd(fractionValue, () -> fractionUnit, ValueAndUnitFraction::new);
+    Optional<Fraction> fractionValue =
+        Fraction.fromString(valueFraction).filter(value -> !Helper.isZero(value.getDenominator()));
+    return Helper.optionalAnd(
+        fractionValue, () -> Fraction.fromString(unitFraction), ValueAndUnitFraction::new);
   }
 
   public String getValueNumerator() {

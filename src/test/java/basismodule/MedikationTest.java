@@ -488,7 +488,7 @@ public class MedikationTest {
       @Test
       @DisplayName("invalid Wirkstaerke should result in empty value")
       void testInvalidW() {
-        medikation.setArzneimittel_wirkstaerke(getValueUnitStr("", "mmol/L"));
+        medikation.setArzneimittel_wirkstaerke(getValueUnitStr("//", "mmol/L"));
         assertEmptyValue(medikation.getMedicationAmount());
       }
 

@@ -49,7 +49,7 @@ public class Helper {
    */
   public static boolean isZero(String s) {
     if (Helper.checkEmptyString(s)) {
-      return true;
+      return false;
     }
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);

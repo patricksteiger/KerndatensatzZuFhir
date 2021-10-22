@@ -8,6 +8,7 @@ import org.hl7.fhir.r4.model.*;
 import unit.ucum.Ucum;
 import valueSets.MIICoreLocations;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class FhirHelper {
@@ -41,17 +42,28 @@ public class FhirHelper {
   }
 
   // TODO: Add method to UnitConverter to handle guaranteed non-fractions
-  public static Ratio generateRatioFromFractions(
+  public static Optional<Ratio> generateRatioFromFractions(
       ValueAndUnitFraction valueAndUnitFraction) {
-    Quantity n = quantityFromNonFraction(valueAndUnitFraction.getValueNumerator(), valueAndUnitFraction.getUnitNumerator());
-    Quantity d = quantityFromNonFraction(valueAndUnitFraction.getValueDenominator(), valueAndUnitFraction.getUnitDenominator());
-    return FhirGenerator.ratio(n, d);
+    String valueNumerator = valueAndUnitFraction.getValueNumerator();
+    String unitNumerator = valueAndUnitFraction.getUnitNumerator();
+    Optional<Quantity> numerator = quantityFromNonFraction(valueNumerator, unitNumerator);
+    String valueDenominator = valueAndUnitFraction.getValueDenominator();
+    valueDenominator = Helper.checkEmptyString(valueDenominator) ? "1" : valueDenominator;
+    String unitDenominator = valueAndUnitFraction.getUnitDenominator();
+    Optional<Quantity> denominator = quantityFromNonFraction(valueDenominator, unitDenominator);
+    return numerator.isEmpty() && denominator.isEmpty()
+        ? Optional.empty()
+        : Optional.of(FhirGenerator.ratio(numerator.orElseGet(Constants::getEmptyValue), denominator.orElseGet(Constants::getEmptyValue)));
   }
 
-  public static Quantity quantityFromNonFraction(String value, String unit) {
+  public static Optional<Quantity> quantityFromNonFraction(String value, String unit) {
+    Optional<BigDecimal> parsedValue = Helper.maybeBigDecimal(value);
+    if (parsedValue.isEmpty()) {
+      return Optional.empty();
+    }
     String display = Ucum.formalRepresentation(unit).orElse("");
     String system = Ucum.validate(unit) ? Constants.QUANTITY_SYSTEM : "";
-    return FhirGenerator.quantity(value, display, system, unit);
+    return Optional.of(FhirGenerator.quantity(parsedValue.get(), display, system, unit));
   }
 
   public static boolean emptyDateTimeType(DateTimeType dateTimeType) {

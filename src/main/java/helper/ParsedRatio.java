@@ -17,6 +17,6 @@ public class ParsedRatio {
   public static Optional<Ratio> fromString(String str) {
     var parsedValue = ParsedValueAndUnit.fromString(str);
     return ValueAndUnitFraction.fromString(parsedValue.getValue(), parsedValue.getUnit())
-        .map(FhirHelper::generateRatioFromFractions);
+        .flatMap(FhirHelper::generateRatioFromFractions);
   }
 }
