@@ -269,8 +269,10 @@ public class LaborbefundTest {
         Observation.ObservationReferenceRangeComponent result =
             laborbefund.getObservationReferenceRange();
         assertNonEmptyValue(result);
-        assertQuantity(new BigDecimal(untergrenze), "1", QUANTITY_SYSTEM, "1", result.getLow());
-        assertQuantity(new BigDecimal(obergrenze), "1", QUANTITY_SYSTEM, "1", result.getHigh());
+        assertQuantity(
+            new BigDecimal(untergrenze), null, QUANTITY_SYSTEM, "(unity)", result.getLow());
+        assertQuantity(
+            new BigDecimal(obergrenze), null, QUANTITY_SYSTEM, "(unity)", result.getHigh());
         assertCodeableConcept(
             typeCode, REFERENCE_RANGE_MEANING_SYSTEM, typeDisplay, result.getType());
       }
@@ -299,7 +301,7 @@ public class LaborbefundTest {
           String input = getValueStr(grenze);
           laborbefund.setLaboruntersuchung_referenzbereich_obergrenze(input);
           Quantity result = laborbefund.getObservationReferenceRangeHigh();
-          assertQuantity(new BigDecimal(grenze), "1", QUANTITY_SYSTEM, "1", result);
+          assertQuantity(new BigDecimal(grenze), null, QUANTITY_SYSTEM, "(unity)", result);
         }
       }
 
@@ -327,7 +329,7 @@ public class LaborbefundTest {
           String input = getValueStr(grenze);
           laborbefund.setLaboruntersuchung_referenzbereich_obergrenze(input);
           Quantity result = laborbefund.getObservationReferenceRangeHigh();
-          assertQuantity(new BigDecimal(grenze), "1", QUANTITY_SYSTEM, "1", result);
+          assertQuantity(new BigDecimal(grenze), null, QUANTITY_SYSTEM, "(unity)", result);
         }
       }
 

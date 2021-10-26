@@ -2,6 +2,7 @@ package unit.converter;
 
 import helper.FhirGenerator;
 import helper.Helper;
+import helper.ParsedValueAndUnit;
 import org.hl7.fhir.r4.model.Quantity;
 import unit.mapping.LoincMapping;
 import unit.mapping.Mapper;
@@ -30,12 +31,12 @@ public class UnitConverter {
 
   // TODO: can a empty value ever be valid? -> empty conversions of loinc codes!
   public static Optional<Quantity> fromLocalCodeAndUnit(
-      String localCode, String localUnit, String value) {
-    Optional<LoincMapping> loincMapping =
-        Mapper.getLoincMappingFromLocalCodeAndUnit(localCode, localUnit);
-    return loincMapping.isPresent()
-        ? quantityFromLoincMappingAndValue(loincMapping.get(), value)
-        : quantityFromLocalUnitAndValue(localUnit, value);
+      String localCode, ParsedValueAndUnit valueAndUnit) {
+    var value = valueAndUnit.getValue();
+    var localUnit = valueAndUnit.getUnit();
+    return Mapper.getLoincMappingFromLocalCodeAndUnit(localCode, localUnit)
+        .map(mapping -> quantityFromLoincMappingAndValue(mapping, value))
+        .orElseGet(() -> quantityFromLocalUnitAndValue(localUnit, value));
   }
 
   private static Optional<Quantity> quantityFromLocalUnitAndValue(String localUnit, String value) {

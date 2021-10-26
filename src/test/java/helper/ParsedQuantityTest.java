@@ -48,7 +48,7 @@ class ParsedQuantityTest {
   void testFromStringNoUnit() {
     String value = getValueStr("123");
     Optional<Quantity> parsed = ParsedQuantity.fromString(value);
-    assertQuantity("123", "1", parsed);
+    assertQuantity("123", null, parsed);
   }
 
   @Test
