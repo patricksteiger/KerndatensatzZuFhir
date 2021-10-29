@@ -23,7 +23,7 @@
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>org.hl7.fhir.r4</artifactId>
-            <version>5.5.1</version>
+            <version>5.5.8</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.fhir/ucum -->
         <dependency>
@@ -38,14 +38,14 @@
             <version>2.0.0-alpha1</version>
         </dependency>
 
-        <!-- TESTING -->
 
+        <!-- TESTING -->
 
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.12.4</version>
+            <version>4.0.0</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
