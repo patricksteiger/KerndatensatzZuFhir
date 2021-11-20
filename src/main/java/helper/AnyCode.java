@@ -1,12 +1,13 @@
 package helper;
 
+import interfaces.Code;
 import unit.mapping.LocalDisplayMapper;
 import unit.mapping.LoincMapping;
 import unit.mapping.Mapper;
 
 import static constants.CodingSystem.LOINC;
 
-public class AnyCode implements interfaces.Code {
+public class AnyCode implements Code {
   private final String code;
   private final String system;
   private final String display;
@@ -15,6 +16,14 @@ public class AnyCode implements interfaces.Code {
     this.code = code;
     this.system = system;
     this.display = display;
+  }
+
+  public static Code from(String code, String system, String display) {
+    return new AnyCode(code, system, display);
+  }
+
+  public static Code from(Code code) {
+    return new AnyCode(code.getCode(), code.getSystem(), code.getDisplay());
   }
 
   public static AnyCode fromLoincMapping(LoincMapping loincMapping) {

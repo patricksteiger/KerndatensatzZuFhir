@@ -4,6 +4,7 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import constants.Constants;
 import constants.IdentifierSystem;
 import interfaces.Code;
+import mapping.OpsToAtc;
 import org.hl7.fhir.r4.model.*;
 import valueSets.MedikationStatus;
 
@@ -194,6 +195,13 @@ public class FhirParser {
     String display = parsedCode.hasDisplay() ? parsedCode.getDisplay() : defaultDisplay;
     Coding coding = FhirGenerator.coding(parsedCode.getCode(), parsedCode.getSystem(), display);
     return FhirGenerator.codeableConcept(coding);
+  }
+
+  public static Coding optionalCodingFromAtcWithOpsMapping(
+      String kerndatensatzValue, String valueUnit, String display) {
+    ParsedCode parsedCode = ParsedCode.fromString(kerndatensatzValue);
+    String unit = ParsedValueAndUnit.fromString(valueUnit).getUnit();
+    return OpsToAtc.from(parsedCode, unit).orElseGet(Constants::getEmptyValue);
   }
 
   public static Coding optionalCodingFromSystemWithDefaultDisplay(

@@ -244,9 +244,9 @@ public class Medikation implements Datablock {
 
   public Coding getMedicationCodeAtcDE() {
     String code = this.getArzneimittel_code();
-    String system = CodingSystem.ATC_DIMDI;
+    String valueUnit = this.getArzneimittel_wirkstaerke();
     String display = this.getArzneimittel_name();
-    return optionalCodingFromSystemWithDefaultDisplay(code, system, display);
+    return optionalCodingFromAtcWithOpsMapping(code, valueUnit, display);
   }
 
   public Coding getMedicationCodePharma() {
