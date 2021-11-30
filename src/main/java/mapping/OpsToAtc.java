@@ -9,7 +9,6 @@ import org.hl7.fhir.r4.model.Coding;
 import java.util.Optional;
 
 public class OpsToAtc {
-
   private OpsToAtc() {}
 
   public static Optional<Coding> from(Code parsedCode, String unit) {
