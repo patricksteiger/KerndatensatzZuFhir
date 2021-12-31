@@ -574,7 +574,7 @@ public class MedikationTest {
         String display = "acetylsalicylic acid";
         medikation.setArzneimittel_code(getCodeDisplayStr(code, display));
         CodeableConcept result = medikation.getMedicationCode();
-        assertCodeableConcept(code, ATC_DE_SYSTEM, display, result);
+        assertCodeableConcept(code, null, display, result);
       }
 
       @Nested
@@ -626,7 +626,7 @@ public class MedikationTest {
           medikation.setArzneimittel_code(getCodeStr(code));
           medikation.setArzneimittel_name(display);
           Coding result = medikation.getMedicationCodeAtcDE();
-          assertCoding(code, ATC_DE_SYSTEM, display, result);
+          assertCoding(code, null, null, result);
         }
 
         @Test
@@ -637,7 +637,7 @@ public class MedikationTest {
           medikation.setArzneimittel_code(getCodeDisplayStr(code, display));
           medikation.setArzneimittel_name("ignored display");
           Coding result = medikation.getMedicationCodeAtcDE();
-          assertCoding(code, ATC_DE_SYSTEM, display, result);
+          assertCoding(code, null, display, result);
         }
       }
     }
