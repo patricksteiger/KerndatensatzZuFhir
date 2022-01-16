@@ -155,9 +155,53 @@ public class Helper {
     return Optional.ofNullable(f.apply(x.get(), y.get()));
   }
 
-  @SafeVarargs
-  public static <T> List<T> listOf(T... values) {
-    return Arrays.asList(values);
+  public static <T> List<T> listOf() {
+    return new ArrayList<>();
+  }
+
+  public static <T> List<T> listOf(T e) {
+    List<T> list = new ArrayList<>(1);
+    list.add(e);
+    return list;
+  }
+
+  public static <T> List<T> listOf(T e1, T e2) {
+    List<T> list = new ArrayList<>(2);
+    list.add(e1);
+    list.add(e2);
+    return list;
+  }
+  public static <T> List<T> listOf(T e1, T e2, T e3) {
+    List<T> list = new ArrayList<>(3);
+    list.add(e1);
+    list.add(e2);
+    list.add(e3);
+    return list;
+  }
+
+  public static <T> List<T> listOf(T e1, T e2, T e3, T e4) {
+    List<T> list = new ArrayList<>(4);
+    list.add(e1);
+    list.add(e2);
+    list.add(e3);
+    list.add(e4);
+    return list;
+  }
+
+  public static <T> List<T> listOf(T e1, T e2, T e3, T e4, T e5) {
+    List<T> list = new ArrayList<>(5);
+    list.add(e1);
+    list.add(e2);
+    list.add(e3);
+    list.add(e4);
+    list.add(e5);
+    return list;
+  }
+
+  public static <T> List<T> listOf(T[] elems) {
+    List<T> list = new ArrayList<>(elems.length);
+    Collections.addAll(list, elems);
+    return list;
   }
 
   /**
