@@ -4,9 +4,8 @@ import helper.AnyCode;
 import helper.FhirGenerator;
 import helper.Helper;
 import interfaces.Code;
-import org.hl7.fhir.r4.model.Coding;
-
 import java.util.Optional;
+import org.hl7.fhir.r4.model.Coding;
 
 public class OpsToAtc {
   private OpsToAtc() {}
