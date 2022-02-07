@@ -3,7 +3,6 @@ package helper;
 import constants.Constants;
 import interfaces.CharPredicate;
 import interfaces.Code;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -128,8 +127,10 @@ public class Helper {
   }
 
   public static Optional<BigDecimal> safeDiv(BigDecimal numerator, BigDecimal denominator) {
-    return optionalOfException(() -> numerator.divide(
-        denominator, Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE));
+    return optionalOfException(
+        () ->
+            numerator.divide(
+                denominator, Constants.BIG_DECIMAL_SCALE, Constants.BIG_DECIMAL_ROUNDING_MODE));
   }
 
   public static Optional<BigDecimal> maybeBigDecimal(String value) {
@@ -144,7 +145,8 @@ public class Helper {
     }
   }
 
-  public static <T, U, R> Optional<R> optionalAnd(Optional<T> x, Supplier<Optional<U>> ySupplier, BiFunction<T, U, R> f) {
+  public static <T, U, R> Optional<R> optionalAnd(
+      Optional<T> x, Supplier<Optional<U>> ySupplier, BiFunction<T, U, R> f) {
     if (x.isEmpty()) {
       return Optional.empty();
     }
@@ -171,6 +173,7 @@ public class Helper {
     list.add(e2);
     return list;
   }
+
   public static <T> List<T> listOf(T e1, T e2, T e3) {
     List<T> list = new ArrayList<>(3);
     list.add(e1);
@@ -347,7 +350,9 @@ public class Helper {
 
   public static int indexNextPredicate(String s, int startIndex, CharPredicate predicate) {
     for (int i = startIndex; i < s.length(); i++) {
-      if (predicate.test(s.charAt(i))) return i;
+      if (predicate.test(s.charAt(i))) {
+        return i;
+      }
     }
     return s.length();
   }
@@ -357,15 +362,25 @@ public class Helper {
   }
 
   public static String trimCharacter(String s, char c) {
-    if (checkEmptyString(s)) return s;
+    if (checkEmptyString(s)) {
+      return s;
+    }
     int lo = 0;
-    while (lo < s.length() && s.charAt(lo) == c) lo++;
+    while (lo < s.length() && s.charAt(lo) == c) {
+      lo++;
+    }
     // return empty string if all characters are trimmed
-    if (lo >= s.length()) return "";
+    if (lo >= s.length()) {
+      return "";
+    }
     int hi = s.length() - 1;
-    while (hi >= 0 && s.charAt(hi) == c) hi--;
+    while (hi >= 0 && s.charAt(hi) == c) {
+      hi--;
+    }
     // If string doesn't start or end with given character return itself
-    if (lo == 0 && hi == s.length() - 1) return s;
+    if (lo == 0 && hi == s.length() - 1) {
+      return s;
+    }
     // Consider the fact that lo and hi are indices that are not equal to given character
     return s.substring(lo, hi + 1);
   }
