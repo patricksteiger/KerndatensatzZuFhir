@@ -1,8 +1,8 @@
 package helper;
 
-import constants.Constants;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
+import constants.Constants;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,21 +10,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class HelperTest {
   @Test
   void testExtractCode() {
     String code = "code=";
     List<String> words = new ArrayList<>();
-    assertEquals("", Helper.extractCode(words, code));
+    assertEquals("", Helper.extractCodeWithPrefix(words, code));
     words.add("BadStart");
-    assertEquals("", Helper.extractCode(words, code));
+    assertEquals("", Helper.extractCodeWithPrefix(words, code));
     words.add("code=\"20570-8\"");
-    assertEquals("20570-8", Helper.extractCode(words, code));
+    assertEquals("20570-8", Helper.extractCodeWithPrefix(words, code));
     words.add(0, "code=123");
-    assertEquals("123", Helper.extractCode(words, code));
+    assertEquals("123", Helper.extractCodeWithPrefix(words, code));
   }
 
   @Test

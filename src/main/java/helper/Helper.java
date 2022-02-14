@@ -290,24 +290,6 @@ public class Helper {
   }
 
   /**
-   * Extracts the first word that starts with code and returns string without prefix code and
-   * removes quotes.
-   *
-   * @param words
-   * @param code
-   * @return Substring of first word starting with code
-   */
-  public static String extractCode(List<String> words, String code) {
-    for (String word : words) {
-      if (word.startsWith(code)) {
-        String extractedCode = word.substring(code.length());
-        return Helper.trimQuotes(extractedCode);
-      }
-    }
-    return "";
-  }
-
-  /**
    * Splits code into different values. Example: 'system="http://loinc.org" code="20570-8"' gets
    * split into [system="http://loinc.org", code="20570-8"]. Quotes can't be within the values, they
    * need to wrap around as seen in the example. If the code is in simple format, e.g. "20570-8",
@@ -338,6 +320,27 @@ public class Helper {
       }
     }
     return codes;
+  }
+
+  /**
+   * Extracts the first code value of a code with given prefix and trims quotes. Example:
+   * [system="http://loinc.org", code="20570-8"] with prefix "code=" would return 20570-8.
+   *
+   * @param codes
+   * @param prefix
+   * @return Substring of first code starting with prefix
+   */
+  public static String extractCodeWithPrefix(List<String> codes, String prefix) {
+    if (prefix == null) {
+      return "";
+    }
+    for (String word : codes) {
+      if (word.startsWith(prefix)) {
+        String extractedCode = word.substring(prefix.length());
+        return Helper.trimQuotes(extractedCode);
+      }
+    }
+    return "";
   }
 
   public static int indexNextQuote(String s, int startIndex) {

@@ -14,8 +14,8 @@ public class ParsedValueAndUnit {
 
   public static ParsedValueAndUnit fromString(String s) {
     List<String> splitCode = Helper.splitCode(s);
-    String value = Helper.extractCode(splitCode, "value=");
-    String unit = Helper.extractCode(splitCode, "unit=");
+    String value = Helper.extractCodeWithPrefix(splitCode, "value=");
+    String unit = Helper.extractCodeWithPrefix(splitCode, "unit=");
     return new ParsedValueAndUnit(value, unit);
   }
 

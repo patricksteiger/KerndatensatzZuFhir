@@ -1,7 +1,6 @@
 package helper;
 
 import interfaces.Code;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -40,9 +39,9 @@ public class ParsedCode implements Code {
       return new ParsedCode(code, "", "");
     }
     List<String> words = Helper.splitCode(str);
-    String code = Helper.extractCode(words, CODE_PREFIX);
-    String system = Helper.extractCode(words, SYSTEM_PREFIX);
-    String display = Helper.extractCode(words, DISPLAY_PREFIX);
+    String code = Helper.extractCodeWithPrefix(words, CODE_PREFIX);
+    String system = Helper.extractCodeWithPrefix(words, SYSTEM_PREFIX);
+    String display = Helper.extractCodeWithPrefix(words, DISPLAY_PREFIX);
     return new ParsedCode(code, system, display);
   }
 
@@ -62,8 +61,8 @@ public class ParsedCode implements Code {
       return new ParsedCode(code, system, "");
     }
     List<String> words = Helper.splitCode(str);
-    String code = Helper.extractCode(words, CODE_PREFIX);
-    String display = Helper.extractCode(words, DISPLAY_PREFIX);
+    String code = Helper.extractCodeWithPrefix(words, CODE_PREFIX);
+    String display = Helper.extractCodeWithPrefix(words, DISPLAY_PREFIX);
     return new ParsedCode(code, system, display);
   }
 
