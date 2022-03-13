@@ -27,6 +27,18 @@ class HelperTest {
   }
 
   @Test
+  void testIsZero() {
+    assertFalse(Helper.isZero(null));
+    assertFalse(Helper.isZero(""));
+    assertFalse(Helper.isZero(".0."));
+    assertFalse(Helper.isZero(".1"));
+    assertFalse(Helper.isZero("a"));
+    assertTrue(Helper.isZero(".0"));
+    assertTrue(Helper.isZero("0.00"));
+    assertTrue(Helper.isZero("000"));
+  }
+
+  @Test
   void testSplitCode() {
     String nullStr = null;
     assertEquals(0, Helper.splitCode(nullStr).size());

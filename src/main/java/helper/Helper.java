@@ -50,9 +50,15 @@ public class Helper {
     if (Helper.checkEmptyString(s)) {
       return false;
     }
+    boolean containsDot = false;
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
-      if (c != '0' && c != '.') {
+      if (c == '.') {
+        if (containsDot) {
+          return false;
+        }
+        containsDot = true;
+      } else if (c != '0') {
         return false;
       }
     }
