@@ -1,20 +1,19 @@
 package util;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static util.Util.getCodeStr;
+
 import constants.Constants;
 import helper.Helper;
 import interfaces.Code;
-import org.hl7.fhir.r4.model.*;
-import unit.ucum.Ucum;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static util.Util.getCodeStr;
+import org.hl7.fhir.r4.model.*;
+import unit.ucum.Ucum;
 
 public class Asserter {
 
@@ -301,6 +300,16 @@ public class Asserter {
       String code, Optional<Enumeration<Enumerations.AdministrativeGender>> expectedGender) {
     assertTrue(expectedGender.isPresent());
     assertEquals(code, expectedGender.get().getCode(), CODE);
+  }
+
+  public static void assertAlwaysTrue(Optional<Boolean> value) {
+    assertTrue(value.isPresent());
+    assertTrue(value.get());
+  }
+
+  public static void assertAlwaysFalse(Optional<Boolean> value) {
+    assertTrue(value.isPresent());
+    assertFalse(value.get());
   }
 
   /*public static void assertLoggerHasCalledError3(Logger logger, int times) {

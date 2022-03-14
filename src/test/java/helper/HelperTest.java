@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import util.Asserter;
 
 class HelperTest {
   @Test
@@ -36,6 +37,19 @@ class HelperTest {
     assertTrue(Helper.isZero(".0"));
     assertTrue(Helper.isZero("0.00"));
     assertTrue(Helper.isZero("000"));
+  }
+
+  @Test
+  void testBooleanFromString() {
+    assertFalse(Helper.booleanFromString(null).isPresent());
+    assertFalse(Helper.booleanFromString("").isPresent());
+    assertFalse(Helper.booleanFromString("fail").isPresent());
+    Asserter.assertAlwaysTrue(Helper.booleanFromString("1"));
+    Asserter.assertAlwaysTrue(Helper.booleanFromString("true"));
+    Asserter.assertAlwaysTrue(Helper.booleanFromString("TRUE"));
+    Asserter.assertAlwaysFalse(Helper.booleanFromString("0"));
+    Asserter.assertAlwaysFalse(Helper.booleanFromString("false"));
+    Asserter.assertAlwaysFalse(Helper.booleanFromString("FALSE"));
   }
 
   @Test
