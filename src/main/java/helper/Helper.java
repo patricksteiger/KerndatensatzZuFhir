@@ -361,11 +361,11 @@ public class Helper {
   }
 
   public static int indexNextQuote(String s, int startIndex) {
-    return indexNextPredicate(s, startIndex, c -> c == '\"');
+    return indexNextPredicate(s, startIndex, CharPredicates.equalTo('\"'));
   }
 
   public static int indexNextNonWhitespace(String s, int startIndex) {
-    return indexNextPredicate(s, startIndex, c -> !Character.isWhitespace(c));
+    return indexNextPredicate(s, startIndex, CharPredicates.not(Character::isWhitespace));
   }
 
   public static int indexNextPredicate(String s, int startIndex, CharPredicate predicate) {
