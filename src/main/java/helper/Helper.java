@@ -224,7 +224,14 @@ public class Helper {
     if (Helper.checkEmptyString(name)) {
       return Helper.listOf();
     }
-    return Helper.listOf(name.trim().split("[ ]+"));
+    List<String> names = new ArrayList<>();
+    int firstLetter = indexNextNonWhitespace(name, 0);
+    while (firstLetter < name.length()) {
+      int lastLetter = indexNextWhitespace(name, firstLetter + 1);
+      names.add(name.substring(firstLetter, lastLetter));
+      firstLetter = indexNextNonWhitespace(name, lastLetter + 1);
+    }
+    return names;
   }
 
   public static <T, R> List<R> listMap(List<T> list, Function<T, R> mapper) {
@@ -311,7 +318,7 @@ public class Helper {
     int index = 0;
     while (index < CODE_LEN) {
       // Skip whitespaces
-      int wordIndex = indexAfterWhitespace(code, index);
+      int wordIndex = indexNextNonWhitespace(code, index);
       int firstQuoteIndex = indexNextQuote(code, wordIndex);
       // Get index of second quote, so code spans from wordIndex to secondQuoteIndex
       int secondQuoteIndex = indexNextQuote(code, firstQuoteIndex + 1);
@@ -349,11 +356,15 @@ public class Helper {
     return "";
   }
 
+  public static int indexNextWhitespace(String s, int startIndex) {
+    return indexNextPredicate(s, startIndex, Character::isWhitespace);
+  }
+
   public static int indexNextQuote(String s, int startIndex) {
     return indexNextPredicate(s, startIndex, c -> c == '\"');
   }
 
-  public static int indexAfterWhitespace(String s, int startIndex) {
+  public static int indexNextNonWhitespace(String s, int startIndex) {
     return indexNextPredicate(s, startIndex, c -> !Character.isWhitespace(c));
   }
 

@@ -186,6 +186,8 @@ class HelperTest {
     assertEquals(Helper.listOf(), Helper.splitNames(s));
     s = "";
     assertEquals(Helper.listOf(), Helper.splitNames(s));
+    s = "     ";
+    assertEquals(Helper.listOf(), Helper.splitNames(s));
     s = "Fritz";
     assertEquals(Helper.listOf("Fritz"), Helper.splitNames(s));
     s = "Maja Julia";
