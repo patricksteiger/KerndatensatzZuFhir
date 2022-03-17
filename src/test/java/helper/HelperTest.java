@@ -73,6 +73,13 @@ class HelperTest {
     assertEquals(2, values.size());
     assertEquals(codeSystem.trim(), values.get(0));
     assertEquals(codeCode.trim(), values.get(1));
+    codeSystem = "system=\"http://loinc.org\"";
+    codeCode = "code=\"20570-8\"";
+    code = codeCode + codeSystem;
+    values = Helper.splitCode(code);
+    assertEquals(2, values.size());
+    assertEquals(codeCode, values.get(0));
+    assertEquals(codeSystem, values.get(1));
   }
 
   @Test

@@ -313,24 +313,20 @@ public class Helper {
    */
   public static List<String> splitCode(String code) {
     List<String> codes = new ArrayList<>();
-    if (Helper.checkEmptyString(code)) return codes;
+    if (Helper.checkEmptyString(code)) {
+      return codes;
+    }
     final int CODE_LEN = code.length();
-    int index = 0;
-    while (index < CODE_LEN) {
-      // Skip whitespaces
-      int wordIndex = indexNextNonWhitespace(code, index);
+    int wordIndex = indexNextNonWhitespace(code, 0);
+    while (wordIndex < CODE_LEN) {
       int firstQuoteIndex = indexNextQuote(code, wordIndex);
       // Get index of second quote, so code spans from wordIndex to secondQuoteIndex
       int secondQuoteIndex = indexNextQuote(code, firstQuoteIndex + 1);
-      // Update index to next character after current code
-      index = secondQuoteIndex + 1;
-      if (wordIndex < CODE_LEN) {
-        // If code has simple format, a quote might not be present, which means
-        // secondQuoteIndex == CODE_LEN and therefore index > CODE_LEN.
-        int endIndex = Math.min(index, CODE_LEN);
-        String word = code.substring(wordIndex, endIndex);
-        codes.add(word);
-      }
+      // If code has simple format, secondQuoteIndex would equal CODE_LEN and CODE_LEN + 1 throws
+      // Exception in substring()
+      int endIndex = Math.min(secondQuoteIndex + 1, CODE_LEN);
+      codes.add(code.substring(wordIndex, endIndex));
+      wordIndex = indexNextNonWhitespace(code, endIndex);
     }
     return codes;
   }
