@@ -4,6 +4,7 @@ import constants.Constants;
 import interfaces.CharPredicate;
 import interfaces.Code;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +19,7 @@ public class Helper {
   /**
    * Parses ISO-8601 formatted date to Date-object.
    *
-   * @param date formatted according to ISO-8601
+   * @param date formatted according to ISO-8601.
    * @return Optional containing ISO-Date if parsable.
    */
   public static Optional<Date> getDateFromISO(String date) {
@@ -29,12 +30,23 @@ public class Helper {
     // Example: 2020-07-21
     final int simpleDateLength = 10;
     // Add timestamp if needed to avoid parsing exception
-    if (isoDate.length() <= simpleDateLength) isoDate += "T00:00:00";
+    if (isoDate.length() <= simpleDateLength) {
+      isoDate += "T00:00:00";
+    }
+    return parseIsoDate(isoDate);
+  }
+
+  /**
+   * Parse ISO Date to Java Date Object using LocalDateTime.
+   *
+   * @param Date-String formatted according to ISO-8601.
+   * @return Date-Object if isoDate is valid, otherwise empty.
+   */
+  private static Optional<Date> parseIsoDate(String isoDate) {
     try {
-      // Use LocalDateTime to properly parse ISO 8601-Date
-      LocalDateTime localDateTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
-      Date iso = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-      return Optional.of(iso);
+      LocalDateTime localDate = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME);
+      Instant localInstant = localDate.atZone(ZoneId.systemDefault()).toInstant();
+      return Optional.ofNullable(Date.from(localInstant));
     } catch (Exception e) {
       return Optional.empty();
     }
