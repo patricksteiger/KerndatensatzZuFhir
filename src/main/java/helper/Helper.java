@@ -320,25 +320,26 @@ public class Helper {
    * need to wrap around as seen in the example. If the code is in simple format, e.g. "20570-8",
    * then it will be the only element in the list.
    *
-   * @param code Code containing values
+   * @param formattedCode String containing formatted codes
    * @return Split values from code
    */
-  public static List<String> splitCode(String code) {
-    List<String> codes = new ArrayList<>();
-    if (Helper.checkEmptyString(code)) {
-      return codes;
+  public static List<String> splitCode(String formattedCode) {
+    if (Helper.checkEmptyString(formattedCode)) {
+      return Helper.listOf();
     }
-    final int CODE_LEN = code.length();
-    int wordIndex = indexNextNonWhitespace(code, 0);
+    final int CODE_LEN = formattedCode.length();
+    List<String> codes = new ArrayList<>();
+    int wordIndex = indexNextNonWhitespace(formattedCode, 0);
     while (wordIndex < CODE_LEN) {
-      int firstQuoteIndex = indexNextQuote(code, wordIndex);
+      int firstQuoteIndex = indexNextQuote(formattedCode, wordIndex);
       // Get index of second quote, so code spans from wordIndex to secondQuoteIndex
-      int secondQuoteIndex = indexNextQuote(code, firstQuoteIndex + 1);
-      // If code has simple format, secondQuoteIndex would equal CODE_LEN and CODE_LEN + 1 throws
-      // Exception in substring()
+      int secondQuoteIndex = indexNextQuote(formattedCode, firstQuoteIndex + 1);
+      // If code has simple format and no wrapping quotes, secondQuoteIndex would equal
+      // CODE_LEN and CODE_LEN + 1 throws Exception in substring()
       int endIndex = Math.min(secondQuoteIndex + 1, CODE_LEN);
-      codes.add(code.substring(wordIndex, endIndex));
-      wordIndex = indexNextNonWhitespace(code, endIndex);
+      String code = formattedCode.substring(wordIndex, endIndex);
+      codes.add(code);
+      wordIndex = indexNextNonWhitespace(formattedCode, endIndex);
     }
     return codes;
   }
